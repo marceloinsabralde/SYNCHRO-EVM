@@ -1,5 +1,20 @@
 # Introduction 
-SYNCHRO Perform NextGen (formerly SYNCHRO Perform (3221)) is a module of Project Delivery for Bentley Infrastructure Cloud focusing on Progress Capture, Quantity Loaded Resource Planning and Performance Management. 
+SYNCHRO Perform NextGen (3579) (formerly SYNCHRO Perform (3221)) is a module of Project Delivery for Bentley Infrastructure Cloud focusing on Progress Capture, Quantity Loaded Resource Planning and Performance Management. 
+
+## Project Structure
+The solution is broken down into 3 separate projects, these are:
+
+```
+SYNCHRO-Perform-NextGen.WebApi << for actual code
+SYNCHRO-Perform-NextGen.Tests << for unit tests via MSTest
+SYNCHRO-Perform-NextGen.Scenarios << for BDD scenarios
+```
+
+## Prerequisites
+### General
+- [.NET Core SDK Version 9.0](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
+- [PostgreSQL](https://www.postgresql.org) note, the homebrew version is suitable.
+- [direnv](https://github.com/direnv/direnv) or similar to manage your project directory ENV vars
 
 This README is a work in progress, everything below this line is initial boilerplate to be filled out.
 ___
