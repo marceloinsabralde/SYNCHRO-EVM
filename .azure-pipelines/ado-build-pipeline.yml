@@ -1,0 +1,19 @@
+name: $(Date:yyyy.MM.dd).$(Rev:rr)
+
+trigger:
+  branches:
+    include:
+      - main
+      - topic/*
+
+pr:
+  - main
+
+variables:
+  - group: ExternalServiceSecrets
+  - name: ProductName
+    value: SYNCHRO Perform NextGen
+  - name: ShortCode
+    value: SPNG
+  - name: GPR_ProductID
+    value: 
