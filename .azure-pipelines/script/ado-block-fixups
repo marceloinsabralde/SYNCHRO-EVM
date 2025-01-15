@@ -1,0 +1,25 @@
+#!/bin/bash
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+set -euo pipefail
+
+BUILD_SOURCE_VERSION=$1
+MERGE_BASE=$(git merge-base HEAD refs/remotes/origin/main)
+COMMIT_LIST=$(git log --pretty=format:%s ${MERGE_BASE}..${BUILD_SOURCE_VERSION})
+PATTERNS=("fixup!" "amend!" "squash!")
+
+perform_check() {
+  commit_list=$1
+  pattern=$2
+
+  count=$(echo "$commit_list" | grep "$pattern" | wc -l || true)
+  echo "$pattern commits: $count"
+  if [[ "$count" -gt "0" ]]; then
+    echo "$commit_list" | grep "$pattern"
+    echo "failing..."
+    exit 1
+  fi
+}
+
+for pattern in "${PATTERNS[@]}"; do
+  perform_check "$COMMIT_LIST" "$pattern"
+done

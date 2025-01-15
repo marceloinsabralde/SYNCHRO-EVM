@@ -1,0 +1,16 @@
+name: $(Date:yyyy.MM.dd).$(Rev:rr)
+
+pr:
+  - main
+
+jobs:
+  - job: BlockFixupCommits
+    displayName: Block Fixup Commits
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - checkout: self
+        fetchDepth: 0
+      - script: |
+          .azure-pipelines/script/ado-block-fixups $(Build.SourceVersion)
+        displayName: Check for fixup! squash! and amend! commits
