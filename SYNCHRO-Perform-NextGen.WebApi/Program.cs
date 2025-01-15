@@ -1,6 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+using SYNCHRO_Perform_NextGen.Database;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
+    opt.UseNpgsql(
+        builder.Configuration.GetConnectionString("PerformNextGen"),
+        o => o
+            .SetPostgresVersion(16, 4)
+            .UseNodaTime())
+    .UseSnakeCaseNamingConvention()
+);
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
