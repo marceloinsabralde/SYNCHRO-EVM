@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SYNCHRO-Perform-NextGen.Web
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SYNCHRO-Perform-NextGen.Tests", "SYNCHRO-Perform-NextGen.Tests\SYNCHRO-Perform-NextGen.Tests.csproj", "{1DCF7071-BC7E-47F8-B8E9-3085DCACDA2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SYNCHRO-Perform-NextGen.Scenarios", "SYNCHRO-Perform-NextGen.Scenarios\SYNCHRO-Perform-NextGen.Scenarios.csproj", "{6AF3AEBF-2A84-4D8E-8315-A29E09EE7470}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{1DCF7071-BC7E-47F8-B8E9-3085DCACDA2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DCF7071-BC7E-47F8-B8E9-3085DCACDA2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DCF7071-BC7E-47F8-B8E9-3085DCACDA2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AF3AEBF-2A84-4D8E-8315-A29E09EE7470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AF3AEBF-2A84-4D8E-8315-A29E09EE7470}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AF3AEBF-2A84-4D8E-8315-A29E09EE7470}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AF3AEBF-2A84-4D8E-8315-A29E09EE7470}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
