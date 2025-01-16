@@ -17,3 +17,34 @@ variables:
     value: SPNG
   - name: GPR_ProductID
     value: 3579
+
+jobs:
+  - job: Run_Tests
+    displayName: Run Tests
+    timeoutInMinutes: 30
+    cancelTimeoutInMinutes: 5
+    steps:
+      - task: UseDotNet@2
+        displayName: 'Use .NET sdk'
+        inputs:
+          packageType: sdk
+          version: 9.x
+
+      - task: NuGetAuthenticate@1
+        displayName: 'NuGet Authenticate'
+        inputs:
+          forceReinstallCredentialProvider: true
+
+      - task: DotNetCoreCLI@2
+        displayName: Build solution
+        inputs:
+          command: build
+          projects: '**/*.sln'
+          arguments: '-c Release'
+
+      - task: DotNetCoreCLI@2
+        displayName: Run tests
+        inputs:
+          command: test
+          projects: '**/*.sln'
+          arguments: '--filter "SYNCHRO-Perform-NextGen.Tests" -c Release --collect "Code coverage"'
