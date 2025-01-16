@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SYNCHRO_Perform_NextGen.Database;
+using SYNCHROPerformNextGen.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 

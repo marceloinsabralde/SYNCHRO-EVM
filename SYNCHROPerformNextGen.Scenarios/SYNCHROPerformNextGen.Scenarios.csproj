@@ -17,6 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SYNCHRO-Perform-NextGen.WebApi\SYNCHRO-Perform-NextGen.WebApi.csproj" />
+        <ProjectReference Include="..\SYNCHROPerformNextGen.WebApi\SYNCHROPerformNextGen.WebApi.csproj" />
     </ItemGroup>
 </Project>
