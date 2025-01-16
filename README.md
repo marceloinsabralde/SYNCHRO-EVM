@@ -5,9 +5,9 @@ SYNCHRO Perform NextGen (3579) (formerly SYNCHRO Perform (3221)) is a module of 
 The solution is broken down into 3 separate projects, these are:
 
 ```
-SYNCHRO-Perform-NextGen.WebApi << for actual code
-SYNCHRO-Perform-NextGen.Tests << for unit tests via MSTest
-SYNCHRO-Perform-NextGen.Scenarios << for BDD scenarios
+SYNCHROPerformNextGen.WebApi << for actual code
+SYNCHROPerformNextGen.Tests << for unit tests via MSTest
+SYNCHROPerformNextGen.Scenarios << for BDD scenarios
 ```
 
 ## Prerequisites
