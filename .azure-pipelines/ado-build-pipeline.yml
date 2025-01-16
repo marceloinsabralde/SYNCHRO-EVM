@@ -16,4 +16,4 @@ variables:
   - name: ShortCode
     value: SPNG
   - name: GPR_ProductID
-    value: 
+    value: 3579
