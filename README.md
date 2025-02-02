@@ -1,3 +1,4 @@
+<!-- Copyright (c) Bentley Systems, Incorporated. All rights reserved. -->
 # Introduction
 SYNCHRO Perform NextGen (3579) (formerly SYNCHRO Perform (3221)) is a module of Project Delivery for Bentley Infrastructure Cloud focusing on Progress Capture, Quantity Loaded Resource Planning and Performance Management.
 

@@ -1,3 +1,4 @@
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 Feature: Calculator
   Simple calculator for adding two numbers
 

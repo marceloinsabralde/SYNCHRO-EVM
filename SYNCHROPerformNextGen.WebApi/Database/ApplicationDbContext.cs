@@ -1,3 +1,4 @@
+// Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Microsoft.EntityFrameworkCore;
 
 namespace SYNCHROPerformNextGen.Database;

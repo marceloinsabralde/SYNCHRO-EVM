@@ -1,3 +1,4 @@
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 @SYNCHRO_Perform_NextGen_HostAddress = http://localhost:5175
 
 GET {{SYNCHRO_Perform_NextGen_HostAddress}}/weatherforecast/
