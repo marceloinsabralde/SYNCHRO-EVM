@@ -1,5 +1,5 @@
-# Introduction 
-SYNCHRO Perform NextGen (3579) (formerly SYNCHRO Perform (3221)) is a module of Project Delivery for Bentley Infrastructure Cloud focusing on Progress Capture, Quantity Loaded Resource Planning and Performance Management. 
+# Introduction
+SYNCHRO Perform NextGen (3579) (formerly SYNCHRO Perform (3221)) is a module of Project Delivery for Bentley Infrastructure Cloud focusing on Progress Capture, Quantity Loaded Resource Planning and Performance Management.
 
 ## Project Structure
 The solution is broken down into 3 separate projects, these are:
@@ -37,4 +37,3 @@ Then visit https://localhost:7029/swagger/index.html to view in browser.
 
 Notes:
 - you may wish to simply use the "Build and Run" feature of your favourite IDE for this.
-

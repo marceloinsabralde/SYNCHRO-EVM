@@ -14,7 +14,7 @@ public sealed class CalculatorStepDefinitions
         // For storing and retrieving scenario-specific data see https://go.reqnroll.net/doc-sharingdata
         // To use the multiline text or the table argument of the scenario,
         // additional string/DataTable parameters can be defined on the step definition
-        // method. 
+        // method.
 
         throw new PendingStepException();
     }
