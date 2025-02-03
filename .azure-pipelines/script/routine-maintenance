@@ -1,0 +1,23 @@
+#!/bin/bash
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+# routine-maintenance -- performs project-wide routine maintenance
+# Usage: .azure-pipelines/script/routine-maintenance
+
+set -euo pipefail
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+is_git_dirty() {
+  git status --porcelain | grep -q .
+}
+
+if is_git_dirty; then
+  echo "ERROR: git repo is dirty"
+  exit 1
+else
+  branch="topic/routine-maintenance-$(date +%Y%m%d)"
+  git fetch origin main
+  git checkout -b "$branch" --no-track origin/main
+
+  "${DIR}/update-dependencies"
+fi
