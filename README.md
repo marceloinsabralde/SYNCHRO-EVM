@@ -19,6 +19,7 @@ SYNCHROPerformNextGen.Scenarios << for BDD scenarios
 
 ### Tools
 - dotnet-ef `dotnet tool install --global dotnet-ef`
+- dotnet-outdated `dotnet tool install --global dotnet-outdated-tool`
 
 ## Running Tests
 
