@@ -48,3 +48,14 @@ jobs:
           command: test
           projects: '**/*.sln'
           arguments: '--filter "SYNCHROPerformNextGen.Tests" -c Release --collect "Code coverage"'
+
+  - job: Check_Copyright
+    displayName: Check Copyright Notice
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - checkout: self
+        fetchDepth: 0
+      - script: |
+          .azure-pipelines/script/check-copyright
+        displayName: Check Copyright Notice

@@ -1,0 +1,30 @@
+#!/bin/bash
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
+set -euo pipefail
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+COPYRIGHT_REGEXP="copyright.*bentley"
+COPYRIGHT_IGNORE="${DIR}/../../.copyrightignore"
+
+git_glob() {
+  cat "$COPYRIGHT_IGNORE" | grep -v ^$ | sed -e 's/^/:!:/g' | tr '\n' '\0'
+}
+
+files_copyright_ok() {
+  git_glob | xargs -0 git grep --name-only -i "$COPYRIGHT_REGEXP" -- | sort
+}
+
+files_in_git() {
+  git_glob | xargs -0 git ls-files -- | sort
+}
+
+files_missing_copyright() {
+  comm -23 <(files_in_git) <(files_copyright_ok)
+}
+
+if files_missing_copyright | grep .; then
+  echo "Error: Files missing copyright notice found"
+  exit 1
+fi
