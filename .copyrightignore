@@ -10,6 +10,7 @@ packages/
 
 # Ignore common config files
 *.config
+*.editorconfig
 *.json
 *.yml
 *.yaml
