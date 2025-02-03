@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Microsoft.EntityFrameworkCore;
+
 using SYNCHROPerformNextGen.Database;
 
 var builder = WebApplication.CreateBuilder(args);
