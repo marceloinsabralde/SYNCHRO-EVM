@@ -1,8 +1,14 @@
+# editorconfig.org
+# learn more dotnet rules https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/code-style-rule-options
+
 root = true
 
 # All files
 [*]
+insert_final_newline = true
 indent_style = space
+trim_trailing_whitespace = true
+end_of_line = lf
 
 # Xml files
 [*.xml]
@@ -17,11 +23,8 @@ indent_size = 2
 indent_size = 4
 tab_width = 4
 
-# New line preferences
-insert_final_newline = false
-
 #### .NET Coding Conventions ####
-[*.{cs,vb}]
+[*.{cs}]
 
 # Organize usings
 dotnet_separate_import_directive_groups = true
@@ -186,7 +189,7 @@ csharp_preserve_single_line_blocks = true
 csharp_preserve_single_line_statements = true
 
 #### Naming styles ####
-[*.{cs,vb}]
+[*.{cs}]
 
 # Naming rules
 
