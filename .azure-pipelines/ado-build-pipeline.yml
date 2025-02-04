@@ -57,8 +57,7 @@ jobs:
         displayName: Run tests
         inputs:
           command: test
-          projects: '**/*.sln'
-          arguments: '--filter "SYNCHROPerformNextGen.Tests" -c Release --collect "Code coverage"'
+          arguments: '--collect "Code Coverage"'
 
   - job: Check_Copyright
     displayName: Check Copyright Notice
