@@ -59,3 +59,26 @@ jobs:
       - script: |
           .azure-pipelines/script/check-copyright
         displayName: Check Copyright Notice
+
+  - job: Check_Code_Formatting
+    displayName: Check Code Formatting
+    steps:
+      - task: UseDotNet@2
+        displayName: Use .NET sdk
+        inputs:
+          packageType: sdk
+          version: 9.x
+
+      - task: DotNetCoreCLI@2
+        displayName: Install dotnet format
+        inputs:
+          command: custom
+          custom: tool
+          arguments: update -g dotnet-format
+
+      - task: DotNetCoreCLI@2
+        displayName: Check Code Formatting
+        inputs:
+          command: custom
+          custom: format
+          arguments: --verify-no-changes --verbosity diagnostic

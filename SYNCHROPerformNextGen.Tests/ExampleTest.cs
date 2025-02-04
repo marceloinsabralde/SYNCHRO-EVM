@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+// Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Shouldly;
 
 namespace SYNCHRO_Perform_NextGen.Tests;
