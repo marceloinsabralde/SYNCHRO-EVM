@@ -17,6 +17,10 @@ SYNCHROPerformNextGen.Scenarios << for BDD scenarios
 - [PostgreSQL](https://www.postgresql.org) note, the homebrew version is suitable.
 - [direnv](https://github.com/direnv/direnv) or similar to manage your project directory ENV vars
 
+### Tools
+- dotnet-ef `dotnet tool install --global dotnet-ef`
+- dotnet-outdated `dotnet tool install --global dotnet-outdated-tool`
+
 ## Running Tests
 
 From the root directory of the solution run `dotnet test`, you should see an output similar to this:

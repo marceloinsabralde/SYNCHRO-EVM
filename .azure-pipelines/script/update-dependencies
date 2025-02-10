@@ -1,0 +1,5 @@
+#!/bin/bash
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+set -euo pipefail
+
+dotnet outdated --upgrade
