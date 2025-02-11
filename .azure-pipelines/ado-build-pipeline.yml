@@ -37,6 +37,16 @@ jobs:
           projects: '**/*.sln'
           arguments: '-c Release'
 
+      - task: CopyFiles@2
+        inputs:
+          targetFolder: $(Build.ArtifactStagingDirectory)
+
+      - task: PublishBuildArtifacts@1
+        displayName: Publish built artifacts
+        inputs:
+          artifactName: built_artifacts
+          pathToPublish: $(Build.ArtifactStagingDirectory)
+
   - job: Run_Tests
     displayName: Run Tests
     dependsOn: Build
