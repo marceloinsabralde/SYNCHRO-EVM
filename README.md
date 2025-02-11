@@ -42,3 +42,9 @@ Then visit https://localhost:7029/swagger/index.html to view in browser.
 
 Notes:
 - you may wish to simply use the "Build and Run" feature of your favourite IDE for this.
+
+## How to view code coverage
+
+- Locate the build
+- Click on 'Test' tab to see test results.
+- Click on 'Code Coverage' tab to see and download code coverage report.
