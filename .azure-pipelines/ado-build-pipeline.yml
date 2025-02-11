@@ -19,8 +19,8 @@ variables:
     value: 3579
 
 jobs:
-  - job: Run_Tests
-    displayName: Run Tests
+  - job: Build
+    displayName: Build solution
     timeoutInMinutes: 30
     cancelTimeoutInMinutes: 5
     steps:
@@ -37,6 +37,12 @@ jobs:
           projects: '**/*.sln'
           arguments: '-c Release'
 
+  - job: Run_Tests
+    displayName: Run Tests
+    dependsOn: Build
+    timeoutInMinutes: 30
+    cancelTimeoutInMinutes: 5
+    steps:
       - task: DotNetCoreCLI@2
         displayName: Run tests
         inputs:
