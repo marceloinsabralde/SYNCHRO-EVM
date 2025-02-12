@@ -1,0 +1,16 @@
+{
+  "config": {
+    "productType": "Cloud Service",
+    "retentionPolicy": {
+      "type": "daysToKeep",
+      "value": 7
+    }
+  },
+  "includeIgnoreAlerts": [],
+  "ignoreAlerts": [],
+  "includeIgnorePolicyViolation": [],
+  "ignorePolicyViolation": [],
+  "includes": [
+    "SYNCHROPerformNextGen.WebApi/SYNCHROPerformNextGen.WebApi.csproj"
+  ]
+}

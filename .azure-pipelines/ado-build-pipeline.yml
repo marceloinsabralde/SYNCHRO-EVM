@@ -17,6 +17,19 @@ variables:
     value: SPNG
   - name: GPR_ProductID
     value: 3579
+  - name: Mend.ApiKey
+    value: $(MendApiKey)
+  - name: Mend.UserKey
+    value: $(MendServiceAccountKey)
+  - name: Mend.UserEmail
+    value: $(MendServiceAccountEmail)
+
+resources:
+  repositories:
+    - repository: MendScan
+      type: git
+      name: ReleaseServices/MendScan
+      ref: refs/heads/main
 
 jobs:
   - job: Build
@@ -29,6 +42,11 @@ jobs:
         inputs:
           packageType: sdk
           version: 9.x
+
+      - task: NuGetAuthenticate@1
+        displayName: 'NuGet Authenticate'
+        inputs:
+          forceReinstallCredentialProvider: true
 
       - task: DotNetCoreCLI@2
         displayName: Build solution
@@ -92,3 +110,20 @@ jobs:
           command: custom
           custom: format
           arguments: --verify-no-changes --verbosity diagnostic
+
+  - job: Mend_Scan
+    displayName: Mend Scan
+    dependsOn: Build
+    steps:
+      - task: DownloadBuildArtifacts@0
+        displayName: Download built artifacts
+        inputs:
+          artifactName: built_artifacts
+          downloadPath: $(Build.ArtifactStagingDirectory)
+
+      - template: MendScan.yml@MendScan
+        parameters:
+          MendProductName: $(ProductName) ($(ShortCode) - $(GPR_ProductID))
+          MendPathToScan: $(Build.ArtifactStagingDirectory)
+          MendConfigPath: $(Build.SourcesDirectory)/.azure-pipelines/mend/SPNG_config.json
+          MendSimulateDelete: true
