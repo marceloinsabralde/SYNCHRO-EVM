@@ -22,6 +22,7 @@ SYNCHROPerformNextGen.Scenarios << for BDD scenarios
 ```shell
 - dotnet tool install -g dotnet-ef # entity-framework tools
 - dotnet tool install -g dotnet-outdated-tool # tool to update deps
+- script/dcl up -d # run services using docker
 ```
 
 ## Running Tests

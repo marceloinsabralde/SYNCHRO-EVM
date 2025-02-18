@@ -1,0 +1,11 @@
+#!/bin/sh
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+# dcl -- Runs docker compose for local development
+# Usage:
+# $ dcl up -d # start services
+# $ dcl stop # stop services
+# $ dcl down # stop and flush state from services
+# $ dcl ps # what services are running?
+# $ dcl logs # what's going on?
+
+docker compose -p spng_local -f docker-compose.local.yml "$@"
