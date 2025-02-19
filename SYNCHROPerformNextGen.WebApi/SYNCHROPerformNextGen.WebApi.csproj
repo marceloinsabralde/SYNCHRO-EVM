@@ -5,7 +5,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>SYNCHRO_Perform_NextGen</RootNamespace>
+    <RootNamespace>SYNCHROPerformNextGen</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

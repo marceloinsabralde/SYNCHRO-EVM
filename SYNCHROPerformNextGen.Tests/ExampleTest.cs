@@ -1,7 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Shouldly;
 
-namespace SYNCHRO_Perform_NextGen.Tests;
+namespace SYNCHROPerformNextGen.Tests;
 
 [TestClass]
 public sealed class ExampleTest

@@ -3,7 +3,7 @@
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
-        <RootNamespace>SYNCHRO_Perform_NextGen.Tests</RootNamespace>
+        <RootNamespace>SYNCHROPerformNextGen.Tests</RootNamespace>
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
