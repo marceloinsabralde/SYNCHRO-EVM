@@ -8,6 +8,9 @@ packages/
 # Ignore dotnet solution files
 *.sln
 
+# Ignore auto-generated files
+*/Migrations/*
+
 # Ignore common config files
 *.config
 *.editorconfig

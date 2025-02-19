@@ -15,5 +15,13 @@ CREATE TABLE public."__EFMigrationsHistory" (
     product_version character varying(32) NOT NULL
 );
 ALTER TABLE public."__EFMigrationsHistory" OWNER TO "PerformNextGen";
+CREATE TABLE public.companies (
+    id uuid NOT NULL,
+    name text NOT NULL,
+    description text
+);
+ALTER TABLE public.companies OWNER TO "PerformNextGen";
 ALTER TABLE ONLY public."__EFMigrationsHistory"
     ADD CONSTRAINT pk___ef_migrations_history PRIMARY KEY (migration_id);
+ALTER TABLE ONLY public.companies
+    ADD CONSTRAINT pk_companies PRIMARY KEY (id);
