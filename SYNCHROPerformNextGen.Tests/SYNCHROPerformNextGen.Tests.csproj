@@ -31,4 +31,7 @@
         <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\SYNCHROPerformNextGen.WebApi\SYNCHROPerformNextGen.WebApi.csproj" />
+    </ItemGroup>
 </Project>
