@@ -1,0 +1,8 @@
+#!/bin/bash
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+script/dcl exec postgresql bash \
+  -euo pipefail \
+  -c 'pg_dump --schema-only -U "$POSTGRES_USER" -d "${POSTGRES_DB:-$POSTGRES_USER}"' | \
+  sed -n '/^[^-]/p' > structure.sql
