@@ -1,0 +1,19 @@
+services:
+  postgresql:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: PerformNextGen
+      POSTGRES_USER: PerformNextGen
+      POSTGRES_PASSWORD: PerformNextGen
+    healthcheck:
+      test: pg_isready -U $${POSTGRES_USER}
+  app:
+    build: .
+    depends_on:
+      - postgresql
+    environment:
+      ConnectionStrings__PerformNextGen: "Host=postgresql;Port=5432;Database=PerformNextGen;Username=PerformNextGen;Password=PerformNextGen"
+      PGHOST: postgresql
+      PGUSER: PerformNextGen
+      PGPASSWORD: PerformNextGen
+      PGDATABASE: PerformNextGen
