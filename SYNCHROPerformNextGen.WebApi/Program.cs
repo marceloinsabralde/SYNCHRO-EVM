@@ -1,6 +1,9 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Microsoft.EntityFrameworkCore;
 
+using OpenTelemetry;
+using OpenTelemetry.Logs;
+
 using SYNCHROPerformNextGen.Database;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +24,11 @@ builder.Services.AddOpenApi();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Learn about configuring OpenTelemetry at https://opentelemetry.io/docs/languages/net/
+builder.Services.AddOpenTelemetry()
+    .UseOtlpExporter() // Use the OpenTelemetry Protocol (OTLP) exporter for all signals
+    .WithLogging(logging => logging.AddConsoleExporter());
 
 var app = builder.Build();
 
