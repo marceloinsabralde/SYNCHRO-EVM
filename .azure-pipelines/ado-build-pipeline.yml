@@ -116,6 +116,7 @@ jobs:
   - job: Mend_Scan
     displayName: Mend Scan
     dependsOn: Build
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     steps:
       - task: DownloadBuildArtifacts@0
         displayName: Download built artifacts
@@ -140,6 +141,7 @@ jobs:
     displayName: Veracode
     pool:
       vmImage: windows-latest
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     steps:
       - task: NuGetToolInstaller@1
 
