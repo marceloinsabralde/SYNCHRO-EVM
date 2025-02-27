@@ -1,0 +1,11 @@
+#!/bin/bash
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
+set -euo pipefail
+set -x
+
+dotnet ef database update --project SYNCHROPerformNextGen.WebApi
+
+pg_dump --schema-only | sed -n '/^[^-]/p' > /tmp/structure.sql
+
+diff -U4 structure.sql /tmp/structure.sql
