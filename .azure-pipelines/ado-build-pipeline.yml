@@ -33,6 +33,9 @@ resources:
       name: ReleaseServices/MendScan
       ref: refs/heads/main
 
+pool:
+  vmImage: ubuntu-latest
+
 jobs:
   - job: Build
     displayName: Build solution
@@ -81,8 +84,6 @@ jobs:
 
   - job: Check_Copyright
     displayName: Check Copyright Notice
-    pool:
-      vmImage: ubuntu-latest
     steps:
       - checkout: self
         fetchDepth: 0
