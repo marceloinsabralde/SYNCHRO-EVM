@@ -46,3 +46,6 @@ wwwroot/lib/
 *.db
 *.db-shm
 *.db-wal
+
+# Ignore schema dump files
+structure.sql
