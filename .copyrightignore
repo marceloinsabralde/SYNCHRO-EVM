@@ -18,6 +18,7 @@ packages/
 *.yml
 *.yaml
 *.env*
+.mise.toml
 
 # Ignore test data
 TestData/
