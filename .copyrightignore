@@ -8,6 +8,9 @@ packages/
 # Ignore dotnet solution files
 *.sln
 
+# Ignore auto-generated files
+*/Migrations/*
+
 # Ignore common config files
 *.config
 *.editorconfig
@@ -15,6 +18,7 @@ packages/
 *.yml
 *.yaml
 *.env*
+.mise.toml
 
 # Ignore test data
 TestData/
@@ -46,3 +50,6 @@ wwwroot/lib/
 *.db
 *.db-shm
 *.db-wal
+
+# Ignore schema dump files
+structure.sql

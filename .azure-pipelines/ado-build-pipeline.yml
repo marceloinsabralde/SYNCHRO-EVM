@@ -33,6 +33,9 @@ resources:
       name: ReleaseServices/MendScan
       ref: refs/heads/main
 
+pool:
+  vmImage: ubuntu-latest
+
 jobs:
   - job: Build
     displayName: Build solution
@@ -81,8 +84,6 @@ jobs:
 
   - job: Check_Copyright
     displayName: Check Copyright Notice
-    pool:
-      vmImage: ubuntu-latest
     steps:
       - checkout: self
         fetchDepth: 0
@@ -116,6 +117,7 @@ jobs:
   - job: Mend_Scan
     displayName: Mend Scan
     dependsOn: Build
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     steps:
       - task: DownloadBuildArtifacts@0
         displayName: Download built artifacts
@@ -140,6 +142,7 @@ jobs:
     displayName: Veracode
     pool:
       vmImage: windows-latest
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     steps:
       - task: NuGetToolInstaller@1
 
@@ -175,3 +178,11 @@ jobs:
           veracodeAppProfile: $(VeracodeAppProfile)
           version: $(Build.BuildNumber)
           filepath: $(Build.ArtifactStagingDirectory)
+
+  - job: Compare_Schema_Files
+    displayName: Compare Schema Files
+    steps:
+      - script: |
+          set -euo pipefail
+          .azure-pipelines/script/dcr .azure-pipelines/script/diff-schema
+        displayName: Compare Schema Files

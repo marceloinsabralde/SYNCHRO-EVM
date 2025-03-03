@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 # routine-maintenance -- performs project-wide routine maintenance
-# Usage: .azure-pipelines/script/routine-maintenance
+# Usage: script/routine-maintenance
 
 set -euo pipefail
 

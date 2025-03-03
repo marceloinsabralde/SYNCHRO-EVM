@@ -1,0 +1,9 @@
+services:
+  postgresql: &postgresql
+    image: postgres:16
+    environment:
+      POSTGRES_USER: PerformNextGen
+      POSTGRES_PASSWORD: PerformNextGen
+    ports:
+      - 127.0.0.1:5434:5432
+    restart: unless-stopped

@@ -18,8 +18,12 @@ SYNCHROPerformNextGen.Scenarios << for BDD scenarios
 - [direnv](https://github.com/direnv/direnv) or similar to manage your project directory ENV vars
 
 ### Tools
-- dotnet-ef `dotnet tool install --global dotnet-ef`
-- dotnet-outdated `dotnet tool install --global dotnet-outdated-tool`
+
+```shell
+- dotnet tool install -g dotnet-ef # entity-framework tools
+- dotnet tool install -g dotnet-outdated-tool # tool to update deps
+- script/dcl up -d # run services using docker
+```
 
 ## Running Tests
 
