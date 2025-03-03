@@ -9,7 +9,7 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 
-using SYNCHROPerformNextGen.Database;
+using Kumara.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 

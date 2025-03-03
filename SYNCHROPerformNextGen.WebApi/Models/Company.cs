@@ -1,5 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-namespace SYNCHROPerformNextGen.Models;
+namespace Kumara.Models;
 
 public class Company
 {

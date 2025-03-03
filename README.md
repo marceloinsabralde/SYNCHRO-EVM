@@ -6,9 +6,9 @@ SYNCHRO Perform NextGen (3579) (formerly SYNCHRO Perform (3221)) is a module of 
 The solution is broken down into 3 separate projects, these are:
 
 ```
-SYNCHROPerformNextGen.WebApi << for actual code
-SYNCHROPerformNextGen.Tests << for unit tests via MSTest
-SYNCHROPerformNextGen.Scenarios << for BDD scenarios
+Kumara.WebApi << for actual code
+Kumara.Tests << for unit tests via MSTest
+Kumara.Scenarios << for BDD scenarios
 ```
 
 ## Prerequisites
@@ -35,13 +35,13 @@ Build succeeded with 8 warning(s) in 3.0s
 ```
 
 Notes:
-- if you just want to run the MSTest (unit tests), cd into `SYNCHROPerformNextGen.Tests` then re-run `dotnet test`
-- if you just want to run the Reqnroll (BDD scenarios), cd into `SYNCHROPerformNextGen.Scenarios` then re-run `dotnet test`
+- if you just want to run the MSTest (unit tests), cd into `Kumara.Tests` then re-run `dotnet test`
+- if you just want to run the Reqnroll (BDD scenarios), cd into `Kumara.Scenarios` then re-run `dotnet test`
 - you may wish to simply use the 'Play Button' style feature of your favourite IDE for this.
 
 ## Running the app
 
-From the root directory of the solution run `dotnet run --project SYNCHROPerformNextGen.WebApi`
+From the root directory of the solution run `dotnet run --project Kumara.WebApi`
 Then visit https://localhost:7029/swagger/index.html to view in browser.
 
 Notes:

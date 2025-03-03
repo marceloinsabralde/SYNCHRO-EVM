@@ -11,6 +11,6 @@
   "includeIgnorePolicyViolation": [],
   "ignorePolicyViolation": [],
   "includes": [
-    "SYNCHROPerformNextGen.WebApi/SYNCHROPerformNextGen.WebApi.csproj"
+    "Kumara.WebApi/Kumara.WebApi.csproj"
   ]
 }

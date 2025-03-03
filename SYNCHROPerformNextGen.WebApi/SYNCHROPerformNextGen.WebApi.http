@@ -1,7 +1,7 @@
 # Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-@SYNCHROPerformNextGen_HostAddress = http://localhost:5175
+@Kumara_HostAddress = http://localhost:5175
 
-GET {{SYNCHROPerformNextGen_HostAddress}}/weatherforecast/
+GET {{Kumara_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

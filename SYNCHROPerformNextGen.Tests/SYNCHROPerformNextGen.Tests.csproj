@@ -3,7 +3,7 @@
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
-        <RootNamespace>SYNCHROPerformNextGen.Tests</RootNamespace>
+        <RootNamespace>Kumara.Tests</RootNamespace>
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -32,6 +32,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SYNCHROPerformNextGen.WebApi\SYNCHROPerformNextGen.WebApi.csproj" />
+        <ProjectReference Include="..\Kumara.WebApi\Kumara.WebApi.csproj" />
     </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using System.Diagnostics;
 
-namespace SYNCHROPerformNextGen.Utilities;
+namespace Kumara.Utilities;
 
 public class RunScript()
 {

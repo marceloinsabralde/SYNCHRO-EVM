@@ -1,9 +1,9 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Microsoft.EntityFrameworkCore;
 
-using SYNCHROPerformNextGen.Utilities;
+using Kumara.Utilities;
 
-namespace SYNCHROPerformNextGen.Database;
+namespace Kumara.Database;
 
 public static class Extensions
 {

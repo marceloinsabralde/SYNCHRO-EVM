@@ -1,9 +1,9 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Microsoft.EntityFrameworkCore;
 
-using SYNCHROPerformNextGen.Models;
+using Kumara.Models;
 
-namespace SYNCHROPerformNextGen.Database;
+namespace Kumara.Database;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
