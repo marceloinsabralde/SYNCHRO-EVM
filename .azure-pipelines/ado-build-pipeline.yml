@@ -12,7 +12,7 @@ pr:
 variables:
   - group: ExternalServiceSecrets
   - name: ProductName
-    value: SYNCHRO Perform NextGen
+    value: SYNCHRO EVM
   - name: ShortCode
     value: SPNG
   - name: GPR_ProductID
