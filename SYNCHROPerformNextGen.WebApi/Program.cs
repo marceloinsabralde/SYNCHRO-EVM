@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 
+using Npgsql;
+
 using OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
@@ -43,9 +45,11 @@ builder.Services.AddOpenTelemetry()
     .WithTracing(tracing => tracing
         .AddAspNetCoreInstrumentation()
         .AddEntityFrameworkCoreInstrumentation()
+        .AddNpgsql()
     )
     .WithMetrics(metrics => metrics
         .AddAspNetCoreInstrumentation()
+        .AddNpgsqlInstrumentation()
     )
     .WithLogging(logging => logging.AddConsoleExporter());
 
