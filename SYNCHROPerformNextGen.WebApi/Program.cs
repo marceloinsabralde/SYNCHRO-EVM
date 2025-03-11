@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 using OpenTelemetry;
 using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 
 using SYNCHROPerformNextGen.Database;
 
@@ -38,6 +40,12 @@ builder.Services.AddHttpLogging(options =>
 // Learn about configuring OpenTelemetry at https://opentelemetry.io/docs/languages/net/
 builder.Services.AddOpenTelemetry()
     .UseOtlpExporter() // Use the OpenTelemetry Protocol (OTLP) exporter for all signals
+    .WithTracing(tracing => tracing
+        .AddAspNetCoreInstrumentation()
+    )
+    .WithMetrics(metrics => metrics
+        .AddAspNetCoreInstrumentation()
+    )
     .WithLogging(logging => logging.AddConsoleExporter());
 
 var app = builder.Build();
