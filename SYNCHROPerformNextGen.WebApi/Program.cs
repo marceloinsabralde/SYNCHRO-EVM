@@ -42,6 +42,7 @@ builder.Services.AddOpenTelemetry()
     .UseOtlpExporter() // Use the OpenTelemetry Protocol (OTLP) exporter for all signals
     .WithTracing(tracing => tracing
         .AddAspNetCoreInstrumentation()
+        .AddEntityFrameworkCoreInstrumentation()
     )
     .WithMetrics(metrics => metrics
         .AddAspNetCoreInstrumentation()
