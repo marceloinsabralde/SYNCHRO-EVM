@@ -1,5 +1,13 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
+
+using Npgsql;
+
+using OpenTelemetry;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 
 using SYNCHROPerformNextGen.Database;
 
@@ -22,6 +30,29 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Learn more about configuring HTTP Logging at https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/?view=aspnetcore-9.0
+builder.Services.AddHttpLogging(options =>
+{
+    options.CombineLogs = true;
+    options.LoggingFields = HttpLoggingFields.All;
+    options.RequestBodyLogLimit = 4096;
+    options.ResponseBodyLogLimit = 4096;
+});
+
+// Learn about configuring OpenTelemetry at https://opentelemetry.io/docs/languages/net/
+builder.Services.AddOpenTelemetry()
+    .UseOtlpExporter() // Use the OpenTelemetry Protocol (OTLP) exporter for all signals
+    .WithTracing(tracing => tracing
+        .AddAspNetCoreInstrumentation()
+        .AddEntityFrameworkCoreInstrumentation()
+        .AddNpgsql()
+    )
+    .WithMetrics(metrics => metrics
+        .AddAspNetCoreInstrumentation()
+        .AddNpgsqlInstrumentation()
+    )
+    .WithLogging(logging => logging.AddConsoleExporter());
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
@@ -33,6 +64,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseHttpLogging();
 }
 
 var summaries = new[]
