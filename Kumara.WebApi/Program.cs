@@ -1,4 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+using Kumara.Database;
+
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,18 +11,16 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 
-using Kumara.Database;
-
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
     opt.UseNpgsql(
-        builder.Configuration.GetConnectionString("PerformNextGen"),
-        o => o
-            .SetPostgresVersion(16, 4)
-            .UseNodaTime())
-    .UseSnakeCaseNamingConvention()
+            builder.Configuration.GetConnectionString("PerformNextGen"),
+            o => o
+                .SetPostgresVersion(16, 4)
+                .UseNodaTime())
+        .UseSnakeCaseNamingConvention()
 );
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -53,7 +53,7 @@ builder.Services.AddOpenTelemetry()
     )
     .WithLogging(logging => logging.AddConsoleExporter());
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.UseHttpsRedirection();
 app.RunMigrations();
@@ -67,28 +67,28 @@ if (app.Environment.IsDevelopment())
     app.UseHttpLogging();
 }
 
-var summaries = new[]
+string[] summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
 app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    {
+        WeatherForecast[] forecast = Enumerable.Range(1, 5).Select(index =>
+                new WeatherForecast
+                (
+                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                    Random.Shared.Next(-20, 55),
+                    summaries[Random.Shared.Next(summaries.Length)]
+                ))
+            .ToArray();
+        return forecast;
+    })
+    .WithName("GetWeatherForecast");
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
