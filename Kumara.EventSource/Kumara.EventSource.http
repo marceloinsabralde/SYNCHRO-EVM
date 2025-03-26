@@ -4,4 +4,50 @@
 GET {{Kumara.EventSource_HostAddress}}/weatherforecast/
 Accept: application/json
 
-###
+
+### without events
+POST {{Kumara_EventSource_HostAddress}}/events
+Content-Type: application/cloudevents-batch+json
+
+[]
+
+### With events
+POST {{Kumara_EventSource_HostAddress}}/events
+Content-Type: application/cloudevents-batch+json
+
+[
+  {
+    "specversion": "1.0",
+    "type": "UserLogin",
+    "source": "/source/user",
+    "id": "A234-1234-1234",
+    "time": "2023-10-01T12:00:00Z",
+    "data": {
+      "userId": "12345",
+      "userName": "arun.malik"
+    }
+  },
+  {
+    "specversion": "1.0",
+    "type": "FileUpload",
+    "source": "/source/file",
+    "id": "B234-1234-1234",
+    "time": "2023-10-01T12:05:00Z",
+    "data": {
+      "userId": "12345",
+      "fileName": "report.pdf",
+      "fileSize": 102400
+    }
+  },
+  {
+    "specversion": "1.0",
+    "type": "Error",
+    "source": "/source/error",
+    "id": "C234-1234-1234",
+    "time": "2023-10-01T12:10:00Z",
+    "data": {
+      "errorCode": "500",
+      "errorMessage": "Internal Server Error"
+    }
+  }
+]

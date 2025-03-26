@@ -1,4 +1,9 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+using CloudNative.CloudEvents;
+using CloudNative.CloudEvents.AspNetCore;
+using CloudNative.CloudEvents.Http;
+using CloudNative.CloudEvents.SystemTextJson;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -33,6 +38,12 @@ app.MapGet("/weatherforecast", () =>
         return forecast;
     })
     .WithName("GetWeatherForecast");
+
+app.MapPost("/events", async (HttpContext context) =>
+{
+    var cloudEvents = await context.Request.ToCloudEventBatchAsync(new JsonEventFormatter());
+    return Results.Ok(new { cloudEvents.Count });
+});
 
 app.Run();
 
