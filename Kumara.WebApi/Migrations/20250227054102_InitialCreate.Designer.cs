@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SYNCHROPerformNextGen.Database;
+using Kumara.Database;
 
 #nullable disable
 
-namespace SYNCHROPerformNextGen.Migrations
+namespace Kumara.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250227054102_InitialCreate")]
@@ -25,7 +25,7 @@ namespace SYNCHROPerformNextGen.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SYNCHROPerformNextGen.Models.Company", b =>
+            modelBuilder.Entity("Kumara.Models.Company", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

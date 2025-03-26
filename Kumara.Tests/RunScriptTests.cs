@@ -1,6 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Shouldly;
-namespace SYNCHROPerformNextGen.Utilities;
+namespace Kumara.Utilities;
 
 [TestClass]
 public class RunScriptTests

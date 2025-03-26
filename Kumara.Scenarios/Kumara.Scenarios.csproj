@@ -17,6 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SYNCHROPerformNextGen.WebApi\SYNCHROPerformNextGen.WebApi.csproj" />
+        <ProjectReference Include="..\Kumara.WebApi\Kumara.WebApi.csproj" />
     </ItemGroup>
 </Project>

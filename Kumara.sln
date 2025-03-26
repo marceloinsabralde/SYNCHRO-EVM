@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SYNCHROPerformNextGen.WebApi", "SYNCHROPerformNextGen.WebApi\SYNCHROPerformNextGen.WebApi.csproj", "{5D7DC5DF-1D76-401C-9108-C9911346A957}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kumara.WebApi", "Kumara.WebApi\Kumara.WebApi.csproj", "{5D7DC5DF-1D76-401C-9108-C9911346A957}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SYNCHROPerformNextGen.Tests", "SYNCHROPerformNextGen.Tests\SYNCHROPerformNextGen.Tests.csproj", "{1DCF7071-BC7E-47F8-B8E9-3085DCACDA2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kumara.Tests", "Kumara.Tests\Kumara.Tests.csproj", "{1DCF7071-BC7E-47F8-B8E9-3085DCACDA2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SYNCHROPerformNextGen.Scenarios", "SYNCHROPerformNextGen.Scenarios\SYNCHROPerformNextGen.Scenarios.csproj", "{6AF3AEBF-2A84-4D8E-8315-A29E09EE7470}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kumara.Scenarios", "Kumara.Scenarios\Kumara.Scenarios.csproj", "{6AF3AEBF-2A84-4D8E-8315-A29E09EE7470}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

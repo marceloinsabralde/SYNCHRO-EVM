@@ -1,7 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Reqnroll;
 
-namespace SYNCHROPerformNextGen.Scenarios.StepDefinitions;
+namespace Kumara.Scenarios.StepDefinitions;
 
 [Binding]
 public sealed class CalculatorStepDefinitions

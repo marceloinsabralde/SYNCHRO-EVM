@@ -1,0 +1,7 @@
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+@Kumara_HostAddress = http://localhost:5175
+
+GET {{Kumara_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace SYNCHROPerformNextGen.Migrations
+namespace Kumara.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

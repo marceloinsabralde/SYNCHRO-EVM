@@ -12,9 +12,9 @@ pr:
 variables:
   - group: ExternalServiceSecrets
   - name: ProductName
-    value: SYNCHRO Perform NextGen
+    value: SYNCHRO EVM
   - name: ShortCode
-    value: SPNG
+    value: EVM
   - name: GPR_ProductID
     value: 3579
   - name: Mend.ApiKey
