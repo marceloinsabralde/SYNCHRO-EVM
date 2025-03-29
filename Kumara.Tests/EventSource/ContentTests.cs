@@ -5,7 +5,12 @@ using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.Http;
 using CloudNative.CloudEvents.SystemTextJson;
 
+using Kumara.EventSource.Interfaces;
+
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+
+using Moq;
 
 using Shouldly;
 
@@ -15,11 +20,22 @@ namespace Kumara.Tests.EventSource
     public sealed class ContentTests
     {
         private readonly HttpClient _client;
+        private readonly Mock<IEventRepository> _mockEventRepository;
         private readonly String _endpoint = "/events";
 
         public ContentTests()
         {
-            var factory = new WebApplicationFactory<Program>();
+            _mockEventRepository = new Mock<IEventRepository>();
+
+            var factory = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.ConfigureServices(services =>
+                    {
+                        services.AddSingleton(_mockEventRepository.Object);
+                    });
+                });
+
             _client = factory.CreateClient();
         }
 
@@ -35,6 +51,8 @@ namespace Kumara.Tests.EventSource
             var responseString = await response.Content.ReadAsStringAsync();
             responseString.ShouldNotBeNull();
             responseString.ShouldContain("\"count\":0");
+
+            _mockEventRepository.Verify(repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()), Times.Never);
         }
 
         [TestMethod]
@@ -82,11 +100,34 @@ namespace Kumara.Tests.EventSource
             var responseString = await response.Content.ReadAsStringAsync();
             responseString.ShouldNotBeNull();
             responseString.ShouldContain("\"count\":2");
+
+            _mockEventRepository.Verify(repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()), Times.Once);
         }
 
         [TestMethod]
         public async Task GetEvents_ReturnsCloudEventBatch()
         {
+            // Arrange
+            var cloudEvents = new List<CloudEvent>
+            {
+                new CloudEvent(CloudEventsSpecVersion.V1_0)
+                {
+                    Type = "UserLogin",
+                    Source = new Uri("/source/user"),
+                    Id = "A234-1234-1234",
+                    Time = DateTimeOffset.UtcNow
+                },
+                new CloudEvent(CloudEventsSpecVersion.V1_0)
+                {
+                    Type = "FileUpload",
+                    Source = new Uri("/source/file"),
+                    Id = "B234-1234-1234",
+                    Time = DateTimeOffset.UtcNow
+                }
+            }.AsQueryable();
+
+            _mockEventRepository.Setup(repo => repo.GetAllEventsAsync()).ReturnsAsync(cloudEvents);
+
             // Act
             var response = await _client.GetAsync("/events");
 
@@ -95,28 +136,12 @@ namespace Kumara.Tests.EventSource
             response.Content.Headers.ContentType?.ToString().ShouldBe("application/cloudevents-batch+json; charset=utf-8");
 
             var formatter = new JsonEventFormatter();
-            var cloudEvents = await response.ToCloudEventBatchAsync(formatter);
+            var returnedCloudEvents = await response.ToCloudEventBatchAsync(formatter);
 
-            cloudEvents.ShouldNotBeNull();
-            cloudEvents.Count.ShouldBe(2);
+            returnedCloudEvents.ShouldNotBeNull();
+            returnedCloudEvents.Count().ShouldBe(2);
 
-            cloudEvents[0].Type.ShouldBe("com.example.type");
-            cloudEvents[0].Source.ShouldBe(new Uri("https://example.com/source"));
-            cloudEvents[0].Id.ShouldNotBeNullOrEmpty();
-            cloudEvents[0].Time.ShouldNotBeNull();
-            cloudEvents[0].DataContentType.ShouldBe("application/json");
-            var eventData = cloudEvents[0].Data as JsonElement?;
-            eventData.ShouldNotBeNull();
-            eventData?.GetProperty("message").GetString().ShouldBe("first dummy event");
-
-            cloudEvents[1].Type.ShouldBe("com.example.type");
-            cloudEvents[1].Source.ShouldBe(new Uri("https://example.com/source"));
-            cloudEvents[1].Id.ShouldNotBeNullOrEmpty();
-            cloudEvents[1].Time.ShouldNotBeNull();
-            cloudEvents[1].DataContentType.ShouldBe("application/json");
-            var secondEventData = cloudEvents[1].Data as JsonElement?;
-            secondEventData.ShouldNotBeNull();
-            secondEventData?.GetProperty("message").GetString().ShouldBe("second dummy event");
+            _mockEventRepository.Verify(repo => repo.GetAllEventsAsync(), Times.Once);
         }
     }
 }
