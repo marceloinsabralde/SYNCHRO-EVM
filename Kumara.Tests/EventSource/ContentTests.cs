@@ -9,15 +9,15 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 using Shouldly;
 
-namespace Kumara.Tests
+namespace Kumara.Tests.EventSource
 {
     [TestClass]
-    public sealed class EventSourceTests
+    public sealed class ContentTests
     {
         private readonly HttpClient _client;
         private readonly String _endpoint = "/events";
 
-        public EventSourceTests()
+        public ContentTests()
         {
             var factory = new WebApplicationFactory<Program>();
             _client = factory.CreateClient();
@@ -36,7 +36,6 @@ namespace Kumara.Tests
             responseString.ShouldNotBeNull();
             responseString.ShouldContain("\"count\":0");
         }
-
 
         [TestMethod]
         public async Task PostEvents_WithMultipleEvents_ReturnsSuccessAndCorrectCount()
@@ -97,7 +96,6 @@ namespace Kumara.Tests
 
             var formatter = new JsonEventFormatter();
             var cloudEvents = await response.ToCloudEventBatchAsync(formatter);
-
 
             cloudEvents.ShouldNotBeNull();
             cloudEvents.Count.ShouldBe(2);
