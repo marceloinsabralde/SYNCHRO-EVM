@@ -3,6 +3,7 @@
 using CloudNative.CloudEvents;
 
 using Kumara.EventSource.Interfaces;
+using Kumara.EventSource.Repositories;
 
 using Moq;
 
@@ -51,7 +52,7 @@ public class EventRepositoryTests
     public async Task AddEventsAsync_ShouldAddCloudEvents()
     {
         // Arrange
-        var cloudEvents = GetTestCloudEvents();
+        List<CloudEvent> cloudEvents = GetTestCloudEvents();
 
         _mockEventRepository.Setup(repo => repo.AddEventsAsync(cloudEvents)).Returns(Task.CompletedTask);
 
@@ -60,5 +61,20 @@ public class EventRepositoryTests
 
         // Assert
         _mockEventRepository.Verify(repo => repo.AddEventsAsync(cloudEvents), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task RoundtripEventsAsync_ShouldStoreAndRetrieveCloudEvents()
+    {
+        // Arrange
+        var eventRepository = new EventRepositoryInMemoryList();
+        var cloudEvents = GetTestCloudEvents();
+
+        // Act
+        await eventRepository.AddEventsAsync(cloudEvents);
+        IQueryable<CloudEvent> retrievedEvents = await eventRepository.GetAllEventsAsync();
+
+        // Assert
+        retrievedEvents.ShouldBe(cloudEvents.AsQueryable(), ignoreOrder: true);
     }
 }
