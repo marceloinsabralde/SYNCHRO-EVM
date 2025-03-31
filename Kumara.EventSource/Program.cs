@@ -1,8 +1,14 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
+using System.Net.Http.Headers;
+using System.Text.Json;
+
 using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.AspNetCore;
 using CloudNative.CloudEvents.Http;
 using CloudNative.CloudEvents.SystemTextJson;
+
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,8 +28,24 @@ app.UseHttpsRedirection();
 
 app.MapPost("/events", async (HttpContext context) =>
 {
-    var cloudEvents = await context.Request.ToCloudEventBatchAsync(new JsonEventFormatter());
-    return Results.Ok(new { cloudEvents.Count });
+    var formatter = new JsonEventFormatter();
+    List<CloudEvent> cloudEvents = new();
+
+    var mediaType = MediaTypeHeaderValue.Parse(context.Request.ContentType ?? "text/plain").MediaType;
+    switch (mediaType)
+    {
+        case "application/cloudevents+json":
+            var cloudEvent = await context.Request.ToCloudEventAsync(formatter);
+            cloudEvents.Add(cloudEvent);
+            break;
+        case "application/cloudevents-batch+json":
+            cloudEvents = (await context.Request.ToCloudEventBatchAsync(formatter)).ToList();
+            break;
+        default:
+            return Results.Problem(JsonSerializer.Serialize(CreateUnsupportedMediaTypeProblemDetails(context.Request.Path)), statusCode: StatusCodes.Status415UnsupportedMediaType);
+    }
+
+    return Results.Ok(new { count = cloudEvents.Count });
 });
 
 app.MapGet("/events", (HttpContext context) =>
@@ -58,5 +80,18 @@ app.MapGet("/events", (HttpContext context) =>
 });
 
 app.Run();
+
+
+static Microsoft.AspNetCore.Mvc.ProblemDetails CreateUnsupportedMediaTypeProblemDetails(string path)
+{
+    return new ProblemDetails
+    {
+        Status = StatusCodes.Status415UnsupportedMediaType,
+        Title = "Unsupported Media Type",
+        Detail = "The provided content type is not supported. Please use 'application/cloudevents+json' or 'application/cloudevents-batch+json'.",
+        Instance = path,
+        Type = "https://tools.ietf.org/html/rfc7231#section-6.5.13"
+    };
+}
 
 public partial class Program { }
