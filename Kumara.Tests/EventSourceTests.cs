@@ -112,5 +112,41 @@ namespace Kumara.Tests
             responseString.ShouldNotBeNull();
             responseString.ShouldContain("\"count\":2");
         }
+
+        [TestMethod]
+        public async Task GetEvents_ReturnsCloudEventBatch()
+        {
+            // Act
+            var response = await _client.GetAsync("/events");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            response.Content.Headers.ContentType?.ToString().ShouldBe("application/cloudevents-batch+json; charset=utf-8");
+
+            var formatter = new JsonEventFormatter();
+            var cloudEvents = await response.ToCloudEventBatchAsync(formatter);
+
+
+            cloudEvents.ShouldNotBeNull();
+            cloudEvents.Count.ShouldBe(2);
+
+            cloudEvents[0].Type.ShouldBe("com.example.type");
+            cloudEvents[0].Source.ShouldBe(new Uri("https://example.com/source"));
+            cloudEvents[0].Id.ShouldNotBeNullOrEmpty();
+            cloudEvents[0].Time.ShouldNotBeNull();
+            cloudEvents[0].DataContentType.ShouldBe("application/json");
+            var eventData = cloudEvents[0].Data as JsonElement?;
+            eventData.ShouldNotBeNull();
+            eventData?.GetProperty("message").GetString().ShouldBe("first dummy event");
+
+            cloudEvents[1].Type.ShouldBe("com.example.type");
+            cloudEvents[1].Source.ShouldBe(new Uri("https://example.com/source"));
+            cloudEvents[1].Id.ShouldNotBeNullOrEmpty();
+            cloudEvents[1].Time.ShouldNotBeNull();
+            cloudEvents[1].DataContentType.ShouldBe("application/json");
+            var secondEventData = cloudEvents[1].Data as JsonElement?;
+            secondEventData.ShouldNotBeNull();
+            secondEventData?.GetProperty("message").GetString().ShouldBe("second dummy event");
+        }
     }
 }

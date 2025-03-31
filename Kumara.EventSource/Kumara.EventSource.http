@@ -51,3 +51,7 @@ Content-Type: application/cloudevents-batch+json
     }
   }
 ]
+
+### Get events
+GET {{Kumara_EventSource_HostAddress}}/events
+Accept: application/cloudevents-batch+json

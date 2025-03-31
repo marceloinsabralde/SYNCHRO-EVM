@@ -45,6 +45,37 @@ app.MapPost("/events", async (HttpContext context) =>
     return Results.Ok(new { cloudEvents.Count });
 });
 
+app.MapGet("/events", (HttpContext context) =>
+{
+    var cloudEvents = new List<CloudEvent>
+    {
+        new()
+        {
+            Id = Guid.NewGuid().ToString(),
+            Source = new Uri("https://example.com/source"),
+            Type = "com.example.type",
+            Time = DateTimeOffset.UtcNow,
+            DataContentType = "application/json",
+            Data = new { message = "first dummy event" }
+        },
+        new()
+        {
+            Id = Guid.NewGuid().ToString(),
+            Source = new Uri("https://example.com/source"),
+            Type = "com.example.type",
+            Time = DateTimeOffset.UtcNow,
+            DataContentType = "application/json",
+            Data = new { message = "second dummy event" }
+        }
+    };
+
+    var formatter = new JsonEventFormatter();
+    var content = formatter.EncodeBatchModeMessage(cloudEvents, out var contentType);
+
+    context.Response.ContentType = contentType.ToString();
+    return context.Response.Body.WriteAsync(content);
+});
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
