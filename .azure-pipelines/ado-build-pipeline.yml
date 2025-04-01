@@ -114,8 +114,8 @@ jobs:
           custom: format
           arguments: --verify-no-changes --verbosity diagnostic
 
-  - job: Mend_Scan
-    displayName: Mend Scan
+  - job: Scans
+    displayName: Mend & Veracode Scans
     dependsOn: Build
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     steps:
