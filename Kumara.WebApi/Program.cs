@@ -55,7 +55,11 @@ builder.Services.AddOpenTelemetry()
 
 WebApplication app = builder.Build();
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsEnvironment("Test"))
+{
+    app.UseHttpsRedirection();
+}
+
 app.RunMigrations();
 
 // Configure the HTTP request pipeline.

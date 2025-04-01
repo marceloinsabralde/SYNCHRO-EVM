@@ -7,6 +7,7 @@ using CloudNative.CloudEvents.SystemTextJson;
 
 using Kumara.EventSource.Interfaces;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -30,6 +31,7 @@ namespace Kumara.Tests.EventSource
             var factory = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
+                    builder.UseEnvironment("Test");
                     builder.ConfigureServices(services =>
                     {
                         services.AddSingleton(_mockEventRepository.Object);

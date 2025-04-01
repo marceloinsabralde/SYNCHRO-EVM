@@ -28,7 +28,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsEnvironment("Test"))
+{
+    app.UseHttpsRedirection();
+}
 
 app.MapPost("/events", async (HttpContext context, [FromServices] IEventRepository? eventRepository) =>
 {

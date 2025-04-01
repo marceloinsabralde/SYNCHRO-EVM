@@ -11,6 +11,7 @@ using CloudNative.CloudEvents.SystemTextJson;
 
 using Kumara.EventSource.Interfaces;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -34,6 +35,7 @@ public sealed class ContentTypeTests
         WebApplicationFactory<Program> factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {
+                builder.UseEnvironment("Test");
                 builder.ConfigureServices(services =>
                 {
                     services.AddSingleton(_mockEventRepository.Object);
