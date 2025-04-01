@@ -140,6 +140,7 @@ jobs:
           veracodeAppProfile: $(VeracodeAppProfile)
           version: $(Build.BuildNumber)
           filepath: $(Build.ArtifactStagingDirectory)
+          optargs: '-include *.dll,*.exe,*.pdb'
 
   - job: Compare_Schema_Files
     displayName: Compare Schema Files
