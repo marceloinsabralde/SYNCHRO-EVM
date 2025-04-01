@@ -132,6 +132,12 @@ jobs:
           MendConfigPath: $(Build.SourcesDirectory)/.azure-pipelines/mend/SPNG_config.json
           MendSimulateDelete: true
 
+      - task: DotNetCoreCLI@2
+        displayName: Publish for Veracode
+        inputs:
+          command: publish
+          arguments: '-o $(Build.ArtifactStagingDirectory)/veracode_artifacts'
+
       # https://docs.veracode.com/r/Use_YAML_to_Add_Veracode_Analysis_to_Azure_DevOps_Pipelines
       - task: Veracode@3
         inputs:
@@ -139,8 +145,8 @@ jobs:
           AnalysisService: AppSec - Veracode
           veracodeAppProfile: $(VeracodeAppProfile)
           version: $(Build.BuildNumber)
-          filepath: $(Build.ArtifactStagingDirectory)
-          optargs: '-include *.dll,*.exe,*.pdb'
+          filepath: $(Build.ArtifactStagingDirectory)/veracode_artifacts
+          optargs: '-include *.dll'
 
   - job: Compare_Schema_Files
     displayName: Compare Schema Files
