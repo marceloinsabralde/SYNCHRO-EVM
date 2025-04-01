@@ -1,5 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using System;
+
 using Reqnroll;
 
 namespace Kumara.Scenarios.StepDefinitions;
@@ -27,8 +29,8 @@ public sealed class CalculatorStepDefinitions(ScenarioContext scenarioContext)
     public void WhenTheTwoNumbersAreAdded()
     {
         // Implement act (action) logic
-        var firstNumber = (int)_scenarioContext["FirstNumber"];
-        var secondNumber = (int)_scenarioContext["SecondNumber"];
+        int firstNumber = (int)_scenarioContext["FirstNumber"];
+        int secondNumber = (int)_scenarioContext["SecondNumber"];
         _scenarioContext["Result"] = firstNumber + secondNumber;
     }
 
@@ -36,7 +38,7 @@ public sealed class CalculatorStepDefinitions(ScenarioContext scenarioContext)
     public void ThenTheResultShouldBe(int result)
     {
         // Implement assert (verification) logic
-        var actualResult = (int)_scenarioContext["Result"];
+        int actualResult = (int)_scenarioContext["Result"];
         if (actualResult != result)
         {
             throw new Exception($"Expected result to be {result}, but was {actualResult}");
