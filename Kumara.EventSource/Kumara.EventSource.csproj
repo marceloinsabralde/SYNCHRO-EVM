@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <Folder Include="Models\Events\" />
+      <Folder Include="Models\Events\Schemas\" />
     </ItemGroup>
 
 </Project>
