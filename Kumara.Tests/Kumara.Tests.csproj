@@ -16,6 +16,7 @@
           -->
         <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
         <IsPublishable>false</IsPublishable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
