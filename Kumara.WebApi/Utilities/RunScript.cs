@@ -36,4 +36,9 @@ public class RunScript()
             );
         }
     }
+
+    public static void SchemaDump()
+    {
+        Execute("../script/dump-schema");
+    }
 }
