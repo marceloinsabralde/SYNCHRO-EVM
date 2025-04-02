@@ -4,7 +4,7 @@
 set -euo pipefail
 set -x
 
-dotnet ef database update --project Kumara.WebApi
+dotnet-ef database update --project Kumara.WebApi
 
 pg_dump --schema-only | sed -n '/^[^-]/p' > /tmp/structure.sql
 
