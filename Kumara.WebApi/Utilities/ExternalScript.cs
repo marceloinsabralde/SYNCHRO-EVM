@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Kumara.Utilities;
 
-public class RunScript()
+public static class ExternalScript
 {
     private static void Execute(params string[] arguments)
     {

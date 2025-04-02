@@ -13,7 +13,7 @@ public static class Extensions
         await dbContext.Database.MigrateAsync();
         if (app.Environment.IsDevelopment())
         {
-            RunScript.SchemaDump();
+            ExternalScript.SchemaDump();
         }
     }
 }
