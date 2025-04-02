@@ -5,7 +5,7 @@ namespace Kumara.Utilities;
 
 public class RunScript()
 {
-    public void Execute(params string[] arguments)
+    private static void Execute(params string[] arguments)
     {
         var processInfo = new ProcessStartInfo
         {
