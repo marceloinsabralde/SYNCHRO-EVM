@@ -6,24 +6,11 @@ namespace Kumara.Database;
 
 public static class Extensions
 {
-    public static void RunMigrations(this IHost host)
+    public static async Task MigrateDbAsync(this WebApplication app)
     {
-        ExecuteDatabaseAction(host, context => context.Database.Migrate());
-        ExecuteDatabaseAction(
-            host,
-            context =>
-            {
-                var runner = new RunScript();
-                runner.Execute(["../script/dump-schema"]);
-            }
-        );
-    }
-
-    private static void ExecuteDatabaseAction(IHost host, Action<ApplicationDbContext> action)
-    {
-        using var scope = host.Services.CreateScope();
-        var services = scope.ServiceProvider;
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        action(context);
+        using var scope = app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await dbContext.Database.MigrateAsync();
+        RunScript.SchemaDump();
     }
 }

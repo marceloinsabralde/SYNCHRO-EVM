@@ -52,7 +52,7 @@ if (!app.Environment.IsEnvironment("Test"))
     app.UseHttpsRedirection();
 }
 
-app.RunMigrations();
+await app.MigrateDbAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
