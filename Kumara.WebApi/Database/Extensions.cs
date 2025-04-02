@@ -11,6 +11,9 @@ public static class Extensions
         using var scope = app.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await dbContext.Database.MigrateAsync();
-        RunScript.SchemaDump();
+        if (app.Environment.IsDevelopment())
+        {
+            RunScript.SchemaDump();
+        }
     }
 }
