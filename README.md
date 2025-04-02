@@ -20,8 +20,7 @@ Kumara.Scenarios << for BDD scenarios
 ### Tools
 
 ```shell
-- dotnet tool install -g dotnet-ef # entity-framework tools
-- dotnet tool install -g dotnet-outdated-tool # tool to update deps
+- dotnet tool restore
 - script/dcl up -d # run services using docker
 ```
 
