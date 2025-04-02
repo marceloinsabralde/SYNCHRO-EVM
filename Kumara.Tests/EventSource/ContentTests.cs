@@ -65,23 +65,44 @@ namespace Kumara.Tests.EventSource
             {
                 new CloudEvent(CloudEventsSpecVersion.V1_0)
                 {
-                    Type = "UserLogin",
-                    Source = new Uri("/source/user"),
-                    Id = "A234-1234-1234",
-                    Time = DateTimeOffset.Parse("2023-10-01T12:00:00Z"),
-                    Data = new { userId = "12345", userName = "arun.malik" },
+                    Type = "test.created.v1",
+                    Source = new Uri("/events/test"),
+                    Id = "T234-1234-1234",
+                    Time = DateTimeOffset.Parse("2023-10-01T12:15:00Z"),
+                    Data = new
+                    {
+                        test_string = "Sample Test 1",
+                        test_enum = "OptionA",
+                        test_integer = 123,
+                        event_type_version = "1.0",
+                    },
                 },
                 new CloudEvent(CloudEventsSpecVersion.V1_0)
                 {
-                    Type = "FileUpload",
-                    Source = new Uri("/source/file"),
-                    Id = "B234-1234-1234",
-                    Time = DateTimeOffset.Parse("2023-10-01T12:05:00Z"),
+                    Type = "test.created.v1",
+                    Source = new Uri("/events/test"),
+                    Id = "T234-1234-1235",
+                    Time = DateTimeOffset.Parse("2023-10-01T12:20:00Z"),
                     Data = new
                     {
-                        userId = "12345",
-                        fileName = "report.pdf",
-                        fileSize = 102400,
+                        test_string = "Sample Test 2",
+                        test_enum = "OptionB",
+                        test_integer = 456,
+                        event_type_version = "1.0",
+                    },
+                },
+                new CloudEvent(CloudEventsSpecVersion.V1_0)
+                {
+                    Type = "test.created.v1",
+                    Source = new Uri("/events/test"),
+                    Id = "T234-1234-1236",
+                    Time = DateTimeOffset.Parse("2023-10-01T12:25:00Z"),
+                    Data = new
+                    {
+                        test_string = "Sample Test 3",
+                        test_enum = "OptionC",
+                        test_integer = 789,
+                        event_type_version = "1.0",
                     },
                 },
             };
@@ -103,7 +124,7 @@ namespace Kumara.Tests.EventSource
             response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
             responseString.ShouldNotBeNull();
-            responseString.ShouldContain("\"count\":2");
+            responseString.ShouldContain("\"count\":3");
 
             _mockEventRepository.Verify(
                 repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()),
@@ -119,14 +140,14 @@ namespace Kumara.Tests.EventSource
             {
                 new CloudEvent(CloudEventsSpecVersion.V1_0)
                 {
-                    Type = "UserLogin",
+                    Type = "test.created.v1",
                     Source = new Uri("/source/user"),
                     Id = "A234-1234-1234",
                     Time = DateTimeOffset.UtcNow,
                 },
                 new CloudEvent(CloudEventsSpecVersion.V1_0)
                 {
-                    Type = "FileUpload",
+                    Type = "test.created.v1",
                     Source = new Uri("/source/file"),
                     Id = "B234-1234-1234",
                     Time = DateTimeOffset.UtcNow,

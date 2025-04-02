@@ -120,7 +120,7 @@ public sealed class ContentTypeTests
         HttpResponseMessage response = await _client.PostAsync(_endpoint, content);
 
         response.StatusCode.ShouldBe(HttpStatusCode.UnsupportedMediaType);
-        response.Content.Headers.ContentType?.ToString().ShouldBe("application/problem+json");
+        response.Content.Headers.ContentType?.MediaType?.ShouldBe("application/problem+json");
 
         string responseString = await response.Content.ReadAsStringAsync();
         responseString.ShouldNotBeNull();
