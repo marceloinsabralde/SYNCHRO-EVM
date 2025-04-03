@@ -10,6 +10,9 @@ using Kumara.EventSource.Repositories;
 using Kumara.EventSource.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
+// Generate JSON schemas for event models
+JsonSchemaGenerator.GenerateJsonSchemas();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
