@@ -7,6 +7,7 @@ using CloudNative.CloudEvents.Http;
 using CloudNative.CloudEvents.SystemTextJson;
 using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Repositories;
+using Kumara.EventSource.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<IEventRepository, EventRepositoryInMemoryList>();
+
+builder.Services.AddSingleton<Dictionary<string, Type>>(
+    EventTypeMapInitializer.InitializeEventTypeMap()
+);
 
 var app = builder.Build();
 
