@@ -43,7 +43,10 @@ public class EventRepositoryTests
         return new EventRepositoryMongoDb(s_database);
     }
 
-    private static IEventRepository CreateInMemoryRepository() => new EventRepositoryInMemoryList();
+    private static IEventRepository CreateInMemoryRepository()
+    {
+        return new EventRepositoryInMemoryList();
+    }
 
     public static IEnumerable<object[]> GetRepositories()
     {
@@ -51,7 +54,9 @@ public class EventRepositoryTests
         yield return ["MongoDb", CreateMongoDbRepository()];
     }
 
-    private List<CloudEvent> GetTestCloudEvents() =>
+    private List<CloudEvent> GetTestCloudEvents()
+    {
+        return
         [
             new CloudEvent(CloudEventsSpecVersion.V1_0)
             {
@@ -75,6 +80,7 @@ public class EventRepositoryTests
                 },
             },
         ];
+    }
 
     [DataTestMethod]
     [DynamicData(nameof(GetRepositories), DynamicDataSourceType.Method)]
