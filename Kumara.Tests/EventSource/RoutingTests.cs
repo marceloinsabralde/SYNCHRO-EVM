@@ -1,8 +1,11 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.Net;
-using Microsoft.AspNetCore.Hosting;
+using Kumara.EventSource.Controllers;
+using Kumara.EventSource.Interfaces;
+using Kumara.EventSource.Repositories;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
 namespace Kumara.Tests.EventSource;
@@ -12,13 +15,14 @@ public sealed class RoutingTests
 {
     private readonly HttpClient _client;
 
+    private readonly IEventRepository _eventRepository = new EventRepositoryInMemoryList();
+
     public RoutingTests()
     {
         WebApplicationFactory<Program> factory =
             new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-            {
-                builder.UseEnvironment("Test");
-            });
+                builder.ConfigureServices(services => services.AddSingleton(_eventRepository))
+            );
         _client = factory.CreateClient();
     }
 
