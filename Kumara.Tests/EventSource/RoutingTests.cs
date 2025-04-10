@@ -42,7 +42,7 @@ public sealed class RoutingTests
         // Act
         HttpResponseMessage response = await _client.PostAsync(
             "/events",
-            new StringContent("[]", System.Text.Encoding.UTF8, "application/cloudevents-batch+json")
+            new StringContent("[]", System.Text.Encoding.UTF8, "application/json")
         );
 
         // Assert

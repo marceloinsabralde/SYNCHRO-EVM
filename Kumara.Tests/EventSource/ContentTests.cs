@@ -2,10 +2,9 @@
 
 using System.Net.Mime;
 using System.Text.Json;
-using CloudNative.CloudEvents;
-using CloudNative.CloudEvents.Http;
-using CloudNative.CloudEvents.SystemTextJson;
 using Kumara.EventSource.Interfaces;
+using Kumara.EventSource.Models;
+using Kumara.EventSource.Models.Events;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,11 +41,7 @@ public sealed class ContentTests
     public async Task PostEvents_WithZeroEvents_ReturnsSuccessAndCountZero()
     {
         // Act
-        StringContent content = new(
-            "[]",
-            System.Text.Encoding.UTF8,
-            "application/cloudevents-batch+json"
-        );
+        StringContent content = new("[]", System.Text.Encoding.UTF8, "application/json");
         HttpResponseMessage response = await _client.PostAsync(_endpoint, content);
 
         // Assert
@@ -56,7 +51,7 @@ public sealed class ContentTests
         responseString.ShouldContain("\"count\":0");
 
         _mockEventRepository.Verify(
-            repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()),
+            repo => repo.AddEventsAsync(It.IsAny<IEnumerable<EventEntity>>()),
             Times.Never
         );
     }
@@ -64,63 +59,64 @@ public sealed class ContentTests
     [TestMethod]
     public async Task PostEvents_WithMultipleEvents_ReturnsSuccessAndCorrectCount()
     {
-        List<CloudEvent> eventsPayload = new()
+        List<EventEntity> eventsPayload = new()
         {
-            new CloudEvent(CloudEventsSpecVersion.V1_0)
+            new EventEntity
             {
                 Type = "test.created.v1",
                 Source = new Uri("/events/test"),
-                Id = "T234-1234-1234",
-                Time = DateTimeOffset.Parse("2023-10-01T12:15:00Z"),
-                Data = new
-                {
-                    test_string = "Sample Test 1",
-                    test_enum = "OptionA",
-                    test_integer = 123,
-                    event_type_version = "1.0",
-                },
+                SpecVersion = "1.0",
+                ITwinGuid = Guid.NewGuid(),
+                AccountGuid = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid().ToString(),
+                DataJson = JsonSerializer.SerializeToDocument(
+                    new TestCreatedV1
+                    {
+                        TestString = "Sample Test String",
+                        TestEnum = TestOptions.OptionA,
+                        TestInteger = 42,
+                    }
+                ),
             },
-            new CloudEvent(CloudEventsSpecVersion.V1_0)
+            new EventEntity
             {
                 Type = "test.created.v1",
                 Source = new Uri("/events/test"),
-                Id = "T234-1234-1235",
-                Time = DateTimeOffset.Parse("2023-10-01T12:20:00Z"),
-                Data = new
-                {
-                    test_string = "Sample Test 2",
-                    test_enum = "OptionB",
-                    test_integer = 456,
-                    event_type_version = "1.0",
-                },
+                SpecVersion = "1.0",
+                ITwinGuid = Guid.NewGuid(),
+                AccountGuid = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid().ToString(),
+                DataJson = JsonSerializer.SerializeToDocument(
+                    new TestCreatedV1
+                    {
+                        TestString = "Sample Test String",
+                        TestEnum = TestOptions.OptionA,
+                        TestInteger = 42,
+                    }
+                ),
             },
-            new CloudEvent(CloudEventsSpecVersion.V1_0)
+            new EventEntity
             {
                 Type = "test.created.v1",
                 Source = new Uri("/events/test"),
-                Id = "T234-1234-1236",
-                Time = DateTimeOffset.Parse("2023-10-01T12:25:00Z"),
-                Data = new
-                {
-                    test_string = "Sample Test 3",
-                    test_enum = "OptionC",
-                    test_integer = 789,
-                    event_type_version = "1.0",
-                },
+                SpecVersion = "1.0",
+                ITwinGuid = Guid.NewGuid(),
+                AccountGuid = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid().ToString(),
+                DataJson = JsonSerializer.SerializeToDocument(
+                    new TestCreatedV1
+                    {
+                        TestString = "Sample Test String",
+                        TestEnum = TestOptions.OptionA,
+                        TestInteger = 42,
+                    }
+                ),
             },
         };
 
         // Act
-        JsonEventFormatter formatter = new();
-        ReadOnlyMemory<byte> encodedContent = formatter.EncodeBatchModeMessage(
-            eventsPayload,
-            out ContentType contentType
-        );
-
-        ByteArrayContent content = new(encodedContent.ToArray());
-        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(
-            contentType.MediaType
-        );
+        var serialized = JsonSerializer.Serialize(eventsPayload);
+        StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
         HttpResponseMessage response = await _client.PostAsync(_endpoint, content);
 
         // Assert
@@ -130,34 +126,40 @@ public sealed class ContentTests
         responseString.ShouldContain("\"count\":3");
 
         _mockEventRepository.Verify(
-            repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()),
+            repo => repo.AddEventsAsync(It.IsAny<IEnumerable<EventEntity>>()),
             Times.Once
         );
     }
 
     [TestMethod]
-    public async Task GetEvents_ReturnsCloudEventBatch()
+    public async Task GetEvents_ReturnsEventEntityBatch()
     {
         // Arrange
-        IQueryable<CloudEvent> cloudEvents = new List<CloudEvent>
+        IQueryable<EventEntity> eventEntities = new List<EventEntity>
         {
-            new(CloudEventsSpecVersion.V1_0)
+            new()
             {
                 Type = "UserLogin",
                 Source = new Uri("/source/user"),
-                Id = "A234-1234-1234",
-                Time = DateTimeOffset.UtcNow,
+                Id = Guid.NewGuid(),
+                SpecVersion = "1.0",
+                ITwinGuid = Guid.NewGuid(),
+                AccountGuid = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid().ToString(),
             },
-            new(CloudEventsSpecVersion.V1_0)
+            new()
             {
                 Type = "FileUpload",
                 Source = new Uri("/source/file"),
-                Id = "B234-1234-1234",
-                Time = DateTimeOffset.UtcNow,
+                Id = Guid.NewGuid(),
+                SpecVersion = "1.0",
+                ITwinGuid = Guid.NewGuid(),
+                AccountGuid = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid().ToString(),
             },
         }.AsQueryable();
 
-        _mockEventRepository.Setup(repo => repo.GetAllEventsAsync()).ReturnsAsync(cloudEvents);
+        _mockEventRepository.Setup(repo => repo.GetAllEventsAsync()).ReturnsAsync(eventEntities);
 
         // Act
         HttpResponseMessage response = await _client.GetAsync("/events");
@@ -166,16 +168,41 @@ public sealed class ContentTests
         response.EnsureSuccessStatusCode();
         response
             .Content.Headers.ContentType?.ToString()
-            .ShouldBe("application/cloudevents-batch+json; charset=utf-8");
+            .ShouldBe("application/json; charset=utf-8");
 
-        JsonEventFormatter formatter = new();
-        IReadOnlyList<CloudEvent> returnedCloudEvents = await response.ToCloudEventBatchAsync(
-            formatter
+        var responseString = await response.Content.ReadAsStringAsync();
+        var returnedEventEntities = JsonSerializer.Deserialize<List<EventEntity>>(
+            responseString,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
         );
 
-        returnedCloudEvents.ShouldNotBeNull();
-        returnedCloudEvents.Count().ShouldBe(2);
+        returnedEventEntities.ShouldNotBeNull();
+        returnedEventEntities.Count().ShouldBe(2);
 
         _mockEventRepository.Verify(repo => repo.GetAllEventsAsync(), Times.Once);
+    }
+
+    [TestMethod]
+    public void ValidateEventEntitySerialization()
+    {
+        // Arrange
+        var eventEntity = new EventEntity
+        {
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "TestType",
+        };
+
+        // Act
+        var serialized = JsonSerializer.Serialize(eventEntity);
+        var deserialized = JsonSerializer.Deserialize<EventEntity>(serialized);
+
+        // Assert
+        deserialized.ShouldNotBeNull();
+        deserialized.ITwinGuid.ShouldBe(eventEntity.ITwinGuid);
+        deserialized.AccountGuid.ShouldBe(eventEntity.AccountGuid);
     }
 }

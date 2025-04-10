@@ -3,56 +3,64 @@
 
 ### without events
 POST {{Kumara_EventSource_HostAddress}}/events
-Content-Type: application/cloudevents-batch+json
+Content-Type: application/json
 
 []
 
 ### With events
 POST {{Kumara_EventSource_HostAddress}}/events
-Content-Type: application/cloudevents-batch+json
+Content-Type: application/json
 
 [
   {
-    "specversion": "1.0",
+    "specVersion": "1.0",
     "type": "test.created.v1",
     "source": "/events/test",
-    "id": "T234-1234-1234",
     "time": "2023-10-01T12:15:00Z",
+    "iTwinGuid": "12345678-1234-1234-1234-123456789abc",
+    "accountGuid": "12345678-1234-1234-1234-123456789abc",
+    "correlationId": "12345678-1234-1234-1234-123456789abc",
     "data": {
-      "test_string": "Sample Test 1",
+      "test_string": "test 1",
       "test_enum": "OptionA",
-      "test_integer": 123,
-      "event_type_version": "1.0"
+      "test_integer": 123
     }
   },
   {
-    "specversion": "1.0",
+    "specVersion": "1.0",
     "type": "test.created.v1",
     "source": "/events/test",
-    "id": "T234-1234-1235",
     "time": "2023-10-01T12:20:00Z",
+    "iTwinGuid": "87654321-4321-4321-4321-cba987654321",
+    "accountGuid": "ABCDEF12-3456-789A-BCDE-F123456789AB",
+    "correlationId": "98765432-10AB-CDEF-1234-567890ABCDEF",
     "data": {
-      "test_string": "Sample Test 2",
+      "test_string": "test 2",
       "test_enum": "OptionB",
-      "test_integer": 456,
-      "event_type_version": "1.0"
+      "test_integer": 456
     }
   },
   {
-    "specversion": "1.0",
+    "specVersion": "1.0",
     "type": "test.created.v1",
     "source": "/events/test",
-    "id": "T234-1234-1236",
     "time": "2023-10-01T12:25:00Z",
+    "iTwinGuid": "ABCDEF12-3456-789A-BCDE-F123456789AB",
+    "accountGuid": "12345678-1234-1234-1234-123456789abc",
+    "correlationId": "12345678-1234-1234-1234-123456789abc",
     "data": {
-      "test_string": "Sample Test 3",
+      "test_string": "test 3",
       "test_enum": "OptionC",
-      "test_integer": 789,
-      "event_type_version": "1.0"
+      "test_integer": 789
     }
   }
 ]
 
 ### Get events
 GET {{Kumara_EventSource_HostAddress}}/events
-Accept: application/cloudevents-batch+json
+Accept: application/json
+
+
+### Get events
+GET {{Kumara_EventSource_HostAddress}}/events?Id=A234-1234-1234
+Accept: application/json
