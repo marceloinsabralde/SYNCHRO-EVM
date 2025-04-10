@@ -13,11 +13,15 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<IEventRepository, EventRepositoryInMemoryList>();
-builder.Services.AddControllers();
+
+// Register the event validator
+builder.Services.AddScoped<IEventValidator, EventValidator>();
 
 builder.Services.AddSingleton<Dictionary<string, Type>>(
     EventTypeMapInitializer.InitializeEventTypeMap()
 );
+
+builder.Services.AddControllers();
 
 WebApplication app = builder.Build();
 
