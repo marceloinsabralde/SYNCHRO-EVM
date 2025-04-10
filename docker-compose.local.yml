@@ -7,3 +7,12 @@ services:
     ports:
       - 127.0.0.1:5434:5432
     restart: unless-stopped
+
+  mongodb: &mongodb
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: PerformNextGen
+      MONGO_INITDB_ROOT_PASSWORD: PerformNextGen
+    ports:
+      - 127.0.0.1:27017:27017
+    restart: unless-stopped
