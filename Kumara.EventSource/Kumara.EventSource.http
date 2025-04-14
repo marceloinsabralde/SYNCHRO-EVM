@@ -18,7 +18,7 @@ Content-Type: application/json
     "source": "/events/test",
     "time": "2023-10-01T12:15:00Z",
     "iTwinGuid": "12345678-1234-1234-1234-123456789abc",
-    "accountGuid": "12345678-1234-1234-1234-123456789abc",
+    "accountGuid": "ABCDEF12-3456-789A-BCDE-F123456789AB",
     "correlationId": "12345678-1234-1234-1234-123456789abc",
     "data": {
       "test_string": "test 1",
@@ -28,16 +28,17 @@ Content-Type: application/json
   },
   {
     "specVersion": "1.0",
-    "type": "test.created.v1",
+    "type": "test.updated.v1",
     "source": "/events/test",
     "time": "2023-10-01T12:20:00Z",
-    "iTwinGuid": "87654321-4321-4321-4321-cba987654321",
+    "iTwinGuid": "12345678-1234-1234-1234-123456789abc",
     "accountGuid": "ABCDEF12-3456-789A-BCDE-F123456789AB",
     "correlationId": "98765432-10AB-CDEF-1234-567890ABCDEF",
     "data": {
       "test_string": "test 2",
       "test_enum": "OptionB",
-      "test_integer": 456
+      "test_integer": 456,
+      "updated_time": "2023-10-01T12:20:00Z"
     }
   },
   {

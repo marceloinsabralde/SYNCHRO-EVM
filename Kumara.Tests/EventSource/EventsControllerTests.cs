@@ -61,6 +61,39 @@ public class EventsControllerTests
     }
 
     [TestMethod]
+    public async Task PostEvents_ValidUpdatedEventEntity_ReturnsOk()
+    {
+        // Arrange
+        var eventEntity = new EventEntity
+        {
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "test.updated.v1",
+            DataJson = JsonSerializer.SerializeToDocument(
+                new TestUpdatedV1
+                {
+                    TestString = "Updated Controller Test String",
+                    TestEnum = TestOptions.OptionD,
+                    TestInteger = 750,
+                    UpdatedTime = DateTime.UtcNow,
+                }
+            ),
+        };
+
+        var serialized = JsonSerializer.Serialize(new[] { eventEntity });
+        StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
+
+        // Act
+        HttpResponseMessage response = await _client.PostAsync("/events", content);
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [TestMethod]
     public async Task PostEvents_InvalidMediaType_ReturnsUnsupportedMediaType()
     {
         StringContent content = new("Invalid content");
@@ -103,13 +136,14 @@ public class EventsControllerTests
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://example.com/TestSource2"),
-                Type = "test.created.v1",
+                Type = "test.updated.v1",
                 DataJson = JsonSerializer.SerializeToDocument(
-                    new TestCreatedV1
+                    new TestUpdatedV1
                     {
-                        TestString = "Controller Test String",
-                        TestEnum = TestOptions.OptionE,
+                        TestString = "Updated Controller Test String",
+                        TestEnum = TestOptions.OptionB,
                         TestInteger = 100,
+                        UpdatedTime = DateTime.UtcNow,
                     }
                 ),
             },
@@ -128,5 +162,7 @@ public class EventsControllerTests
         string responseContent = await response.Content.ReadAsStringAsync();
         responseContent.ShouldContain("TestSource1");
         responseContent.ShouldContain("TestSource2");
+        responseContent.ShouldContain("test.created.v1");
+        responseContent.ShouldContain("test.updated.v1");
     }
 }
