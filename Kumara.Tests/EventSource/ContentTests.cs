@@ -23,15 +23,14 @@ namespace Kumara.Tests.EventSource
         {
             _mockEventRepository = new Mock<IEventRepository>();
 
-            var factory = new WebApplicationFactory<Program>()
-                .WithWebHostBuilder(builder =>
+            var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+            {
+                builder.UseEnvironment("Test");
+                builder.ConfigureServices(services =>
                 {
-                    builder.UseEnvironment("Test");
-                    builder.ConfigureServices(services =>
-                    {
-                        services.AddSingleton(_mockEventRepository.Object);
-                    });
+                    services.AddSingleton(_mockEventRepository.Object);
                 });
+            });
 
             _client = factory.CreateClient();
         }
@@ -40,7 +39,11 @@ namespace Kumara.Tests.EventSource
         public async Task PostEvents_WithZeroEvents_ReturnsSuccessAndCountZero()
         {
             // Act
-            var content = new StringContent("[]", System.Text.Encoding.UTF8, "application/cloudevents-batch+json");
+            var content = new StringContent(
+                "[]",
+                System.Text.Encoding.UTF8,
+                "application/cloudevents-batch+json"
+            );
             var response = await _client.PostAsync(_endpoint, content);
 
             // Assert
@@ -49,7 +52,10 @@ namespace Kumara.Tests.EventSource
             responseString.ShouldNotBeNull();
             responseString.ShouldContain("\"count\":0");
 
-            _mockEventRepository.Verify(repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()), Times.Never);
+            _mockEventRepository.Verify(
+                repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()),
+                Times.Never
+            );
         }
 
         [TestMethod]
@@ -63,11 +69,7 @@ namespace Kumara.Tests.EventSource
                     Source = new Uri("/source/user"),
                     Id = "A234-1234-1234",
                     Time = DateTimeOffset.Parse("2023-10-01T12:00:00Z"),
-                    Data = new
-                    {
-                        userId = "12345",
-                        userName = "arun.malik"
-                    }
+                    Data = new { userId = "12345", userName = "arun.malik" },
                 },
                 new CloudEvent(CloudEventsSpecVersion.V1_0)
                 {
@@ -79,17 +81,22 @@ namespace Kumara.Tests.EventSource
                     {
                         userId = "12345",
                         fileName = "report.pdf",
-                        fileSize = 102400
-                    }
-                }
+                        fileSize = 102400,
+                    },
+                },
             };
 
             // Act
             var formatter = new JsonEventFormatter();
-            var encodedContent = formatter.EncodeBatchModeMessage(eventsPayload, out var contentType);
+            var encodedContent = formatter.EncodeBatchModeMessage(
+                eventsPayload,
+                out var contentType
+            );
 
             var content = new ByteArrayContent(encodedContent.ToArray());
-            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType.MediaType);
+            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(
+                contentType.MediaType
+            );
             var response = await _client.PostAsync(_endpoint, content);
 
             // Assert
@@ -98,7 +105,10 @@ namespace Kumara.Tests.EventSource
             responseString.ShouldNotBeNull();
             responseString.ShouldContain("\"count\":2");
 
-            _mockEventRepository.Verify(repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()), Times.Once);
+            _mockEventRepository.Verify(
+                repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()),
+                Times.Once
+            );
         }
 
         [TestMethod]
@@ -112,15 +122,15 @@ namespace Kumara.Tests.EventSource
                     Type = "UserLogin",
                     Source = new Uri("/source/user"),
                     Id = "A234-1234-1234",
-                    Time = DateTimeOffset.UtcNow
+                    Time = DateTimeOffset.UtcNow,
                 },
                 new CloudEvent(CloudEventsSpecVersion.V1_0)
                 {
                     Type = "FileUpload",
                     Source = new Uri("/source/file"),
                     Id = "B234-1234-1234",
-                    Time = DateTimeOffset.UtcNow
-                }
+                    Time = DateTimeOffset.UtcNow,
+                },
             }.AsQueryable();
 
             _mockEventRepository.Setup(repo => repo.GetAllEventsAsync()).ReturnsAsync(cloudEvents);
@@ -130,7 +140,9 @@ namespace Kumara.Tests.EventSource
 
             // Assert
             response.EnsureSuccessStatusCode();
-            response.Content.Headers.ContentType?.ToString().ShouldBe("application/cloudevents-batch+json; charset=utf-8");
+            response
+                .Content.Headers.ContentType?.ToString()
+                .ShouldBe("application/cloudevents-batch+json; charset=utf-8");
 
             var formatter = new JsonEventFormatter();
             var returnedCloudEvents = await response.ToCloudEventBatchAsync(formatter);

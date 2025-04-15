@@ -13,11 +13,10 @@ namespace Kumara.Tests.EventSource
 
         public RoutingTests()
         {
-            var factory = new WebApplicationFactory<Program>()
-                .WithWebHostBuilder(builder =>
-                {
-                    builder.UseEnvironment("Test");
-                });
+            var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+            {
+                builder.UseEnvironment("Test");
+            });
             _client = factory.CreateClient();
         }
 
@@ -35,7 +34,14 @@ namespace Kumara.Tests.EventSource
         public async Task PostEvents_EndpointIsActive()
         {
             // Act
-            var response = await _client.PostAsync("/events", new StringContent("[]", System.Text.Encoding.UTF8, "application/cloudevents-batch+json"));
+            var response = await _client.PostAsync(
+                "/events",
+                new StringContent(
+                    "[]",
+                    System.Text.Encoding.UTF8,
+                    "application/cloudevents-batch+json"
+                )
+            );
 
             // Assert
             response.StatusCode.ShouldBe(HttpStatusCode.OK);

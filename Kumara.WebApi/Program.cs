@@ -14,9 +14,8 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
     opt.UseNpgsql(
             builder.Configuration.GetConnectionString("PerformNextGen"),
-            o => o
-                .SetPostgresVersion(16, 4)
-                .UseNodaTime())
+            o => o.SetPostgresVersion(16, 4).UseNodaTime()
+        )
         .UseSnakeCaseNamingConvention()
 );
 
@@ -37,17 +36,13 @@ builder.Services.AddHttpLogging(options =>
 });
 
 // Learn about configuring OpenTelemetry at https://opentelemetry.io/docs/languages/net/
-builder.Services.AddOpenTelemetry()
+builder
+    .Services.AddOpenTelemetry()
     .UseOtlpExporter() // Use the OpenTelemetry Protocol (OTLP) exporter for all signals
-    .WithTracing(tracing => tracing
-        .AddAspNetCoreInstrumentation()
-        .AddEntityFrameworkCoreInstrumentation()
-        .AddNpgsql()
+    .WithTracing(tracing =>
+        tracing.AddAspNetCoreInstrumentation().AddEntityFrameworkCoreInstrumentation().AddNpgsql()
     )
-    .WithMetrics(metrics => metrics
-        .AddAspNetCoreInstrumentation()
-        .AddNpgsqlInstrumentation()
-    )
+    .WithMetrics(metrics => metrics.AddAspNetCoreInstrumentation().AddNpgsqlInstrumentation())
     .WithLogging(logging => logging.AddConsoleExporter());
 
 WebApplication app = builder.Build();
@@ -70,21 +65,33 @@ if (app.Environment.IsDevelopment())
 
 string[] summaries = new[]
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    "Freezing",
+    "Bracing",
+    "Chilly",
+    "Cool",
+    "Mild",
+    "Warm",
+    "Balmy",
+    "Hot",
+    "Sweltering",
+    "Scorching",
 };
 
-app.MapGet("/weatherforecast", () =>
-    {
-        WeatherForecast[] forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
+app.MapGet(
+        "/weatherforecast",
+        () =>
+        {
+            WeatherForecast[] forecast = Enumerable
+                .Range(1, 5)
+                .Select(index => new WeatherForecast(
                     DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                     Random.Shared.Next(-20, 55),
                     summaries[Random.Shared.Next(summaries.Length)]
                 ))
-            .ToArray();
-        return forecast;
-    })
+                .ToArray();
+            return forecast;
+        }
+    )
     .WithName("GetWeatherForecast");
 
 app.Run();

@@ -26,8 +26,8 @@ public sealed class ContentTypeTests
     {
         _mockEventRepository = new Mock<IEventRepository>();
 
-        WebApplicationFactory<Program> factory = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder =>
+        WebApplicationFactory<Program> factory =
+            new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
             {
                 builder.UseEnvironment("Test");
                 builder.ConfigureServices(services =>
@@ -47,12 +47,14 @@ public sealed class ContentTypeTests
             Type = "UserLogin",
             Source = new Uri("/source/user"),
             Id = "A234-1234-1234",
-            Time = DateTimeOffset.UtcNow
+            Time = DateTimeOffset.UtcNow,
         };
 
         JsonEventFormatter formatter = new();
-        ReadOnlyMemory<byte> encodedContent =
-            formatter.EncodeStructuredModeMessage(cloudEvent, out ContentType contentType);
+        ReadOnlyMemory<byte> encodedContent = formatter.EncodeStructuredModeMessage(
+            cloudEvent,
+            out ContentType contentType
+        );
 
         ByteArrayContent content = new(encodedContent.ToArray());
         content.Headers.ContentType = new MediaTypeHeaderValue(contentType.MediaType);
@@ -63,7 +65,10 @@ public sealed class ContentTypeTests
         responseString.ShouldNotBeNull();
         responseString.ShouldContain("\"count\":1");
 
-        _mockEventRepository.Verify(repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()), Times.Once);
+        _mockEventRepository.Verify(
+            repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()),
+            Times.Once
+        );
     }
 
     [TestMethod]
@@ -76,20 +81,22 @@ public sealed class ContentTypeTests
                 Type = "UserLogin",
                 Source = new Uri("/source/user"),
                 Id = "A234-1234-1234",
-                Time = DateTimeOffset.UtcNow
+                Time = DateTimeOffset.UtcNow,
             },
             new CloudEvent(CloudEventsSpecVersion.V1_0)
             {
                 Type = "FileUpload",
                 Source = new Uri("/source/file"),
                 Id = "B234-1234-1234",
-                Time = DateTimeOffset.UtcNow
-            }
+                Time = DateTimeOffset.UtcNow,
+            },
         };
 
         JsonEventFormatter formatter = new();
-        ReadOnlyMemory<byte> encodedContent =
-            formatter.EncodeBatchModeMessage(eventsPayload, out ContentType contentType);
+        ReadOnlyMemory<byte> encodedContent = formatter.EncodeBatchModeMessage(
+            eventsPayload,
+            out ContentType contentType
+        );
 
         ByteArrayContent content = new(encodedContent.ToArray());
         content.Headers.ContentType = new MediaTypeHeaderValue(contentType.MediaType);
@@ -100,7 +107,10 @@ public sealed class ContentTypeTests
         responseString.ShouldNotBeNull();
         responseString.ShouldContain("\"count\":2");
 
-        _mockEventRepository.Verify(repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()), Times.Once);
+        _mockEventRepository.Verify(
+            repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()),
+            Times.Once
+        );
     }
 
     [TestMethod]
@@ -128,8 +138,8 @@ public sealed class ContentTypeTests
                 Type = "UserLogin",
                 Source = new Uri("/source/user"),
                 Id = "A234-1234-1234",
-                Time = DateTimeOffset.UtcNow
-            }
+                Time = DateTimeOffset.UtcNow,
+            },
         }.AsQueryable();
 
         _mockEventRepository.Setup(repo => repo.GetAllEventsAsync()).ReturnsAsync(cloudEvents);
@@ -137,10 +147,14 @@ public sealed class ContentTypeTests
         HttpResponseMessage response = await _client.GetAsync(_endpoint);
 
         response.EnsureSuccessStatusCode();
-        response.Content.Headers.ContentType?.ToString().ShouldBe("application/cloudevents-batch+json; charset=utf-8");
+        response
+            .Content.Headers.ContentType?.ToString()
+            .ShouldBe("application/cloudevents-batch+json; charset=utf-8");
 
         JsonEventFormatter formatter = new();
-        IReadOnlyList<CloudEvent> returnedCloudEvents = await response.ToCloudEventBatchAsync(formatter);
+        IReadOnlyList<CloudEvent> returnedCloudEvents = await response.ToCloudEventBatchAsync(
+            formatter
+        );
 
         returnedCloudEvents.ShouldNotBeNull();
         returnedCloudEvents.Count().ShouldBe(1);
