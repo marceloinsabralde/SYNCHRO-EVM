@@ -1,11 +1,8 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Kumara.Database;
-
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
-
 using Npgsql;
-
 using OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;

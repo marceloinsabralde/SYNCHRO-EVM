@@ -1,16 +1,12 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-
 using System.Net.Http.Headers;
 using System.Text.Json;
-
 using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.AspNetCore;
 using CloudNative.CloudEvents.Http;
 using CloudNative.CloudEvents.SystemTextJson;
-
 using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Repositories;
-
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);

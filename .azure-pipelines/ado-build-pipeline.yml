@@ -76,6 +76,11 @@ jobs:
     timeoutInMinutes: 30
     cancelTimeoutInMinutes: 5
     steps:
+      - task: UseDotNet@2
+        displayName: "Use .NET sdk"
+        inputs:
+          packageType: sdk
+          version: 9.x
       - task: DotNetCoreCLI@2
         displayName: Run tests
         inputs:

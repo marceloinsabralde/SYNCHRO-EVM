@@ -1,9 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-
 using CloudNative.CloudEvents;
-
 using Kumara.EventSource.Interfaces;
-
 using MongoDB.Driver;
 
 namespace Kumara.EventSource.Repositories;
