@@ -19,7 +19,9 @@ public class EventRepositoryTests
     {
         s_mongoDbContainer = new MongoDbBuilder().Build();
         await s_mongoDbContainer.StartAsync();
-        s_database = new MongoClient(s_mongoDbContainer.GetConnectionString()).GetDatabase("testdb");
+        s_database = new MongoClient(s_mongoDbContainer.GetConnectionString()).GetDatabase(
+            "testdb"
+        );
     }
 
     [ClassCleanup]
@@ -50,29 +52,36 @@ public class EventRepositoryTests
     }
 
     private List<CloudEvent> GetTestCloudEvents() =>
-    [
-        new CloudEvent(CloudEventsSpecVersion.V1_0)
-        {
-            Type = "UserLogin",
-            Source = new Uri("/source/user"),
-            Id = "A234-1234-1234",
-            Time = new DateTimeOffset(2023, 10, 1, 12, 0, 0, TimeSpan.Zero),
-            Data = new { userId = "12345", userName = "arun.malik" }
-        },
-
-        new CloudEvent(CloudEventsSpecVersion.V1_0)
-        {
-            Type = "FileUpload",
-            Source = new Uri("/source/file"),
-            Id = "B234-1234-1234",
-            Time = new DateTimeOffset(2023, 10, 1, 12, 5, 0, TimeSpan.Zero),
-            Data = new { userId = "12345", fileName = "report.pdf", fileSize = 102400 }
-        }
-    ];
+        [
+            new CloudEvent(CloudEventsSpecVersion.V1_0)
+            {
+                Type = "UserLogin",
+                Source = new Uri("/source/user"),
+                Id = "A234-1234-1234",
+                Time = new DateTimeOffset(2023, 10, 1, 12, 0, 0, TimeSpan.Zero),
+                Data = new { userId = "12345", userName = "arun.malik" },
+            },
+            new CloudEvent(CloudEventsSpecVersion.V1_0)
+            {
+                Type = "FileUpload",
+                Source = new Uri("/source/file"),
+                Id = "B234-1234-1234",
+                Time = new DateTimeOffset(2023, 10, 1, 12, 5, 0, TimeSpan.Zero),
+                Data = new
+                {
+                    userId = "12345",
+                    fileName = "report.pdf",
+                    fileSize = 102400,
+                },
+            },
+        ];
 
     [DataTestMethod]
     [DynamicData(nameof(GetRepositories), DynamicDataSourceType.Method)]
-    public async Task RoundtripEventsAsync_ShouldStoreAndRetrieveCloudEvents(string repositoryType, IEventRepository eventRepository)
+    public async Task RoundtripEventsAsync_ShouldStoreAndRetrieveCloudEvents(
+        string repositoryType,
+        IEventRepository eventRepository
+    )
     {
         // Arrange
         List<CloudEvent> cloudEvents = GetTestCloudEvents();

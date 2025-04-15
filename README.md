@@ -1,8 +1,11 @@
 <!-- Copyright (c) Bentley Systems, Incorporated. All rights reserved. -->
+
 # Introduction
+
 Kumara (3579) (formerly SYNCHRO Perform (3221)) is a module of Project Delivery for Bentley Infrastructure Cloud focusing on Progress Capture, Quantity Loaded Resource Planning and Performance Management.
 
 ## Project Structure
+
 The solution is broken down into 3 separate projects, these are:
 
 ```
@@ -20,8 +23,8 @@ Kumara.Scenarios << for BDD scenarios
 ### Tools
 
 ```shell
-- dotnet tool restore
-- script/dcl up -d # run services using docker
+dotnet tool restore
+script/dcl up -d # run services using docker
 ```
 
 ## Running Tests
@@ -51,3 +54,12 @@ Notes:
 - Locate the build
 - Click on 'Test' tab to see test results.
 - Click on 'Code Coverage' tab to see and download code coverage report.
+
+## Formatting
+
+We're using [CSharpier](https://csharpier.com) to format the .cs files in this repo. CSharpier is included in our tools manifest should be installed if you used the `dotnet tool restore` command above.
+
+```shell
+dotnet csharpier . # format all files in the current directory
+dotnet csharpier --check . # check that all files in the current directory are formatted according to csharpier's rules
+```

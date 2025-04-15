@@ -7,7 +7,9 @@ namespace Kumara.EventSource.Repositories;
 
 public class EventRepositoryMongoDb(IMongoDatabase database) : IEventRepository
 {
-    private readonly IMongoCollection<CloudEvent> _events = database.GetCollection<CloudEvent>("Events");
+    private readonly IMongoCollection<CloudEvent> _events = database.GetCollection<CloudEvent>(
+        "Events"
+    );
 
     public async Task<IQueryable<CloudEvent>> GetAllEventsAsync()
     {

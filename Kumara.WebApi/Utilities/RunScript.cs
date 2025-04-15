@@ -5,7 +5,6 @@ namespace Kumara.Utilities;
 
 public class RunScript()
 {
-
     public void Execute(params string[] arguments)
     {
         var processInfo = new ProcessStartInfo
@@ -14,7 +13,7 @@ public class RunScript()
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
-            CreateNoWindow = true
+            CreateNoWindow = true,
         };
 
         foreach (var arg in arguments.Skip(1).ToArray())
@@ -32,7 +31,9 @@ public class RunScript()
 
         if (process.ExitCode != 0)
         {
-            throw new Exception($"Script execution failed with exit code {process.ExitCode}: {error}");
+            throw new Exception(
+                $"Script execution failed with exit code {process.ExitCode}: {error}"
+            );
         }
     }
 }

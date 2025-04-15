@@ -29,46 +29,58 @@ if (!app.Environment.IsEnvironment("Test"))
     app.UseHttpsRedirection();
 }
 
-app.MapPost("/events", async (HttpContext context, [FromServices] IEventRepository? eventRepository) =>
-{
-    var formatter = new JsonEventFormatter();
-    List<CloudEvent> cloudEvents = new();
-
-    var mediaType = MediaTypeHeaderValue.Parse(context.Request.ContentType ?? "text/plain").MediaType;
-    switch (mediaType)
+app.MapPost(
+    "/events",
+    async (HttpContext context, [FromServices] IEventRepository? eventRepository) =>
     {
-        case "application/cloudevents+json":
-            var cloudEvent = await context.Request.ToCloudEventAsync(formatter);
-            cloudEvents.Add(cloudEvent);
-            break;
-        case "application/cloudevents-batch+json":
-            cloudEvents = (await context.Request.ToCloudEventBatchAsync(formatter)).ToList();
-            break;
-        default:
-            return Results.Problem(JsonSerializer.Serialize(CreateUnsupportedMediaTypeProblemDetails(context.Request.Path)), statusCode: StatusCodes.Status415UnsupportedMediaType);
-    }
+        var formatter = new JsonEventFormatter();
+        List<CloudEvent> cloudEvents = new();
 
-    if (cloudEvents.Count != 0 && eventRepository is not null)
+        var mediaType = MediaTypeHeaderValue
+            .Parse(context.Request.ContentType ?? "text/plain")
+            .MediaType;
+        switch (mediaType)
+        {
+            case "application/cloudevents+json":
+                var cloudEvent = await context.Request.ToCloudEventAsync(formatter);
+                cloudEvents.Add(cloudEvent);
+                break;
+            case "application/cloudevents-batch+json":
+                cloudEvents = (await context.Request.ToCloudEventBatchAsync(formatter)).ToList();
+                break;
+            default:
+                return Results.Problem(
+                    JsonSerializer.Serialize(
+                        CreateUnsupportedMediaTypeProblemDetails(context.Request.Path)
+                    ),
+                    statusCode: StatusCodes.Status415UnsupportedMediaType
+                );
+        }
+
+        if (cloudEvents.Count != 0 && eventRepository is not null)
+        {
+            // Add events to the repository
+            await eventRepository.AddEventsAsync(cloudEvents);
+        }
+        return Results.Ok(new { count = cloudEvents.Count });
+    }
+);
+
+app.MapGet(
+    "/events",
+    async (HttpContext context, [FromServices] IEventRepository? eventRepository) =>
     {
-        // Add events to the repository
-        await eventRepository.AddEventsAsync(cloudEvents);
+        var cloudEvents = eventRepository is not null
+            ? await eventRepository.GetAllEventsAsync()
+            : Enumerable.Empty<CloudEvent>().AsQueryable();
+        var formatter = new JsonEventFormatter();
+        var content = formatter.EncodeBatchModeMessage(cloudEvents.ToList(), out var contentType);
+        context.Response.ContentType = contentType.ToString();
+        await context.Response.Body.WriteAsync(content);
     }
-    return Results.Ok(new { count = cloudEvents.Count });
-});
-
-app.MapGet("/events", async (HttpContext context, [FromServices] IEventRepository? eventRepository) =>
-{
-    var cloudEvents = eventRepository is not null
-        ? await eventRepository.GetAllEventsAsync()
-        : Enumerable.Empty<CloudEvent>().AsQueryable();
-    var formatter = new JsonEventFormatter();
-    var content = formatter.EncodeBatchModeMessage(cloudEvents.ToList(), out var contentType);
-    context.Response.ContentType = contentType.ToString();
-    await context.Response.Body.WriteAsync(content);
-});
+);
 
 app.Run();
-
 
 static Microsoft.AspNetCore.Mvc.ProblemDetails CreateUnsupportedMediaTypeProblemDetails(string path)
 {
@@ -76,9 +88,10 @@ static Microsoft.AspNetCore.Mvc.ProblemDetails CreateUnsupportedMediaTypeProblem
     {
         Status = StatusCodes.Status415UnsupportedMediaType,
         Title = "Unsupported Media Type",
-        Detail = "The provided content type is not supported. Please use 'application/cloudevents+json' or 'application/cloudevents-batch+json'.",
+        Detail =
+            "The provided content type is not supported. Please use 'application/cloudevents+json' or 'application/cloudevents-batch+json'.",
         Instance = path,
-        Type = "https://tools.ietf.org/html/rfc7231#section-6.5.13"
+        Type = "https://tools.ietf.org/html/rfc7231#section-6.5.13",
     };
 }
 

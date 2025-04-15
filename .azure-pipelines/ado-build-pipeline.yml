@@ -106,14 +106,21 @@ jobs:
           version: 9.x
 
       - task: DotNetCoreCLI@2
-        displayName: Install dotnet format
+        displayName: Install dotnet tools
         inputs:
           command: custom
           custom: tool
-          arguments: update -g dotnet-format
+          arguments: restore
 
       - task: DotNetCoreCLI@2
-        displayName: Check Code Formatting
+        displayName: Check Code Formatting (csharpier)
+        inputs:
+          command: custom
+          custom: csharpier
+          arguments: --check .
+
+      - task: DotNetCoreCLI@2
+        displayName: Check Code Formatting (dotnet format)
         inputs:
           command: custom
           custom: format
