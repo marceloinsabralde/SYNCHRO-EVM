@@ -1,9 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-
 using System.Collections.Concurrent;
-
 using CloudNative.CloudEvents;
-
 using Kumara.EventSource.Interfaces;
 
 namespace Kumara.EventSource.Repositories;

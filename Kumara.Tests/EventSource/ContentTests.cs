@@ -1,18 +1,13 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using System.Text.Json;
-
 using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.Http;
 using CloudNative.CloudEvents.SystemTextJson;
-
 using Kumara.EventSource.Interfaces;
-
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-
 using Moq;
-
 using Shouldly;
 
 namespace Kumara.Tests.EventSource

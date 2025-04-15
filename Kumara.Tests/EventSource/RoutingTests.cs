@@ -1,9 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using System.Net;
-
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-
 using Shouldly;
 
 namespace Kumara.Tests.EventSource

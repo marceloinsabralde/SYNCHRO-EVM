@@ -1,5 +1,4 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-
 using CloudNative.CloudEvents;
 
 namespace Kumara.EventSource.Interfaces;

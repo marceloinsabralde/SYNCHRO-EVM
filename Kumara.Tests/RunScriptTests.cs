@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Shouldly;
+
 namespace Kumara.Utilities;
 
 [TestClass]

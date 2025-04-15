@@ -1,14 +1,9 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-
 using CloudNative.CloudEvents;
-
 using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Repositories;
-
 using MongoDB.Driver;
-
 using Shouldly;
-
 using Testcontainers.MongoDb;
 
 namespace Kumara.Tests.EventSource;
