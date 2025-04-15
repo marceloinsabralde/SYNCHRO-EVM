@@ -123,11 +123,18 @@ jobs:
           arguments: --check .
 
       - task: DotNetCoreCLI@2
-        displayName: Check Code Formatting (dotnet format)
+        displayName: Check Code Formatting (dotnet format style)
         inputs:
           command: custom
           custom: format
-          arguments: --verify-no-changes --verbosity diagnostic
+          arguments: style --verify-no-changes --verbosity diagnostic
+
+      - task: DotNetCoreCLI@2
+        displayName: Check Code Formatting (dotnet format analyzers)
+        inputs:
+          command: custom
+          custom: format
+          arguments: analyzers --verify-no-changes --verbosity diagnostic
 
   - job: Scans
     displayName: Mend & Veracode Scans
