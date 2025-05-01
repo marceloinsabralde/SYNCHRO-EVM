@@ -45,6 +45,14 @@ CREATE TABLE public.control_accounts (
     planned_finish date
 );
 ALTER TABLE public.control_accounts OWNER TO "PerformNextGen";
+CREATE TABLE public.materials (
+    id uuid NOT NULL,
+    itwin_id uuid NOT NULL,
+    name text NOT NULL,
+    resource_role_id uuid NOT NULL,
+    quantity_unit_of_measure_id uuid NOT NULL
+);
+ALTER TABLE public.materials OWNER TO "PerformNextGen";
 CREATE TABLE public.units_of_measure (
     id uuid NOT NULL,
     itwin_id uuid NOT NULL,
@@ -60,8 +68,13 @@ ALTER TABLE ONLY public.companies
     ADD CONSTRAINT pk_companies PRIMARY KEY (id);
 ALTER TABLE ONLY public.control_accounts
     ADD CONSTRAINT pk_control_accounts PRIMARY KEY (id);
+ALTER TABLE ONLY public.materials
+    ADD CONSTRAINT pk_materials PRIMARY KEY (id);
 ALTER TABLE ONLY public.units_of_measure
     ADD CONSTRAINT pk_units_of_measure PRIMARY KEY (id);
 CREATE INDEX ix_activities_control_account_id ON public.activities USING btree (control_account_id);
+CREATE INDEX ix_materials_quantity_unit_of_measure_id ON public.materials USING btree (quantity_unit_of_measure_id);
 ALTER TABLE ONLY public.activities
     ADD CONSTRAINT fk_activities_control_accounts_control_account_id FOREIGN KEY (control_account_id) REFERENCES public.control_accounts(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.materials
+    ADD CONSTRAINT fk_materials_units_of_measure_quantity_unit_of_measure_id FOREIGN KEY (quantity_unit_of_measure_id) REFERENCES public.units_of_measure(id) ON DELETE CASCADE;

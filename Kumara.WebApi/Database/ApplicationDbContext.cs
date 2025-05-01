@@ -11,4 +11,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ControlAccount> ControlAccounts { get; set; }
     public DbSet<Activity> Activities { get; set; }
     public DbSet<UnitOfMeasure> UnitsOfMeasure { get; set; }
+    public DbSet<Material> Materials { get; set; }
 }
