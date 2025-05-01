@@ -12,4 +12,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Activity> Activities { get; set; }
     public DbSet<UnitOfMeasure> UnitsOfMeasure { get; set; }
     public DbSet<Material> Materials { get; set; }
+    public DbSet<ProgressEntry> ProgressEntries { get; set; }
 }
