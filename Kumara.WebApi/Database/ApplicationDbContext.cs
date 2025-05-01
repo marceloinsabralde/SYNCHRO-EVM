@@ -9,4 +9,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Company> Companies { get; set; }
     public DbSet<ControlAccount> ControlAccounts { get; set; }
+    public DbSet<Activity> Activities { get; set; }
 }
