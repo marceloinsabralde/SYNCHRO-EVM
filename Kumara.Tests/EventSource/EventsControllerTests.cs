@@ -61,7 +61,7 @@ public class EventsControllerTests
     public async Task GetEvents_ReturnsCorrectContentType()
     {
         string expectedContentType = "application/json";
-        EventEntity expectedEvent = new()
+        Event expectedEvent = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -94,11 +94,11 @@ public class EventsControllerTests
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
 
         paginatedResponse.ShouldNotBeNull();
-        List<EventEntity> events = paginatedResponse.GetEvents();
+        List<Event> events = paginatedResponse.GetEvents();
         events.ShouldNotBeNull();
         events.Count.ShouldBeGreaterThan(0);
 
-        EventEntity firstEvent = events[0];
+        Event firstEvent = events[0];
         firstEvent.ShouldSatisfyAllConditions(
             e => e.ITwinGuid.ShouldBe(expectedEvent.ITwinGuid),
             e => e.AccountGuid.ShouldBe(expectedEvent.AccountGuid),
@@ -117,9 +117,9 @@ public class EventsControllerTests
     [TestMethod]
     public async Task PostEvents_AcceptsCorrectContentType()
     {
-        List<EventEntity> eventsPayload = new()
+        List<Event> eventsPayload = new()
         {
-            new EventEntity
+            new Event
             {
                 ITwinGuid = Guid.NewGuid(),
                 AccountGuid = Guid.NewGuid(),
@@ -175,9 +175,9 @@ public class EventsControllerTests
     [TestMethod]
     public async Task PostEvents_WithMultipleEvents_ReturnsSuccessAndCorrectCount()
     {
-        List<EventEntity> eventsPayload = new()
+        List<Event> eventsPayload = new()
         {
-            new EventEntity
+            new Event
             {
                 Type = "test.created.v1",
                 Source = new Uri("/events/test"),
@@ -194,7 +194,7 @@ public class EventsControllerTests
                     }
                 ),
             },
-            new EventEntity
+            new Event
             {
                 Type = "test.created.v1",
                 Source = new Uri("/events/test"),
@@ -224,9 +224,9 @@ public class EventsControllerTests
     }
 
     [TestMethod]
-    public async Task GetEvents_ReturnsEventEntityBatch()
+    public async Task GetEvents_ReturnsEventBatch()
     {
-        IQueryable<EventEntity> eventEntities = new List<EventEntity>
+        IQueryable<Event> testEvents = new List<Event>
         {
             new()
             {
@@ -250,7 +250,7 @@ public class EventsControllerTests
             },
         }.AsQueryable();
 
-        await _eventRepository.AddEventsAsync(eventEntities);
+        await _eventRepository.AddEventsAsync(testEvents);
 
         HttpResponseMessage response = await _client.GetAsync("/events");
 
@@ -265,7 +265,7 @@ public class EventsControllerTests
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseString, options);
 
         paginatedResponse.ShouldNotBeNull();
-        List<EventEntity> events = paginatedResponse.GetEvents();
+        List<Event> events = paginatedResponse.GetEvents();
         events.ShouldNotBeNull();
         events.Count.ShouldBe(2);
         paginatedResponse.Links.ShouldNotBeNull();
@@ -393,9 +393,9 @@ public class EventsControllerTests
     #endregion
 
     [TestMethod]
-    public async Task PostEvents_ValidEventEntity_ReturnsOk()
+    public async Task PostEvents_ValidEvent_ReturnsOk()
     {
-        EventEntity eventEntity = new()
+        Event @event = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -413,7 +413,7 @@ public class EventsControllerTests
             ),
         };
 
-        string serialized = JsonSerializer.Serialize(new[] { eventEntity });
+        string serialized = JsonSerializer.Serialize(new[] { @event });
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
         HttpResponseMessage response = await _client.PostAsync("/events", content);
@@ -422,10 +422,9 @@ public class EventsControllerTests
     }
 
     [TestMethod]
-    public async Task PostEvents_ValidUpdatedEventEntity_ReturnsOk()
+    public async Task PostEvents_ValidUpdatedEvent_ReturnsOk()
     {
-        // Arrange
-        var eventEntity = new EventEntity
+        Event @event = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -444,7 +443,7 @@ public class EventsControllerTests
             ),
         };
 
-        string serialized = JsonSerializer.Serialize(new[] { eventEntity });
+        string serialized = JsonSerializer.Serialize(new[] { @event });
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
         HttpResponseMessage response = await _client.PostAsync("/events", content);
@@ -467,11 +466,11 @@ public class EventsControllerTests
     }
 
     [TestMethod]
-    public async Task RoundTripEvents_ValidEvents_ReturnsEventEntities()
+    public async Task RoundTripEvents_ValidEvents_ReturnsEvents()
     {
-        List<EventEntity> eventEntities = new()
+        List<Event> events = new()
         {
-            new EventEntity
+            new Event
             {
                 ITwinGuid = Guid.NewGuid(),
                 AccountGuid = Guid.NewGuid(),
@@ -488,7 +487,7 @@ public class EventsControllerTests
                     }
                 ),
             },
-            new EventEntity
+            new Event
             {
                 ITwinGuid = Guid.NewGuid(),
                 AccountGuid = Guid.NewGuid(),
@@ -508,7 +507,7 @@ public class EventsControllerTests
             },
         };
 
-        string serialized = JsonSerializer.Serialize(eventEntities);
+        string serialized = JsonSerializer.Serialize(events);
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
         HttpResponseMessage postResponse = await _client.PostAsync("/events", content);
@@ -532,7 +531,7 @@ public class EventsControllerTests
     {
         Guid targetId = Guid.NewGuid();
 
-        EventEntity matchingEvent = new()
+        Event matchingEvent = new()
         {
             Id = targetId,
             ITwinGuid = Guid.NewGuid(),
@@ -544,14 +543,14 @@ public class EventsControllerTests
             DataJson = JsonSerializer.SerializeToDocument(
                 new TestCreatedV1
                 {
-                    TestString = "Matching ID EventEntity",
+                    TestString = "Matching ID Event",
                     TestEnum = TestOptions.OptionA,
                     TestInteger = 100,
                 }
             ),
         };
 
-        EventEntity nonMatchingEvent = new()
+        Event nonMatchingEvent = new()
         {
             Id = Guid.NewGuid(),
             ITwinGuid = Guid.NewGuid(),
@@ -563,7 +562,7 @@ public class EventsControllerTests
             DataJson = JsonSerializer.SerializeToDocument(
                 new TestCreatedV1
                 {
-                    TestString = "Non-matching ID EventEntity",
+                    TestString = "Non-matching ID Event",
                     TestEnum = TestOptions.OptionB,
                     TestInteger = 200,
                 }
@@ -581,7 +580,7 @@ public class EventsControllerTests
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
 
         paginatedResponse.ShouldNotBeNull();
-        List<EventEntity> events = paginatedResponse.GetEvents();
+        List<Event> events = paginatedResponse.GetEvents();
         events.ShouldNotBeNull();
         events[0].Id.ShouldBe(targetId);
     }
@@ -592,7 +591,7 @@ public class EventsControllerTests
         Guid targetITwinGuid = Guid.NewGuid();
         Guid differentITwinGuid = Guid.NewGuid();
 
-        EventEntity matchingEvent = new()
+        Event matchingEvent = new()
         {
             ITwinGuid = targetITwinGuid,
             AccountGuid = Guid.NewGuid(),
@@ -603,14 +602,14 @@ public class EventsControllerTests
             DataJson = JsonSerializer.SerializeToDocument(
                 new TestCreatedV1
                 {
-                    TestString = "Matching iTwin EventEntity",
+                    TestString = "Matching iTwin Event",
                     TestEnum = TestOptions.OptionA,
                     TestInteger = 100,
                 }
             ),
         };
 
-        EventEntity nonMatchingEvent = new()
+        Event nonMatchingEvent = new()
         {
             ITwinGuid = differentITwinGuid,
             AccountGuid = Guid.NewGuid(),
@@ -621,7 +620,7 @@ public class EventsControllerTests
             DataJson = JsonSerializer.SerializeToDocument(
                 new TestCreatedV1
                 {
-                    TestString = "Non-matching iTwin EventEntity",
+                    TestString = "Non-matching iTwin Event",
                     TestEnum = TestOptions.OptionB,
                     TestInteger = 200,
                 }
@@ -641,7 +640,7 @@ public class EventsControllerTests
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
 
         paginatedResponse.ShouldNotBeNull();
-        List<EventEntity> events = paginatedResponse.GetEvents();
+        List<Event> events = paginatedResponse.GetEvents();
         events.ShouldNotBeNull();
         events[0].ITwinGuid.ShouldBe(targetITwinGuid);
     }
@@ -652,7 +651,7 @@ public class EventsControllerTests
         string targetType = "test.type.filter";
         string differentType = "different.type";
 
-        EventEntity matchingEvent = new()
+        Event matchingEvent = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -660,12 +659,10 @@ public class EventsControllerTests
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
             Type = targetType,
-            DataJson = JsonSerializer.SerializeToDocument(
-                new { Message = "Matching Type EventEntity" }
-            ),
+            DataJson = JsonSerializer.SerializeToDocument(new { Message = "Matching Type Event" }),
         };
 
-        EventEntity nonMatchingEvent = new()
+        Event nonMatchingEvent = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -674,7 +671,7 @@ public class EventsControllerTests
             Source = new Uri("http://example.com/TestSource"),
             Type = differentType,
             DataJson = JsonSerializer.SerializeToDocument(
-                new { Message = "Non-matching Type EventEntity" }
+                new { Message = "Non-matching Type Event" }
             ),
         };
 
@@ -689,7 +686,7 @@ public class EventsControllerTests
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
 
         paginatedResponse.ShouldNotBeNull();
-        List<EventEntity> events = paginatedResponse.GetEvents();
+        List<Event> events = paginatedResponse.GetEvents();
         events.ShouldNotBeNull();
         events[0].Type.ShouldBe(targetType);
     }
@@ -700,7 +697,7 @@ public class EventsControllerTests
         string targetCorrelationId = Guid.NewGuid().ToString();
         string differentCorrelationId = Guid.NewGuid().ToString();
 
-        EventEntity matchingEvent = new()
+        Event matchingEvent = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -711,14 +708,14 @@ public class EventsControllerTests
             DataJson = JsonSerializer.SerializeToDocument(
                 new TestCreatedV1
                 {
-                    TestString = "Matching Correlation EventEntity",
+                    TestString = "Matching Correlation Event",
                     TestEnum = TestOptions.OptionA,
                     TestInteger = 100,
                 }
             ),
         };
 
-        EventEntity nonMatchingEvent = new()
+        Event nonMatchingEvent = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -729,7 +726,7 @@ public class EventsControllerTests
             DataJson = JsonSerializer.SerializeToDocument(
                 new TestCreatedV1
                 {
-                    TestString = "Non-matching Correlation EventEntity",
+                    TestString = "Non-matching Correlation Event",
                     TestEnum = TestOptions.OptionB,
                     TestInteger = 200,
                 }
@@ -749,7 +746,7 @@ public class EventsControllerTests
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
 
         paginatedResponse.ShouldNotBeNull();
-        List<EventEntity> events = paginatedResponse.GetEvents();
+        List<Event> events = paginatedResponse.GetEvents();
         events.ShouldNotBeNull();
         events[0].CorrelationId.ShouldBe(targetCorrelationId);
     }
@@ -760,7 +757,7 @@ public class EventsControllerTests
         Guid targetAccountGuid = Guid.NewGuid();
         Guid differentAccountGuid = Guid.NewGuid();
 
-        EventEntity matchingEvent = new()
+        Event matchingEvent = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = targetAccountGuid,
@@ -771,14 +768,14 @@ public class EventsControllerTests
             DataJson = JsonSerializer.SerializeToDocument(
                 new TestCreatedV1
                 {
-                    TestString = "Matching Account EventEntity",
+                    TestString = "Matching Account Event",
                     TestEnum = TestOptions.OptionA,
                     TestInteger = 100,
                 }
             ),
         };
 
-        EventEntity nonMatchingEvent = new()
+        Event nonMatchingEvent = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = differentAccountGuid,
@@ -789,7 +786,7 @@ public class EventsControllerTests
             DataJson = JsonSerializer.SerializeToDocument(
                 new TestCreatedV1
                 {
-                    TestString = "Non-matching Account EventEntity",
+                    TestString = "Non-matching Account Event",
                     TestEnum = TestOptions.OptionB,
                     TestInteger = 200,
                 }
@@ -809,7 +806,7 @@ public class EventsControllerTests
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
 
         paginatedResponse.ShouldNotBeNull();
-        List<EventEntity> events = paginatedResponse.GetEvents();
+        List<Event> events = paginatedResponse.GetEvents();
         events.ShouldNotBeNull();
         events[0].AccountGuid.ShouldBe(targetAccountGuid);
     }
@@ -820,7 +817,7 @@ public class EventsControllerTests
         Guid targetITwinGuid = Guid.NewGuid();
         string targetType = "test.combined.filter";
 
-        EventEntity matchingEvent = new()
+        Event matchingEvent = new()
         {
             ITwinGuid = targetITwinGuid,
             AccountGuid = Guid.NewGuid(),
@@ -833,7 +830,7 @@ public class EventsControllerTests
             ),
         };
 
-        EventEntity matchingITwinOnly = new()
+        Event matchingITwinOnly = new()
         {
             ITwinGuid = targetITwinGuid,
             AccountGuid = Guid.NewGuid(),
@@ -844,7 +841,7 @@ public class EventsControllerTests
             DataJson = JsonSerializer.SerializeToDocument(new { Message = "Matching iTwin only" }),
         };
 
-        EventEntity matchingTypeOnly = new()
+        Event matchingTypeOnly = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -870,7 +867,7 @@ public class EventsControllerTests
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
 
         paginatedResponse.ShouldNotBeNull();
-        List<EventEntity> events = paginatedResponse.GetEvents();
+        List<Event> events = paginatedResponse.GetEvents();
         events.ShouldNotBeNull();
         events[0]
             .ShouldSatisfyAllConditions(
@@ -882,7 +879,7 @@ public class EventsControllerTests
     [TestMethod]
     public async Task GetEvents_WithInvalidGuid_ReturnsBadRequest()
     {
-        EventEntity event1 = new()
+        Event event1 = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -893,14 +890,14 @@ public class EventsControllerTests
             DataJson = JsonSerializer.SerializeToDocument(
                 new TestCreatedV1
                 {
-                    TestString = "Test EventEntity 1",
+                    TestString = "Test Event 1",
                     TestEnum = TestOptions.OptionA,
                     TestInteger = 100,
                 }
             ),
         };
 
-        EventEntity event2 = new()
+        Event event2 = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -911,7 +908,7 @@ public class EventsControllerTests
             DataJson = JsonSerializer.SerializeToDocument(
                 new TestCreatedV1
                 {
-                    TestString = "Test EventEntity 2",
+                    TestString = "Test Event 2",
                     TestEnum = TestOptions.OptionB,
                     TestInteger = 200,
                 }
@@ -951,14 +948,14 @@ public class EventsControllerTests
     public async Task GetEvents_WithNoPaginationParameters_ReturnsDefaultPaginatedEvents()
     {
         // Create enough events to trigger pagination (more than default page size)
-        List<EventEntity> eventEntities = new();
+        List<Event> events = new();
         for (int i = 0; i < 60; i++)
         {
             // Add delay to ensure different UUID v7 IDs (time-ordered)
             await Task.Delay(5);
 
-            eventEntities.Add(
-                new EventEntity
+            events.Add(
+                new Event
                 {
                     ITwinGuid = Guid.NewGuid(),
                     AccountGuid = Guid.NewGuid(),
@@ -974,7 +971,7 @@ public class EventsControllerTests
             );
         }
 
-        await _eventRepository.AddEventsAsync(eventEntities);
+        await _eventRepository.AddEventsAsync(events);
 
         HttpResponseMessage response = await _client.GetAsync("/events");
 
@@ -1000,12 +997,12 @@ public class EventsControllerTests
     [TestMethod]
     public async Task GetEvents_WithPageSize_ReturnsPaginatedEventsWithSpecifiedSize()
     {
-        List<EventEntity> eventEntities = new();
+        List<Event> events = new();
         for (int i = 0; i < 30; i++)
         {
             await Task.Delay(5);
-            eventEntities.Add(
-                new EventEntity
+            events.Add(
+                new Event
                 {
                     ITwinGuid = Guid.NewGuid(),
                     AccountGuid = Guid.NewGuid(),
@@ -1021,7 +1018,7 @@ public class EventsControllerTests
             );
         }
 
-        await _eventRepository.AddEventsAsync(eventEntities);
+        await _eventRepository.AddEventsAsync(events);
 
         // Set custom page size
         int customPageSize = 15;
@@ -1047,12 +1044,12 @@ public class EventsControllerTests
     [TestMethod]
     public async Task GetEvents_WithContinuationToken_ReturnsNextPage()
     {
-        List<EventEntity> eventEntities = new();
+        List<Event> events = new();
         for (int i = 0; i < 30; i++)
         {
             await Task.Delay(5);
-            eventEntities.Add(
-                new EventEntity
+            events.Add(
+                new Event
                 {
                     ITwinGuid = Guid.NewGuid(),
                     AccountGuid = Guid.NewGuid(),
@@ -1068,7 +1065,7 @@ public class EventsControllerTests
             );
         }
 
-        await _eventRepository.AddEventsAsync(eventEntities);
+        await _eventRepository.AddEventsAsync(events);
 
         // Get first page
         int pageSize = 10;
@@ -1113,7 +1110,7 @@ public class EventsControllerTests
         );
 
         secondPage.ShouldNotBeNull();
-        List<EventEntity> secondPageEvents = secondPage.GetEvents();
+        List<Event> secondPageEvents = secondPage.GetEvents();
         secondPageEvents.ShouldNotBeNull();
         secondPageEvents.Count.ShouldBe(pageSize);
 
@@ -1134,12 +1131,12 @@ public class EventsControllerTests
         Guid targetITwinGuid = Guid.NewGuid();
         string eventType = "test.pagination.combined";
 
-        List<EventEntity> eventEntities = new();
+        List<Event> events = new();
         for (int i = 0; i < 30; i++)
         {
             await Task.Delay(5);
-            eventEntities.Add(
-                new EventEntity
+            events.Add(
+                new Event
                 {
                     ITwinGuid = targetITwinGuid, // Use the same ITwinGuid for all events
                     AccountGuid = Guid.NewGuid(),
@@ -1155,7 +1152,7 @@ public class EventsControllerTests
             );
         }
 
-        await _eventRepository.AddEventsAsync(eventEntities);
+        await _eventRepository.AddEventsAsync(events);
 
         // Get first page with filters
         int pageSize = 10;
@@ -1206,7 +1203,7 @@ public class EventsControllerTests
         secondPage.Items.ShouldNotBeNull();
 
         // Verify all events match the filter criteria
-        foreach (EventEntity evt in secondPage.Items)
+        foreach (Event evt in secondPage.Items)
         {
             evt.ITwinGuid.ShouldBe(targetITwinGuid);
             evt.Type.ShouldBe(eventType);
@@ -1218,10 +1215,10 @@ public class EventsControllerTests
     // Helper class used for deserialization in tests
     private class PaginatedResponseWrapper
     {
-        public List<EventEntity> Items { get; set; } = new();
+        public List<Event> Items { get; set; } = new();
         public PaginationLinksResponse Links { get; set; } = new();
 
-        public List<EventEntity> GetEvents() => Items;
+        public List<Event> GetEvents() => Items;
     }
 
     private class PaginationLinksResponse

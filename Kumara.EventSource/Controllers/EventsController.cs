@@ -40,12 +40,11 @@ public class EventsController : ControllerBase
             );
         }
 
-        List<EventEntity> events =
-            JsonSerializer.Deserialize<List<EventEntity>>(payload.GetRawText()) ?? [];
+        List<Event> events = JsonSerializer.Deserialize<List<Event>>(payload.GetRawText()) ?? [];
 
-        foreach (EventEntity eventEntity in events)
+        foreach (Event @event in events)
         {
-            ValidationResult validationResult = _eventValidator.ValidateEvent(eventEntity);
+            ValidationResult validationResult = _eventValidator.ValidateEvent(@event);
             if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.Errors);
@@ -96,9 +95,7 @@ public class EventsController : ControllerBase
                 );
                 paramsWithToken["continuationtoken"] = continuationToken;
 
-                queryParsingResult = new QueryCollection(
-                    paramsWithToken
-                ).ToEventEntityQueryBuilder();
+                queryParsingResult = new QueryCollection(paramsWithToken).ToEventQueryBuilder();
             }
             else
             {
@@ -116,7 +113,7 @@ public class EventsController : ControllerBase
         }
         else
         {
-            queryParsingResult = query.ToEventEntityQueryBuilder();
+            queryParsingResult = query.ToEventQueryBuilder();
         }
 
         if (!queryParsingResult.IsSuccess)
@@ -133,7 +130,7 @@ public class EventsController : ControllerBase
             );
         }
 
-        PaginatedList<EventEntity> paginatedList = await _eventRepository.GetPaginatedEventsAsync(
+        PaginatedList<Event> paginatedList = await _eventRepository.GetPaginatedEventsAsync(
             queryParsingResult.QueryBuilder!,
             queryParsingResult.PageSize
         );
@@ -146,7 +143,7 @@ public class EventsController : ControllerBase
     private void BuildPaginationLinks<T>(
         PaginatedList<T> paginatedList,
         IQueryCollection query,
-        EventEntityQueryBuilder queryBuilder
+        EventQueryBuilder queryBuilder
     )
     {
         HttpRequest request = HttpContext.Request;

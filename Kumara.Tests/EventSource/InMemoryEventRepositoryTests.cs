@@ -20,35 +20,29 @@ public class InMemoryEventRepositoryTests
     }
 
     [TestMethod]
-    public async Task RoundtripEventsAsync_ShouldStoreAndRetrieveEventEntities()
+    public async Task RoundtripEventsAsync_ShouldStoreAndRetrieveEvents()
     {
         IEventRepository eventRepository = CreateInMemoryRepository();
-        List<EventEntity> eventEntities = EventRepositoryTestUtils.GetTestEventEntities();
+        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
 
-        await eventRepository.AddEventsAsync(eventEntities);
-        IQueryable<EventEntity> retrievedEvents = await eventRepository.QueryEventsAsync(
-            new EventEntityQueryBuilder()
+        await eventRepository.AddEventsAsync(events);
+        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(
+            new EventQueryBuilder()
         );
 
-        eventEntities
-            .Select(e => e.ITwinGuid)
-            .ShouldBeSubsetOf(retrievedEvents.Select(e => e.ITwinGuid));
+        events.Select(e => e.ITwinGuid).ShouldBeSubsetOf(retrievedEvents.Select(e => e.ITwinGuid));
     }
 
     [TestMethod]
     public async Task QueryEventsByITwinGuid_ShouldReturnMatchingEvents()
     {
         IEventRepository? eventRepository = CreateInMemoryRepository();
-        List<EventEntity> eventEntities = EventRepositoryTestUtils.GetTestEventEntities();
-        await eventRepository.AddEventsAsync(eventEntities);
-        Guid targetITwinGuid = eventEntities.First().ITwinGuid;
+        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
+        await eventRepository.AddEventsAsync(events);
+        Guid targetITwinGuid = events.First().ITwinGuid;
 
-        EventEntityQueryBuilder queryBuilder = new EventEntityQueryBuilder().WhereITwinGuid(
-            targetITwinGuid
-        );
-        IQueryable<EventEntity> retrievedEvents = await eventRepository.QueryEventsAsync(
-            queryBuilder
-        );
+        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereITwinGuid(targetITwinGuid);
+        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.ITwinGuid == targetITwinGuid).ShouldBeTrue();
@@ -58,16 +52,14 @@ public class InMemoryEventRepositoryTests
     public async Task QueryEventsByAccountGuid_ShouldReturnMatchingEvents()
     {
         IEventRepository? eventRepository = CreateInMemoryRepository();
-        List<EventEntity> eventEntities = EventRepositoryTestUtils.GetTestEventEntities();
-        await eventRepository.AddEventsAsync(eventEntities);
-        Guid targetAccountGuid = eventEntities.First().AccountGuid;
+        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
+        await eventRepository.AddEventsAsync(events);
+        Guid targetAccountGuid = events.First().AccountGuid;
 
-        EventEntityQueryBuilder queryBuilder = new EventEntityQueryBuilder().WhereAccountGuid(
+        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereAccountGuid(
             targetAccountGuid
         );
-        IQueryable<EventEntity> retrievedEvents = await eventRepository.QueryEventsAsync(
-            queryBuilder
-        );
+        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.AccountGuid == targetAccountGuid).ShouldBeTrue();
@@ -77,16 +69,14 @@ public class InMemoryEventRepositoryTests
     public async Task QueryEventsByCorrelationId_ShouldReturnMatchingEvents()
     {
         IEventRepository? eventRepository = CreateInMemoryRepository();
-        List<EventEntity> eventEntities = EventRepositoryTestUtils.GetTestEventEntities();
-        await eventRepository.AddEventsAsync(eventEntities);
-        string? targetCorrelationId = eventEntities.First().CorrelationId;
+        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
+        await eventRepository.AddEventsAsync(events);
+        string? targetCorrelationId = events.First().CorrelationId;
 
-        EventEntityQueryBuilder queryBuilder = new EventEntityQueryBuilder().WhereCorrelationId(
+        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereCorrelationId(
             targetCorrelationId
         );
-        IQueryable<EventEntity> retrievedEvents = await eventRepository.QueryEventsAsync(
-            queryBuilder
-        );
+        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.CorrelationId == targetCorrelationId).ShouldBeTrue();
@@ -96,14 +86,12 @@ public class InMemoryEventRepositoryTests
     public async Task QueryEventsByType_ShouldReturnMatchingEvents()
     {
         IEventRepository? eventRepository = CreateInMemoryRepository();
-        List<EventEntity> eventEntities = EventRepositoryTestUtils.GetTestEventEntities();
-        await eventRepository.AddEventsAsync(eventEntities);
-        string? targetType = eventEntities.First().Type;
+        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
+        await eventRepository.AddEventsAsync(events);
+        string? targetType = events.First().Type;
 
-        EventEntityQueryBuilder queryBuilder = new EventEntityQueryBuilder().WhereType(targetType);
-        IQueryable<EventEntity> retrievedEvents = await eventRepository.QueryEventsAsync(
-            queryBuilder
-        );
+        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereType(targetType);
+        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.Type == targetType).ShouldBeTrue();
@@ -113,17 +101,16 @@ public class InMemoryEventRepositoryTests
     public async Task QueryEventsWithBuilder_ShouldReturnMatchingEvents()
     {
         IEventRepository eventRepository = CreateInMemoryRepository();
-        List<EventEntity> eventEntities = EventRepositoryTestUtils.GetTestEventEntities();
-        await eventRepository.AddEventsAsync(eventEntities);
-        string targetType = eventEntities.First().Type;
-        Guid targetITwinGuid = eventEntities.First().ITwinGuid;
+        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
+        await eventRepository.AddEventsAsync(events);
+        string targetType = events.First().Type;
+        Guid targetITwinGuid = events.First().ITwinGuid;
 
-        EventEntityQueryBuilder queryBuilder = new EventEntityQueryBuilder()
+        EventQueryBuilder queryBuilder = new EventQueryBuilder()
             .WhereType(targetType)
             .WhereITwinGuid(targetITwinGuid);
-        IQueryable<EventEntity> retrievedEvents = await eventRepository.QueryEventsAsync(
-            queryBuilder
-        );
+
+        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents
@@ -135,9 +122,9 @@ public class InMemoryEventRepositoryTests
     public async Task GetAllEvents_ShouldReturnEventsOrderedById()
     {
         IEventRepository eventRepository = CreateInMemoryRepository();
-        List<EventEntity> eventEntities = new()
+        List<Event> events = new()
         {
-            new EventEntity
+            new Event
             {
                 Id = GuidUtility.CreateGuid(),
                 ITwinGuid = Guid.NewGuid(),
@@ -147,7 +134,7 @@ public class InMemoryEventRepositoryTests
                 Source = new Uri("http://testsource.com"),
                 Type = "test.event",
             },
-            new EventEntity
+            new Event
             {
                 Id = GuidUtility.CreateGuid(),
                 ITwinGuid = Guid.NewGuid(),
@@ -157,7 +144,7 @@ public class InMemoryEventRepositoryTests
                 Source = new Uri("http://testsource.com"),
                 Type = "test.event",
             },
-            new EventEntity
+            new Event
             {
                 Id = GuidUtility.CreateGuid(),
                 ITwinGuid = Guid.NewGuid(),
@@ -169,11 +156,11 @@ public class InMemoryEventRepositoryTests
             },
         };
 
-        eventEntities = eventEntities.OrderBy(_ => GuidUtility.CreateGuid()).ToList();
+        events = events.OrderBy(_ => GuidUtility.CreateGuid()).ToList();
 
-        await eventRepository.AddEventsAsync(eventEntities);
-        IQueryable<EventEntity> retrievedEvents = await eventRepository.QueryEventsAsync(
-            new EventEntityQueryBuilder()
+        await eventRepository.AddEventsAsync(events);
+        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(
+            new EventQueryBuilder()
         );
 
         retrievedEvents
@@ -186,8 +173,8 @@ public class InMemoryEventRepositoryTests
     {
         IEventRepository eventRepository = CreateInMemoryRepository();
 
-        IQueryable<EventEntity> retrievedEvents = await eventRepository.QueryEventsAsync(
-            new EventEntityQueryBuilder()
+        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(
+            new EventQueryBuilder()
         );
 
         retrievedEvents.ShouldBeEmpty();
@@ -197,7 +184,7 @@ public class InMemoryEventRepositoryTests
     public async Task GetAllEvents_ShouldHandleSingleEvent()
     {
         IEventRepository eventRepository = CreateInMemoryRepository();
-        EventEntity singleEvent = new()
+        Event singleEvent = new()
         {
             Id = GuidUtility.CreateGuid(),
             ITwinGuid = Guid.NewGuid(),
@@ -208,9 +195,9 @@ public class InMemoryEventRepositoryTests
             Type = "test.event",
         };
 
-        await eventRepository.AddEventsAsync(new List<EventEntity> { singleEvent });
-        IQueryable<EventEntity> retrievedEvents = await eventRepository.QueryEventsAsync(
-            new EventEntityQueryBuilder()
+        await eventRepository.AddEventsAsync(new List<Event> { singleEvent });
+        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(
+            new EventQueryBuilder()
         );
 
         retrievedEvents.Count().ShouldBe(1);
@@ -222,13 +209,13 @@ public class InMemoryEventRepositoryTests
     {
         IEventRepository eventRepository = CreateInMemoryRepository();
 
-        List<EventEntity> eventEntities = new();
+        List<Event> testEvents = new();
 
         for (int i = 0; i < 25; i++)
         {
             await Task.Delay(5);
 
-            eventEntities.Add(
+            testEvents.Add(
                 new Event
                 {
                     ITwinGuid = Guid.NewGuid(),
@@ -245,11 +232,9 @@ public class InMemoryEventRepositoryTests
             );
         }
 
-        await eventRepository.AddEventsAsync(eventEntities);
+        await eventRepository.AddEventsAsync(testEvents);
 
-        EventEntityQueryBuilder queryBuilder = new EventEntityQueryBuilder().WhereType(
-            "test.pagination.event"
-        );
+        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereType("test.pagination.event");
 
         int pageSize = 10;
         PaginatedList<Event> paginatedResult = await eventRepository.GetPaginatedEventsAsync(
@@ -272,7 +257,7 @@ public class InMemoryEventRepositoryTests
             "Should have a next link since more events exist"
         );
 
-        List<EventEntity> events = paginatedResult.Items.ToList();
+        List<Event> events = paginatedResult.Items.ToList();
         for (int i = 0; i < events.Count - 1; i++)
         {
             events[i].Id.ShouldBeLessThan(events[i + 1].Id);
@@ -284,11 +269,11 @@ public class InMemoryEventRepositoryTests
     {
         IEventRepository eventRepository = CreateInMemoryRepository();
 
-        List<Event> eventEntities = new();
+        List<Event> events = new();
         for (int i = 0; i < 30; i++)
         {
             await Task.Delay(10);
-            eventEntities.Add(
+            events.Add(
                 new Event
                 {
                     ITwinGuid = Guid.NewGuid(),
@@ -305,9 +290,9 @@ public class InMemoryEventRepositoryTests
             );
         }
 
-        await eventRepository.AddEventsAsync(eventEntities);
+        await eventRepository.AddEventsAsync(events);
 
-        EventEntityQueryBuilder firstPageQueryBuilder = new EventEntityQueryBuilder().WhereType(
+        EventQueryBuilder firstPageQueryBuilder = new EventQueryBuilder().WhereType(
             "test.pagination.continuation"
         );
 
@@ -327,7 +312,7 @@ public class InMemoryEventRepositoryTests
             realContinuationToken
         );
 
-        EventEntityQueryBuilder secondQueryBuilder = new EventEntityQueryBuilder()
+        EventQueryBuilder secondQueryBuilder = new EventQueryBuilder()
             .WhereType("test.pagination.continuation")
             .WithContinuationToken(realContinuationToken);
 
@@ -358,7 +343,7 @@ public class InMemoryEventRepositoryTests
         Guid lastSecondPageEventId = secondPageResults.Last().Id;
         string thirdPageToken = Pagination.CreateContinuationToken(lastSecondPageEventId);
 
-        EventEntityQueryBuilder thirdQueryBuilder = new EventEntityQueryBuilder()
+        EventQueryBuilder thirdQueryBuilder = new EventQueryBuilder()
             .WhereType("test.pagination.continuation")
             .WithContinuationToken(thirdPageToken);
 

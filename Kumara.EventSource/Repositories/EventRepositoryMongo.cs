@@ -17,36 +17,34 @@ public class EventRepositoryMongo : IEventRepository
         _context = context;
     }
 
-    public async Task AddEventsAsync(IEnumerable<EventEntity> events)
+    public async Task AddEventsAsync(IEnumerable<Event> events)
     {
         await _context.Events.AddRangeAsync(events);
         await _context.SaveChangesAsync();
     }
 
-    public Task<IQueryable<EventEntity>> QueryEventsAsync(EventEntityQueryBuilder queryBuilder)
+    public Task<IQueryable<Event>> QueryEventsAsync(EventQueryBuilder queryBuilder)
     {
-        var result = queryBuilder.ApplyTo(_context.Events.AsQueryable().OrderBy(e => e.Id));
+        IQueryable<Event>? result = queryBuilder.ApplyTo(
+            _context.Events.AsQueryable().OrderBy(e => e.Id)
+        );
         return Task.FromResult(result);
     }
 
-    public async Task<PaginatedList<EventEntity>> GetPaginatedEventsAsync(
-        EventEntityQueryBuilder queryBuilder,
+    public async Task<PaginatedList<Event>> GetPaginatedEventsAsync(
+        EventQueryBuilder queryBuilder,
         int pageSize
     )
     {
-        IQueryable<EventEntity> queryResult = await QueryEventsAsync(queryBuilder);
+        IQueryable<Event> queryResult = await QueryEventsAsync(queryBuilder);
 
-        List<EventEntity> events = queryResult.ToList();
+        List<Event> events = queryResult.ToList();
 
         bool hasMoreItems = events.Count > pageSize;
 
-        List<EventEntity> pagedItems = hasMoreItems ? events.Take(pageSize).ToList() : events;
+        List<Event> pagedItems = hasMoreItems ? events.Take(pageSize).ToList() : events;
 
-        PaginatedList<EventEntity> result = new()
-        {
-            Items = pagedItems,
-            HasMoreItems = hasMoreItems,
-        };
+        PaginatedList<Event> result = new() { Items = pagedItems, HasMoreItems = hasMoreItems };
 
         return result;
     }

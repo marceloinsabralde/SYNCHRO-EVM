@@ -6,51 +6,51 @@ using Kumara.EventSource.Utilities;
 
 namespace Kumara.EventSource.Models;
 
-public class EventEntityQueryBuilder
+public class EventQueryBuilder
 {
-    private readonly List<Expression<Func<EventEntity, bool>>> _predicates = new();
+    private readonly List<Expression<Func<Event, bool>>> _predicates = new();
     private int _limit;
     private bool _hasLimit;
 
     public Dictionary<string, string> TokenQueryParameters { get; private set; } = new();
 
-    public EventEntityQueryBuilder WhereId(Guid id)
+    public EventQueryBuilder WhereId(Guid id)
     {
         _predicates.Add(e => e.Id == id);
         return this;
     }
 
-    public EventEntityQueryBuilder WhereITwinGuid(Guid iTwinGuid)
+    public EventQueryBuilder WhereITwinGuid(Guid iTwinGuid)
     {
         _predicates.Add(e => e.ITwinGuid == iTwinGuid);
         return this;
     }
 
-    public EventEntityQueryBuilder WhereAccountGuid(Guid accountGuid)
+    public EventQueryBuilder WhereAccountGuid(Guid accountGuid)
     {
         _predicates.Add(e => e.AccountGuid == accountGuid);
         return this;
     }
 
-    public EventEntityQueryBuilder WhereCorrelationId(string correlationId)
+    public EventQueryBuilder WhereCorrelationId(string correlationId)
     {
         _predicates.Add(e => e.CorrelationId == correlationId);
         return this;
     }
 
-    public EventEntityQueryBuilder WhereType(string type)
+    public EventQueryBuilder WhereType(string type)
     {
         _predicates.Add(e => e.Type == type);
         return this;
     }
 
-    public EventEntityQueryBuilder WhereDataJson(Func<JsonDocument, bool> dataPredicate)
+    public EventQueryBuilder WhereDataJson(Func<JsonDocument, bool> dataPredicate)
     {
         _predicates.Add(e => dataPredicate(e.DataJson));
         return this;
     }
 
-    public EventEntityQueryBuilder WithContinuationToken(string continuationToken)
+    public EventQueryBuilder WithContinuationToken(string continuationToken)
     {
         Pagination.ContinuationToken? token = Pagination.ParseContinuationToken(continuationToken);
         if (token != null)
@@ -63,16 +63,16 @@ public class EventEntityQueryBuilder
         return this;
     }
 
-    public EventEntityQueryBuilder Limit(int limit)
+    public EventQueryBuilder Limit(int limit)
     {
         _limit = Math.Max(1, limit);
         _hasLimit = true;
         return this;
     }
 
-    public IQueryable<EventEntity> ApplyTo(IQueryable<EventEntity> query)
+    public IQueryable<Event> ApplyTo(IQueryable<Event> query)
     {
-        foreach (Expression<Func<EventEntity, bool>>? predicate in _predicates)
+        foreach (Expression<Func<Event, bool>>? predicate in _predicates)
         {
             query = query.Where(predicate);
         }

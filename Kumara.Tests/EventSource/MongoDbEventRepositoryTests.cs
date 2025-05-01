@@ -73,35 +73,29 @@ public class MongoDbEventRepositoryTests
     }
 
     [TestMethod]
-    public async Task RoundtripEventsAsync_ShouldStoreAndRetrieveEventEntities()
+    public async Task RoundtripEventsAsync_ShouldStoreAndRetrieveEvents()
     {
         ArgumentNullException.ThrowIfNull(_eventRepository);
-        List<EventEntity> eventEntities = EventRepositoryTestUtils.GetTestEventEntities();
+        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
 
-        await _eventRepository.AddEventsAsync(eventEntities);
-        IQueryable<EventEntity> retrievedEvents = await _eventRepository.QueryEventsAsync(
-            new EventEntityQueryBuilder()
+        await _eventRepository.AddEventsAsync(events);
+        IQueryable<Event> retrievedEvents = await _eventRepository.QueryEventsAsync(
+            new EventQueryBuilder()
         );
 
-        eventEntities
-            .Select(e => e.ITwinGuid)
-            .ShouldBeSubsetOf(retrievedEvents.Select(e => e.ITwinGuid));
+        events.Select(e => e.ITwinGuid).ShouldBeSubsetOf(retrievedEvents.Select(e => e.ITwinGuid));
     }
 
     [TestMethod]
     public async Task QueryEventsByITwinGuid_ShouldReturnMatchingEvents()
     {
         ArgumentNullException.ThrowIfNull(_eventRepository);
-        List<EventEntity> eventEntities = EventRepositoryTestUtils.GetTestEventEntities();
-        await _eventRepository.AddEventsAsync(eventEntities);
-        Guid targetITwinGuid = eventEntities.First().ITwinGuid;
+        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
+        await _eventRepository.AddEventsAsync(events);
+        Guid targetITwinGuid = events.First().ITwinGuid;
 
-        EventEntityQueryBuilder queryBuilder = new EventEntityQueryBuilder().WhereITwinGuid(
-            targetITwinGuid
-        );
-        IQueryable<EventEntity> retrievedEvents = await _eventRepository.QueryEventsAsync(
-            queryBuilder
-        );
+        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereITwinGuid(targetITwinGuid);
+        IQueryable<Event> retrievedEvents = await _eventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.ITwinGuid == targetITwinGuid).ShouldBeTrue();
@@ -111,16 +105,14 @@ public class MongoDbEventRepositoryTests
     public async Task QueryEventsByAccountGuid_ShouldReturnMatchingEvents()
     {
         ArgumentNullException.ThrowIfNull(_eventRepository);
-        List<EventEntity> eventEntities = EventRepositoryTestUtils.GetTestEventEntities();
-        await _eventRepository.AddEventsAsync(eventEntities);
-        Guid targetAccountGuid = eventEntities.First().AccountGuid;
+        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
+        await _eventRepository.AddEventsAsync(events);
+        Guid targetAccountGuid = events.First().AccountGuid;
 
-        EventEntityQueryBuilder queryBuilder = new EventEntityQueryBuilder().WhereAccountGuid(
+        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereAccountGuid(
             targetAccountGuid
         );
-        IQueryable<EventEntity> retrievedEvents = await _eventRepository.QueryEventsAsync(
-            queryBuilder
-        );
+        IQueryable<Event> retrievedEvents = await _eventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.AccountGuid == targetAccountGuid).ShouldBeTrue();
@@ -130,16 +122,14 @@ public class MongoDbEventRepositoryTests
     public async Task QueryEventsByCorrelationId_ShouldReturnMatchingEvents()
     {
         ArgumentNullException.ThrowIfNull(_eventRepository);
-        List<EventEntity> eventEntities = EventRepositoryTestUtils.GetTestEventEntities();
-        await _eventRepository.AddEventsAsync(eventEntities);
-        string targetCorrelationId = eventEntities.First().CorrelationId;
+        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
+        await _eventRepository.AddEventsAsync(events);
+        string targetCorrelationId = events.First().CorrelationId;
 
-        EventEntityQueryBuilder queryBuilder = new EventEntityQueryBuilder().WhereCorrelationId(
+        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereCorrelationId(
             targetCorrelationId
         );
-        IQueryable<EventEntity> retrievedEvents = await _eventRepository.QueryEventsAsync(
-            queryBuilder
-        );
+        IQueryable<Event> retrievedEvents = await _eventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.CorrelationId == targetCorrelationId).ShouldBeTrue();
@@ -149,14 +139,12 @@ public class MongoDbEventRepositoryTests
     public async Task QueryEventsByType_ShouldReturnMatchingEvents()
     {
         ArgumentNullException.ThrowIfNull(_eventRepository);
-        List<EventEntity> eventEntities = EventRepositoryTestUtils.GetTestEventEntities();
-        await _eventRepository.AddEventsAsync(eventEntities);
-        string targetType = eventEntities.First().Type;
+        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
+        await _eventRepository.AddEventsAsync(events);
+        string targetType = events.First().Type;
 
-        EventEntityQueryBuilder queryBuilder = new EventEntityQueryBuilder().WhereType(targetType);
-        IQueryable<EventEntity> retrievedEvents = await _eventRepository.QueryEventsAsync(
-            queryBuilder
-        );
+        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereType(targetType);
+        IQueryable<Event> retrievedEvents = await _eventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.Type == targetType).ShouldBeTrue();
@@ -166,18 +154,16 @@ public class MongoDbEventRepositoryTests
     public async Task QueryEventsWithBuilder_ShouldReturnMatchingEvents()
     {
         ArgumentNullException.ThrowIfNull(_eventRepository);
-        List<EventEntity> eventEntities = EventRepositoryTestUtils.GetTestEventEntities();
-        await _eventRepository.AddEventsAsync(eventEntities);
-        string targetType = eventEntities.First().Type;
-        Guid targetITwinGuid = eventEntities.First().ITwinGuid;
+        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
+        await _eventRepository.AddEventsAsync(events);
+        string targetType = events.First().Type;
+        Guid targetITwinGuid = events.First().ITwinGuid;
 
-        EventEntityQueryBuilder queryBuilder = new EventEntityQueryBuilder()
+        EventQueryBuilder queryBuilder = new EventQueryBuilder()
             .WhereType(targetType)
             .WhereITwinGuid(targetITwinGuid);
 
-        IQueryable<EventEntity> retrievedEvents = await _eventRepository.QueryEventsAsync(
-            queryBuilder
-        );
+        IQueryable<Event> retrievedEvents = await _eventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents
@@ -190,14 +176,14 @@ public class MongoDbEventRepositoryTests
     {
         ArgumentNullException.ThrowIfNull(_eventRepository);
 
-        List<EventEntity> eventEntities = [];
+        List<Event> testEvents = [];
 
         for (int i = 0; i < 25; i++)
         {
             await Task.Delay(5);
 
-            eventEntities.Add(
-                new EventEntity
+            testEvents.Add(
+                new Event
                 {
                     ITwinGuid = Guid.NewGuid(),
                     AccountGuid = Guid.NewGuid(),
@@ -213,15 +199,13 @@ public class MongoDbEventRepositoryTests
             );
         }
 
-        await _eventRepository.AddEventsAsync(eventEntities);
+        await _eventRepository.AddEventsAsync(testEvents);
 
         // Create a query builder for pagination
-        EventEntityQueryBuilder queryBuilder = new EventEntityQueryBuilder().WhereType(
-            "test.pagination.event"
-        );
+        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereType("test.pagination.event");
 
         int pageSize = 10;
-        PaginatedList<EventEntity> paginatedResult = await _eventRepository.GetPaginatedEventsAsync(
+        PaginatedList<Event> paginatedResult = await _eventRepository.GetPaginatedEventsAsync(
             queryBuilder,
             pageSize
         );
@@ -241,7 +225,7 @@ public class MongoDbEventRepositoryTests
             "Should have a next link since more events exist"
         );
 
-        List<EventEntity> events = paginatedResult.Items.ToList();
+        List<Event> events = paginatedResult.Items.ToList();
         for (int i = 0; i < events.Count - 1; i++)
         {
             events[i].Id.ShouldBeLessThan(events[i + 1].Id);
@@ -253,14 +237,14 @@ public class MongoDbEventRepositoryTests
     {
         ArgumentNullException.ThrowIfNull(_eventRepository);
 
-        List<EventEntity> eventEntities = new();
+        List<Event> events = new();
 
         for (int i = 0; i < 30; i++)
         {
             await Task.Delay(10);
 
-            eventEntities.Add(
-                new EventEntity
+            events.Add(
+                new Event
                 {
                     ITwinGuid = Guid.NewGuid(),
                     AccountGuid = Guid.NewGuid(),
@@ -276,18 +260,18 @@ public class MongoDbEventRepositoryTests
             );
         }
 
-        await _eventRepository.AddEventsAsync(eventEntities);
+        await _eventRepository.AddEventsAsync(events);
 
-        EventEntityQueryBuilder firstPageQueryBuilder = new EventEntityQueryBuilder().WhereType(
+        EventQueryBuilder firstPageQueryBuilder = new EventQueryBuilder().WhereType(
             "test.pagination.continuation"
         );
         int pageSize = 10;
-        PaginatedList<EventEntity> firstPage = await _eventRepository.GetPaginatedEventsAsync(
+        PaginatedList<Event> firstPage = await _eventRepository.GetPaginatedEventsAsync(
             firstPageQueryBuilder,
             pageSize
         );
 
-        List<EventEntity> firstPageResults = firstPage.Items.ToList();
+        List<Event> firstPageResults = firstPage.Items.ToList();
 
         Guid lastEventId = firstPageResults.Last().Id;
         string realContinuationToken = Pagination.CreateContinuationToken(lastEventId);
@@ -298,11 +282,11 @@ public class MongoDbEventRepositoryTests
             realContinuationToken
         );
 
-        EventEntityQueryBuilder secondQueryBuilder = new EventEntityQueryBuilder()
+        EventQueryBuilder secondQueryBuilder = new EventQueryBuilder()
             .WhereType("test.pagination.continuation")
             .WithContinuationToken(realContinuationToken); // Use real token
 
-        PaginatedList<EventEntity> secondPage = await _eventRepository.GetPaginatedEventsAsync(
+        PaginatedList<Event> secondPage = await _eventRepository.GetPaginatedEventsAsync(
             secondQueryBuilder,
             pageSize
         );
@@ -328,15 +312,15 @@ public class MongoDbEventRepositoryTests
             "Second page IDs should all be greater than first page"
         );
 
-        List<EventEntity> secondPageResults = secondPage.Items.ToList();
+        List<Event> secondPageResults = secondPage.Items.ToList();
         Guid lastSecondPageEventId = secondPageResults.Last().Id;
         string thirdPageToken = Pagination.CreateContinuationToken(lastSecondPageEventId);
 
-        EventEntityQueryBuilder thirdQueryBuilder = new EventEntityQueryBuilder()
+        EventQueryBuilder thirdQueryBuilder = new EventQueryBuilder()
             .WhereType("test.pagination.continuation")
             .WithContinuationToken(thirdPageToken);
 
-        PaginatedList<EventEntity> thirdPage = await _eventRepository.GetPaginatedEventsAsync(
+        PaginatedList<Event> thirdPage = await _eventRepository.GetPaginatedEventsAsync(
             thirdQueryBuilder,
             pageSize
         );
@@ -356,9 +340,9 @@ public class MongoDbEventRepositoryTests
     public async Task GetAllEvents_ShouldReturnEventsOrderedById()
     {
         ArgumentNullException.ThrowIfNull(_eventRepository);
-        List<EventEntity> eventEntities = new()
+        List<Event> events = new()
         {
-            new EventEntity
+            new Event
             {
                 Id = GuidUtility.CreateGuid(),
                 ITwinGuid = Guid.NewGuid(),
@@ -368,7 +352,7 @@ public class MongoDbEventRepositoryTests
                 Source = new Uri("http://testsource.com"),
                 Type = "test.event",
             },
-            new EventEntity
+            new Event
             {
                 Id = GuidUtility.CreateGuid(),
                 ITwinGuid = Guid.NewGuid(),
@@ -378,7 +362,7 @@ public class MongoDbEventRepositoryTests
                 Source = new Uri("http://testsource.com"),
                 Type = "test.event",
             },
-            new EventEntity
+            new Event
             {
                 Id = GuidUtility.CreateGuid(),
                 ITwinGuid = Guid.NewGuid(),
@@ -390,11 +374,11 @@ public class MongoDbEventRepositoryTests
             },
         };
 
-        eventEntities = eventEntities.OrderBy(_ => GuidUtility.CreateGuid()).ToList();
+        events = events.OrderBy(_ => GuidUtility.CreateGuid()).ToList();
 
-        await _eventRepository.AddEventsAsync(eventEntities);
-        IQueryable<EventEntity> retrievedEvents = await _eventRepository.QueryEventsAsync(
-            new EventEntityQueryBuilder()
+        await _eventRepository.AddEventsAsync(events);
+        IQueryable<Event> retrievedEvents = await _eventRepository.QueryEventsAsync(
+            new EventQueryBuilder()
         );
 
         retrievedEvents
@@ -407,8 +391,8 @@ public class MongoDbEventRepositoryTests
     {
         ArgumentNullException.ThrowIfNull(_eventRepository);
 
-        IQueryable<EventEntity> retrievedEvents = await _eventRepository.QueryEventsAsync(
-            new EventEntityQueryBuilder()
+        IQueryable<Event> retrievedEvents = await _eventRepository.QueryEventsAsync(
+            new EventQueryBuilder()
         );
 
         retrievedEvents.ShouldBeEmpty();
@@ -418,7 +402,7 @@ public class MongoDbEventRepositoryTests
     public async Task GetAllEvents_ShouldHandleSingleEvent()
     {
         ArgumentNullException.ThrowIfNull(_eventRepository);
-        EventEntity singleEvent = new()
+        Event singleEvent = new()
         {
             Id = GuidUtility.CreateGuid(),
             ITwinGuid = Guid.NewGuid(),
@@ -429,9 +413,9 @@ public class MongoDbEventRepositoryTests
             Type = "test.event",
         };
 
-        await _eventRepository.AddEventsAsync(new List<EventEntity> { singleEvent });
-        IQueryable<EventEntity> retrievedEvents = await _eventRepository.QueryEventsAsync(
-            new EventEntityQueryBuilder()
+        await _eventRepository.AddEventsAsync(new List<Event> { singleEvent });
+        IQueryable<Event> retrievedEvents = await _eventRepository.QueryEventsAsync(
+            new EventQueryBuilder()
         );
 
         retrievedEvents.Count().ShouldBe(1);

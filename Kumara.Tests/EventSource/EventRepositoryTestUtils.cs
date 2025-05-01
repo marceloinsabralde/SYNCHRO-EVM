@@ -8,9 +8,9 @@ namespace Kumara.Tests.EventSource;
 
 public static class EventRepositoryTestUtils
 {
-    public static List<EventEntity> GetTestEventEntities()
+    public static List<Event> GetTestEvents()
     {
-        return new List<EventEntity>
+        return new List<Event>
         {
             new()
             {

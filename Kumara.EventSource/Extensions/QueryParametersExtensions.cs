@@ -11,9 +11,9 @@ public static class QueryParametersExtensions
     private const int DefaultPageSize = 50;
     private const int MaxPageSize = 200;
 
-    public static QueryParsingResult ToEventEntityQueryBuilder(this IQueryCollection queryParams)
+    public static QueryParsingResult ToEventQueryBuilder(this IQueryCollection queryParams)
     {
-        EventEntityQueryBuilder queryBuilder = new();
+        EventQueryBuilder queryBuilder = new();
 
         int? pageSize = null;
         string? continuationToken = null;

@@ -8,42 +8,38 @@ namespace Kumara.EventSource.Repositories;
 
 public class EventRepositoryInMemoryList : IEventRepository
 {
-    private readonly ConcurrentBag<EventEntity> _events = [];
+    private readonly ConcurrentBag<Event> _events = [];
 
-    public Task AddEventsAsync(IEnumerable<EventEntity> events)
+    public Task AddEventsAsync(IEnumerable<Event> events)
     {
-        foreach (EventEntity eventEntity in events)
+        foreach (Event? @event in events)
         {
-            _events.Add(eventEntity);
+            _events.Add(@event);
         }
 
         return Task.CompletedTask;
     }
 
-    public Task<IQueryable<EventEntity>> QueryEventsAsync(EventEntityQueryBuilder queryBuilder)
+    public Task<IQueryable<Event>> QueryEventsAsync(EventQueryBuilder queryBuilder)
     {
-        var result = queryBuilder.ApplyTo(
-            (IQueryable<EventEntity>)_events.AsQueryable().OrderBy(e => e.Id)
+        IQueryable<Event>? result = queryBuilder.ApplyTo(
+            (IQueryable<Event>)_events.AsQueryable().OrderBy(e => e.Id)
         );
         return Task.FromResult(result);
     }
 
-    public async Task<PaginatedList<EventEntity>> GetPaginatedEventsAsync(
-        EventEntityQueryBuilder queryBuilder,
+    public async Task<PaginatedList<Event>> GetPaginatedEventsAsync(
+        EventQueryBuilder queryBuilder,
         int pageSize
     )
     {
         queryBuilder.Limit(pageSize + 1);
-        IQueryable<EventEntity> queryResult = await QueryEventsAsync(queryBuilder);
-        List<EventEntity> events = queryResult.ToList();
+        IQueryable<Event> queryResult = await QueryEventsAsync(queryBuilder);
+        List<Event> events = queryResult.ToList();
         bool hasMoreItems = events.Count > pageSize;
-        List<EventEntity> pagedItems = hasMoreItems ? events.Take(pageSize).ToList() : events;
+        List<Event> pagedItems = hasMoreItems ? events.Take(pageSize).ToList() : events;
 
-        PaginatedList<EventEntity> result = new()
-        {
-            Items = pagedItems,
-            HasMoreItems = hasMoreItems,
-        };
+        PaginatedList<Event> result = new() { Items = pagedItems, HasMoreItems = hasMoreItems };
 
         return result;
     }

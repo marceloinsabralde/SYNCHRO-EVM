@@ -7,7 +7,7 @@ using Kumara.EventSource.Utilities;
 
 namespace Kumara.EventSource.Models;
 
-public class EventEntity
+public class Event
 {
     [Required]
     [JsonPropertyName("iTwinGuid")]
