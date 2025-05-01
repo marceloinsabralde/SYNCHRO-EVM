@@ -21,7 +21,21 @@ CREATE TABLE public.companies (
     description text
 );
 ALTER TABLE public.companies OWNER TO "PerformNextGen";
+CREATE TABLE public.control_accounts (
+    id uuid NOT NULL,
+    itwin_id uuid NOT NULL,
+    task_id uuid NOT NULL,
+    reference_code text NOT NULL,
+    name text NOT NULL,
+    actual_start date,
+    actual_finish date,
+    planned_start date,
+    planned_finish date
+);
+ALTER TABLE public.control_accounts OWNER TO "PerformNextGen";
 ALTER TABLE ONLY public."__EFMigrationsHistory"
     ADD CONSTRAINT pk___ef_migrations_history PRIMARY KEY (migration_id);
 ALTER TABLE ONLY public.companies
     ADD CONSTRAINT pk_companies PRIMARY KEY (id);
+ALTER TABLE ONLY public.control_accounts
+    ADD CONSTRAINT pk_control_accounts PRIMARY KEY (id);
