@@ -45,6 +45,13 @@ CREATE TABLE public.control_accounts (
     planned_finish date
 );
 ALTER TABLE public.control_accounts OWNER TO "PerformNextGen";
+CREATE TABLE public.units_of_measure (
+    id uuid NOT NULL,
+    itwin_id uuid NOT NULL,
+    name text NOT NULL,
+    symbol text NOT NULL
+);
+ALTER TABLE public.units_of_measure OWNER TO "PerformNextGen";
 ALTER TABLE ONLY public."__EFMigrationsHistory"
     ADD CONSTRAINT pk___ef_migrations_history PRIMARY KEY (migration_id);
 ALTER TABLE ONLY public.activities
@@ -53,6 +60,8 @@ ALTER TABLE ONLY public.companies
     ADD CONSTRAINT pk_companies PRIMARY KEY (id);
 ALTER TABLE ONLY public.control_accounts
     ADD CONSTRAINT pk_control_accounts PRIMARY KEY (id);
+ALTER TABLE ONLY public.units_of_measure
+    ADD CONSTRAINT pk_units_of_measure PRIMARY KEY (id);
 CREATE INDEX ix_activities_control_account_id ON public.activities USING btree (control_account_id);
 ALTER TABLE ONLY public.activities
     ADD CONSTRAINT fk_activities_control_accounts_control_account_id FOREIGN KEY (control_account_id) REFERENCES public.control_accounts(id) ON DELETE CASCADE;
