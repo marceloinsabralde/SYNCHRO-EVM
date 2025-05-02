@@ -39,6 +39,10 @@ public static class ExternalScript
 
     public static void SchemaDump()
     {
-        Execute("../script/dump-schema");
+        const string scriptPath = "../script/dump-schema";
+        if (Path.Exists(scriptPath))
+        {
+            Execute(scriptPath);
+        }
     }
 }
