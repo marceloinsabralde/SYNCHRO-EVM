@@ -36,14 +36,18 @@ builder.Services.AddHttpLogging(options =>
 });
 
 // Learn about configuring OpenTelemetry at https://opentelemetry.io/docs/languages/net/
-builder
+var openTelBuilder = builder
     .Services.AddOpenTelemetry()
     .UseOtlpExporter() // Use the OpenTelemetry Protocol (OTLP) exporter for all signals
     .WithTracing(tracing =>
         tracing.AddAspNetCoreInstrumentation().AddEntityFrameworkCoreInstrumentation().AddNpgsql()
     )
-    .WithMetrics(metrics => metrics.AddAspNetCoreInstrumentation().AddNpgsqlInstrumentation())
-    .WithLogging(logging => logging.AddConsoleExporter());
+    .WithMetrics(metrics => metrics.AddAspNetCoreInstrumentation().AddNpgsqlInstrumentation());
+
+if (!builder.Environment.IsDevelopment())
+{
+    openTelBuilder.WithLogging(logging => logging.AddConsoleExporter());
+}
 
 WebApplication app = builder.Build();
 
