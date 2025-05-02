@@ -19,6 +19,8 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
         .UseSnakeCaseNamingConvention()
 );
 
+builder.Services.AddControllers();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -57,6 +59,7 @@ if (!app.Environment.IsEnvironment("Test"))
 }
 
 await app.MigrateDbAsync();
+app.MapControllers();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

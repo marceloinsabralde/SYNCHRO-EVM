@@ -36,4 +36,7 @@
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Kumara.WebApi.Tests" />
+  </ItemGroup>
 </Project>
