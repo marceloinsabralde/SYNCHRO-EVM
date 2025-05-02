@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Kumara.Database;
+using Kumara.WebApi.Controllers.Requests;
 using Kumara.WebApi.Controllers.Responses;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,5 +35,24 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
             return NotFound();
 
         return Ok(ActivityResponse.FromActivity(activity));
+    }
+
+    [HttpPatch("{id}")]
+    public IActionResult Update([Required] Guid id, [FromBody] ActivityUpdateRequest activityUpdate)
+    {
+        var activity = dbContext.Activities.Find(id);
+
+        if (activity is null)
+            return NotFound();
+
+        if (activityUpdate.HasChanged(nameof(activityUpdate.ActualStart)))
+            activity.ActualStart = activityUpdate.ActualStart;
+
+        if (activityUpdate.HasChanged(nameof(activityUpdate.ActualFinish)))
+            activity.ActualFinish = activityUpdate.ActualFinish;
+
+        dbContext.SaveChanges();
+
+        return Accepted();
     }
 }

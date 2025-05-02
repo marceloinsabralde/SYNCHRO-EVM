@@ -111,4 +111,115 @@ public sealed class ActivitiesControllerTests : ControllerTestsBase
 
         await response.ShouldBeApiErrorNotFound();
     }
+
+    [Fact]
+    public async Task Update_WithAllFields_Accepted()
+    {
+        var existingActivity = Factories.Activity(
+            actualStart: new DateOnly(year: 2025, month: 1, day: 1),
+            actualFinish: null
+        );
+        await _dbContext.Activities.AddAsync(
+            existingActivity,
+            TestContext.Current.CancellationToken
+        );
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var response = await _client.PatchAsJsonAsync(
+            $"/api/v1/activities/{existingActivity.Id}",
+            new { actualStart = "2025-03-18", actualFinish = "2025-03-19" },
+            TestContext.Current.CancellationToken
+        );
+        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+
+        response = await _client.GetAsync(
+            $"/api/v1/activities/{existingActivity.Id}",
+            TestContext.Current.CancellationToken
+        );
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        var activity = await response.Content.ReadFromJsonAsync<ActivityResponse>(
+            TestContext.Current.CancellationToken
+        );
+        activity.ShouldNotBeNull();
+        activity.ActualStart.ShouldBe(new DateOnly(year: 2025, month: 3, day: 18));
+        activity.ActualFinish.ShouldBe(new DateOnly(year: 2025, month: 3, day: 19));
+
+        // TODO: Ensure an Event is emitted to update the specified Activity
+    }
+
+    [Fact]
+    public async Task Update_WithPartialFields_Accepted()
+    {
+        var existingActivity = Factories.Activity(
+            actualStart: new DateOnly(year: 2025, month: 1, day: 1),
+            actualFinish: new DateOnly(year: 2025, month: 2, day: 1)
+        );
+        await _dbContext.Activities.AddAsync(
+            existingActivity,
+            TestContext.Current.CancellationToken
+        );
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var response = await _client.PatchAsJsonAsync(
+            $"/api/v1/activities/{existingActivity.Id}",
+            new { actualFinish = "2025-03-19" },
+            TestContext.Current.CancellationToken
+        );
+        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+
+        response = await _client.GetAsync(
+            $"/api/v1/activities/{existingActivity.Id}",
+            TestContext.Current.CancellationToken
+        );
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        var activity = await response.Content.ReadFromJsonAsync<ActivityResponse>(
+            TestContext.Current.CancellationToken
+        );
+        activity.ShouldNotBeNull();
+        activity.ActualStart.ShouldBe(existingActivity.ActualStart);
+        activity.ActualFinish.ShouldBe(new DateOnly(year: 2025, month: 3, day: 19));
+
+        // TODO: Ensure an Event is emitted to update the specified Activity
+    }
+
+    [Fact]
+    public async Task Update_WithBadData_BadRequest()
+    {
+        var existingActivity = Factories.Activity(
+            actualStart: new DateOnly(year: 2025, month: 1, day: 1)
+        );
+        await _dbContext.Activities.AddAsync(
+            existingActivity,
+            TestContext.Current.CancellationToken
+        );
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var response = await _client.PatchAsJsonAsync(
+            $"/api/v1/activities/{existingActivity.Id}",
+            new { actualStart = "foo" },
+            TestContext.Current.CancellationToken
+        );
+
+        await response.ShouldBeApiErrorBadRequest(
+            errorsPattern: @"""\$\.actualStart"":\[""The JSON value could not be converted to"
+        );
+
+        // TODO: Ensure no Event is emitted
+    }
+
+    [Fact]
+    public async Task Update_WhenActivityNotFound_NotFound()
+    {
+        var response = await _client.PatchAsJsonAsync(
+            $"/api/v1/activities/{Guid.CreateVersion7()}",
+            new { },
+            TestContext.Current.CancellationToken
+        );
+
+        await response.ShouldBeApiErrorNotFound();
+
+        // TODO: Ensure no Event is emitted
+    }
 }
