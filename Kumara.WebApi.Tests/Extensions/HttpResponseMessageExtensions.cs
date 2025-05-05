@@ -1,0 +1,67 @@
+// Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+using System.Net;
+using System.Net.Http.Json;
+using System.Text.Json.Nodes;
+
+namespace Kumara.WebApi.Tests;
+
+public static class HttpResponseMessageExtensions
+{
+    private static async Task ShouldBeApiError(
+        this HttpResponseMessage response,
+        int status,
+        string title,
+        string type,
+        string? errorsPattern = null
+    )
+    {
+        response.StatusCode.ShouldBe((HttpStatusCode)status);
+
+        var responseJson = await response.Content.ReadFromJsonAsync<JsonObject>(
+            cancellationToken: TestContext.Current.CancellationToken
+        );
+        responseJson.ShouldNotBeNull();
+
+        List<string> expectedKeys = ["status", "title", "traceId", "type"];
+
+        if (errorsPattern is not null)
+        {
+            expectedKeys.Add("errors");
+        }
+
+        var responseKeys = responseJson.Select(kvp => kvp.Key).ToArray();
+        responseKeys.ShouldBe(expectedKeys, ignoreOrder: true);
+
+        responseJson["status"]!.ToString().ShouldBe(status.ToString());
+        responseJson["type"]!.ToString().ShouldBe(type);
+        responseJson["title"]!.ToString().ShouldBe(title);
+        responseJson["traceId"]!.ToString().ShouldNotBeEmpty();
+
+        if (errorsPattern is not null)
+        {
+            responseJson["errors"]!.ToJsonString().ShouldMatch(errorsPattern);
+        }
+    }
+
+    public static async Task ShouldBeApiErrorBadRequest(
+        this HttpResponseMessage response,
+        string errorsPattern
+    )
+    {
+        await response.ShouldBeApiError(
+            status: 400,
+            title: "One or more validation errors occurred.",
+            type: "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+            errorsPattern: errorsPattern
+        );
+    }
+
+    public static async Task ShouldBeApiErrorNotFound(this HttpResponseMessage response)
+    {
+        await response.ShouldBeApiError(
+            status: 404,
+            title: "Not Found",
+            type: "https://tools.ietf.org/html/rfc9110#section-15.5.5"
+        );
+    }
+}
