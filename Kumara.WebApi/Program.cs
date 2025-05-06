@@ -64,6 +64,7 @@ app.MapControllers();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.SeedDevelopmentData();
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
