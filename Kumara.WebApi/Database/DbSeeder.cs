@@ -173,6 +173,57 @@ public static class DbSeeder
             dbContext.SaveChanges();
         }
 
+        if (!dbContext.MaterialActivityAllocations.Any())
+        {
+            MaterialActivityAllocation[] materialActivityAllocations =
+            [
+                new MaterialActivityAllocation
+                {
+                    ITwinId = iTwinIds[0],
+                    Material = dbContext.Materials.First(material =>
+                        material.ITwinId == iTwinIds[0] && material.Name == "Aggregate 10mm"
+                    ),
+                    Activity = dbContext.Activities.First(activity =>
+                        activity.ITwinId == iTwinIds[0] && activity.ReferenceCode == "CIV001-A1"
+                    ),
+                    QuantityUnitOfMeasure = dbContext.UnitsOfMeasure.First(uom =>
+                        uom.ITwinId == iTwinIds[0] && uom.Name == "Tonnes"
+                    ),
+                    QuantityAtComplete = 418.02m,
+                },
+                new MaterialActivityAllocation
+                {
+                    ITwinId = iTwinIds[0],
+                    Material = dbContext.Materials.First(material =>
+                        material.ITwinId == iTwinIds[0] && material.Name == "Aggregate 10mm"
+                    ),
+                    Activity = dbContext.Activities.First(activity =>
+                        activity.ITwinId == iTwinIds[0] && activity.ReferenceCode == "CIV001-A2"
+                    ),
+                    QuantityUnitOfMeasure = dbContext.UnitsOfMeasure.First(uom =>
+                        uom.ITwinId == iTwinIds[0] && uom.Name == "Tonnes"
+                    ),
+                    QuantityAtComplete = 823.92m,
+                },
+                new MaterialActivityAllocation
+                {
+                    ITwinId = iTwinIds[1],
+                    Material = dbContext.Materials.First(material =>
+                        material.ITwinId == iTwinIds[1] && material.Name == "Coarse Sand"
+                    ),
+                    Activity = dbContext.Activities.First(activity =>
+                        activity.ITwinId == iTwinIds[1] && activity.ReferenceCode == "OTH001-A1"
+                    ),
+                    QuantityUnitOfMeasure = dbContext.UnitsOfMeasure.First(uom =>
+                        uom.ITwinId == iTwinIds[1] && uom.Name == "Kilograms"
+                    ),
+                    QuantityAtComplete = 3300m,
+                },
+            ];
+            dbContext.MaterialActivityAllocations.AddRange(materialActivityAllocations);
+            dbContext.SaveChanges();
+        }
+
         if (!dbContext.ProgressEntries.Any())
         {
             ProgressEntry[] progressEntries =
