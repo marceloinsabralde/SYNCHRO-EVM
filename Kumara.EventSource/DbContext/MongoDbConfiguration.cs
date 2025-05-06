@@ -12,9 +12,22 @@ public static class MongoDbConfiguration
         IConfiguration configuration
     )
     {
-        string mongoConnectionString =
-            configuration.GetConnectionString("MongoDb") ?? "mongodb://localhost:27017";
-        string mongoDatabase = configuration["MongoDB:DatabaseName"] ?? "KumaraEvents";
+        string? mongoConnectionString = configuration.GetConnectionString("KumaraEventSource");
+
+        ArgumentException.ThrowIfNullOrEmpty(
+            mongoConnectionString,
+            "ConnectionStrings__KumaraEventSource"
+        );
+
+        MongoUrl mongoUrl = MongoUrl.Create(mongoConnectionString);
+        if (string.IsNullOrWhiteSpace(mongoUrl.DatabaseName))
+        {
+            throw new InvalidOperationException(
+                "The MongoDB connection string must contain a database name"
+            );
+        }
+
+        string mongoDatabase = mongoUrl.DatabaseName;
 
         services.AddSingleton<IMongoClient>(serviceProvider =>
         {

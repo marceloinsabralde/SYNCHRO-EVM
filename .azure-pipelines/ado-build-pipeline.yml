@@ -89,6 +89,8 @@ jobs:
         inputs:
           command: test
           arguments: '--collect "Code Coverage"'
+        env:
+          ConnectionStrings__KumaraEventSource: $(ConnectionStrings__KumaraEventSource)
 
   - job: Check_Copyright
     displayName: Check Copyright Notice

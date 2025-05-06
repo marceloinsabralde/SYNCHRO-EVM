@@ -18,15 +18,6 @@ builder.Services.AddSingleton<Dictionary<string, Type>>(
     EventTypeMapInitializer.InitializeEventTypeMap()
 );
 
-string? mongoConnectionString = builder.Configuration.GetConnectionString("KumaraEventSource");
-
-if (string.IsNullOrEmpty(mongoConnectionString))
-{
-    throw new InvalidOperationException(
-        "MongoDB connection string is not set in the environment variable 'MONGO_CONNECTION_STRING'."
-    );
-}
-
 builder.Services.AddMongoDbContext(builder.Configuration);
 
 builder.Services.AddControllers();
