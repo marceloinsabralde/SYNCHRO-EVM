@@ -10,11 +10,17 @@ namespace Kumara.WebApi.Controllers;
 public class MaterialActivityAllocationsController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
-    public IActionResult Index([Required] Guid iTwinId)
+    public IActionResult Index([Required] Guid iTwinId, Guid? activityId, Guid? materialId)
     {
-        var allocations = dbContext.MaterialActivityAllocations.Where(act =>
-            act.ITwinId == iTwinId
+        var allocations = dbContext.MaterialActivityAllocations.Where(allocation =>
+            allocation.ITwinId == iTwinId
         );
+
+        if (activityId is not null)
+            allocations = allocations.Where(allocation => allocation.ActivityId == activityId);
+
+        if (materialId is not null)
+            allocations = allocations.Where(allocation => allocation.MaterialId == materialId);
 
         if (!allocations.Any())
             return NotFound();
