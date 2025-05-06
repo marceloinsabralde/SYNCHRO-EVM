@@ -2,13 +2,13 @@
 
 using System.Collections.Concurrent;
 using Kumara.EventSource.Interfaces;
-using Kumara.EventSource.Models; // Added EventEntity import
+using Kumara.EventSource.Models;
 
 namespace Kumara.EventSource.Repositories;
 
 public class EventRepositoryInMemoryList : IEventRepository
 {
-    private readonly ConcurrentBag<EventEntity> _events = new(); // Updated to use EventEntity
+    private readonly ConcurrentBag<EventEntity> _events = new();
 
     public Task<IQueryable<EventEntity>> GetAllEventsAsync()
     {
@@ -17,7 +17,7 @@ public class EventRepositoryInMemoryList : IEventRepository
 
     public Task AddEventsAsync(IEnumerable<EventEntity> events)
     {
-        foreach (var eventEntity in events)
+        foreach (EventEntity eventEntity in events)
         {
             _events.Add(eventEntity);
         }

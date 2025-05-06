@@ -68,7 +68,7 @@ public class EventRepositoryTests
     {
         return new List<EventEntity>
         {
-            new EventEntity
+            new()
             {
                 ITwinGuid = Guid.NewGuid(),
                 AccountGuid = Guid.NewGuid(),
@@ -85,7 +85,7 @@ public class EventRepositoryTests
                     }
                 ),
             },
-            new EventEntity
+            new()
             {
                 ITwinGuid = Guid.NewGuid(),
                 AccountGuid = Guid.NewGuid(),
@@ -112,14 +112,11 @@ public class EventRepositoryTests
         IEventRepository eventRepository
     )
     {
-        // Arrange
         List<EventEntity> eventEntities = GetTestEventEntities();
 
-        // Act
         await eventRepository.AddEventsAsync(eventEntities);
         IQueryable<EventEntity> retrievedEvents = await eventRepository.GetAllEventsAsync();
 
-        // Assert
         eventEntities
             .Select(e => e.ITwinGuid)
             .ShouldBeSubsetOf(retrievedEvents.Select(e => e.ITwinGuid));

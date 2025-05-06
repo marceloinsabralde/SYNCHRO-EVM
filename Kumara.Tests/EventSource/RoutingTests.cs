@@ -29,23 +29,19 @@ public sealed class RoutingTests
     [TestMethod]
     public async Task GetEvents_EndpointIsActive()
     {
-        // Act
         HttpResponseMessage? response = await _client.GetAsync("/events");
 
-        // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 
     [TestMethod]
     public async Task PostEvents_EndpointIsActive()
     {
-        // Act
         HttpResponseMessage response = await _client.PostAsync(
             "/events",
             new StringContent("[]", System.Text.Encoding.UTF8, "application/json")
         );
 
-        // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 }

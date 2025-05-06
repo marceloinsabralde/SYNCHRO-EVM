@@ -40,11 +40,9 @@ public sealed class ContentTests
     [TestMethod]
     public async Task PostEvents_WithZeroEvents_ReturnsSuccessAndCountZero()
     {
-        // Act
         StringContent content = new("[]", System.Text.Encoding.UTF8, "application/json");
         HttpResponseMessage response = await _client.PostAsync(_endpoint, content);
 
-        // Assert
         response.EnsureSuccessStatusCode();
         string responseString = await response.Content.ReadAsStringAsync();
         responseString.ShouldNotBeNull();
@@ -114,12 +112,10 @@ public sealed class ContentTests
             },
         };
 
-        // Act
-        var serialized = JsonSerializer.Serialize(eventsPayload);
+        string serialized = JsonSerializer.Serialize(eventsPayload);
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
         HttpResponseMessage response = await _client.PostAsync(_endpoint, content);
 
-        // Assert
         response.EnsureSuccessStatusCode();
         string responseString = await response.Content.ReadAsStringAsync();
         responseString.ShouldNotBeNull();
@@ -134,7 +130,6 @@ public sealed class ContentTests
     [TestMethod]
     public async Task GetEvents_ReturnsEventEntityBatch()
     {
-        // Arrange
         IQueryable<EventEntity> eventEntities = new List<EventEntity>
         {
             new()
@@ -161,17 +156,15 @@ public sealed class ContentTests
 
         _mockEventRepository.Setup(repo => repo.GetAllEventsAsync()).ReturnsAsync(eventEntities);
 
-        // Act
         HttpResponseMessage response = await _client.GetAsync("/events");
 
-        // Assert
         response.EnsureSuccessStatusCode();
         response
             .Content.Headers.ContentType?.ToString()
             .ShouldBe("application/json; charset=utf-8");
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var returnedEventEntities = JsonSerializer.Deserialize<List<EventEntity>>(
+        string responseString = await response.Content.ReadAsStringAsync();
+        List<EventEntity>? returnedEventEntities = JsonSerializer.Deserialize<List<EventEntity>>(
             responseString,
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
         );
@@ -185,8 +178,7 @@ public sealed class ContentTests
     [TestMethod]
     public void ValidateEventEntitySerialization()
     {
-        // Arrange
-        var eventEntity = new EventEntity
+        EventEntity eventEntity = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -196,11 +188,9 @@ public sealed class ContentTests
             Type = "TestType",
         };
 
-        // Act
-        var serialized = JsonSerializer.Serialize(eventEntity);
-        var deserialized = JsonSerializer.Deserialize<EventEntity>(serialized);
+        string serialized = JsonSerializer.Serialize(eventEntity);
+        EventEntity? deserialized = JsonSerializer.Deserialize<EventEntity>(serialized);
 
-        // Assert
         deserialized.ShouldNotBeNull();
         deserialized.ITwinGuid.ShouldBe(eventEntity.ITwinGuid);
         deserialized.AccountGuid.ShouldBe(eventEntity.AccountGuid);
