@@ -43,13 +43,42 @@ Notes:
 - if you just want to run the Reqnroll (BDD scenarios), cd into `Kumara.Scenarios` then re-run `dotnet test`
 - you may wish to simply use the 'Play Button' style feature of your favourite IDE for this.
 
-## Running the app
+## Running the apps
+
+### Running Kumara.WebApi
 
 From the root directory of the solution run `dotnet run --project Kumara.WebApi`
 Then visit https://localhost:7029/swagger/index.html to view in browser.
 
 Notes:
 - you may wish to simply use the "Build and Run" feature of your favourite IDE for this.
+
+### Running Kumara.EventSource
+
+From the root directory of the solution run `dotnet run --project Kumara.EventSource`
+This will start the EventSource service on https://localhost:7104 or http://localhost:5220 (check launchSettings.json for the port).
+
+Notes:
+- Like the WebApi, you can also use your IDE's "Build and Run" feature to start this service.
+
+#### Using the HTTP Test File
+
+The repository includes a `Kumara.EventSource.http` file that can be used to manually test the EventSource API endpoints.
+
+##### Using with JetBrains Rider
+1. Open the `Kumara.EventSource.http` file in Rider
+2. You'll see a green "Run" icon next to each HTTP request
+3. Click the icon to execute that specific request
+4. View the response in the "Response" panel that appears
+5. [Learn more about using HTTP Client in Rider](https://www.jetbrains.com/help/rider/Http_client_in__product__code_editor.html)
+
+##### Using with Visual Studio Code
+1. Install the "REST Client" extension by Huachao Mao
+2. Open the `Kumara.EventSource.http` file in VS Code
+3. You'll see a "Send Request" link above each request
+4. Click the link to execute that specific request
+5. View the response in a split-view panel that opens
+6. [Learn more about the REST Client extension](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 
 ## How to view code coverage
 
@@ -78,10 +107,11 @@ This is to ensure that sensitive information, such as database connection string
 Ensure that the following environment variables are set:
 
 - `ConnectionStrings__KumaraEventSource`: The MongoDB URL connection string for the EventSource database.
-     Example: `mongodb://user:password@host:port/database_name`
+     Example: `mongodb://user:password@host:port/database_name?authSource=admin`
        or
      using 1Password CLI
    ```shell
     eval $(op signin)
     op read 'op://E7 Developers/ConnectionStrings__KumaraEventSource/url'
     ```
+`
