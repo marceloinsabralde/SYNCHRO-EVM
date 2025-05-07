@@ -8,4 +8,4 @@
 # $ dcl ps # what services are running?
 # $ dcl logs # what's going on?
 
-docker compose -p spng_local -f docker-compose.local.yml "$@"
+docker compose -p kumara_local -f docker-compose.local.yml "$@"
