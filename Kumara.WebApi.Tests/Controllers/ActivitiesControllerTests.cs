@@ -5,7 +5,7 @@ using Kumara.WebApi.Controllers.Responses;
 
 namespace Kumara.WebApi.Tests.Controllers;
 
-public sealed class ActivitiesControllerTests : ControllerTestsBase
+public sealed class ActivitiesControllerTests : DatabaseTestBase
 {
     [Fact]
     public async Task Index_Success()

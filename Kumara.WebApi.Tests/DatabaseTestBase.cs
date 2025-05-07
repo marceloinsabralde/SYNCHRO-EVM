@@ -8,10 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Respawn;
 
-namespace Kumara.WebApi.Tests.Controllers;
+namespace Kumara.WebApi.Tests;
 
 [Collection("Non-Parallel Collection")]
-public class ControllerTestsBase : IAsyncLifetime
+public class DatabaseTestBase : IAsyncLifetime
 {
     protected readonly HttpClient _client;
 
@@ -20,7 +20,7 @@ public class ControllerTestsBase : IAsyncLifetime
     private Respawner? _respawner;
     private DbConnection? _connection;
 
-    public ControllerTestsBase()
+    public DatabaseTestBase()
     {
         var appFactory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
