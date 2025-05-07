@@ -28,4 +28,22 @@ public static partial class Factories
             .RuleFor(pe => pe.ProgressDate, progressDate ?? DateOnly.FromDateTime(DateTime.Today))
             .Generate();
     }
+
+    public static ProgressEntry ProgressEntry(
+        MaterialActivityAllocation materialActivityAllocation,
+        Guid? id = null,
+        decimal? quantityDelta = null,
+        DateOnly? progressDate = null
+    )
+    {
+        return ProgressEntry(
+            id: id,
+            iTwinId: materialActivityAllocation.ITwinId,
+            material: materialActivityAllocation.Material,
+            activity: materialActivityAllocation.Activity,
+            quantityUnitOfMeasure: materialActivityAllocation.QuantityUnitOfMeasure,
+            quantityDelta: quantityDelta,
+            progressDate: progressDate
+        );
+    }
 }
