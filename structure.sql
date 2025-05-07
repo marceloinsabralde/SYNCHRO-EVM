@@ -72,6 +72,32 @@ CREATE TABLE public.progress_entries (
     progress_date date NOT NULL
 );
 ALTER TABLE public.progress_entries OWNER TO "PerformNextGen";
+CREATE VIEW public.progress_summaries AS
+ SELECT itwin_id,
+    activity_id,
+    material_id,
+    quantity_unit_of_measure_id,
+    sum(quantity_delta) AS quantity_to_date,
+    quantity_at_complete,
+    (quantity_at_complete - sum(quantity_delta)) AS quantity_to_complete,
+    json_agg(entry_summary) FILTER (WHERE (row_number <= 10)) AS recent_progress_entries
+   FROM ( SELECT progress_entries.id,
+            progress_entries.itwin_id,
+            progress_entries.activity_id,
+            progress_entries.material_id,
+            progress_entries.quantity_unit_of_measure_id,
+            progress_entries.quantity_delta,
+            material_activity_allocations.quantity_at_complete,
+            ( SELECT row_to_json(_.*) AS row_to_json
+                   FROM ( SELECT progress_entries.id,
+                            progress_entries.quantity_delta,
+                            progress_entries.progress_date) _) AS entry_summary,
+            row_number() OVER (PARTITION BY progress_entries.itwin_id, progress_entries.activity_id, progress_entries.material_id, progress_entries.quantity_unit_of_measure_id ORDER BY progress_entries.progress_date DESC) AS row_number
+           FROM (public.progress_entries
+             JOIN public.material_activity_allocations ON (((material_activity_allocations.itwin_id = progress_entries.itwin_id) AND (material_activity_allocations.activity_id = progress_entries.activity_id) AND (material_activity_allocations.material_id = progress_entries.material_id) AND (material_activity_allocations.quantity_unit_of_measure_id = progress_entries.quantity_unit_of_measure_id))))
+          ORDER BY progress_entries.progress_date DESC) unnamed_subquery
+  GROUP BY itwin_id, activity_id, material_id, quantity_unit_of_measure_id, quantity_at_complete;
+ALTER VIEW public.progress_summaries OWNER TO "PerformNextGen";
 CREATE TABLE public.units_of_measure (
     id uuid NOT NULL,
     itwin_id uuid NOT NULL,
