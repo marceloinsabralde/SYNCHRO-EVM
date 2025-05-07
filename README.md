@@ -6,9 +6,10 @@ Kumara (3579) (formerly SYNCHRO Perform (3221)) is a module of Project Delivery 
 
 ## Project Structure
 
-The solution is broken down into 3 separate projects, these are:
+The solution is broken down into 4 separate projects, these are:
 
 ```
+Kumara.EventSource << for Event storage and retrieval
 Kumara.WebApi << for actual code
 Kumara.Tests << for unit tests via MSTest
 Kumara.Scenarios << for BDD scenarios
@@ -18,6 +19,7 @@ Kumara.Scenarios << for BDD scenarios
 ### General
 - [.NET Core SDK Version 9.0](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 - [PostgreSQL](https://www.postgresql.org) note, the homebrew version is suitable.
+- [MongoDB](https://www.mongodb.com) (use the docker version).
 - [direnv](https://github.com/direnv/direnv) or similar to manage your project directory ENV vars
 
 ### Tools
@@ -63,3 +65,23 @@ We're using [CSharpier](https://csharpier.com) to format the .cs files in this r
 dotnet csharpier . # format all files in the current directory
 dotnet csharpier --check . # check that all files in the current directory are formatted according to csharpier's rules
 ```
+
+## Environment Variables
+
+The application uses the following environment variables:
+
+### Connection String Configuration
+
+The application is configured to retrieve connection strings exclusively from environment variables.
+This is to ensure that sensitive information, such as database connection strings, are never hard-coded in the source code.
+
+Ensure that the following environment variables are set:
+
+- `ConnectionStrings__KumaraEventSource`: The MongoDB URL connection string for the EventSource database.
+     Example: `mongodb://user:password@host:port/database_name`
+       or
+     using 1Password CLI
+   ```shell
+    eval $(op signin)
+    op read 'op://E7 Developers/ConnectionStrings__KumaraEventSource/url'
+    ```

@@ -1,7 +1,12 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-using CloudNative.CloudEvents;
+
+using System.Text.Json;
+using Kumara.EventSource.DbContext;
 using Kumara.EventSource.Interfaces;
+using Kumara.EventSource.Models;
+using Kumara.EventSource.Models.Events;
 using Kumara.EventSource.Repositories;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Shouldly;
 using Testcontainers.MongoDb;
@@ -12,15 +17,20 @@ namespace Kumara.Tests.EventSource;
 public class EventRepositoryTests
 {
     private static MongoDbContainer? s_mongoDbContainer;
-    private static IMongoDatabase? s_database;
+    private static MongoDbContext? s_mongoDbContext;
 
     [ClassInitialize]
     public static async Task ClassInitialize(TestContext context)
     {
-        s_mongoDbContainer = new MongoDbBuilder().Build();
+        s_mongoDbContainer = new MongoDbBuilder().WithPortBinding(27017, true).Build();
         await s_mongoDbContainer.StartAsync();
-        s_database = new MongoClient(s_mongoDbContainer.GetConnectionString()).GetDatabase(
-            "testdb"
+        IMongoDatabase mongoDatabase = new MongoClient(
+            s_mongoDbContainer.GetConnectionString()
+        ).GetDatabase("testdb");
+        s_mongoDbContext = new MongoDbContext(
+            new DbContextOptionsBuilder<MongoDbContext>()
+                .UseMongoDB(mongoDatabase.Client, mongoDatabase.DatabaseNamespace.DatabaseName)
+                .Options
         );
     }
 
@@ -35,62 +45,80 @@ public class EventRepositoryTests
 
     private static IEventRepository CreateMongoDbRepository()
     {
-        if (s_database == null)
+        if (s_mongoDbContext == null)
         {
             throw new InvalidOperationException("MongoDB container is not initialized.");
         }
 
-        return new EventRepositoryMongoDb(s_database);
+        return new EventRepositoryMongo(s_mongoDbContext);
     }
 
-    private static IEventRepository CreateInMemoryRepository() => new EventRepositoryInMemoryList();
+    private static IEventRepository CreateInMemoryRepository()
+    {
+        return new EventRepositoryInMemoryList();
+    }
 
     public static IEnumerable<object[]> GetRepositories()
     {
-        yield return ["InMemory", CreateInMemoryRepository()];
-        yield return ["MongoDb", CreateMongoDbRepository()];
+        yield return new object[] { "InMemory", CreateInMemoryRepository() };
+        yield return new object[] { "MongoDb", CreateMongoDbRepository() };
     }
 
-    private List<CloudEvent> GetTestCloudEvents() =>
-        [
-            new CloudEvent(CloudEventsSpecVersion.V1_0)
+    private List<EventEntity> GetTestEventEntities()
+    {
+        return new List<EventEntity>
+        {
+            new()
             {
-                Type = "UserLogin",
-                Source = new Uri("/source/user"),
-                Id = "A234-1234-1234",
-                Time = new DateTimeOffset(2023, 10, 1, 12, 0, 0, TimeSpan.Zero),
-                Data = new { userId = "12345", userName = "arun.malik" },
+                ITwinGuid = Guid.NewGuid(),
+                AccountGuid = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid().ToString(),
+                SpecVersion = "1.0",
+                Source = new Uri("http://testsource.com"),
+                Type = "test.created.v1",
+                DataJson = JsonSerializer.SerializeToDocument(
+                    new TestCreatedV1
+                    {
+                        TestString = "Repository Test String",
+                        TestEnum = TestOptions.OptionD,
+                        TestInteger = 300,
+                    }
+                ),
             },
-            new CloudEvent(CloudEventsSpecVersion.V1_0)
+            new()
             {
-                Type = "FileUpload",
-                Source = new Uri("/source/file"),
-                Id = "B234-1234-1234",
-                Time = new DateTimeOffset(2023, 10, 1, 12, 5, 0, TimeSpan.Zero),
-                Data = new
-                {
-                    userId = "12345",
-                    fileName = "report.pdf",
-                    fileSize = 102400,
-                },
+                ITwinGuid = Guid.NewGuid(),
+                AccountGuid = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid().ToString(),
+                SpecVersion = "1.0",
+                Source = new Uri("http://testsource.com"),
+                Type = "test.created.v1",
+                DataJson = JsonSerializer.SerializeToDocument(
+                    new TestCreatedV1
+                    {
+                        TestString = "Repository Test String",
+                        TestEnum = TestOptions.OptionD,
+                        TestInteger = 300,
+                    }
+                ),
             },
-        ];
+        };
+    }
 
     [DataTestMethod]
     [DynamicData(nameof(GetRepositories), DynamicDataSourceType.Method)]
-    public async Task RoundtripEventsAsync_ShouldStoreAndRetrieveCloudEvents(
+    public async Task RoundtripEventsAsync_ShouldStoreAndRetrieveEventEntities(
         string repositoryType,
         IEventRepository eventRepository
     )
     {
-        // Arrange
-        List<CloudEvent> cloudEvents = GetTestCloudEvents();
+        List<EventEntity> eventEntities = GetTestEventEntities();
 
-        // Act
-        await eventRepository.AddEventsAsync(cloudEvents);
-        IQueryable<CloudEvent> retrievedEvents = await eventRepository.GetAllEventsAsync();
+        await eventRepository.AddEventsAsync(eventEntities);
+        IQueryable<EventEntity> retrievedEvents = await eventRepository.GetAllEventsAsync();
 
-        // Assert
-        cloudEvents.Select(e => e.Id).ShouldBeSubsetOf(retrievedEvents.Select(e => e.Id));
+        eventEntities
+            .Select(e => e.ITwinGuid)
+            .ShouldBeSubsetOf(retrievedEvents.Select(e => e.ITwinGuid));
     }
 }

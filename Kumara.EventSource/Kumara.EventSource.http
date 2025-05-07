@@ -3,51 +3,65 @@
 
 ### without events
 POST {{Kumara_EventSource_HostAddress}}/events
-Content-Type: application/cloudevents-batch+json
+Content-Type: application/json
 
 []
 
 ### With events
 POST {{Kumara_EventSource_HostAddress}}/events
-Content-Type: application/cloudevents-batch+json
+Content-Type: application/json
 
 [
   {
-    "specversion": "1.0",
-    "type": "UserLogin",
-    "source": "/source/user",
-    "id": "A234-1234-1234",
-    "time": "2023-10-01T12:00:00Z",
+    "specVersion": "1.0",
+    "type": "test.created.v1",
+    "source": "/events/test",
+    "time": "2023-10-01T12:15:00Z",
+    "iTwinGuid": "12345678-1234-1234-1234-123456789abc",
+    "accountGuid": "ABCDEF12-3456-789A-BCDE-F123456789AB",
+    "correlationId": "12345678-1234-1234-1234-123456789abc",
     "data": {
-      "userId": "12345",
-      "userName": "arun.malik"
+      "test_string": "test 1",
+      "test_enum": "OptionA",
+      "test_integer": 123
     }
   },
   {
-    "specversion": "1.0",
-    "type": "FileUpload",
-    "source": "/source/file",
-    "id": "B234-1234-1234",
-    "time": "2023-10-01T12:05:00Z",
+    "specVersion": "1.0",
+    "type": "test.updated.v1",
+    "source": "/events/test",
+    "time": "2023-10-01T12:20:00Z",
+    "iTwinGuid": "12345678-1234-1234-1234-123456789abc",
+    "accountGuid": "ABCDEF12-3456-789A-BCDE-F123456789AB",
+    "correlationId": "98765432-10AB-CDEF-1234-567890ABCDEF",
     "data": {
-      "userId": "12345",
-      "fileName": "report.pdf",
-      "fileSize": 102400
+      "test_string": "test 2",
+      "test_enum": "OptionB",
+      "test_integer": 456,
+      "updated_time": "2023-10-01T12:20:00Z"
     }
   },
   {
-    "specversion": "1.0",
-    "type": "Error",
-    "source": "/source/error",
-    "id": "C234-1234-1234",
-    "time": "2023-10-01T12:10:00Z",
+    "specVersion": "1.0",
+    "type": "test.created.v1",
+    "source": "/events/test",
+    "time": "2023-10-01T12:25:00Z",
+    "iTwinGuid": "ABCDEF12-3456-789A-BCDE-F123456789AB",
+    "accountGuid": "12345678-1234-1234-1234-123456789abc",
+    "correlationId": "12345678-1234-1234-1234-123456789abc",
     "data": {
-      "errorCode": "500",
-      "errorMessage": "Internal Server Error"
+      "test_string": "test 3",
+      "test_enum": "OptionC",
+      "test_integer": 789
     }
   }
 ]
 
 ### Get events
 GET {{Kumara_EventSource_HostAddress}}/events
-Accept: application/cloudevents-batch+json
+Accept: application/json
+
+
+### Get events
+GET {{Kumara_EventSource_HostAddress}}/events?Id=A234-1234-1234
+Accept: application/json

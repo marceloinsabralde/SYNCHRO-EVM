@@ -25,6 +25,8 @@ variables:
     value: $(MendServiceAccountEmail)
   - name: VeracodeAppProfile
     value: $(ProductName) - WebApi ($(ShortCode) - $(GPR_ProductID))
+  - name: DotNetVersion
+    value: 9.x
 
 resources:
   repositories:
@@ -46,7 +48,7 @@ jobs:
         displayName: 'Use .NET sdk'
         inputs:
           packageType: sdk
-          version: 9.x
+          version: $(DotNetVersion)
 
       - task: NuGetAuthenticate@1
         displayName: 'NuGet Authenticate'
@@ -77,15 +79,18 @@ jobs:
     cancelTimeoutInMinutes: 5
     steps:
       - task: UseDotNet@2
-        displayName: "Use .NET sdk"
+        displayName: Use .NET sdk
         inputs:
           packageType: sdk
-          version: 9.x
+          version: $(DotNetVersion)
+
       - task: DotNetCoreCLI@2
         displayName: Run tests
         inputs:
           command: test
           arguments: '--collect "Code Coverage"'
+        env:
+          ConnectionStrings__KumaraEventSource: $(ConnectionStrings__KumaraEventSource)
 
   - job: Check_Copyright
     displayName: Check Copyright Notice
@@ -103,7 +108,7 @@ jobs:
         displayName: Use .NET sdk
         inputs:
           packageType: sdk
-          version: 9.x
+          version: $(DotNetVersion)
 
       - task: DotNetCoreCLI@2
         displayName: Install dotnet tools
@@ -120,11 +125,18 @@ jobs:
           arguments: --check .
 
       - task: DotNetCoreCLI@2
-        displayName: Check Code Formatting (dotnet format)
+        displayName: Check Code Formatting (dotnet format style)
         inputs:
           command: custom
           custom: format
-          arguments: --verify-no-changes --verbosity diagnostic
+          arguments: style --verify-no-changes --verbosity diagnostic
+
+      - task: DotNetCoreCLI@2
+        displayName: Check Code Formatting (dotnet format analyzers)
+        inputs:
+          command: custom
+          custom: format
+          arguments: analyzers --verify-no-changes --verbosity diagnostic
 
   - job: Scans
     displayName: Mend & Veracode Scans

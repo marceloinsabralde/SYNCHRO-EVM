@@ -1,29 +1,31 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
+using System.Net.Mime;
 using System.Text.Json;
-using CloudNative.CloudEvents;
-using CloudNative.CloudEvents.Http;
-using CloudNative.CloudEvents.SystemTextJson;
 using Kumara.EventSource.Interfaces;
+using Kumara.EventSource.Models;
+using Kumara.EventSource.Models.Events;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Shouldly;
 
-namespace Kumara.Tests.EventSource
+namespace Kumara.Tests.EventSource;
+
+[TestClass]
+public sealed class ContentTests
 {
-    [TestClass]
-    public sealed class ContentTests
+    private readonly HttpClient _client;
+    private readonly Mock<IEventRepository> _mockEventRepository;
+    private readonly string _endpoint = "/events";
+
+    public ContentTests()
     {
-        private readonly HttpClient _client;
-        private readonly Mock<IEventRepository> _mockEventRepository;
-        private readonly String _endpoint = "/events";
+        _mockEventRepository = new Mock<IEventRepository>();
 
-        public ContentTests()
-        {
-            _mockEventRepository = new Mock<IEventRepository>();
-
-            var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        WebApplicationFactory<Program> factory =
+            new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
             {
                 builder.UseEnvironment("Test");
                 builder.ConfigureServices(services =>
@@ -32,125 +34,165 @@ namespace Kumara.Tests.EventSource
                 });
             });
 
-            _client = factory.CreateClient();
-        }
+        _client = factory.CreateClient();
+    }
 
-        [TestMethod]
-        public async Task PostEvents_WithZeroEvents_ReturnsSuccessAndCountZero()
+    [TestMethod]
+    public async Task PostEvents_WithZeroEvents_ReturnsSuccessAndCountZero()
+    {
+        StringContent content = new("[]", System.Text.Encoding.UTF8, "application/json");
+        HttpResponseMessage response = await _client.PostAsync(_endpoint, content);
+
+        response.EnsureSuccessStatusCode();
+        string responseString = await response.Content.ReadAsStringAsync();
+        responseString.ShouldNotBeNull();
+        responseString.ShouldContain("\"count\":0");
+
+        _mockEventRepository.Verify(
+            repo => repo.AddEventsAsync(It.IsAny<IEnumerable<EventEntity>>()),
+            Times.Never
+        );
+    }
+
+    [TestMethod]
+    public async Task PostEvents_WithMultipleEvents_ReturnsSuccessAndCorrectCount()
+    {
+        List<EventEntity> eventsPayload = new()
         {
-            // Act
-            var content = new StringContent(
-                "[]",
-                System.Text.Encoding.UTF8,
-                "application/cloudevents-batch+json"
-            );
-            var response = await _client.PostAsync(_endpoint, content);
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-            var responseString = await response.Content.ReadAsStringAsync();
-            responseString.ShouldNotBeNull();
-            responseString.ShouldContain("\"count\":0");
-
-            _mockEventRepository.Verify(
-                repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()),
-                Times.Never
-            );
-        }
-
-        [TestMethod]
-        public async Task PostEvents_WithMultipleEvents_ReturnsSuccessAndCorrectCount()
-        {
-            var eventsPayload = new List<CloudEvent>
+            new EventEntity
             {
-                new CloudEvent(CloudEventsSpecVersion.V1_0)
-                {
-                    Type = "UserLogin",
-                    Source = new Uri("/source/user"),
-                    Id = "A234-1234-1234",
-                    Time = DateTimeOffset.Parse("2023-10-01T12:00:00Z"),
-                    Data = new { userId = "12345", userName = "arun.malik" },
-                },
-                new CloudEvent(CloudEventsSpecVersion.V1_0)
-                {
-                    Type = "FileUpload",
-                    Source = new Uri("/source/file"),
-                    Id = "B234-1234-1234",
-                    Time = DateTimeOffset.Parse("2023-10-01T12:05:00Z"),
-                    Data = new
+                Type = "test.created.v1",
+                Source = new Uri("/events/test"),
+                SpecVersion = "1.0",
+                ITwinGuid = Guid.NewGuid(),
+                AccountGuid = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid().ToString(),
+                DataJson = JsonSerializer.SerializeToDocument(
+                    new TestCreatedV1
                     {
-                        userId = "12345",
-                        fileName = "report.pdf",
-                        fileSize = 102400,
-                    },
-                },
-            };
-
-            // Act
-            var formatter = new JsonEventFormatter();
-            var encodedContent = formatter.EncodeBatchModeMessage(
-                eventsPayload,
-                out var contentType
-            );
-
-            var content = new ByteArrayContent(encodedContent.ToArray());
-            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(
-                contentType.MediaType
-            );
-            var response = await _client.PostAsync(_endpoint, content);
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-            var responseString = await response.Content.ReadAsStringAsync();
-            responseString.ShouldNotBeNull();
-            responseString.ShouldContain("\"count\":2");
-
-            _mockEventRepository.Verify(
-                repo => repo.AddEventsAsync(It.IsAny<IEnumerable<CloudEvent>>()),
-                Times.Once
-            );
-        }
-
-        [TestMethod]
-        public async Task GetEvents_ReturnsCloudEventBatch()
-        {
-            // Arrange
-            var cloudEvents = new List<CloudEvent>
+                        TestString = "Sample Test String",
+                        TestEnum = TestOptions.OptionA,
+                        TestInteger = 42,
+                    }
+                ),
+            },
+            new EventEntity
             {
-                new CloudEvent(CloudEventsSpecVersion.V1_0)
-                {
-                    Type = "UserLogin",
-                    Source = new Uri("/source/user"),
-                    Id = "A234-1234-1234",
-                    Time = DateTimeOffset.UtcNow,
-                },
-                new CloudEvent(CloudEventsSpecVersion.V1_0)
-                {
-                    Type = "FileUpload",
-                    Source = new Uri("/source/file"),
-                    Id = "B234-1234-1234",
-                    Time = DateTimeOffset.UtcNow,
-                },
-            }.AsQueryable();
+                Type = "test.created.v1",
+                Source = new Uri("/events/test"),
+                SpecVersion = "1.0",
+                ITwinGuid = Guid.NewGuid(),
+                AccountGuid = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid().ToString(),
+                DataJson = JsonSerializer.SerializeToDocument(
+                    new TestCreatedV1
+                    {
+                        TestString = "Sample Test String",
+                        TestEnum = TestOptions.OptionA,
+                        TestInteger = 42,
+                    }
+                ),
+            },
+            new EventEntity
+            {
+                Type = "test.created.v1",
+                Source = new Uri("/events/test"),
+                SpecVersion = "1.0",
+                ITwinGuid = Guid.NewGuid(),
+                AccountGuid = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid().ToString(),
+                DataJson = JsonSerializer.SerializeToDocument(
+                    new TestCreatedV1
+                    {
+                        TestString = "Sample Test String",
+                        TestEnum = TestOptions.OptionA,
+                        TestInteger = 42,
+                    }
+                ),
+            },
+        };
 
-            _mockEventRepository.Setup(repo => repo.GetAllEventsAsync()).ReturnsAsync(cloudEvents);
+        string serialized = JsonSerializer.Serialize(eventsPayload);
+        StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
+        HttpResponseMessage response = await _client.PostAsync(_endpoint, content);
 
-            // Act
-            var response = await _client.GetAsync("/events");
+        response.EnsureSuccessStatusCode();
+        string responseString = await response.Content.ReadAsStringAsync();
+        responseString.ShouldNotBeNull();
+        responseString.ShouldContain("\"count\":3");
 
-            // Assert
-            response.EnsureSuccessStatusCode();
-            response
-                .Content.Headers.ContentType?.ToString()
-                .ShouldBe("application/cloudevents-batch+json; charset=utf-8");
+        _mockEventRepository.Verify(
+            repo => repo.AddEventsAsync(It.IsAny<IEnumerable<EventEntity>>()),
+            Times.Once
+        );
+    }
 
-            var formatter = new JsonEventFormatter();
-            var returnedCloudEvents = await response.ToCloudEventBatchAsync(formatter);
+    [TestMethod]
+    public async Task GetEvents_ReturnsEventEntityBatch()
+    {
+        IQueryable<EventEntity> eventEntities = new List<EventEntity>
+        {
+            new()
+            {
+                Type = "UserLogin",
+                Source = new Uri("/source/user"),
+                Id = Guid.NewGuid(),
+                SpecVersion = "1.0",
+                ITwinGuid = Guid.NewGuid(),
+                AccountGuid = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid().ToString(),
+            },
+            new()
+            {
+                Type = "FileUpload",
+                Source = new Uri("/source/file"),
+                Id = Guid.NewGuid(),
+                SpecVersion = "1.0",
+                ITwinGuid = Guid.NewGuid(),
+                AccountGuid = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid().ToString(),
+            },
+        }.AsQueryable();
 
-            returnedCloudEvents.ShouldNotBeNull();
-            returnedCloudEvents.Count().ShouldBe(2);
+        _mockEventRepository.Setup(repo => repo.GetAllEventsAsync()).ReturnsAsync(eventEntities);
 
-            _mockEventRepository.Verify(repo => repo.GetAllEventsAsync(), Times.Once);
-        }
+        HttpResponseMessage response = await _client.GetAsync("/events");
+
+        response.EnsureSuccessStatusCode();
+        response
+            .Content.Headers.ContentType?.ToString()
+            .ShouldBe("application/json; charset=utf-8");
+
+        string responseString = await response.Content.ReadAsStringAsync();
+        List<EventEntity>? returnedEventEntities = JsonSerializer.Deserialize<List<EventEntity>>(
+            responseString,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+        );
+
+        returnedEventEntities.ShouldNotBeNull();
+        returnedEventEntities.Count().ShouldBe(2);
+
+        _mockEventRepository.Verify(repo => repo.GetAllEventsAsync(), Times.Once);
+    }
+
+    [TestMethod]
+    public void ValidateEventEntitySerialization()
+    {
+        EventEntity eventEntity = new()
+        {
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "TestType",
+        };
+
+        string serialized = JsonSerializer.Serialize(eventEntity);
+        EventEntity? deserialized = JsonSerializer.Deserialize<EventEntity>(serialized);
+
+        deserialized.ShouldNotBeNull();
+        deserialized.ITwinGuid.ShouldBe(eventEntity.ITwinGuid);
+        deserialized.AccountGuid.ShouldBe(eventEntity.AccountGuid);
     }
 }

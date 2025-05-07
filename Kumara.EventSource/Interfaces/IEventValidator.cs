@@ -1,11 +1,11 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Kumara.EventSource.Models;
+using Kumara.EventSource.Utilities;
 
 namespace Kumara.EventSource.Interfaces;
 
-public interface IEventRepository
+public interface IEventValidator
 {
-    Task<IQueryable<EventEntity>> GetAllEventsAsync();
-    Task AddEventsAsync(IEnumerable<EventEntity> events);
+    ValidationResult ValidateEvent(EventEntity eventEntity);
 }
