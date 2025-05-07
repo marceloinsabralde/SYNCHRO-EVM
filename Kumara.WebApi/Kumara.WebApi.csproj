@@ -39,4 +39,10 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Kumara.WebApi.Tests" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <None Update="Models/**/*.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
