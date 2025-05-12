@@ -61,7 +61,14 @@ Content-Type: application/json
 GET {{Kumara_EventSource_HostAddress}}/events
 Accept: application/json
 
+### Get paginated events (page size 1)
+GET {{Kumara_EventSource_HostAddress}}/events?top=1
+Accept: application/json
 
-### Get events
-GET {{Kumara_EventSource_HostAddress}}/events?Id=A234-1234-1234
+### Get filtered events
+GET {{Kumara_EventSource_HostAddress}}/events?top=5&iTwinGuid=12345678-1234-1234-1234-123456789abc&type=test.created.v1
+Accept: application/json
+
+### Get next page with continuation token
+GET {{Kumara_EventSource_HostAddress}}/events?top=5&continuationToken=CONTINUATION_TOKEN_HERE
 Accept: application/json

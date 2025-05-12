@@ -8,9 +8,15 @@ namespace Kumara.EventSource.Extensions;
 
 public static class QueryParametersExtensions
 {
+    private const int DefaultPageSize = 50;
+    private const int MaxPageSize = 200;
+
     public static QueryParsingResult ToEventEntityQueryBuilder(this IQueryCollection queryParams)
     {
         EventEntityQueryBuilder queryBuilder = new();
+
+        int? pageSize = null;
+        string? continuationToken = null;
 
         foreach (KeyValuePair<string, StringValues> param in queryParams)
         {
@@ -37,7 +43,6 @@ public static class QueryParametersExtensions
                             key
                         );
                     }
-
                     break;
 
                 case "itwinguid":
@@ -53,7 +58,6 @@ public static class QueryParametersExtensions
                             key
                         );
                     }
-
                     break;
 
                 case "accountguid":
@@ -69,7 +73,6 @@ public static class QueryParametersExtensions
                             key
                         );
                     }
-
                     break;
 
                 case "correlationid":
@@ -78,6 +81,26 @@ public static class QueryParametersExtensions
 
                 case "type":
                     queryBuilder.WhereType(value);
+                    break;
+
+                case "top":
+                    if (int.TryParse(value, out int parsedPageSize) && parsedPageSize > 0)
+                    {
+                        pageSize = Math.Min(parsedPageSize, MaxPageSize);
+                    }
+                    else
+                    {
+                        return QueryParsingResult.Failure(
+                            "Invalid Parameter Value",
+                            $"Value '{value}' for parameter '{key}' is not a valid positive integer.",
+                            key
+                        );
+                    }
+
+                    break;
+
+                case "continuationtoken":
+                    continuationToken = value;
                     break;
 
                 default:
@@ -89,6 +112,11 @@ public static class QueryParametersExtensions
             }
         }
 
-        return QueryParsingResult.Success(queryBuilder);
+        if (!string.IsNullOrWhiteSpace(continuationToken))
+        {
+            queryBuilder.WithContinuationToken(continuationToken);
+        }
+
+        return QueryParsingResult.Success(queryBuilder, pageSize ?? DefaultPageSize);
     }
 }

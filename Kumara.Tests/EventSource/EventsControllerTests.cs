@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.Collections.Specialized;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -522,5 +523,715 @@ public class EventsControllerTests
         responseContent.ShouldContain("TestSource2");
         responseContent.ShouldContain("test.created.v1");
         responseContent.ShouldContain("test.updated.v1");
+    }
+
+    #region QueryParameters Tests
+
+    [TestMethod]
+    public async Task GetEvents_WithIdParameter_ReturnsOnlyMatchingEvent()
+    {
+        Guid targetId = Guid.NewGuid();
+
+        EventEntity matchingEvent = new()
+        {
+            Id = targetId,
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "test.created.v1",
+            DataJson = JsonSerializer.SerializeToDocument(
+                new TestCreatedV1
+                {
+                    TestString = "Matching ID EventEntity",
+                    TestEnum = TestOptions.OptionA,
+                    TestInteger = 100,
+                }
+            ),
+        };
+
+        EventEntity nonMatchingEvent = new()
+        {
+            Id = Guid.NewGuid(),
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "test.created.v1",
+            DataJson = JsonSerializer.SerializeToDocument(
+                new TestCreatedV1
+                {
+                    TestString = "Non-matching ID EventEntity",
+                    TestEnum = TestOptions.OptionB,
+                    TestInteger = 200,
+                }
+            ),
+        };
+
+        await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
+
+        HttpResponseMessage response = await _client.GetAsync($"/events?id={targetId}");
+
+        response.EnsureSuccessStatusCode();
+        string responseContent = await response.Content.ReadAsStringAsync();
+        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
+        PaginatedResponseWrapper? paginatedResponse =
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+
+        paginatedResponse.ShouldNotBeNull();
+        List<EventEntity> events = paginatedResponse.GetEvents();
+        events.ShouldNotBeNull();
+        events[0].Id.ShouldBe(targetId);
+    }
+
+    [TestMethod]
+    public async Task GetEvents_WithITwinGuidParameter_ReturnsOnlyMatchingEvents()
+    {
+        Guid targetITwinGuid = Guid.NewGuid();
+        Guid differentITwinGuid = Guid.NewGuid();
+
+        EventEntity matchingEvent = new()
+        {
+            ITwinGuid = targetITwinGuid,
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "test.created.v1",
+            DataJson = JsonSerializer.SerializeToDocument(
+                new TestCreatedV1
+                {
+                    TestString = "Matching iTwin EventEntity",
+                    TestEnum = TestOptions.OptionA,
+                    TestInteger = 100,
+                }
+            ),
+        };
+
+        EventEntity nonMatchingEvent = new()
+        {
+            ITwinGuid = differentITwinGuid,
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "test.created.v1",
+            DataJson = JsonSerializer.SerializeToDocument(
+                new TestCreatedV1
+                {
+                    TestString = "Non-matching iTwin EventEntity",
+                    TestEnum = TestOptions.OptionB,
+                    TestInteger = 200,
+                }
+            ),
+        };
+
+        await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
+
+        HttpResponseMessage response = await _client.GetAsync(
+            $"/events?iTwinGuid={targetITwinGuid}"
+        );
+
+        response.EnsureSuccessStatusCode();
+        string responseContent = await response.Content.ReadAsStringAsync();
+        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
+        PaginatedResponseWrapper? paginatedResponse =
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+
+        paginatedResponse.ShouldNotBeNull();
+        List<EventEntity> events = paginatedResponse.GetEvents();
+        events.ShouldNotBeNull();
+        events[0].ITwinGuid.ShouldBe(targetITwinGuid);
+    }
+
+    [TestMethod]
+    public async Task GetEvents_WithTypeParameter_ReturnsOnlyMatchingEvents()
+    {
+        string targetType = "test.type.filter";
+        string differentType = "different.type";
+
+        EventEntity matchingEvent = new()
+        {
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = targetType,
+            DataJson = JsonSerializer.SerializeToDocument(
+                new { Message = "Matching Type EventEntity" }
+            ),
+        };
+
+        EventEntity nonMatchingEvent = new()
+        {
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = differentType,
+            DataJson = JsonSerializer.SerializeToDocument(
+                new { Message = "Non-matching Type EventEntity" }
+            ),
+        };
+
+        await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
+
+        HttpResponseMessage response = await _client.GetAsync($"/events?type={targetType}");
+
+        response.EnsureSuccessStatusCode();
+        string responseContent = await response.Content.ReadAsStringAsync();
+        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
+        PaginatedResponseWrapper? paginatedResponse =
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+
+        paginatedResponse.ShouldNotBeNull();
+        List<EventEntity> events = paginatedResponse.GetEvents();
+        events.ShouldNotBeNull();
+        events[0].Type.ShouldBe(targetType);
+    }
+
+    [TestMethod]
+    public async Task GetEvents_WithCorrelationIdParameter_ReturnsOnlyMatchingEvents()
+    {
+        string targetCorrelationId = Guid.NewGuid().ToString();
+        string differentCorrelationId = Guid.NewGuid().ToString();
+
+        EventEntity matchingEvent = new()
+        {
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = targetCorrelationId,
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "test.created.v1",
+            DataJson = JsonSerializer.SerializeToDocument(
+                new TestCreatedV1
+                {
+                    TestString = "Matching Correlation EventEntity",
+                    TestEnum = TestOptions.OptionA,
+                    TestInteger = 100,
+                }
+            ),
+        };
+
+        EventEntity nonMatchingEvent = new()
+        {
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = differentCorrelationId,
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "test.created.v1",
+            DataJson = JsonSerializer.SerializeToDocument(
+                new TestCreatedV1
+                {
+                    TestString = "Non-matching Correlation EventEntity",
+                    TestEnum = TestOptions.OptionB,
+                    TestInteger = 200,
+                }
+            ),
+        };
+
+        await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
+
+        HttpResponseMessage response = await _client.GetAsync(
+            $"/events?correlationId={targetCorrelationId}"
+        );
+
+        response.EnsureSuccessStatusCode();
+        string responseContent = await response.Content.ReadAsStringAsync();
+        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
+        PaginatedResponseWrapper? paginatedResponse =
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+
+        paginatedResponse.ShouldNotBeNull();
+        List<EventEntity> events = paginatedResponse.GetEvents();
+        events.ShouldNotBeNull();
+        events[0].CorrelationId.ShouldBe(targetCorrelationId);
+    }
+
+    [TestMethod]
+    public async Task GetEvents_WithAccountGuidParameter_ReturnsOnlyMatchingEvents()
+    {
+        Guid targetAccountGuid = Guid.NewGuid();
+        Guid differentAccountGuid = Guid.NewGuid();
+
+        EventEntity matchingEvent = new()
+        {
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = targetAccountGuid,
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "test.created.v1",
+            DataJson = JsonSerializer.SerializeToDocument(
+                new TestCreatedV1
+                {
+                    TestString = "Matching Account EventEntity",
+                    TestEnum = TestOptions.OptionA,
+                    TestInteger = 100,
+                }
+            ),
+        };
+
+        EventEntity nonMatchingEvent = new()
+        {
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = differentAccountGuid,
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "test.created.v1",
+            DataJson = JsonSerializer.SerializeToDocument(
+                new TestCreatedV1
+                {
+                    TestString = "Non-matching Account EventEntity",
+                    TestEnum = TestOptions.OptionB,
+                    TestInteger = 200,
+                }
+            ),
+        };
+
+        await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
+
+        HttpResponseMessage response = await _client.GetAsync(
+            $"/events?accountGuid={targetAccountGuid}"
+        );
+
+        response.EnsureSuccessStatusCode();
+        string responseContent = await response.Content.ReadAsStringAsync();
+        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
+        PaginatedResponseWrapper? paginatedResponse =
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+
+        paginatedResponse.ShouldNotBeNull();
+        List<EventEntity> events = paginatedResponse.GetEvents();
+        events.ShouldNotBeNull();
+        events[0].AccountGuid.ShouldBe(targetAccountGuid);
+    }
+
+    [TestMethod]
+    public async Task GetEvents_WithMultipleParameters_ReturnsOnlyEventsMatchingAllCriteria()
+    {
+        Guid targetITwinGuid = Guid.NewGuid();
+        string targetType = "test.combined.filter";
+
+        EventEntity matchingEvent = new()
+        {
+            ITwinGuid = targetITwinGuid,
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = targetType,
+            DataJson = JsonSerializer.SerializeToDocument(
+                new { Message = "Matching All Criteria" }
+            ),
+        };
+
+        EventEntity matchingITwinOnly = new()
+        {
+            ITwinGuid = targetITwinGuid,
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "different.type",
+            DataJson = JsonSerializer.SerializeToDocument(new { Message = "Matching iTwin only" }),
+        };
+
+        EventEntity matchingTypeOnly = new()
+        {
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = targetType,
+            DataJson = JsonSerializer.SerializeToDocument(new { Message = "Matching type only" }),
+        };
+
+        await _eventRepository.AddEventsAsync(
+            new[] { matchingEvent, matchingITwinOnly, matchingTypeOnly }
+        );
+
+        HttpResponseMessage response = await _client.GetAsync(
+            $"/events?iTwinGuid={targetITwinGuid}&type={targetType}"
+        );
+
+        response.EnsureSuccessStatusCode();
+        string responseContent = await response.Content.ReadAsStringAsync();
+        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
+        PaginatedResponseWrapper? paginatedResponse =
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+
+        paginatedResponse.ShouldNotBeNull();
+        List<EventEntity> events = paginatedResponse.GetEvents();
+        events.ShouldNotBeNull();
+        events[0]
+            .ShouldSatisfyAllConditions(
+                e => e.ITwinGuid.ShouldBe(targetITwinGuid),
+                e => e.Type.ShouldBe(targetType)
+            );
+    }
+
+    [TestMethod]
+    public async Task GetEvents_WithInvalidGuid_ReturnsBadRequest()
+    {
+        EventEntity event1 = new()
+        {
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "test.created.v1",
+            DataJson = JsonSerializer.SerializeToDocument(
+                new TestCreatedV1
+                {
+                    TestString = "Test EventEntity 1",
+                    TestEnum = TestOptions.OptionA,
+                    TestInteger = 100,
+                }
+            ),
+        };
+
+        EventEntity event2 = new()
+        {
+            ITwinGuid = Guid.NewGuid(),
+            AccountGuid = Guid.NewGuid(),
+            CorrelationId = Guid.NewGuid().ToString(),
+            SpecVersion = "1.0",
+            Source = new Uri("http://example.com/TestSource"),
+            Type = "test.created.v1",
+            DataJson = JsonSerializer.SerializeToDocument(
+                new TestCreatedV1
+                {
+                    TestString = "Test EventEntity 2",
+                    TestEnum = TestOptions.OptionB,
+                    TestInteger = 200,
+                }
+            ),
+        };
+
+        await _eventRepository.AddEventsAsync(new[] { event1, event2 });
+
+        HttpResponseMessage response = await _client.GetAsync("/events?iTwinGuid=not-a-valid-guid");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        string content = await response.Content.ReadAsStringAsync();
+        content.ShouldNotBeNull();
+        JsonElement problemDetails = JsonSerializer.Deserialize<JsonElement>(content);
+
+        string? title = problemDetails.GetProperty("title").GetString();
+        title.ShouldNotBeNull();
+        title.ShouldBe("Invalid Parameter Value");
+
+        string? detail = problemDetails.GetProperty("detail").GetString();
+        detail.ShouldNotBeNull();
+        detail.ShouldContain("'not-a-valid-guid'");
+        detail.ShouldContain("'iTwinGuid'");
+
+        problemDetails.GetProperty("status").GetInt32().ShouldBe(400);
+
+        string? invalidParam = problemDetails.GetProperty("invalidParameter").GetString();
+        invalidParam.ShouldNotBeNull();
+        invalidParam.ShouldBe("iTwinGuid");
+    }
+
+    #endregion
+
+    #region Pagination Tests
+
+    [TestMethod]
+    public async Task GetEvents_WithNoPaginationParameters_ReturnsDefaultPaginatedEvents()
+    {
+        // Create enough events to trigger pagination (more than default page size)
+        List<EventEntity> eventEntities = new();
+        for (int i = 0; i < 60; i++)
+        {
+            // Add delay to ensure different UUID v7 IDs (time-ordered)
+            await Task.Delay(5);
+
+            eventEntities.Add(
+                new EventEntity
+                {
+                    ITwinGuid = Guid.NewGuid(),
+                    AccountGuid = Guid.NewGuid(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    SpecVersion = "1.0",
+                    Source = new Uri($"http://example.com/TestSource{i}"),
+                    Type = "test.pagination.default",
+                    Id = Guid.CreateVersion7(), // UUID v7 for time ordering
+                    DataJson = JsonSerializer.SerializeToDocument(
+                        new { Index = i, Message = $"Default Pagination Test {i}" }
+                    ),
+                }
+            );
+        }
+
+        await _eventRepository.AddEventsAsync(eventEntities);
+
+        HttpResponseMessage response = await _client.GetAsync("/events");
+
+        response.EnsureSuccessStatusCode();
+        string responseContent = await response.Content.ReadAsStringAsync();
+
+        // Deserialize as PaginatedEvents
+        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
+        PaginatedResponseWrapper? paginatedResponse =
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+
+        // Verify pagination structure
+        paginatedResponse.ShouldNotBeNull();
+        paginatedResponse.Items.ShouldNotBeNull();
+        paginatedResponse.Links.ShouldNotBeNull();
+        paginatedResponse.Links.Self.ShouldNotBeNull();
+        paginatedResponse.Links.Next.ShouldNotBeNull(
+            "Should have a Next link when more pages exist"
+        );
+        paginatedResponse.Items.Count.ShouldBe(50); // Default page size
+    }
+
+    [TestMethod]
+    public async Task GetEvents_WithPageSize_ReturnsPaginatedEventsWithSpecifiedSize()
+    {
+        List<EventEntity> eventEntities = new();
+        for (int i = 0; i < 30; i++)
+        {
+            await Task.Delay(5);
+            eventEntities.Add(
+                new EventEntity
+                {
+                    ITwinGuid = Guid.NewGuid(),
+                    AccountGuid = Guid.NewGuid(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    SpecVersion = "1.0",
+                    Source = new Uri($"http://example.com/TestSource{i}"),
+                    Type = "test.pagination.pagesize",
+                    Id = Guid.CreateVersion7(), // UUID v7 for time ordering
+                    DataJson = JsonSerializer.SerializeToDocument(
+                        new { Index = i, Message = $"PageSize Test {i}" }
+                    ),
+                }
+            );
+        }
+
+        await _eventRepository.AddEventsAsync(eventEntities);
+
+        // Set custom page size
+        int customPageSize = 15;
+
+        HttpResponseMessage response = await _client.GetAsync($"/events?top={customPageSize}");
+
+        response.EnsureSuccessStatusCode();
+        string responseContent = await response.Content.ReadAsStringAsync();
+
+        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
+        PaginatedResponseWrapper? paginatedResponse =
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+
+        paginatedResponse.ShouldNotBeNull();
+        paginatedResponse.Items.ShouldNotBeNull();
+        paginatedResponse.Links.ShouldNotBeNull();
+        paginatedResponse.Links.Self.ShouldNotBeNull();
+        paginatedResponse.Links.Next.ShouldNotBeNull(
+            "Should have a Next link when more pages exist"
+        );
+    }
+
+    [TestMethod]
+    public async Task GetEvents_WithContinuationToken_ReturnsNextPage()
+    {
+        List<EventEntity> eventEntities = new();
+        for (int i = 0; i < 30; i++)
+        {
+            await Task.Delay(5);
+            eventEntities.Add(
+                new EventEntity
+                {
+                    ITwinGuid = Guid.NewGuid(),
+                    AccountGuid = Guid.NewGuid(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    SpecVersion = "1.0",
+                    Source = new Uri($"http://example.com/TestSource{i}"),
+                    Type = "test.pagination.continuation",
+                    Id = Guid.CreateVersion7(), // UUID v7 for time ordering
+                    DataJson = JsonSerializer.SerializeToDocument(
+                        new { Index = i, Message = $"Continuation Test {i}" }
+                    ),
+                }
+            );
+        }
+
+        await _eventRepository.AddEventsAsync(eventEntities);
+
+        // Get first page
+        int pageSize = 10;
+        HttpResponseMessage firstResponse = await _client.GetAsync(
+            $"/events?type=test.pagination.continuation&top={pageSize}"
+        );
+        firstResponse.EnsureSuccessStatusCode();
+
+        string firstResponseContent = await firstResponse.Content.ReadAsStringAsync();
+
+        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
+        PaginatedResponseWrapper? firstPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
+            firstResponseContent,
+            options
+        );
+
+        firstPage.ShouldNotBeNull();
+        firstPage.Links.Next.ShouldNotBeNull("First page should have a next link");
+
+        // Get the Next URL which should contain the continuation token
+        string nextUrl = firstPage.Links.Next.Href;
+
+        // Extract continuation token from the next link URL
+        NameValueCollection queryParams = System.Web.HttpUtility.ParseQueryString(
+            new Uri(nextUrl).Query
+        );
+        string continuationToken = queryParams["continuationtoken"] ?? "";
+
+        continuationToken.ShouldNotBeNullOrEmpty(
+            "Should be able to extract continuation token from Next link"
+        );
+
+        HttpResponseMessage secondResponse = await _client.GetAsync(
+            $"/events?top={pageSize}&continuationtoken={continuationToken}"
+        );
+
+        secondResponse.EnsureSuccessStatusCode();
+        string secondResponseContent = await secondResponse.Content.ReadAsStringAsync();
+        PaginatedResponseWrapper? secondPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
+            secondResponseContent,
+            options
+        );
+
+        secondPage.ShouldNotBeNull();
+        List<EventEntity> secondPageEvents = secondPage.GetEvents();
+        secondPageEvents.ShouldNotBeNull();
+        secondPageEvents.Count.ShouldBe(pageSize);
+
+        // Ensure no duplicate events between pages
+        List<Guid> firstPageIds = firstPage.GetEvents().Select(e => e.Id).ToList();
+        List<Guid> secondPageIds = secondPageEvents.Select(e => e.Id).ToList();
+        firstPageIds.Intersect(secondPageIds).ShouldBeEmpty();
+
+        // Verify that type filter is preserved from the token
+        secondPage
+            .Items.All(e => e.Type == "test.pagination.continuation")
+            .ShouldBeTrue("The type filter should be preserved from the continuation token");
+    }
+
+    [TestMethod]
+    public async Task GetEvents_WithContinuationTokenAndFilters_ReturnsCombinedResult()
+    {
+        Guid targetITwinGuid = Guid.NewGuid();
+        string eventType = "test.pagination.combined";
+
+        List<EventEntity> eventEntities = new();
+        for (int i = 0; i < 30; i++)
+        {
+            await Task.Delay(5);
+            eventEntities.Add(
+                new EventEntity
+                {
+                    ITwinGuid = targetITwinGuid, // Use the same ITwinGuid for all events
+                    AccountGuid = Guid.NewGuid(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    SpecVersion = "1.0",
+                    Source = new Uri($"http://example.com/TestSource{i}"),
+                    Type = eventType,
+                    Id = Guid.CreateVersion7(), // UUID v7 for time ordering
+                    DataJson = JsonSerializer.SerializeToDocument(
+                        new { Index = i, Message = $"Combined Filter Test {i}" }
+                    ),
+                }
+            );
+        }
+
+        await _eventRepository.AddEventsAsync(eventEntities);
+
+        // Get first page with filters
+        int pageSize = 10;
+        HttpResponseMessage firstResponse = await _client.GetAsync(
+            $"/events?iTwinGuid={targetITwinGuid}&type={eventType}&top={pageSize}"
+        );
+
+        firstResponse.EnsureSuccessStatusCode();
+        string firstResponseContent = await firstResponse.Content.ReadAsStringAsync();
+        Console.WriteLine($"First page response: {firstResponseContent}");
+
+        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
+        PaginatedResponseWrapper? firstPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
+            firstResponseContent,
+            options
+        );
+
+        firstPage.ShouldNotBeNull();
+        firstPage.Links.Next.ShouldNotBeNull("First page should have a next link");
+
+        // Debug the Next URL
+        string nextUrl = firstPage.Links.Next.Href;
+        Console.WriteLine($"Next URL: {nextUrl}");
+
+        // Extract continuation token from the next link URL using more robust parsing
+        NameValueCollection queryParams = System.Web.HttpUtility.ParseQueryString(
+            new Uri(nextUrl).Query
+        );
+        string continuationToken =
+            queryParams["continuationtoken"] ?? queryParams["continuationToken"] ?? "";
+
+        continuationToken.ShouldNotBeNullOrEmpty(
+            "Should be able to extract continuation token from Next link"
+        );
+
+        HttpResponseMessage secondResponse = await _client.GetAsync(
+            $"/events?iTwinGuid={targetITwinGuid}&type={eventType}&top={pageSize}&continuationtoken={continuationToken}"
+        );
+
+        secondResponse.EnsureSuccessStatusCode();
+        string secondResponseContent = await secondResponse.Content.ReadAsStringAsync();
+        PaginatedResponseWrapper? secondPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
+            secondResponseContent,
+            options
+        );
+
+        secondPage.ShouldNotBeNull();
+        secondPage.Items.ShouldNotBeNull();
+
+        // Verify all events match the filter criteria
+        foreach (EventEntity evt in secondPage.Items)
+        {
+            evt.ITwinGuid.ShouldBe(targetITwinGuid);
+            evt.Type.ShouldBe(eventType);
+        }
+    }
+
+    #endregion
+
+    // Helper class used for deserialization in tests
+    private class PaginatedResponseWrapper
+    {
+        public List<EventEntity> Items { get; set; } = new();
+        public PaginationLinksResponse Links { get; set; } = new();
+
+        public List<EventEntity> GetEvents() => Items;
+    }
+
+    private class PaginationLinksResponse
+    {
+        public PaginationLinkResponse Self { get; set; } = new();
+        public PaginationLinkResponse? Next { get; set; }
+    }
+
+    private class PaginationLinkResponse
+    {
+        public string Href { get; set; } = string.Empty;
     }
 }

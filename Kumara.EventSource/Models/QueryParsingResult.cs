@@ -9,10 +9,14 @@ public class QueryParsingResult
     public string? ErrorTitle { get; set; }
     public string? ErrorDetail { get; set; }
     public string? InvalidParameterName { get; set; }
+    public int PageSize { get; set; }
 
-    public static QueryParsingResult Success(EventEntityQueryBuilder queryBuilder)
+    public static QueryParsingResult Success(
+        EventEntityQueryBuilder queryBuilder,
+        int pageSize = 50
+    )
     {
-        return new QueryParsingResult { QueryBuilder = queryBuilder };
+        return new QueryParsingResult { QueryBuilder = queryBuilder, PageSize = pageSize };
     }
 
     public static QueryParsingResult Failure(string title, string detail, string paramName)

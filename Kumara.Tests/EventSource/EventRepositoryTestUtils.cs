@@ -73,4 +73,21 @@ public static class EventRepositoryTestUtils
             },
         };
     }
+
+    public static void BuildPaginationLinks<T>(
+        PaginatedList<T> paginatedList,
+        string eventType,
+        string? continuationToken = null
+    )
+    {
+        string baseUrl = "http://test-api.com/events";
+        string selfQuery = $"?type={eventType}";
+        paginatedList.Links.Self = new PaginationLink { Href = baseUrl + selfQuery };
+
+        if (continuationToken != null)
+        {
+            string nextQuery = $"{selfQuery}&continuationToken={continuationToken}";
+            paginatedList.Links.Next = new PaginationLink { Href = baseUrl + nextQuery };
+        }
+    }
 }
