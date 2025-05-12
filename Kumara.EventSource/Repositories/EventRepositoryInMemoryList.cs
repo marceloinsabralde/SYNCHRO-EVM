@@ -24,4 +24,10 @@ public class EventRepositoryInMemoryList : IEventRepository
 
         return Task.CompletedTask;
     }
+
+    public Task<IQueryable<EventEntity>> QueryEventsAsync(EventEntityQueryBuilder queryBuilder)
+    {
+        var result = queryBuilder.ApplyTo(_events.AsQueryable());
+        return Task.FromResult(result);
+    }
 }

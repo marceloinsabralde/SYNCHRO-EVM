@@ -25,4 +25,10 @@ public class EventRepositoryMongo : IEventRepository
         await _context.Events.AddRangeAsync(events);
         await _context.SaveChangesAsync();
     }
+
+    public Task<IQueryable<EventEntity>> QueryEventsAsync(EventEntityQueryBuilder queryBuilder)
+    {
+        var result = queryBuilder.ApplyTo(_context.Events.AsQueryable());
+        return Task.FromResult(result);
+    }
 }

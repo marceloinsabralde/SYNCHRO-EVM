@@ -8,4 +8,5 @@ public interface IEventRepository
 {
     Task<IQueryable<EventEntity>> GetAllEventsAsync();
     Task AddEventsAsync(IEnumerable<EventEntity> events);
+    Task<IQueryable<EventEntity>> QueryEventsAsync(EventEntityQueryBuilder queryBuilder);
 }
