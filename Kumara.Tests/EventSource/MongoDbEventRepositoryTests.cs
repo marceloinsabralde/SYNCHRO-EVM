@@ -6,6 +6,7 @@ using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Models;
 using Kumara.EventSource.Models.Events;
 using Kumara.EventSource.Repositories;
+using Kumara.EventSource.Utilities;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Shouldly;
@@ -44,7 +45,7 @@ public class MongoDbEventRepositoryTests
     [TestInitialize]
     public async Task TestInitialize()
     {
-        string testDatabaseName = $"{s_databaseName}_{Guid.NewGuid():N}";
+        string testDatabaseName = $"{s_databaseName}_{GuidUtility.CreateGuid():N}";
 
         MongoClient mongoClient = new(s_connectionString);
 
