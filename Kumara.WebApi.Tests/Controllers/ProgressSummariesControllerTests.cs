@@ -108,7 +108,12 @@ public sealed class ProgressSummariesControllerTests : DatabaseTestBase
     [Fact]
     public async Task Index_WhenActivityNotFound_NotFound()
     {
-        var progressEntry = Factories.ProgressEntry();
+        var allocation = Factories.MaterialActivityAllocation();
+        await _dbContext.MaterialActivityAllocations.AddAsync(
+            allocation,
+            TestContext.Current.CancellationToken
+        );
+        var progressEntry = Factories.ProgressEntry(allocation);
         await _dbContext.ProgressEntries.AddAsync(
             progressEntry,
             TestContext.Current.CancellationToken
@@ -126,7 +131,12 @@ public sealed class ProgressSummariesControllerTests : DatabaseTestBase
     [Fact]
     public async Task Index_WhenMaterialNotFound_NotFound()
     {
-        var progressEntry = Factories.ProgressEntry();
+        var allocation = Factories.MaterialActivityAllocation();
+        await _dbContext.MaterialActivityAllocations.AddAsync(
+            allocation,
+            TestContext.Current.CancellationToken
+        );
+        var progressEntry = Factories.ProgressEntry(allocation);
         await _dbContext.ProgressEntries.AddAsync(
             progressEntry,
             TestContext.Current.CancellationToken
