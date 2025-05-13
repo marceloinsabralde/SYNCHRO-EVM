@@ -21,9 +21,9 @@ public class EventValidatorTests
     );
 
     [TestMethod]
-    public void ValidateEventEntity_ValidTestCreatedV1Event_ReturnsTrue()
+    public void ValidateEvent_ValidTestCreatedV1Event_ReturnsTrue()
     {
-        EventEntity eventEntity = new()
+        Event @event = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -41,16 +41,16 @@ public class EventValidatorTests
             ),
         };
 
-        ValidationResult result = SEventValidator.ValidateEvent(eventEntity);
+        ValidationResult result = SEventValidator.ValidateEvent(@event);
 
         result.IsValid.ShouldBeTrue();
         result.Errors.ShouldBeEmpty();
     }
 
     [TestMethod]
-    public void ValidateEventEntity_InvalidTestCreatedV1Event_ReturnsFalse()
+    public void ValidateEvent_InvalidTestCreatedV1Event_ReturnsFalse()
     {
-        EventEntity eventEntity = new()
+        Event @event = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -68,7 +68,7 @@ public class EventValidatorTests
             ),
         };
 
-        ValidationResult result = SEventValidator.ValidateEvent(eventEntity);
+        ValidationResult result = SEventValidator.ValidateEvent(@event);
 
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();
@@ -76,9 +76,9 @@ public class EventValidatorTests
     }
 
     [TestMethod]
-    public void ValidateEventEntity_InvalidDataJson_ReturnsFalse()
+    public void ValidateEvent_InvalidDataJson_ReturnsFalse()
     {
-        EventEntity eventEntity = new()
+        Event @event = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -89,7 +89,7 @@ public class EventValidatorTests
             DataJson = JsonDocument.Parse("{}"),
         };
 
-        ValidationResult result = SEventValidator.ValidateEvent(eventEntity);
+        ValidationResult result = SEventValidator.ValidateEvent(@event);
 
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();
@@ -97,10 +97,9 @@ public class EventValidatorTests
     }
 
     [TestMethod]
-    public void ValidateEventEntity_ValidTestUpdatedV1Event_ReturnsTrue()
+    public void ValidateEvent_ValidTestUpdatedV1Event_ReturnsTrue()
     {
-        // Arrange
-        var eventEntity = new EventEntity
+        Event @event = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -119,19 +118,16 @@ public class EventValidatorTests
             ),
         };
 
-        // Act
-        var result = SEventValidator.ValidateEvent(eventEntity);
+        ValidationResult result = SEventValidator.ValidateEvent(@event);
 
-        // Assert
         result.IsValid.ShouldBeTrue();
         result.Errors.ShouldBeEmpty();
     }
 
     [TestMethod]
-    public void ValidateEventEntity_InvalidTestUpdatedV1Event_ReturnsFalse()
+    public void ValidateEvent_InvalidTestUpdatedV1Event_ReturnsFalse()
     {
-        // Arrange
-        var eventEntity = new EventEntity
+        Event @event = new()
         {
             ITwinGuid = Guid.NewGuid(),
             AccountGuid = Guid.NewGuid(),
@@ -150,10 +146,8 @@ public class EventValidatorTests
             ),
         };
 
-        // Act
-        var result = SEventValidator.ValidateEvent(eventEntity);
+        ValidationResult result = SEventValidator.ValidateEvent(@event);
 
-        // Assert
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();
         result.Errors[0].ShouldContain("The field TestInteger must be between 0 and 1000.");

@@ -6,6 +6,11 @@ namespace Kumara.EventSource.Interfaces;
 
 public interface IEventRepository
 {
-    Task<IQueryable<EventEntity>> GetAllEventsAsync();
-    Task AddEventsAsync(IEnumerable<EventEntity> events);
+    Task AddEventsAsync(IEnumerable<Event> events);
+    Task<IQueryable<Event>> QueryEventsAsync(EventQueryBuilder queryBuilder);
+
+    Task<PaginatedList<Event>> GetPaginatedEventsAsync(
+        EventQueryBuilder queryBuilder,
+        int pageSize
+    );
 }

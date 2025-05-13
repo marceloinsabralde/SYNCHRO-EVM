@@ -11,10 +11,10 @@ public class EventValidator(Dictionary<string, Type> eventTypeMap) : IEventValid
 {
     private readonly Dictionary<string, Type> _eventTypeMap = eventTypeMap;
 
-    public ValidationResult ValidateEvent(EventEntity eventEntity)
+    public ValidationResult ValidateEvent(Event @event)
     {
-        string eventType = eventEntity.Type;
-        JsonDocument eventData = eventEntity.DataJson;
+        string eventType = @event.Type;
+        JsonDocument eventData = @event.DataJson;
 
         if (!_eventTypeMap.ContainsKey(eventType))
         {

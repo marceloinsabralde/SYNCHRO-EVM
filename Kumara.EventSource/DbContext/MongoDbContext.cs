@@ -16,13 +16,13 @@ public class MongoDbContext : Microsoft.EntityFrameworkCore.DbContext
         Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
     }
 
-    public DbSet<EventEntity> Events { get; set; } = null!;
+    public DbSet<Event> Events { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<EventEntity>(entity =>
+        modelBuilder.Entity<Event>(entity =>
         {
             entity.ToCollection("events");
 

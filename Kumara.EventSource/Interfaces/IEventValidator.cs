@@ -7,5 +7,5 @@ namespace Kumara.EventSource.Interfaces;
 
 public interface IEventValidator
 {
-    ValidationResult ValidateEvent(EventEntity eventEntity);
+    ValidationResult ValidateEvent(Event @event);
 }

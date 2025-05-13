@@ -8,20 +8,39 @@ namespace Kumara.EventSource.Repositories;
 
 public class EventRepositoryInMemoryList : IEventRepository
 {
-    private readonly ConcurrentBag<EventEntity> _events = new();
+    private readonly ConcurrentBag<Event> _events = [];
 
-    public Task<IQueryable<EventEntity>> GetAllEventsAsync()
+    public Task AddEventsAsync(IEnumerable<Event> events)
     {
-        return Task.FromResult(_events.AsQueryable());
-    }
-
-    public Task AddEventsAsync(IEnumerable<EventEntity> events)
-    {
-        foreach (EventEntity eventEntity in events)
+        foreach (Event? @event in events)
         {
-            _events.Add(eventEntity);
+            _events.Add(@event);
         }
 
         return Task.CompletedTask;
+    }
+
+    public Task<IQueryable<Event>> QueryEventsAsync(EventQueryBuilder queryBuilder)
+    {
+        IQueryable<Event>? result = queryBuilder.ApplyTo(
+            (IQueryable<Event>)_events.AsQueryable().OrderBy(e => e.Id)
+        );
+        return Task.FromResult(result);
+    }
+
+    public async Task<PaginatedList<Event>> GetPaginatedEventsAsync(
+        EventQueryBuilder queryBuilder,
+        int pageSize
+    )
+    {
+        queryBuilder.Limit(pageSize + 1);
+        IQueryable<Event> queryResult = await QueryEventsAsync(queryBuilder);
+        List<Event> events = queryResult.ToList();
+        bool hasMoreItems = events.Count > pageSize;
+        List<Event> pagedItems = hasMoreItems ? events.Take(pageSize).ToList() : events;
+
+        PaginatedList<Event> result = new() { Items = pagedItems, HasMoreItems = hasMoreItems };
+
+        return result;
     }
 }

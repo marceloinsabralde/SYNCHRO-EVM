@@ -3,10 +3,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Kumara.EventSource.Utilities;
 
 namespace Kumara.EventSource.Models;
 
-public class EventEntity
+public class Event
 {
     [Required]
     [JsonPropertyName("iTwinGuid")]
@@ -22,7 +23,7 @@ public class EventEntity
 
     [Required]
     [JsonPropertyName("id")]
-    public Guid Id { get; set; } = Guid.CreateVersion7();
+    public Guid Id { get; set; } = GuidUtility.CreateGuid();
 
     [Required]
     [JsonPropertyName("specVersion")]
