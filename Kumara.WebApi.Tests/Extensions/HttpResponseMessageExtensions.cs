@@ -12,7 +12,8 @@ public static class HttpResponseMessageExtensions
         int status,
         string title,
         string type,
-        string? errorsPattern = null
+        string? errorsPattern = null,
+        Dictionary<string, string[]>? errorsDict = null
     )
     {
         response.StatusCode.ShouldBe((HttpStatusCode)status);
@@ -24,7 +25,7 @@ public static class HttpResponseMessageExtensions
 
         List<string> expectedKeys = ["status", "title", "traceId", "type"];
 
-        if (errorsPattern is not null)
+        if (errorsPattern is not null || errorsDict is not null)
         {
             expectedKeys.Add("errors");
         }
@@ -41,6 +42,18 @@ public static class HttpResponseMessageExtensions
         {
             responseJson["errors"]!.ToJsonString().ShouldMatch(errorsPattern);
         }
+
+        if (errorsDict is not null)
+        {
+            foreach ((string errorKey, string[] errorMessages) in errorsDict)
+            {
+                responseJson["errors"]![errorKey]!
+                    .AsArray()
+                    .Select(node => node!.ToString())
+                    .ToArray()
+                    .ShouldBeEquivalentTo(errorMessages);
+            }
+        }
     }
 
     public static async Task ShouldBeApiErrorBadRequest(
@@ -53,6 +66,19 @@ public static class HttpResponseMessageExtensions
             title: "One or more validation errors occurred.",
             type: "https://tools.ietf.org/html/rfc9110#section-15.5.1",
             errorsPattern: errorsPattern
+        );
+    }
+
+    public static async Task ShouldBeApiErrorBadRequest(
+        this HttpResponseMessage response,
+        Dictionary<string, string[]> errorsDict
+    )
+    {
+        await response.ShouldBeApiError(
+            status: 400,
+            title: "One or more validation errors occurred.",
+            type: "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+            errorsDict: errorsDict
         );
     }
 
