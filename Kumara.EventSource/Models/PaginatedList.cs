@@ -26,31 +26,3 @@ public class PaginatedList<T>
     [JsonIgnore]
     public bool HasMoreItems { get; set; }
 }
-
-/// <summary>
-/// Contains links for navigating between pages of results.
-/// </summary>
-public class PaginationLinks
-{
-    /// <summary>
-    /// Link to the current page.
-    /// </summary>
-    public PaginationLink Self { get; set; } = new();
-
-    /// <summary>
-    /// Link to the next page, if available.
-    /// </summary>
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public PaginationLink? Next { get; set; }
-}
-
-/// <summary>
-/// Represents a hypermedia link.
-/// </summary>
-public class PaginationLink
-{
-    /// <summary>
-    /// The URL of the link.
-    /// </summary>
-    public string Href { get; set; } = string.Empty;
-}
