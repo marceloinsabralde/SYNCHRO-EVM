@@ -1,4 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json.Nodes;
@@ -88,6 +89,15 @@ public static class HttpResponseMessageExtensions
             status: 404,
             title: "Not Found",
             type: "https://tools.ietf.org/html/rfc9110#section-15.5.5"
+        );
+    }
+
+    public static async Task ShouldBeApiErrorConflict(this HttpResponseMessage response)
+    {
+        await response.ShouldBeApiError(
+            status: 409,
+            title: "Conflict",
+            type: "https://tools.ietf.org/html/rfc9110#section-15.5.10"
         );
     }
 }
