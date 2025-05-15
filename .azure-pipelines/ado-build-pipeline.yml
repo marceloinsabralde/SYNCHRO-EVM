@@ -171,11 +171,3 @@ jobs:
           version: $(Build.BuildNumber)
           filepath: $(Build.ArtifactStagingDirectory)/veracode_artifacts
           optargs: '-include *.dll'
-
-  - job: Compare_Schema_Files
-    displayName: Compare Schema Files
-    steps:
-      - script: |
-          set -euo pipefail
-          .azure-pipelines/script/dcr .azure-pipelines/script/diff-schema
-        displayName: Compare Schema Files

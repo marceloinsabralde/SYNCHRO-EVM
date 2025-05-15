@@ -13,10 +13,6 @@ public static class Extensions
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await dbContext.Database.MigrateAsync();
         await EnsureViewsPopulated(dbContext);
-        if (app.Environment.IsDevelopment())
-        {
-            ExternalScript.SchemaDump();
-        }
     }
 
     public static void SeedDevelopmentData(this WebApplication app)
