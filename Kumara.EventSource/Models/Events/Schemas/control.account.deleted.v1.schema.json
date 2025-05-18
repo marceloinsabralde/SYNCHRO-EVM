@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://schemas.bentley.com/construction/events/control.account.deleted.v1.schema.json",
+  "title": "Control Account Deleted V1 Schema",
+  "type": "object",
+  "description": "Schema for the data payload of a Control Account Deleted V1. Use `control.account.deleted.v1` as the `type` attribute.",
+  "additionalProperties": false,
+  "required": [
+    "id"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "guid",
+      "minLength": 1
+    },
+    "event_type_version": {
+      "type": "string"
+    }
+  }
+}
