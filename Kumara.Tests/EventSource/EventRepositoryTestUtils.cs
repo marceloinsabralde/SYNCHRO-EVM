@@ -8,8 +8,15 @@ namespace Kumara.Tests.EventSource;
 
 public static class EventRepositoryTestUtils
 {
+    public static DateTimeOffset GetTestDateTimeOffset()
+    {
+        return new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+    }
+
     public static List<Event> GetTestEvents()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
+
         return new List<Event>
         {
             new()
@@ -19,13 +26,18 @@ public static class EventRepositoryTestUtils
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://testsource.com"),
-                Type = "kumara.test.event",
+                Type = "control.account.created.v1",
                 DataJson = JsonSerializer.SerializeToDocument(
-                    new TestCreatedV1
+                    new ControlAccountCreatedV1
                     {
-                        TestString = "Test String",
-                        TestEnum = TestOptions.OptionA,
-                        TestInteger = 100,
+                        Id = Guid.NewGuid(),
+                        Name = "Test Account",
+                        WbsPath = "1.2.3",
+                        TaskId = Guid.NewGuid(),
+                        PlannedStart = now,
+                        PlannedFinish = now.AddDays(10),
+                        ActualStart = now,
+                        ActualFinish = now.AddDays(9),
                     }
                 ),
             },

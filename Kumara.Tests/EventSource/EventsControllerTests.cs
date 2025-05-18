@@ -60,6 +60,7 @@ public class EventsControllerTests
     [TestMethod]
     public async Task GetEvents_ReturnsCorrectContentType()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
         string expectedContentType = "application/json";
         Event expectedEvent = new()
         {
@@ -68,13 +69,18 @@ public class EventsControllerTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new ControlAccountCreatedV1
                 {
-                    TestString = "Expected Test String",
-                    TestEnum = TestOptions.OptionB,
-                    TestInteger = 100,
+                    Id = Guid.NewGuid(),
+                    Name = "Expected Account",
+                    WbsPath = "1.2.3",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = DateTimeOffset.Now,
+                    PlannedFinish = DateTimeOffset.Now.AddDays(10),
+                    ActualStart = DateTimeOffset.Now,
+                    ActualFinish = DateTimeOffset.Now.AddDays(9),
                 }
             ),
         };
@@ -117,6 +123,7 @@ public class EventsControllerTests
     [TestMethod]
     public async Task PostEvents_AcceptsCorrectContentType()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
         List<Event> eventsPayload = new()
         {
             new Event
@@ -126,13 +133,18 @@ public class EventsControllerTests
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://example.com/TestSource"),
-                Type = "test.created.v1",
+                Type = "control.account.created.v1",
                 DataJson = JsonSerializer.SerializeToDocument(
-                    new TestCreatedV1
+                    new ControlAccountCreatedV1
                     {
-                        TestString = "Payload Test String",
-                        TestEnum = TestOptions.OptionC,
-                        TestInteger = 200,
+                        Id = Guid.NewGuid(),
+                        Name = "Payload Account",
+                        WbsPath = "1.2.3",
+                        TaskId = Guid.NewGuid(),
+                        PlannedStart = DateTimeOffset.Now,
+                        PlannedFinish = DateTimeOffset.Now.AddDays(10),
+                        ActualStart = DateTimeOffset.Now,
+                        ActualFinish = DateTimeOffset.Now.AddDays(9),
                     }
                 ),
             },
@@ -175,39 +187,51 @@ public class EventsControllerTests
     [TestMethod]
     public async Task PostEvents_WithMultipleEvents_ReturnsSuccessAndCorrectCount()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
+
         List<Event> eventsPayload = new()
         {
             new Event
             {
-                Type = "test.created.v1",
+                Type = "control.account.created.v1",
                 Source = new Uri("/events/test"),
                 SpecVersion = "1.0",
                 ITwinGuid = Guid.NewGuid(),
                 AccountGuid = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 DataJson = JsonSerializer.SerializeToDocument(
-                    new TestCreatedV1
+                    new ControlAccountCreatedV1
                     {
-                        TestString = "Sample Test String",
-                        TestEnum = TestOptions.OptionA,
-                        TestInteger = 42,
+                        Id = Guid.NewGuid(),
+                        Name = "Sample Account 1",
+                        WbsPath = "21.22.23",
+                        TaskId = Guid.NewGuid(),
+                        PlannedStart = now,
+                        PlannedFinish = now.AddDays(2),
+                        ActualStart = now,
+                        ActualFinish = now.AddDays(1),
                     }
                 ),
             },
             new Event
             {
-                Type = "test.created.v1",
+                Type = "control.account.created.v1",
                 Source = new Uri("/events/test"),
                 SpecVersion = "1.0",
                 ITwinGuid = Guid.NewGuid(),
                 AccountGuid = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 DataJson = JsonSerializer.SerializeToDocument(
-                    new TestCreatedV1
+                    new ControlAccountCreatedV1
                     {
-                        TestString = "Sample Test String",
-                        TestEnum = TestOptions.OptionA,
-                        TestInteger = 42,
+                        Id = Guid.NewGuid(),
+                        Name = "Sample Account 2",
+                        WbsPath = "22.23.24",
+                        TaskId = Guid.NewGuid(),
+                        PlannedStart = now,
+                        PlannedFinish = now.AddDays(3),
+                        ActualStart = now,
+                        ActualFinish = now.AddDays(2),
                     }
                 ),
             },
@@ -395,6 +419,7 @@ public class EventsControllerTests
     [TestMethod]
     public async Task PostEvents_ValidEvent_ReturnsOk()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
         Event @event = new()
         {
             ITwinGuid = Guid.NewGuid(),
@@ -402,13 +427,18 @@ public class EventsControllerTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new ControlAccountCreatedV1
                 {
-                    TestString = "Controller Test String",
-                    TestEnum = TestOptions.OptionE,
-                    TestInteger = 500,
+                    Id = Guid.NewGuid(),
+                    Name = "Controller Account",
+                    WbsPath = "1.2.3",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(10),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(9),
                 }
             ),
         };
@@ -424,6 +454,7 @@ public class EventsControllerTests
     [TestMethod]
     public async Task PostEvents_ValidUpdatedEvent_ReturnsOk()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
         Event @event = new()
         {
             ITwinGuid = Guid.NewGuid(),
@@ -431,14 +462,18 @@ public class EventsControllerTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.updated.v1",
+            Type = "control.account.updated.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestUpdatedV1
+                new ControlAccountUpdatedV1
                 {
-                    TestString = "Updated Controller Test String",
-                    TestEnum = TestOptions.OptionD,
-                    TestInteger = 750,
-                    UpdatedTime = DateTime.UtcNow,
+                    Id = Guid.NewGuid(),
+                    Name = "Updated Controller Account",
+                    WbsPath = "1.2.3",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(10),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(9),
                 }
             ),
         };
@@ -468,6 +503,7 @@ public class EventsControllerTests
     [TestMethod]
     public async Task RoundTripEvents_ValidEvents_ReturnsEvents()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
         List<Event> events = new()
         {
             new Event
@@ -477,13 +513,18 @@ public class EventsControllerTests
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://example.com/TestSource1"),
-                Type = "test.created.v1",
+                Type = "control.account.created.v1",
                 DataJson = JsonSerializer.SerializeToDocument(
-                    new TestCreatedV1
+                    new ControlAccountCreatedV1
                     {
-                        TestString = "Controller Test String",
-                        TestEnum = TestOptions.OptionE,
-                        TestInteger = 50,
+                        Id = Guid.NewGuid(),
+                        Name = "Controller Account",
+                        WbsPath = "1.2.3",
+                        TaskId = Guid.NewGuid(),
+                        PlannedStart = now,
+                        PlannedFinish = now.AddDays(10),
+                        ActualStart = now,
+                        ActualFinish = now.AddDays(9),
                     }
                 ),
             },
@@ -494,14 +535,18 @@ public class EventsControllerTests
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://example.com/TestSource2"),
-                Type = "test.updated.v1",
+                Type = "control.account.updated.v1",
                 DataJson = JsonSerializer.SerializeToDocument(
-                    new TestUpdatedV1
+                    new ControlAccountUpdatedV1
                     {
-                        TestString = "Updated Controller Test String",
-                        TestEnum = TestOptions.OptionB,
-                        TestInteger = 100,
-                        UpdatedTime = DateTime.UtcNow,
+                        Id = Guid.NewGuid(),
+                        Name = "Updated Controller Account",
+                        WbsPath = "24.25.26",
+                        TaskId = Guid.NewGuid(),
+                        PlannedStart = now,
+                        PlannedFinish = now.AddDays(4),
+                        ActualStart = now,
+                        ActualFinish = now.AddDays(3),
                     }
                 ),
             },
@@ -520,8 +565,8 @@ public class EventsControllerTests
         string responseContent = await response.Content.ReadAsStringAsync();
         responseContent.ShouldContain("TestSource1");
         responseContent.ShouldContain("TestSource2");
-        responseContent.ShouldContain("test.created.v1");
-        responseContent.ShouldContain("test.updated.v1");
+        responseContent.ShouldContain("control.account.created.v1");
+        responseContent.ShouldContain("control.account.updated.v1");
     }
 
     #region QueryParameters Tests
@@ -529,6 +574,7 @@ public class EventsControllerTests
     [TestMethod]
     public async Task GetEvents_WithIdParameter_ReturnsOnlyMatchingEvent()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
         Guid targetId = Guid.NewGuid();
 
         Event matchingEvent = new()
@@ -539,13 +585,18 @@ public class EventsControllerTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new ControlAccountCreatedV1
                 {
-                    TestString = "Matching ID Event",
-                    TestEnum = TestOptions.OptionA,
-                    TestInteger = 100,
+                    Id = Guid.NewGuid(),
+                    Name = "Matching ID Event",
+                    WbsPath = "27.28.29",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(5),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(4),
                 }
             ),
         };
@@ -558,13 +609,18 @@ public class EventsControllerTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new ControlAccountCreatedV1
                 {
-                    TestString = "Non-matching ID Event",
-                    TestEnum = TestOptions.OptionB,
-                    TestInteger = 200,
+                    Id = Guid.NewGuid(),
+                    Name = "Non-matching ID Event",
+                    WbsPath = "28.29.30",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(6),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(5),
                 }
             ),
         };
@@ -588,6 +644,7 @@ public class EventsControllerTests
     [TestMethod]
     public async Task GetEvents_WithITwinGuidParameter_ReturnsOnlyMatchingEvents()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
         Guid targetITwinGuid = Guid.NewGuid();
         Guid differentITwinGuid = Guid.NewGuid();
 
@@ -598,13 +655,18 @@ public class EventsControllerTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new ControlAccountCreatedV1
                 {
-                    TestString = "Matching iTwin Event",
-                    TestEnum = TestOptions.OptionA,
-                    TestInteger = 100,
+                    Id = Guid.NewGuid(),
+                    Name = "Matching iTwin Event",
+                    WbsPath = "31.32.33",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(7),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(6),
                 }
             ),
         };
@@ -616,13 +678,18 @@ public class EventsControllerTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new ControlAccountCreatedV1
                 {
-                    TestString = "Non-matching iTwin Event",
-                    TestEnum = TestOptions.OptionB,
-                    TestInteger = 200,
+                    Id = Guid.NewGuid(),
+                    Name = "Non-matching iTwin Event",
+                    WbsPath = "32.33.34",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(8),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(7),
                 }
             ),
         };
@@ -694,6 +761,7 @@ public class EventsControllerTests
     [TestMethod]
     public async Task GetEvents_WithCorrelationIdParameter_ReturnsOnlyMatchingEvents()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
         string targetCorrelationId = Guid.NewGuid().ToString();
         string differentCorrelationId = Guid.NewGuid().ToString();
 
@@ -704,13 +772,18 @@ public class EventsControllerTests
             CorrelationId = targetCorrelationId,
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new ControlAccountCreatedV1
                 {
-                    TestString = "Matching Correlation Event",
-                    TestEnum = TestOptions.OptionA,
-                    TestInteger = 100,
+                    Id = Guid.NewGuid(),
+                    Name = "Matching Correlation Event",
+                    WbsPath = "35.36.37",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(9),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(8),
                 }
             ),
         };
@@ -722,13 +795,18 @@ public class EventsControllerTests
             CorrelationId = differentCorrelationId,
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new ControlAccountCreatedV1
                 {
-                    TestString = "Non-matching Correlation Event",
-                    TestEnum = TestOptions.OptionB,
-                    TestInteger = 200,
+                    Id = Guid.NewGuid(),
+                    Name = "Non-matching Correlation Event",
+                    WbsPath = "36.37.38",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(10),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(9),
                 }
             ),
         };
@@ -754,6 +832,7 @@ public class EventsControllerTests
     [TestMethod]
     public async Task GetEvents_WithAccountGuidParameter_ReturnsOnlyMatchingEvents()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
         Guid targetAccountGuid = Guid.NewGuid();
         Guid differentAccountGuid = Guid.NewGuid();
 
@@ -764,13 +843,18 @@ public class EventsControllerTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new ControlAccountCreatedV1
                 {
-                    TestString = "Matching Account Event",
-                    TestEnum = TestOptions.OptionA,
-                    TestInteger = 100,
+                    Id = Guid.NewGuid(),
+                    Name = "Matching Account Event",
+                    WbsPath = "39.40.41",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(11),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(10),
                 }
             ),
         };
@@ -782,13 +866,18 @@ public class EventsControllerTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new ControlAccountCreatedV1
                 {
-                    TestString = "Non-matching Account Event",
-                    TestEnum = TestOptions.OptionB,
-                    TestInteger = 200,
+                    Id = Guid.NewGuid(),
+                    Name = "Non-matching Account Event",
+                    WbsPath = "40.41.42",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(12),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(11),
                 }
             ),
         };
@@ -879,6 +968,7 @@ public class EventsControllerTests
     [TestMethod]
     public async Task GetEvents_WithInvalidGuid_ReturnsBadRequest()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
         Event event1 = new()
         {
             ITwinGuid = Guid.NewGuid(),
@@ -886,13 +976,18 @@ public class EventsControllerTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new ControlAccountCreatedV1
                 {
-                    TestString = "Test Event 1",
-                    TestEnum = TestOptions.OptionA,
-                    TestInteger = 100,
+                    Id = Guid.NewGuid(),
+                    Name = "Test Event 1",
+                    WbsPath = "14.15.16",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(19),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(18),
                 }
             ),
         };
@@ -904,13 +999,18 @@ public class EventsControllerTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new ControlAccountCreatedV1
                 {
-                    TestString = "Test Event 2",
-                    TestEnum = TestOptions.OptionB,
-                    TestInteger = 200,
+                    Id = Guid.NewGuid(),
+                    Name = "Test Event 2",
+                    WbsPath = "15.16.17",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(20),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(19),
                 }
             ),
         };

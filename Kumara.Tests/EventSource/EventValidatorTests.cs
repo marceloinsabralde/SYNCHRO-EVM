@@ -15,14 +15,16 @@ public class EventValidatorTests
     private static readonly IEventValidator SEventValidator = new EventValidator(
         new Dictionary<string, Type>
         {
-            { "test.created.v1", typeof(TestCreatedV1) },
-            { "test.updated.v1", typeof(TestUpdatedV1) },
+            { "control.account.created.v1", typeof(ControlAccountCreatedV1) },
+            { "control.account.updated.v1", typeof(ControlAccountUpdatedV1) },
         }
     );
 
     [TestMethod]
-    public void ValidateEvent_ValidTestCreatedV1Event_ReturnsTrue()
+    public void ValidateEvent_ValidControlAccountCreatedV1Event_ReturnsTrue()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
+
         Event @event = new()
         {
             ITwinGuid = Guid.NewGuid(),
@@ -30,13 +32,18 @@ public class EventValidatorTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new ControlAccountCreatedV1
                 {
-                    TestString = "Valid Test String",
-                    TestEnum = TestOptions.OptionA,
-                    TestInteger = 100,
+                    Id = Guid.NewGuid(),
+                    Name = "Test Account",
+                    WbsPath = "1.2.3",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = DateTimeOffset.Now,
+                    PlannedFinish = DateTimeOffset.Now.AddDays(10),
+                    ActualStart = DateTimeOffset.Now,
+                    ActualFinish = DateTimeOffset.Now.AddDays(9),
                 }
             ),
         };
@@ -48,7 +55,7 @@ public class EventValidatorTests
     }
 
     [TestMethod]
-    public void ValidateEvent_InvalidTestCreatedV1Event_ReturnsFalse()
+    public void ValidateEvent_InvalidControlAccountCreatedV1Event_ReturnsFalse()
     {
         Event @event = new()
         {
@@ -57,13 +64,13 @@ public class EventValidatorTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestCreatedV1
+                new
                 {
-                    TestString = "Test String",
-                    TestEnum = TestOptions.OptionA,
-                    TestInteger = 2000,
+                    Name = "Hello World",
+                    WbsPath = "",
+                    TaskId = Guid.NewGuid(),
                 }
             ),
         };
@@ -72,7 +79,7 @@ public class EventValidatorTests
 
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();
-        result.Errors[0].ShouldContain("The field TestInteger must be between 0 and 1000.");
+        result.Errors[0].ShouldContain("missing required properties");
     }
 
     [TestMethod]
@@ -85,7 +92,7 @@ public class EventValidatorTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.created.v1",
+            Type = "control.account.created.v1",
             DataJson = JsonDocument.Parse("{}"),
         };
 
@@ -93,12 +100,14 @@ public class EventValidatorTests
 
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();
-        result.Errors[0].ShouldContain("Error deserializing JSON");
+        result.Errors[0].ShouldContain("missing required properties");
     }
 
     [TestMethod]
-    public void ValidateEvent_ValidTestUpdatedV1Event_ReturnsTrue()
+    public void ValidateEvent_ValidControlAccountUpdatedV1Event_ReturnsTrue()
     {
+        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
+
         Event @event = new()
         {
             ITwinGuid = Guid.NewGuid(),
@@ -106,14 +115,18 @@ public class EventValidatorTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.updated.v1",
+            Type = "control.account.updated.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestUpdatedV1
+                new ControlAccountUpdatedV1
                 {
-                    TestString = "Valid Updated Test String",
-                    TestEnum = TestOptions.OptionB,
-                    TestInteger = 200,
-                    UpdatedTime = DateTime.UtcNow,
+                    Id = Guid.NewGuid(),
+                    Name = "Updated Account",
+                    WbsPath = "1.2.3",
+                    TaskId = Guid.NewGuid(),
+                    PlannedStart = DateTimeOffset.Now,
+                    PlannedFinish = DateTimeOffset.Now.AddDays(10),
+                    ActualStart = DateTimeOffset.Now,
+                    ActualFinish = DateTimeOffset.Now.AddDays(9),
                 }
             ),
         };
@@ -125,7 +138,7 @@ public class EventValidatorTests
     }
 
     [TestMethod]
-    public void ValidateEvent_InvalidTestUpdatedV1Event_ReturnsFalse()
+    public void ValidateEvent_InvalidControlAccountUpdatedV1Event_ReturnsFalse()
     {
         Event @event = new()
         {
@@ -134,14 +147,18 @@ public class EventValidatorTests
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
-            Type = "test.updated.v1",
+            Type = "control.account.updated.v1",
             DataJson = JsonSerializer.SerializeToDocument(
-                new TestUpdatedV1
+                new ControlAccountUpdatedV1
                 {
-                    TestString = "Test String",
-                    TestEnum = TestOptions.OptionC,
-                    TestInteger = 2000, // Invalid: outside range
-                    UpdatedTime = DateTime.UtcNow,
+                    Id = Guid.Empty,
+                    Name = "",
+                    WbsPath = "test-path",
+                    TaskId = Guid.Empty,
+                    PlannedStart = null,
+                    PlannedFinish = null,
+                    ActualStart = null,
+                    ActualFinish = null,
                 }
             ),
         };
@@ -150,6 +167,6 @@ public class EventValidatorTests
 
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();
-        result.Errors[0].ShouldContain("The field TestInteger must be between 0 and 1000.");
+        result.Errors[0].ShouldContain("The Name field is required.");
     }
 }

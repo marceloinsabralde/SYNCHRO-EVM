@@ -53,7 +53,7 @@ public class EventValidator(Dictionary<string, Type> eventTypeMap) : IEventValid
             }
             catch (JsonException ex)
             {
-                return ValidationResult.Failure($"Error deserializing JSON: {ex.Message}");
+                return ValidationResult.Failure(ex.Message);
             }
         }
 
