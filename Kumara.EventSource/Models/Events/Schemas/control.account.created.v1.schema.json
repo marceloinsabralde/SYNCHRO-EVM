@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://schemas.bentley.com/construction/events/control.account.created.v1.schema.json",
+  "title": "Control Account Created V1 Schema",
+  "type": "object",
+  "description": "Schema for the data payload of a Control Account Created V1. Use `control.account.created.v1` as the `type` attribute.",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "guid",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "wbs_path": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "task_id": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "format": "guid"
+    },
+    "planned_start": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "format": "date"
+    },
+    "planned_finish": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "format": "date"
+    },
+    "actual_start": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "format": "date"
+    },
+    "actual_finish": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "format": "date"
+    },
+    "event_type_version": {
+      "type": "string"
+    }
+  }
+}
