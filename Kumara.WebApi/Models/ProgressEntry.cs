@@ -9,18 +9,15 @@ public class ProgressEntry
     public Guid Id { get; set; }
 
     [Column("itwin_id")]
-    public required Guid ITwinId { get; set; }
+    public Guid ITwinId { get; set; }
 
-    [Required]
-    public Guid? ActivityId { get; set; }
+    public Guid ActivityId { get; set; }
     public required Activity Activity { get; set; }
 
-    [Required]
-    public Guid? MaterialId { get; set; }
+    public Guid MaterialId { get; set; }
     public required Material Material { get; set; }
 
-    [Required]
-    public Guid? QuantityUnitOfMeasureId { get; set; }
+    public Guid QuantityUnitOfMeasureId { get; set; }
     public required UnitOfMeasure QuantityUnitOfMeasure { get; set; }
 
     public required decimal QuantityDelta { get; set; }

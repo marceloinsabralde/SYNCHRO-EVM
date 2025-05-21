@@ -13,10 +13,8 @@ public class Material
 
     public required string Name { get; set; }
 
-    [Required]
-    public required Guid ResourceRoleId { get; set; }
+    public Guid ResourceRoleId { get; set; }
 
-    [Required]
     public Guid QuantityUnitOfMeasureId { get; set; }
     public required UnitOfMeasure QuantityUnitOfMeasure { get; set; }
 }

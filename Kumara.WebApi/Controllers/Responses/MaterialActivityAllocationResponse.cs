@@ -7,11 +7,11 @@ public class MaterialActivityAllocationResponse
 {
     public Guid Id { get; set; }
 
-    public required Guid ITwinId { get; set; }
-    public required Guid MaterialId { get; set; }
-    public required Guid ActivityId { get; set; }
-    public required Guid QuantityUnitOfMeasureId { get; set; }
-    public required decimal QuantityAtComplete { get; set; }
+    public Guid ITwinId { get; set; }
+    public Guid MaterialId { get; set; }
+    public Guid ActivityId { get; set; }
+    public Guid QuantityUnitOfMeasureId { get; set; }
+    public decimal QuantityAtComplete { get; set; }
 
     public static MaterialActivityAllocationResponse FromMaterialActivityAllocation(
         MaterialActivityAllocation allocation

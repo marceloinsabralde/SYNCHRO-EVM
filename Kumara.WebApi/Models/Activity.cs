@@ -8,7 +8,7 @@ public class Activity
     public Guid Id { get; set; }
 
     [Column("itwin_id")]
-    public required Guid ITwinId { get; set; }
+    public Guid ITwinId { get; set; }
 
     public Guid ControlAccountId { get; set; }
 

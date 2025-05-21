@@ -11,15 +11,12 @@ public class MaterialActivityAllocation
     [Column("itwin_id")]
     public Guid ITwinId { get; set; }
 
-    [Required]
     public Guid MaterialId { get; set; }
     public required Material Material { get; set; }
 
-    [Required]
     public Guid ActivityId { get; set; }
     public required Activity Activity { get; set; }
 
-    [Required]
     public Guid QuantityUnitOfMeasureId { get; set; }
     public required UnitOfMeasure QuantityUnitOfMeasure { get; set; }
 

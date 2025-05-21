@@ -8,7 +8,7 @@ public class ControlAccount
     public Guid Id { get; set; }
 
     [Column("itwin_id")]
-    public required Guid ITwinId { get; set; }
+    public Guid ITwinId { get; set; }
     public Guid TaskId { get; set; }
 
     public required string ReferenceCode { get; set; }

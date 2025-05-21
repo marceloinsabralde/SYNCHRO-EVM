@@ -7,7 +7,7 @@ public class ActivityResponse
 {
     public Guid Id { get; set; }
 
-    public required Guid ITwinId { get; set; }
+    public Guid ITwinId { get; set; }
 
     public Guid ControlAccountId { get; set; }
 

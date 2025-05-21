@@ -8,7 +8,7 @@ public class MaterialResponse
     public Guid Id { get; set; }
 
     public Guid ITwinId { get; set; }
-    public required Guid ResourceRoleId { get; set; }
+    public Guid ResourceRoleId { get; set; }
     public Guid QuantityUnitOfMeasureId { get; set; }
     public required string Name { get; set; }
 
