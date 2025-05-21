@@ -1,3 +1,4 @@
+-- Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 SELECT
   itwin_id,
   activity_id,

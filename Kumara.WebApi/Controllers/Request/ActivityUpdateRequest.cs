@@ -1,3 +1,4 @@
+// Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Kumara.Utilities;
 
 namespace Kumara.WebApi.Controllers.Requests;

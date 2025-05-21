@@ -1,3 +1,4 @@
+// Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 namespace Kumara.WebApi.Tests;
 
 public static class DateTimeExtensions

@@ -1,3 +1,4 @@
+// Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using System.Reflection;
 using Kumara.Database;
 

@@ -1,3 +1,4 @@
+// Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Kumara.Validations;
 
 namespace Kumara.WebApi.Tests.Validations;
