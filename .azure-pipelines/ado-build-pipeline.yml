@@ -84,6 +84,12 @@ jobs:
           packageType: sdk
           version: $(DotNetVersion)
 
+      - task: CmdLine@2
+        displayName: Start postgresql container
+        inputs:
+          script: |
+            docker compose up postgresql -d --wait
+
       - task: DotNetCoreCLI@2
         displayName: Run tests
         inputs:
