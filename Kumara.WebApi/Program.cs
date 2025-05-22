@@ -19,6 +19,8 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
         .UseSnakeCaseNamingConvention()
 );
 
+builder.Services.AddControllers();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -36,14 +38,18 @@ builder.Services.AddHttpLogging(options =>
 });
 
 // Learn about configuring OpenTelemetry at https://opentelemetry.io/docs/languages/net/
-builder
+var openTelBuilder = builder
     .Services.AddOpenTelemetry()
     .UseOtlpExporter() // Use the OpenTelemetry Protocol (OTLP) exporter for all signals
     .WithTracing(tracing =>
         tracing.AddAspNetCoreInstrumentation().AddEntityFrameworkCoreInstrumentation().AddNpgsql()
     )
-    .WithMetrics(metrics => metrics.AddAspNetCoreInstrumentation().AddNpgsqlInstrumentation())
-    .WithLogging(logging => logging.AddConsoleExporter());
+    .WithMetrics(metrics => metrics.AddAspNetCoreInstrumentation().AddNpgsqlInstrumentation());
+
+if (!builder.Environment.IsDevelopment())
+{
+    openTelBuilder.WithLogging(logging => logging.AddConsoleExporter());
+}
 
 WebApplication app = builder.Build();
 
@@ -52,51 +58,17 @@ if (!app.Environment.IsEnvironment("Test"))
     app.UseHttpsRedirection();
 }
 
-app.RunMigrations();
+await app.MigrateDbAsync();
+app.MapControllers();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.SeedDevelopmentData();
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseHttpLogging();
 }
 
-string[] summaries = new[]
-{
-    "Freezing",
-    "Bracing",
-    "Chilly",
-    "Cool",
-    "Mild",
-    "Warm",
-    "Balmy",
-    "Hot",
-    "Sweltering",
-    "Scorching",
-};
-
-app.MapGet(
-        "/weatherforecast",
-        () =>
-        {
-            WeatherForecast[] forecast = Enumerable
-                .Range(1, 5)
-                .Select(index => new WeatherForecast(
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-                .ToArray();
-            return forecast;
-        }
-    )
-    .WithName("GetWeatherForecast");
-
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

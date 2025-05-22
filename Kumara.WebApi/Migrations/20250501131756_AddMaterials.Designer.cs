@@ -3,6 +3,7 @@ using System;
 using Kumara.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kumara.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250501131756_AddMaterials")]
+    partial class AddMaterials
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,94 +177,6 @@ namespace Kumara.Migrations
                     b.ToTable("materials", (string)null);
                 });
 
-            modelBuilder.Entity("Kumara.Models.MaterialActivityAllocation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("ActivityId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("activity_id");
-
-                    b.Property<Guid>("ITwinId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("itwin_id");
-
-                    b.Property<Guid>("MaterialId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("material_id");
-
-                    b.Property<decimal>("QuantityAtComplete")
-                        .HasColumnType("numeric")
-                        .HasColumnName("quantity_at_complete");
-
-                    b.Property<Guid>("QuantityUnitOfMeasureId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("quantity_unit_of_measure_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_material_activity_allocations");
-
-                    b.HasIndex("ActivityId")
-                        .HasDatabaseName("ix_material_activity_allocations_activity_id");
-
-                    b.HasIndex("MaterialId")
-                        .HasDatabaseName("ix_material_activity_allocations_material_id");
-
-                    b.HasIndex("QuantityUnitOfMeasureId")
-                        .HasDatabaseName("ix_material_activity_allocations_quantity_unit_of_measure_id");
-
-                    b.ToTable("material_activity_allocations", (string)null);
-                });
-
-            modelBuilder.Entity("Kumara.Models.ProgressEntry", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("ActivityId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("activity_id");
-
-                    b.Property<Guid>("ITwinId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("itwin_id");
-
-                    b.Property<Guid>("MaterialId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("material_id");
-
-                    b.Property<DateOnly>("ProgressDate")
-                        .HasColumnType("date")
-                        .HasColumnName("progress_date");
-
-                    b.Property<decimal>("QuantityDelta")
-                        .HasColumnType("numeric")
-                        .HasColumnName("quantity_delta");
-
-                    b.Property<Guid>("QuantityUnitOfMeasureId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("quantity_unit_of_measure_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_progress_entries");
-
-                    b.HasIndex("ActivityId")
-                        .HasDatabaseName("ix_progress_entries_activity_id");
-
-                    b.HasIndex("MaterialId")
-                        .HasDatabaseName("ix_progress_entries_material_id");
-
-                    b.HasIndex("QuantityUnitOfMeasureId")
-                        .HasDatabaseName("ix_progress_entries_quantity_unit_of_measure_id");
-
-                    b.ToTable("progress_entries", (string)null);
-                });
-
             modelBuilder.Entity("Kumara.Models.UnitOfMeasure", b =>
                 {
                     b.Property<Guid>("Id")
@@ -309,66 +224,6 @@ namespace Kumara.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_materials_units_of_measure_quantity_unit_of_measure_id");
-
-                    b.Navigation("QuantityUnitOfMeasure");
-                });
-
-            modelBuilder.Entity("Kumara.Models.MaterialActivityAllocation", b =>
-                {
-                    b.HasOne("Kumara.Models.Activity", "Activity")
-                        .WithMany()
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_material_activity_allocations_activities_activity_id");
-
-                    b.HasOne("Kumara.Models.Material", "Material")
-                        .WithMany()
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_material_activity_allocations_materials_material_id");
-
-                    b.HasOne("Kumara.Models.UnitOfMeasure", "QuantityUnitOfMeasure")
-                        .WithMany()
-                        .HasForeignKey("QuantityUnitOfMeasureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_material_activity_allocations_units_of_measure_quantity_uni");
-
-                    b.Navigation("Activity");
-
-                    b.Navigation("Material");
-
-                    b.Navigation("QuantityUnitOfMeasure");
-                });
-
-            modelBuilder.Entity("Kumara.Models.ProgressEntry", b =>
-                {
-                    b.HasOne("Kumara.Models.Activity", "Activity")
-                        .WithMany()
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_progress_entries_activities_activity_id");
-
-                    b.HasOne("Kumara.Models.Material", "Material")
-                        .WithMany()
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_progress_entries_materials_material_id");
-
-                    b.HasOne("Kumara.Models.UnitOfMeasure", "QuantityUnitOfMeasure")
-                        .WithMany()
-                        .HasForeignKey("QuantityUnitOfMeasureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_progress_entries_units_of_measure_quantity_unit_of_measure_");
-
-                    b.Navigation("Activity");
-
-                    b.Navigation("Material");
 
                     b.Navigation("QuantityUnitOfMeasure");
                 });
