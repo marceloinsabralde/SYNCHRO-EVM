@@ -47,10 +47,10 @@ public class EventsController : ControllerBase
 
         foreach (Event @event in events)
         {
-            ValidationResult validationResult = _eventValidator.ValidateEvent(@event);
-            if (!validationResult.IsValid)
+            EventValidationResult eventValidationResult = _eventValidator.ValidateEvent(@event);
+            if (!eventValidationResult.IsValid)
             {
-                return BadRequest(validationResult.Errors);
+                return BadRequest(eventValidationResult.Errors);
             }
         }
 

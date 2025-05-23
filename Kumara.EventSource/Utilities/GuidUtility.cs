@@ -1,7 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using System;
-
 namespace Kumara.EventSource.Utilities;
 
 public static class GuidUtility

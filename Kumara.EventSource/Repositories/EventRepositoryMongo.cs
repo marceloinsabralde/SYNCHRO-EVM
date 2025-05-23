@@ -1,10 +1,8 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Kumara.EventSource.DbContext;
-using Kumara.EventSource.Extensions;
 using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Models;
-using Kumara.EventSource.Utilities;
 
 namespace Kumara.EventSource.Repositories;
 

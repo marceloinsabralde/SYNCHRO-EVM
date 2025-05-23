@@ -21,7 +21,7 @@ public class EventValidatorTests
     );
 
     [TestMethod]
-    public void ValidateEvent_ValidControlAccountCreatedV1Event_ReturnsTrue()
+    public async Task ValidateEventAsync_ValidControlAccountCreatedV1Event_ReturnsTrue()
     {
         DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
 
@@ -31,7 +31,7 @@ public class EventValidatorTests
             AccountGuid = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
-            Source = new Uri("http://example.com/TestSource"),
+            Source = new Uri("https://example.com/TestSource"),
             Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
                 new ControlAccountCreatedV1
@@ -40,22 +40,22 @@ public class EventValidatorTests
                     Name = "Test Account",
                     WbsPath = "1.2.3",
                     TaskId = Guid.NewGuid(),
-                    PlannedStart = DateTimeOffset.Now,
-                    PlannedFinish = DateTimeOffset.Now.AddDays(10),
-                    ActualStart = DateTimeOffset.Now,
-                    ActualFinish = DateTimeOffset.Now.AddDays(9),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(10),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(9),
                 }
             ),
         };
 
-        ValidationResult result = SEventValidator.ValidateEvent(@event);
+        EventValidationResult result = await SEventValidator.ValidateEventAsync(@event);
 
         result.IsValid.ShouldBeTrue();
         result.Errors.ShouldBeEmpty();
     }
 
     [TestMethod]
-    public void ValidateEvent_InvalidControlAccountCreatedV1Event_ReturnsFalse()
+    public async Task ValidateEventAsync_InvalidControlAccountCreatedV1Event_ReturnsFalse()
     {
         Event @event = new()
         {
@@ -63,7 +63,7 @@ public class EventValidatorTests
             AccountGuid = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
-            Source = new Uri("http://example.com/TestSource"),
+            Source = new Uri("https://example.com/TestSource"),
             Type = "control.account.created.v1",
             DataJson = JsonSerializer.SerializeToDocument(
                 new
@@ -75,7 +75,7 @@ public class EventValidatorTests
             ),
         };
 
-        ValidationResult result = SEventValidator.ValidateEvent(@event);
+        EventValidationResult result = await SEventValidator.ValidateEventAsync(@event);
 
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();
@@ -83,7 +83,7 @@ public class EventValidatorTests
     }
 
     [TestMethod]
-    public void ValidateEvent_InvalidDataJson_ReturnsFalse()
+    public async Task ValidateEventAsync_InvalidDataJson_ReturnsFalse()
     {
         Event @event = new()
         {
@@ -91,12 +91,12 @@ public class EventValidatorTests
             AccountGuid = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
-            Source = new Uri("http://example.com/TestSource"),
+            Source = new Uri("https://example.com/TestSource"),
             Type = "control.account.created.v1",
             DataJson = JsonDocument.Parse("{}"),
         };
 
-        ValidationResult result = SEventValidator.ValidateEvent(@event);
+        EventValidationResult result = await SEventValidator.ValidateEventAsync(@event);
 
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();
@@ -104,7 +104,7 @@ public class EventValidatorTests
     }
 
     [TestMethod]
-    public void ValidateEvent_ValidControlAccountUpdatedV1Event_ReturnsTrue()
+    public async Task ValidateEventAsync_ValidControlAccountUpdatedV1Event_ReturnsTrue()
     {
         DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
 
@@ -114,7 +114,7 @@ public class EventValidatorTests
             AccountGuid = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
-            Source = new Uri("http://example.com/TestSource"),
+            Source = new Uri("https://example.com/TestSource"),
             Type = "control.account.updated.v1",
             DataJson = JsonSerializer.SerializeToDocument(
                 new ControlAccountUpdatedV1
@@ -123,22 +123,22 @@ public class EventValidatorTests
                     Name = "Updated Account",
                     WbsPath = "1.2.3",
                     TaskId = Guid.NewGuid(),
-                    PlannedStart = DateTimeOffset.Now,
-                    PlannedFinish = DateTimeOffset.Now.AddDays(10),
-                    ActualStart = DateTimeOffset.Now,
-                    ActualFinish = DateTimeOffset.Now.AddDays(9),
+                    PlannedStart = now,
+                    PlannedFinish = now.AddDays(10),
+                    ActualStart = now,
+                    ActualFinish = now.AddDays(9),
                 }
             ),
         };
 
-        ValidationResult result = SEventValidator.ValidateEvent(@event);
+        EventValidationResult result = await SEventValidator.ValidateEventAsync(@event);
 
         result.IsValid.ShouldBeTrue();
         result.Errors.ShouldBeEmpty();
     }
 
     [TestMethod]
-    public void ValidateEvent_InvalidControlAccountUpdatedV1Event_ReturnsFalse()
+    public async Task ValidateEventAsync_InvalidControlAccountUpdatedV1Event_ReturnsFalse()
     {
         Event @event = new()
         {
@@ -146,7 +146,7 @@ public class EventValidatorTests
             AccountGuid = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
-            Source = new Uri("http://example.com/TestSource"),
+            Source = new Uri("https://example.com/TestSource"),
             Type = "control.account.updated.v1",
             DataJson = JsonSerializer.SerializeToDocument(
                 new ControlAccountUpdatedV1
@@ -163,7 +163,7 @@ public class EventValidatorTests
             ),
         };
 
-        ValidationResult result = SEventValidator.ValidateEvent(@event);
+        EventValidationResult result = await SEventValidator.ValidateEventAsync(@event);
 
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();
