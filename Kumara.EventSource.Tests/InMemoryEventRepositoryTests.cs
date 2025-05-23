@@ -3,13 +3,11 @@
 using System.Text.Json;
 using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Models;
-using Kumara.EventSource.Models.Events;
 using Kumara.EventSource.Repositories;
 using Kumara.EventSource.Utilities;
-using Microsoft.EntityFrameworkCore;
 using Shouldly;
 
-namespace Kumara.Tests.EventSource;
+namespace Kumara.EventSource.Tests;
 
 [TestClass]
 public class InMemoryEventRepositoryTests

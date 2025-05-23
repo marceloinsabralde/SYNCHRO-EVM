@@ -4,7 +4,7 @@ using System.Text.Json;
 using Kumara.EventSource.Models;
 using Kumara.EventSource.Models.Events;
 
-namespace Kumara.Tests.EventSource;
+namespace Kumara.EventSource.Tests;
 
 public static class EventRepositoryTestUtils
 {
@@ -15,7 +15,7 @@ public static class EventRepositoryTestUtils
 
     public static List<Event> GetTestEvents()
     {
-        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
+        DateTimeOffset now = GetTestDateTimeOffset();
 
         return new List<Event>
         {
