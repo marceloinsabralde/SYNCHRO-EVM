@@ -7,7 +7,7 @@ using Kumara.EventSource.Models.Events;
 using Kumara.EventSource.Utilities;
 using Shouldly;
 
-namespace Kumara.Tests.EventSource;
+namespace Kumara.EventSource.Tests;
 
 [TestClass]
 public class EventValidatorTests

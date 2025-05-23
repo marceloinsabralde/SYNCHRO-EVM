@@ -12,7 +12,7 @@ using MongoDB.Driver;
 using Shouldly;
 using Testcontainers.MongoDb;
 
-namespace Kumara.Tests.EventSource;
+namespace Kumara.EventSource.Tests;
 
 [TestClass]
 public class MongoDbEventRepositoryTests

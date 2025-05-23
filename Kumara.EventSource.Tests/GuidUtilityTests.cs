@@ -2,7 +2,7 @@
 
 using Kumara.EventSource.Utilities;
 
-namespace Kumara.Tests.EventSource;
+namespace Kumara.EventSource.Tests;
 
 [TestClass]
 public class GuidUtilityTests

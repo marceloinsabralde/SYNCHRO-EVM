@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
-namespace Kumara.Tests.EventSource;
+namespace Kumara.EventSource.Tests;
 
 [TestClass]
 public class EventsControllerTests
