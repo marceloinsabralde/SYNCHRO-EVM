@@ -8,6 +8,7 @@ using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Models;
 using Kumara.EventSource.Models.Events;
 using Kumara.EventSource.Repositories;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
@@ -25,10 +26,20 @@ public class EventsControllerTests
     {
         WebApplicationFactory<EventsController> factory =
             new WebApplicationFactory<EventsController>().WithWebHostBuilder(builder =>
-                builder.ConfigureServices(services => services.AddSingleton(_eventRepository))
-            );
+            {
+                builder.ConfigureServices(services => services.AddSingleton(_eventRepository));
 
-        _client = factory.CreateClient();
+                builder.UseSetting("https_port", "7104");
+            });
+
+        _client = factory.CreateClient(
+            new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false,
+                HandleCookies = true,
+                BaseAddress = new Uri("https://localhost:7104"),
+            }
+        );
     }
 
     #region Routing Tests

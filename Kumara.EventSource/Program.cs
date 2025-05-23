@@ -29,10 +29,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-if (!app.Environment.IsEnvironment("Test"))
-{
-    app.UseHttpsRedirection();
-}
+app.UseHttpsRedirection();
 
 app.MapControllers();
 
