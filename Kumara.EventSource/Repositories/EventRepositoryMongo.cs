@@ -17,13 +17,19 @@ public class EventRepositoryMongo : IEventRepository
         _context = context;
     }
 
-    public async Task AddEventsAsync(IEnumerable<Event> events)
+    public async Task AddEventsAsync(
+        IEnumerable<Event> events,
+        CancellationToken cancellationToken = default
+    )
     {
-        await _context.Events.AddRangeAsync(events);
-        await _context.SaveChangesAsync();
+        await _context.Events.AddRangeAsync(events, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public Task<IQueryable<Event>> QueryEventsAsync(EventQueryBuilder queryBuilder)
+    public Task<IQueryable<Event>> QueryEventsAsync(
+        EventQueryBuilder queryBuilder,
+        CancellationToken cancellationToken = default
+    )
     {
         IQueryable<Event>? result = queryBuilder.ApplyTo(
             _context.Events.AsQueryable().OrderBy(e => e.Id)
@@ -33,10 +39,11 @@ public class EventRepositoryMongo : IEventRepository
 
     public async Task<PaginatedList<Event>> GetPaginatedEventsAsync(
         EventQueryBuilder queryBuilder,
-        int pageSize
+        int pageSize,
+        CancellationToken cancellationToken = default
     )
     {
-        IQueryable<Event> queryResult = await QueryEventsAsync(queryBuilder);
+        IQueryable<Event> queryResult = await QueryEventsAsync(queryBuilder, cancellationToken);
 
         List<Event> events = queryResult.ToList();
 

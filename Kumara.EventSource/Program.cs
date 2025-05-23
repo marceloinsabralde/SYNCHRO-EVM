@@ -33,6 +33,6 @@ app.UseHttpsRedirection();
 
 app.MapControllers();
 
-await app.RunAsync();
+await app.RunAsync(CancellationToken.None);
 
 public partial class Program { }

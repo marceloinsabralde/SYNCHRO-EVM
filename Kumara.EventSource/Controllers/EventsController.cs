@@ -25,7 +25,10 @@ public class EventsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostEvents([FromBody] JsonElement payload)
+    public async Task<IActionResult> PostEvents(
+        [FromBody] JsonElement payload,
+        CancellationToken cancellationToken = default
+    )
     {
         if (payload.ValueKind != JsonValueKind.Array)
         {
@@ -53,14 +56,14 @@ public class EventsController : ControllerBase
 
         if (events.Count != 0)
         {
-            await _eventRepository.AddEventsAsync(events);
+            await _eventRepository.AddEventsAsync(events, cancellationToken);
         }
 
         return Ok(new { count = events.Count });
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetEvents()
+    public async Task<IActionResult> GetEvents(CancellationToken cancellationToken = default)
     {
         IQueryCollection query = HttpContext.Request.Query;
 
@@ -132,7 +135,8 @@ public class EventsController : ControllerBase
 
         PaginatedList<Event> paginatedList = await _eventRepository.GetPaginatedEventsAsync(
             queryParsingResult.QueryBuilder!,
-            queryParsingResult.PageSize
+            queryParsingResult.PageSize,
+            cancellationToken
         );
 
         BuildPaginationLinks(paginatedList, query, queryParsingResult.QueryBuilder!);
