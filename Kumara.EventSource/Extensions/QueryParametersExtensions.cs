@@ -43,6 +43,7 @@ public static class QueryParametersExtensions
                             key
                         );
                     }
+
                     break;
 
                 case "itwinguid":
@@ -58,6 +59,7 @@ public static class QueryParametersExtensions
                             key
                         );
                     }
+
                     break;
 
                 case "accountguid":
@@ -73,6 +75,7 @@ public static class QueryParametersExtensions
                             key
                         );
                     }
+
                     break;
 
                 case "correlationid":
