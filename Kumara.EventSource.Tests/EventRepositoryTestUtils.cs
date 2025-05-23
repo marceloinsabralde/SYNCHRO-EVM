@@ -15,7 +15,7 @@ public static class EventRepositoryTestUtils
 
     public static List<Event> GetTestEvents()
     {
-        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
+        DateTimeOffset now = GetTestDateTimeOffset();
 
         return new List<Event>
         {

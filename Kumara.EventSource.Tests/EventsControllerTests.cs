@@ -2,7 +2,6 @@
 
 using System.Collections.Specialized;
 using System.Net;
-using System.Net.Http.Json;
 using System.Text.Json;
 using Kumara.EventSource.Controllers;
 using Kumara.EventSource.Interfaces;
@@ -1318,7 +1317,10 @@ public class EventsControllerTests
         public List<Event> Items { get; set; } = new();
         public PaginationLinksResponse Links { get; set; } = new();
 
-        public List<Event> GetEvents() => Items;
+        public List<Event> GetEvents()
+        {
+            return Items;
+        }
     }
 
     private class PaginationLinksResponse
