@@ -4,12 +4,11 @@ using System.Text.Json;
 using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Models;
 using Kumara.EventSource.Models.Events;
+using Kumara.EventSource.Tests.Common;
 using Kumara.EventSource.Utilities;
-using Shouldly;
 
-namespace Kumara.EventSource.Tests;
+namespace Kumara.EventSource.Tests.Utilities;
 
-[TestClass]
 public class EventValidatorTests
 {
     private static readonly IEventValidator SEventValidator = new EventValidator(
@@ -20,10 +19,10 @@ public class EventValidatorTests
         }
     );
 
-    [TestMethod]
+    [Fact]
     public async Task ValidateEventAsync_ValidControlAccountCreatedV1Event_ReturnsTrue()
     {
-        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
+        DateTimeOffset now = CommonTestUtilities.GetTestDateTimeOffset();
 
         Event @event = new()
         {
@@ -54,7 +53,7 @@ public class EventValidatorTests
         result.Errors.ShouldBeEmpty();
     }
 
-    [TestMethod]
+    [Fact]
     public async Task ValidateEventAsync_InvalidControlAccountCreatedV1Event_ReturnsFalse()
     {
         Event @event = new()
@@ -82,7 +81,7 @@ public class EventValidatorTests
         result.Errors[0].ShouldContain("missing required properties");
     }
 
-    [TestMethod]
+    [Fact]
     public async Task ValidateEventAsync_InvalidDataJson_ReturnsFalse()
     {
         Event @event = new()
@@ -103,10 +102,10 @@ public class EventValidatorTests
         result.Errors[0].ShouldContain("missing required properties");
     }
 
-    [TestMethod]
+    [Fact]
     public async Task ValidateEventAsync_ValidControlAccountUpdatedV1Event_ReturnsTrue()
     {
-        DateTimeOffset now = EventRepositoryTestUtils.GetTestDateTimeOffset();
+        DateTimeOffset now = CommonTestUtilities.GetTestDateTimeOffset();
 
         Event @event = new()
         {
@@ -137,7 +136,7 @@ public class EventValidatorTests
         result.Errors.ShouldBeEmpty();
     }
 
-    [TestMethod]
+    [Fact]
     public async Task ValidateEventAsync_InvalidControlAccountUpdatedV1Event_ReturnsFalse()
     {
         Event @event = new()

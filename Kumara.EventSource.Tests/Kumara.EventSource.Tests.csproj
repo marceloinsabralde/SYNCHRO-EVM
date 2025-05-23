@@ -2,39 +2,43 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <RootNamespace>Kumara.EventSource.Tests</RootNamespace>
-        <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <EnableMSTestRunner>true</EnableMSTestRunner>
-        <OutputType>Exe</OutputType>
+        <RootNamespace>Kumara.EventSource.Tests</RootNamespace>
+        <TargetFramework>net9.0</TargetFramework>
         <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
-        <!--
-          Displays error on console in addition to the log file. Note that this feature comes with a performance impact.
-          For more information, visit https://learn.microsoft.com/dotnet/core/testing/unit-testing-platform-integration-dotnet-test#show-failure-per-test
-          -->
-        <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
-        <IsPublishable>false</IsPublishable>
+        <LangVersion>latest</LangVersion>
+        <IsPackable>false</IsPackable>
+        <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <NoWarn>$(NoWarn);xUnit1051</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MSTest.TestAdapter" Version="3.8.2"/>
-        <PackageReference Include="MSTest.TestFramework" Version="3.8.2"/>
+        <Using Include="Xunit"/>
+        <Using Include="Shouldly"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.3"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0"/>
         <PackageReference Include="Shouldly" Version="4.3.0"/>
         <PackageReference Include="Testcontainers" Version="4.3.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.3"/>
         <PackageReference Include="Testcontainers.MongoDb" Version="4.3.0"/>
+        <PackageReference Include="xunit.v3" Version="2.0.2"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting"/>
-    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Kumara.EventSource\Kumara.EventSource.csproj"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <Content Update="xunit.runner.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>
