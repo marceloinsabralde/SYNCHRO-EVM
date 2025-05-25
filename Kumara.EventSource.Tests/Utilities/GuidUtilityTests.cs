@@ -2,20 +2,19 @@
 
 using Kumara.EventSource.Utilities;
 
-namespace Kumara.EventSource.Tests;
+namespace Kumara.EventSource.Tests.Utilities;
 
-[TestClass]
 public class GuidUtilityTests
 {
-    [TestMethod]
+    [Fact]
     public void CreateGuid_UsesDefaultTimeProvider_GeneratesValidGuid()
     {
         Guid result = GuidUtility.CreateGuid();
-        Assert.AreNotEqual(Guid.Empty, result);
-        Assert.IsTrue(result.ToString().Length == 36);
+        Assert.NotEqual(Guid.Empty, result);
+        Assert.Equal(36, result.ToString().Length);
     }
 
-    [TestMethod]
+    [Fact]
     public void CreateGuid_UsesCustomTimeProvider_GeneratesExpectedGuid()
     {
         DateTimeOffset fixedTime = new(2025, 4, 30, 0, 0, 0, TimeSpan.Zero);
@@ -23,14 +22,14 @@ public class GuidUtilityTests
 
         Guid result = GuidUtility.CreateGuid(fixedTimeProvider);
 
-        Assert.AreNotEqual(Guid.Empty, result);
-        Assert.IsTrue(result.ToString().Length == 36);
+        Assert.NotEqual(Guid.Empty, result);
+        Assert.Equal(36, result.ToString().Length);
 
         string guidString = result.ToString();
-        Assert.AreEqual('7', guidString[14]);
+        Assert.Equal('7', guidString[14]);
 
         char variantChar = guidString[19];
-        Assert.IsTrue(
+        Assert.True(
             variantChar == '8'
                 || variantChar == '9'
                 || variantChar == 'a'
@@ -66,13 +65,13 @@ public class GuidUtilityTests
 
         ulong expectedTimestampMs = (ulong)fixedTime.ToUnixTimeMilliseconds();
 
-        Assert.IsTrue(
+        Assert.True(
             Math.Abs((long)timestampMs - (long)expectedTimestampMs) < 2,
             $"Expected timestamp close to {expectedTimestampMs}, but got {timestampMs}"
         );
     }
 
-    [TestMethod]
+    [Fact]
     public void CreateGuid_WithMonotonicTimeProvider_GeneratesAscendingGuids()
     {
         MonotonicTimeProvider monotonicTimeProvider = new();
@@ -85,7 +84,7 @@ public class GuidUtilityTests
 
         for (int i = 1; i < guids.Length; i++)
         {
-            Assert.IsTrue(
+            Assert.True(
                 string.Compare(
                     guids[i - 1].ToString(),
                     guids[i].ToString(),
@@ -96,13 +95,13 @@ public class GuidUtilityTests
         }
     }
 
-    [TestMethod]
+    [Fact]
     public void CreateGuid_GeneratesUniqueGuids()
     {
         Guid guid1 = GuidUtility.CreateGuid();
         Guid guid2 = GuidUtility.CreateGuid();
 
-        Assert.AreNotEqual(guid1, guid2);
+        Assert.NotEqual(guid1, guid2);
     }
 
     private class MonotonicTimeProvider : TimeProvider

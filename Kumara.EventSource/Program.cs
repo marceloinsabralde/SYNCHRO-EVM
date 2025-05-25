@@ -29,13 +29,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-if (!app.Environment.IsEnvironment("Test"))
-{
-    app.UseHttpsRedirection();
-}
+app.UseHttpsRedirection();
 
 app.MapControllers();
 
-await app.RunAsync();
+await app.RunAsync(CancellationToken.None);
 
 public partial class Program { }

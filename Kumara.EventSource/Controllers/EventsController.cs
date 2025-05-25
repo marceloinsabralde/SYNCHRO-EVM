@@ -15,6 +15,7 @@ namespace Kumara.EventSource.Controllers;
 [Route("[controller]")]
 public class EventsController : ControllerBase
 {
+    private const string ContinuationTokenKey = "continuationtoken";
     private readonly IEventRepository _eventRepository;
     private readonly IEventValidator _eventValidator;
 
@@ -25,7 +26,10 @@ public class EventsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostEvents([FromBody] JsonElement payload)
+    public async Task<IActionResult> PostEvents(
+        [FromBody] JsonElement payload,
+        CancellationToken cancellationToken = default
+    )
     {
         if (payload.ValueKind != JsonValueKind.Array)
         {
@@ -44,35 +48,31 @@ public class EventsController : ControllerBase
 
         foreach (Event @event in events)
         {
-            ValidationResult validationResult = _eventValidator.ValidateEvent(@event);
-            if (!validationResult.IsValid)
+            EventValidationResult eventValidationResult = await _eventValidator.ValidateEventAsync(
+                @event,
+                cancellationToken
+            );
+            if (!eventValidationResult.IsValid)
             {
-                return BadRequest(validationResult.Errors);
+                return BadRequest(eventValidationResult.Errors);
             }
         }
 
         if (events.Count != 0)
         {
-            await _eventRepository.AddEventsAsync(events);
+            await _eventRepository.AddEventsAsync(events, cancellationToken);
         }
 
         return Ok(new { count = events.Count });
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetEvents()
+    public async Task<IActionResult> GetEvents(
+        [FromQuery(Name = ContinuationTokenKey)] string? continuationToken = null,
+        CancellationToken cancellationToken = default
+    )
     {
         IQueryCollection query = HttpContext.Request.Query;
-
-        string? continuationToken = null;
-
-        if (
-            query.TryGetValue("continuationtoken", out StringValues tokenValues)
-            && !string.IsNullOrWhiteSpace(tokenValues)
-        )
-        {
-            continuationToken = tokenValues.ToString();
-        }
 
         QueryParsingResult queryParsingResult;
 
@@ -93,7 +93,7 @@ public class EventsController : ControllerBase
                 Dictionary<string, StringValues> paramsWithToken = new(
                     tokenParams.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
                 );
-                paramsWithToken["continuationtoken"] = continuationToken;
+                paramsWithToken[ContinuationTokenKey] = continuationToken;
 
                 queryParsingResult = new QueryCollection(paramsWithToken).ToEventQueryBuilder();
             }
@@ -106,7 +106,7 @@ public class EventsController : ControllerBase
                         Title = "Invalid Continuation Token",
                         Detail = "The provided continuation token is invalid or malformed.",
                         Instance = HttpContext.Request.Path,
-                        Extensions = { ["invalidParameter"] = "continuationtoken" },
+                        Extensions = { ["invalidParameter"] = ContinuationTokenKey },
                     }
                 );
             }
@@ -132,7 +132,8 @@ public class EventsController : ControllerBase
 
         PaginatedList<Event> paginatedList = await _eventRepository.GetPaginatedEventsAsync(
             queryParsingResult.QueryBuilder!,
-            queryParsingResult.PageSize
+            queryParsingResult.PageSize,
+            cancellationToken
         );
 
         BuildPaginationLinks(paginatedList, query, queryParsingResult.QueryBuilder!);
@@ -163,13 +164,17 @@ public class EventsController : ControllerBase
             foreach (KeyValuePair<string, StringValues> param in query)
             {
                 if (
-                    param.Key.ToLowerInvariant() != "continuationtoken"
-                    && !string.IsNullOrEmpty(param.Value.ToString())
+                    param.Key.Equals(
+                        ContinuationTokenKey,
+                        StringComparison.InvariantCultureIgnoreCase
+                    ) || string.IsNullOrEmpty(param.Value.ToString())
                 )
                 {
-                    string value = param.Value.ToString() ?? string.Empty;
-                    queryParams[param.Key] = value;
+                    continue;
                 }
+
+                string value = param.Value.ToString();
+                queryParams[param.Key] = value;
             }
         }
 
@@ -198,5 +203,7 @@ public class QueryCollection(Dictionary<string, StringValues> dictionary)
     : Dictionary<string, StringValues>(dictionary, StringComparer.OrdinalIgnoreCase),
         IQueryCollection
 {
-    ICollection<string> IQueryCollection.Keys => base.Keys.ToList();
+    ICollection<string> IQueryCollection.Keys => GetKeys();
+
+    private List<string> GetKeys() => base.Keys.ToList();
 }

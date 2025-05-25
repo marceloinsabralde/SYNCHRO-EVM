@@ -7,5 +7,8 @@ namespace Kumara.EventSource.Interfaces;
 
 public interface IEventValidator
 {
-    ValidationResult ValidateEvent(Event @event);
+    Task<EventValidationResult> ValidateEventAsync(
+        Event @event,
+        CancellationToken cancellationToken = default
+    );
 }

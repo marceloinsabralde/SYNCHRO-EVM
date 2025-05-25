@@ -3,104 +3,99 @@
 using System.Text.Json;
 using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Models;
-using Kumara.EventSource.Repositories;
 using Kumara.EventSource.Utilities;
-using Shouldly;
 
-namespace Kumara.EventSource.Tests;
+namespace Kumara.EventSource.Tests.Repositories;
 
-[TestClass]
-public class InMemoryEventRepositoryTests
+/// <summary>
+/// Base class for event repository tests providing common test methods.
+/// Concrete implementations should provide their specific initialization logic.
+/// </summary>
+public abstract class EventRepositoryTestsBase
 {
-    private static IEventRepository CreateInMemoryRepository()
-    {
-        return new EventRepositoryInMemoryList();
-    }
+    /// <summary>
+    /// Gets the event repository to test.
+    /// </summary>
+    protected abstract IEventRepository EventRepository { get; }
 
-    [TestMethod]
+    [Fact]
     public async Task RoundtripEventsAsync_ShouldStoreAndRetrieveEvents()
     {
-        IEventRepository eventRepository = CreateInMemoryRepository();
-        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
+        List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
 
-        await eventRepository.AddEventsAsync(events);
-        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(
+        await EventRepository.AddEventsAsync(events);
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(
             new EventQueryBuilder()
         );
 
         events.Select(e => e.ITwinGuid).ShouldBeSubsetOf(retrievedEvents.Select(e => e.ITwinGuid));
     }
 
-    [TestMethod]
+    [Fact]
     public async Task QueryEventsByITwinGuid_ShouldReturnMatchingEvents()
     {
-        IEventRepository? eventRepository = CreateInMemoryRepository();
-        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
-        await eventRepository.AddEventsAsync(events);
+        List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
+        await EventRepository.AddEventsAsync(events);
         Guid targetITwinGuid = events.First().ITwinGuid;
 
         EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereITwinGuid(targetITwinGuid);
-        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(queryBuilder);
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.ITwinGuid == targetITwinGuid).ShouldBeTrue();
     }
 
-    [TestMethod]
+    [Fact]
     public async Task QueryEventsByAccountGuid_ShouldReturnMatchingEvents()
     {
-        IEventRepository? eventRepository = CreateInMemoryRepository();
-        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
-        await eventRepository.AddEventsAsync(events);
+        List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
+        await EventRepository.AddEventsAsync(events);
         Guid targetAccountGuid = events.First().AccountGuid;
 
         EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereAccountGuid(
             targetAccountGuid
         );
-        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(queryBuilder);
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.AccountGuid == targetAccountGuid).ShouldBeTrue();
     }
 
-    [TestMethod]
+    [Fact]
     public async Task QueryEventsByCorrelationId_ShouldReturnMatchingEvents()
     {
-        IEventRepository? eventRepository = CreateInMemoryRepository();
-        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
-        await eventRepository.AddEventsAsync(events);
-        string? targetCorrelationId = events.First().CorrelationId;
+        List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
+        await EventRepository.AddEventsAsync(events);
+        string targetCorrelationId = events.First().CorrelationId;
 
         EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereCorrelationId(
             targetCorrelationId
         );
-        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(queryBuilder);
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.CorrelationId == targetCorrelationId).ShouldBeTrue();
     }
 
-    [TestMethod]
+    [Fact]
     public async Task QueryEventsByType_ShouldReturnMatchingEvents()
     {
-        IEventRepository? eventRepository = CreateInMemoryRepository();
-        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
-        await eventRepository.AddEventsAsync(events);
-        string? targetType = events.First().Type;
+        List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
+        await EventRepository.AddEventsAsync(events);
+        string targetType = events.First().Type;
 
         EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereType(targetType);
-        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(queryBuilder);
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.Type == targetType).ShouldBeTrue();
     }
 
-    [TestMethod]
+    [Fact]
     public async Task QueryEventsWithBuilder_ShouldReturnMatchingEvents()
     {
-        IEventRepository eventRepository = CreateInMemoryRepository();
-        List<Event> events = EventRepositoryTestUtils.GetTestEvents();
-        await eventRepository.AddEventsAsync(events);
+        List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
+        await EventRepository.AddEventsAsync(events);
         string targetType = events.First().Type;
         Guid targetITwinGuid = events.First().ITwinGuid;
 
@@ -108,7 +103,7 @@ public class InMemoryEventRepositoryTests
             .WhereType(targetType)
             .WhereITwinGuid(targetITwinGuid);
 
-        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(queryBuilder);
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents
@@ -116,10 +111,9 @@ public class InMemoryEventRepositoryTests
             .ShouldBeTrue();
     }
 
-    [TestMethod]
+    [Fact]
     public async Task GetAllEvents_ShouldReturnEventsOrderedById()
     {
-        IEventRepository eventRepository = CreateInMemoryRepository();
         List<Event> events = new()
         {
             new Event
@@ -156,8 +150,8 @@ public class InMemoryEventRepositoryTests
 
         events = events.OrderBy(_ => GuidUtility.CreateGuid()).ToList();
 
-        await eventRepository.AddEventsAsync(events);
-        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(
+        await EventRepository.AddEventsAsync(events);
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(
             new EventQueryBuilder()
         );
 
@@ -166,22 +160,19 @@ public class InMemoryEventRepositoryTests
             .ShouldBe(retrievedEvents.Select(e => e.Id).OrderBy(id => id));
     }
 
-    [TestMethod]
+    [Fact]
     public async Task GetAllEvents_ShouldHandleEmptyRepository()
     {
-        IEventRepository eventRepository = CreateInMemoryRepository();
-
-        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(
             new EventQueryBuilder()
         );
 
         retrievedEvents.ShouldBeEmpty();
     }
 
-    [TestMethod]
+    [Fact]
     public async Task GetAllEvents_ShouldHandleSingleEvent()
     {
-        IEventRepository eventRepository = CreateInMemoryRepository();
         Event singleEvent = new()
         {
             Id = GuidUtility.CreateGuid(),
@@ -193,8 +184,8 @@ public class InMemoryEventRepositoryTests
             Type = "test.event",
         };
 
-        await eventRepository.AddEventsAsync(new List<Event> { singleEvent });
-        IQueryable<Event> retrievedEvents = await eventRepository.QueryEventsAsync(
+        await EventRepository.AddEventsAsync(new List<Event> { singleEvent });
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(
             new EventQueryBuilder()
         );
 
@@ -202,46 +193,23 @@ public class InMemoryEventRepositoryTests
         retrievedEvents.First().ShouldBe(singleEvent);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task GetPaginatedEvents_ShouldReturnPaginatedResult()
     {
-        IEventRepository eventRepository = CreateInMemoryRepository();
+        List<Event> testEvents = await CreatePaginatedTestEvents("test.pagination.event", 25);
+        await EventRepository.AddEventsAsync(testEvents);
 
-        List<Event> testEvents = new();
-
-        for (int i = 0; i < 25; i++)
-        {
-            await Task.Delay(5);
-
-            testEvents.Add(
-                new Event
-                {
-                    ITwinGuid = Guid.NewGuid(),
-                    AccountGuid = Guid.NewGuid(),
-                    CorrelationId = Guid.NewGuid().ToString(),
-                    SpecVersion = "1.0",
-                    Source = new Uri("http://testsource.com"),
-                    Type = "test.pagination.event",
-                    Id = Guid.CreateVersion7(),
-                    DataJson = JsonSerializer.SerializeToDocument(
-                        new { Index = i, Message = $"Pagination test event {i}" }
-                    ),
-                }
-            );
-        }
-
-        await eventRepository.AddEventsAsync(testEvents);
-
+        // Create a query builder for pagination
         EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereType("test.pagination.event");
 
         int pageSize = 10;
-        PaginatedList<Event> paginatedResult = await eventRepository.GetPaginatedEventsAsync(
+        PaginatedList<Event> paginatedResult = await EventRepository.GetPaginatedEventsAsync(
             queryBuilder,
             pageSize
         );
 
         const string testContinuationToken = "test-continuation-token-123";
-        EventRepositoryTestUtils.BuildPaginationLinks(
+        EventRepositoryTestUtilities.BuildPaginationLinks(
             paginatedResult,
             "test.pagination.event",
             testContinuationToken
@@ -262,49 +230,27 @@ public class InMemoryEventRepositoryTests
         }
     }
 
-    [TestMethod]
+    [Fact]
     public async Task GetPaginatedEvents_WithContinuationToken_ShouldReturnNextPage()
     {
-        IEventRepository eventRepository = CreateInMemoryRepository();
-
-        List<Event> events = new();
-        for (int i = 0; i < 30; i++)
-        {
-            await Task.Delay(10);
-            events.Add(
-                new Event
-                {
-                    ITwinGuid = Guid.NewGuid(),
-                    AccountGuid = Guid.NewGuid(),
-                    CorrelationId = Guid.NewGuid().ToString(),
-                    SpecVersion = "1.0",
-                    Source = new Uri("http://testsource.com"),
-                    Type = "test.pagination.continuation",
-                    Id = Guid.CreateVersion7(),
-                    DataJson = JsonSerializer.SerializeToDocument(
-                        new { Index = i, Message = $"Pagination continuation test event {i}" }
-                    ),
-                }
-            );
-        }
-
-        await eventRepository.AddEventsAsync(events);
+        List<Event> events = await CreatePaginatedTestEvents("test.pagination.continuation", 30);
+        await EventRepository.AddEventsAsync(events);
 
         EventQueryBuilder firstPageQueryBuilder = new EventQueryBuilder().WhereType(
             "test.pagination.continuation"
         );
-
         int pageSize = 10;
-        PaginatedList<Event> firstPage = await eventRepository.GetPaginatedEventsAsync(
+        PaginatedList<Event> firstPage = await EventRepository.GetPaginatedEventsAsync(
             firstPageQueryBuilder,
             pageSize
         );
 
         List<Event> firstPageResults = firstPage.Items.ToList();
+
         Guid lastEventId = firstPageResults.Last().Id;
         string realContinuationToken = Pagination.CreateContinuationToken(lastEventId);
 
-        EventRepositoryTestUtils.BuildPaginationLinks(
+        EventRepositoryTestUtilities.BuildPaginationLinks(
             firstPage,
             "test.pagination.continuation",
             realContinuationToken
@@ -312,14 +258,14 @@ public class InMemoryEventRepositoryTests
 
         EventQueryBuilder secondQueryBuilder = new EventQueryBuilder()
             .WhereType("test.pagination.continuation")
-            .WithContinuationToken(realContinuationToken);
+            .WithContinuationToken(realContinuationToken); // Use real token
 
-        PaginatedList<Event> secondPage = await eventRepository.GetPaginatedEventsAsync(
+        PaginatedList<Event> secondPage = await EventRepository.GetPaginatedEventsAsync(
             secondQueryBuilder,
             pageSize
         );
 
-        EventRepositoryTestUtils.BuildPaginationLinks(
+        EventRepositoryTestUtilities.BuildPaginationLinks(
             secondPage,
             "test.pagination.continuation",
             "second-page-token"
@@ -335,7 +281,10 @@ public class InMemoryEventRepositoryTests
 
         Guid maxFirstPageId = firstPageIds.Max();
         Guid minSecondPageId = secondPageIds.Min();
-        minSecondPageId.ShouldBeGreaterThan(maxFirstPageId);
+        minSecondPageId.ShouldBeGreaterThan(
+            maxFirstPageId,
+            "Second page IDs should all be greater than first page"
+        );
 
         List<Event> secondPageResults = secondPage.Items.ToList();
         Guid lastSecondPageEventId = secondPageResults.Last().Id;
@@ -345,19 +294,53 @@ public class InMemoryEventRepositoryTests
             .WhereType("test.pagination.continuation")
             .WithContinuationToken(thirdPageToken);
 
-        PaginatedList<Event> thirdPage = await eventRepository.GetPaginatedEventsAsync(
+        PaginatedList<Event> thirdPage = await EventRepository.GetPaginatedEventsAsync(
             thirdQueryBuilder,
             pageSize
         );
 
-        EventRepositoryTestUtils.BuildPaginationLinks(thirdPage, "test.pagination.continuation");
+        EventRepositoryTestUtilities.BuildPaginationLinks(
+            thirdPage,
+            "test.pagination.continuation"
+        );
 
         thirdPage.ShouldNotBeNull();
-        thirdPage.Items.Count.ShouldBe(10);
-        thirdPage.Links.Next.ShouldBeNull();
+        thirdPage.Items.Count.ShouldBe(10); // Last 10 of our 30 events
+        thirdPage.Links.Next.ShouldBeNull(); // No next link on last page
 
         IEnumerable<Guid> thirdPageIds = thirdPage.Items.Select(e => e.Id);
         firstPageIds.Intersect(thirdPageIds).ShouldBeEmpty();
         secondPageIds.Intersect(thirdPageIds).ShouldBeEmpty();
+    }
+
+    /// <summary>
+    /// Helper method to create test events for pagination tests.
+    /// </summary>
+    protected async Task<List<Event>> CreatePaginatedTestEvents(string eventType, int count)
+    {
+        List<Event> testEvents = new();
+
+        for (int i = 0; i < count; i++)
+        {
+            await Task.Delay(5);
+
+            testEvents.Add(
+                new Event
+                {
+                    ITwinGuid = Guid.NewGuid(),
+                    AccountGuid = Guid.NewGuid(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    SpecVersion = "1.0",
+                    Source = new Uri("http://testsource.com"),
+                    Type = eventType,
+                    Id = Guid.CreateVersion7(),
+                    DataJson = JsonSerializer.SerializeToDocument(
+                        new { Index = i, Message = $"{eventType} test event {i}" }
+                    ),
+                }
+            );
+        }
+
+        return testEvents;
     }
 }

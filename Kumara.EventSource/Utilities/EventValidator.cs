@@ -2,23 +2,32 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Models;
 
 namespace Kumara.EventSource.Utilities;
 
-public class EventValidator(Dictionary<string, Type> eventTypeMap) : IEventValidator
+public class EventValidator : IEventValidator
 {
-    private readonly Dictionary<string, Type> _eventTypeMap = eventTypeMap;
+    private readonly Dictionary<string, Type> _eventTypeMap;
 
-    public ValidationResult ValidateEvent(Event @event)
+    public EventValidator(Dictionary<string, Type> eventTypeMap)
+    {
+        _eventTypeMap = eventTypeMap;
+    }
+
+    public async Task<EventValidationResult> ValidateEventAsync(
+        Event @event,
+        CancellationToken cancellationToken = default
+    )
     {
         string eventType = @event.Type;
         JsonDocument eventData = @event.DataJson;
 
         if (!_eventTypeMap.ContainsKey(eventType))
         {
-            return ValidationResult.Failure($"The event type '{eventType}' is not supported.");
+            return EventValidationResult.Failure($"The event type '{eventType}' is not supported.");
         }
 
         Type? eventTypeInstance = GetEventType(_eventTypeMap, eventType);
@@ -26,70 +35,56 @@ public class EventValidator(Dictionary<string, Type> eventTypeMap) : IEventValid
         {
             try
             {
-                object? data = JsonSerializer.Deserialize(eventData, eventTypeInstance);
+                using MemoryStream stream = new(
+                    System.Text.Encoding.UTF8.GetBytes(eventData.RootElement.ToString())
+                );
 
+                JsonSerializerOptions options = new()
+                {
+                    PropertyNameCaseInsensitive = true,
+                    ReferenceHandler = ReferenceHandler.Preserve,
+                };
+
+                object? data = await JsonSerializer.DeserializeAsync(
+                    stream,
+                    eventTypeInstance,
+                    options,
+                    cancellationToken
+                );
                 if (data == null)
                 {
-                    return ValidationResult.Failure(
+                    return EventValidationResult.Failure(
                         $"The data for event type '{eventType}' is invalid."
                     );
                 }
 
-                List<System.ComponentModel.DataAnnotations.ValidationResult> validationResults =
-                    new();
+                List<ValidationResult> results = new();
                 bool isValid = Validator.TryValidateObject(
                     data,
                     new ValidationContext(data),
-                    validationResults,
+                    results,
                     true
                 );
 
                 if (!isValid)
                 {
-                    return ValidationResult.Failure(
-                        validationResults.Select(vr => vr.ErrorMessage ?? "Unknown error").ToList()
+                    return EventValidationResult.Failure(
+                        results.Select(r => r.ErrorMessage ?? "Unknown error").ToList()
                     );
                 }
             }
             catch (JsonException ex)
             {
-                return ValidationResult.Failure(ex.Message);
+                return EventValidationResult.Failure(ex.Message);
             }
         }
 
-        return ValidationResult.Success();
+        return EventValidationResult.Success();
     }
 
     private static Type? GetEventType(Dictionary<string, Type> eventTypeMap, string eventType)
     {
         eventTypeMap.TryGetValue(eventType, out Type? type);
         return type;
-    }
-}
-
-public class ValidationResult
-{
-    public bool IsValid { get; private set; }
-    public IReadOnlyList<string> Errors { get; private set; }
-
-    private ValidationResult(bool isValid, IReadOnlyList<string> errors)
-    {
-        IsValid = isValid;
-        Errors = errors;
-    }
-
-    public static ValidationResult Success()
-    {
-        return new ValidationResult(true, []);
-    }
-
-    public static ValidationResult Failure(string error)
-    {
-        return new ValidationResult(false, [error]);
-    }
-
-    public static ValidationResult Failure(IEnumerable<string> errors)
-    {
-        return new ValidationResult(false, [.. errors]);
     }
 }

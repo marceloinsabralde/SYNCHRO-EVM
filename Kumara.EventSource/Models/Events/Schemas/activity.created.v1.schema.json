@@ -28,28 +28,28 @@
         "null",
         "string"
       ],
-      "format": "date"
+      "format": "date-time"
     },
     "planned_finish": {
       "type": [
         "null",
         "string"
       ],
-      "format": "date"
+      "format": "date-time"
     },
     "actual_start": {
       "type": [
         "null",
         "string"
       ],
-      "format": "date"
+      "format": "date-time"
     },
     "actual_finish": {
       "type": [
         "null",
         "string"
       ],
-      "format": "date"
+      "format": "date-time"
     },
     "event_type_version": {
       "type": "string"
