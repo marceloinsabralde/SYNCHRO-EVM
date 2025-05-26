@@ -3,7 +3,6 @@ PGHOST="127.0.0.1"
 PGPORT="5434"
 PGUSER="PerformNextGen"
 PGPASSWORD="PerformNextGen"
-PGDATABASE="PerformNextGen"
 
 ConnectionStrings__KumaraWebApiDB="Host=localhost;Port=5434;Database=PerformNextGen;Username=PerformNextGen;Password=PerformNextGen"
 TEST_ConnectionStrings__KumaraWebApiDB="Host=localhost;Port=5434;Database=PerformNextGenTest;Username=PerformNextGen;Password=PerformNextGen"
