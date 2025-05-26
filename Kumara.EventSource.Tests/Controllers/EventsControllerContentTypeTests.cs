@@ -41,7 +41,7 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
 
         await _eventRepository.AddEventsAsync(new[] { expectedEvent });
 
-        HttpResponseMessage response = await _client.GetAsync("/events");
+        HttpResponseMessage response = await _client.GetAsync(ApiBasePath);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         string? contentType = response.Content.Headers.ContentType?.MediaType;
@@ -107,7 +107,7 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
         string serialized = JsonSerializer.Serialize(eventsPayload);
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -117,7 +117,7 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
     {
         StringContent content = new("Invalid content", System.Text.Encoding.UTF8, "text/plain");
 
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.StatusCode.ShouldBe(HttpStatusCode.UnsupportedMediaType);
     }

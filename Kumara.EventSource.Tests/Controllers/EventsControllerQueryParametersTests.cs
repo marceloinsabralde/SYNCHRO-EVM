@@ -67,7 +67,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
 
-        HttpResponseMessage response = await _client.GetAsync($"/events?id={targetId}");
+        HttpResponseMessage response = await _client.GetAsync(GetEventsEndpoint($"id={targetId}"));
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
@@ -136,7 +136,9 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
 
-        HttpResponseMessage response = await _client.GetAsync($"/events?iTwinId={targetITwinId}");
+        HttpResponseMessage response = await _client.GetAsync(
+            GetEventsEndpoint($"iTwinId={targetITwinId}")
+        );
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
@@ -182,7 +184,9 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
 
-        HttpResponseMessage response = await _client.GetAsync($"/events?type={targetType}");
+        HttpResponseMessage response = await _client.GetAsync(
+            GetEventsEndpoint($"type={targetType}")
+        );
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
@@ -252,7 +256,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
 
         HttpResponseMessage response = await _client.GetAsync(
-            $"/events?correlationId={targetCorrelationId}"
+            GetEventsEndpoint($"correlationId={targetCorrelationId}")
         );
 
         response.EnsureSuccessStatusCode();
@@ -323,7 +327,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
 
         HttpResponseMessage response = await _client.GetAsync(
-            $"/events?accountId={targetAccountId}"
+            GetEventsEndpoint($"accountId={targetAccountId}")
         );
 
         response.EnsureSuccessStatusCode();
@@ -384,7 +388,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         );
 
         HttpResponseMessage response = await _client.GetAsync(
-            $"/events?iTwinId={targetITwinId}&type={targetType}"
+            GetEventsEndpoint($"iTwinId={targetITwinId}&type={targetType}")
         );
 
         response.EnsureSuccessStatusCode();
@@ -455,7 +459,9 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         await _eventRepository.AddEventsAsync(new[] { event1, event2 });
 
-        HttpResponseMessage response = await _client.GetAsync("/events?iTwinId=not-a-valid-guid");
+        HttpResponseMessage response = await _client.GetAsync(
+            GetEventsEndpoint("iTwinId=not-a-valid-guid")
+        );
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         string content = await response.Content.ReadAsStringAsync();

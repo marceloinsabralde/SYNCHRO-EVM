@@ -9,7 +9,10 @@ public class EventsControllerRoutingTests : EventsControllerTestBase
     [Fact]
     public async Task GetEvents_EndpointIsActive()
     {
-        HttpResponseMessage? response = await _client.GetAsync("/events", CancellationToken.None);
+        HttpResponseMessage? response = await _client.GetAsync(
+            "/api/v1/events",
+            CancellationToken.None
+        );
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -18,7 +21,7 @@ public class EventsControllerRoutingTests : EventsControllerTestBase
     public async Task PostEvents_EndpointIsActive()
     {
         HttpResponseMessage response = await _client.PostAsync(
-            "/events",
+            "/api/v1/events",
             new StringContent("[]", System.Text.Encoding.UTF8, "application/json"),
             CancellationToken.None
         );

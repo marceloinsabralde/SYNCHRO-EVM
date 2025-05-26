@@ -15,7 +15,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
     public async Task PostEvents_WithZeroEvents_ReturnsSuccessAndCountZero()
     {
         StringContent content = new("[]", System.Text.Encoding.UTF8, "application/json");
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.EnsureSuccessStatusCode();
         string responseString = await response.Content.ReadAsStringAsync();
@@ -78,7 +78,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
 
         string serialized = JsonSerializer.Serialize(eventsPayload);
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.EnsureSuccessStatusCode();
         string responseString = await response.Content.ReadAsStringAsync();
@@ -115,7 +115,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
 
         await _eventRepository.AddEventsAsync(testEvents);
 
-        HttpResponseMessage response = await _client.GetAsync("/events");
+        HttpResponseMessage response = await _client.GetAsync(GetEventsEndpoint());
 
         response.EnsureSuccessStatusCode();
         response
@@ -172,7 +172,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
         string serialized = JsonSerializer.Serialize(new[] { @event });
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -207,7 +207,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
         string serialized = JsonSerializer.Serialize(new[] { @event });
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -221,7 +221,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
         );
 
         // Submit POST request with invalid media type
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.StatusCode.ShouldBe(HttpStatusCode.UnsupportedMediaType);
     }
@@ -277,15 +277,13 @@ public class EventsControllerContentTests : EventsControllerTestBase
                 ),
             },
         };
-
         string serialized = JsonSerializer.Serialize(events);
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
-
-        HttpResponseMessage postResponse = await _client.PostAsync("/events", content);
+        HttpResponseMessage postResponse = await _client.PostAsync(ApiBasePath, content);
 
         postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        HttpResponseMessage response = await _client.GetAsync("/Events");
+        HttpResponseMessage response = await _client.GetAsync(ApiBasePath);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         string responseContent = await response.Content.ReadAsStringAsync();

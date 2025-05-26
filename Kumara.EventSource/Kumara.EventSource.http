@@ -2,13 +2,13 @@
 @Kumara_EventSource_HostAddress = http://localhost:5220
 
 ### without events
-POST {{Kumara_EventSource_HostAddress}}/events
+POST {{Kumara_EventSource_HostAddress}}/api/v1/events
 Content-Type: application/json
 
 []
 
 ### With events
-POST {{Kumara_EventSource_HostAddress}}/events
+POST {{Kumara_EventSource_HostAddress}}/api/v1/events
 Content-Type: application/json
 
 [
@@ -72,17 +72,18 @@ Content-Type: application/json
 ]
 
 ### Get events
-GET {{Kumara_EventSource_HostAddress}}/events
+GET {{Kumara_EventSource_HostAddress}}/api/v1/events
 Accept: application/json
 
 ### Get paginated events (page size 1)
-GET {{Kumara_EventSource_HostAddress}}/events?top=1
+GET {{Kumara_EventSource_HostAddress}}/api/v1/events?top=1
 Accept: application/json
 
 ### Get filtered events
-GET {{Kumara_EventSource_HostAddress}}/events?top=5&iTwinId=12345678-1234-1234-1234-123456789abc&type=control.account.created.v1
+GET {{Kumara_EventSource_HostAddress}}/api/v1/events?top=5&iTwinId=12345678-1234-1234-1234-123456789abc&
+    type=control.account.created.v1
 Accept: application/json
 
 ### Get next page with continuation token
-GET {{Kumara_EventSource_HostAddress}}/events?top=5&continuationToken=CONTINUATION_TOKEN_HERE
+GET {{Kumara_EventSource_HostAddress}}/api/v1/events?top=5&continuationToken=CONTINUATION_TOKEN_HERE
 Accept: application/json

@@ -12,6 +12,7 @@ public abstract class EventsControllerTestBase
 {
     protected readonly HttpClient _client;
     protected readonly IEventRepository _eventRepository = new EventRepositoryInMemoryList();
+    protected const string ApiBasePath = "/api/v1/events";
 
     protected EventsControllerTestBase()
     {
@@ -30,5 +31,10 @@ public abstract class EventsControllerTestBase
                 BaseAddress = new Uri("https://localhost:7104"),
             }
         );
+    }
+
+    protected string GetEventsEndpoint(string? queryString = null)
+    {
+        return string.IsNullOrEmpty(queryString) ? ApiBasePath : $"{ApiBasePath}?{queryString}";
     }
 }

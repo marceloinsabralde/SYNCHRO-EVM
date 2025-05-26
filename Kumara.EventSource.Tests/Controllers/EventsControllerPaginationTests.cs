@@ -38,7 +38,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
 
         await _eventRepository.AddEventsAsync(events);
 
-        HttpResponseMessage response = await _client.GetAsync("/events");
+        HttpResponseMessage response = await _client.GetAsync(ApiBasePath);
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
@@ -87,8 +87,9 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
 
         // Set custom page size
         int customPageSize = 15;
-
-        HttpResponseMessage response = await _client.GetAsync($"/events?top={customPageSize}");
+        HttpResponseMessage response = await _client.GetAsync(
+            GetEventsEndpoint($"top={customPageSize}")
+        );
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
@@ -135,7 +136,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         // Get first page
         int pageSize = 10;
         HttpResponseMessage firstResponse = await _client.GetAsync(
-            $"/events?type=test.pagination.continuation&top={pageSize}"
+            GetEventsEndpoint($"type=test.pagination.continuation&top={pageSize}")
         );
         firstResponse.EnsureSuccessStatusCode();
 
@@ -164,7 +165,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         );
 
         HttpResponseMessage secondResponse = await _client.GetAsync(
-            $"/events?top={pageSize}&continuationtoken={continuationToken}"
+            GetEventsEndpoint($"top={pageSize}&continuationtoken={continuationToken}")
         );
 
         secondResponse.EnsureSuccessStatusCode();
@@ -222,7 +223,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         // Get first page with filters
         int pageSize = 10;
         HttpResponseMessage firstResponse = await _client.GetAsync(
-            $"/events?iTwinId={targetITwinId}&type={eventType}&top={pageSize}"
+            GetEventsEndpoint($"iTwinId={targetITwinId}&type={eventType}&top={pageSize}")
         );
 
         firstResponse.EnsureSuccessStatusCode();
@@ -254,7 +255,9 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         );
 
         HttpResponseMessage secondResponse = await _client.GetAsync(
-            $"/events?iTwinId={targetITwinId}&type={eventType}&top={pageSize}&continuationtoken={continuationToken}"
+            GetEventsEndpoint(
+                $"iTwinId={targetITwinId}&type={eventType}&top={pageSize}&continuationtoken={continuationToken}"
+            )
         );
 
         secondResponse.EnsureSuccessStatusCode();
