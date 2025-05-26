@@ -4,3 +4,6 @@ PGUSER="PerformNextGen"
 PGPASSWORD="PerformNextGen"
 PGDATABASE="PerformNextGen"
 PGPORT="5434"
+
+ConnectionStrings__PerformNextGen="Host=localhost;Port=5434;Database=PerformNextGen;Username=PerformNextGen;Password=PerformNextGen"
+TEST_ConnectionStrings__PerformNextGen="Host=localhost;Port=5434;Database=PerformNextGenTest;Username=PerformNextGen;Password=PerformNextGen"
