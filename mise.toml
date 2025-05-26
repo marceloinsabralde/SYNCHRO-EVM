@@ -1,8 +1,8 @@
 [env]
 PGHOST="127.0.0.1"
 PGPORT="5434"
-PGUSER="PerformNextGen"
-PGPASSWORD="PerformNextGen"
+PGUSER="kumara-admin"
+PGPASSWORD="{{exec(command='script/make-secret pgpassword', cache_key='pgpassword', cache_duration='1h')}}"
 
 ConnectionStrings__KumaraWebApiDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database=PerformNextGen;Username={{env.PGUSER}};Password={{env.PGPASSWORD}}"
 TEST_ConnectionStrings__KumaraWebApiDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database=PerformNextGenTest;Username={{env.PGUSER}};Password={{env.PGPASSWORD}}"
