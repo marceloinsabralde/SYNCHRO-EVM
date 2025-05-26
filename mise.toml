@@ -4,5 +4,5 @@ PGPORT="5434"
 PGUSER="kumara-admin"
 PGPASSWORD="{{exec(command='script/make-secret pgpassword', cache_key='pgpassword', cache_duration='1h')}}"
 
-ConnectionStrings__KumaraWebApiDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database=PerformNextGen;Username={{env.PGUSER}};Password={{env.PGPASSWORD}}"
-TEST_ConnectionStrings__KumaraWebApiDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database=PerformNextGenTest;Username={{env.PGUSER}};Password={{env.PGPASSWORD}}"
+ConnectionStrings__KumaraWebApiDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database=kumara-web-api;Username={{env.PGUSER}};Password={{env.PGPASSWORD}}"
+TEST_ConnectionStrings__KumaraWebApiDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database=kumara-web-api-test;Username={{env.PGUSER}};Password={{env.PGPASSWORD}}"
