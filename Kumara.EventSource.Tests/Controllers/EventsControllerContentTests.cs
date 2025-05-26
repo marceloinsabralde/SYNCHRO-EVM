@@ -154,6 +154,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
             Type = "control.account.created.v1",
+            Time = now,
             DataJson = JsonSerializer.SerializeToDocument(
                 new ControlAccountCreatedV1
                 {
@@ -189,6 +190,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
             Type = "control.account.updated.v1",
+            Time = now,
             DataJson = JsonSerializer.SerializeToDocument(
                 new ControlAccountUpdatedV1
                 {

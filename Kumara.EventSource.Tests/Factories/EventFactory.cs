@@ -30,6 +30,7 @@ public abstract class EventFactory<TData>
             Source = TestSource,
             Type = GetEventType(),
             DataJson = JsonSerializer.SerializeToDocument(data),
+            Time = null,
         };
     }
 

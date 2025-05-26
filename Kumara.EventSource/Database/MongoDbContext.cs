@@ -35,6 +35,7 @@ public class MongoDbContext : Microsoft.EntityFrameworkCore.DbContext
                 .Property(e => e.Source)
                 .HasConversion(uri => uri.ToString(), str => new Uri(str));
             entity.Property(e => e.Type);
+            entity.Property(e => e.Time);
             entity
                 .Property(e => e.DataJson)
                 .HasConversion(new JsonDocumentConverter())

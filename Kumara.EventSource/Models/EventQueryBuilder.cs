@@ -50,6 +50,26 @@ public class EventQueryBuilder
         return this;
     }
 
+    public EventQueryBuilder WhereTimeAfter(DateTimeOffset startTime)
+    {
+        _predicates.Add(e => e.Time.HasValue && e.Time.Value >= startTime);
+        return this;
+    }
+
+    public EventQueryBuilder WhereTimeBefore(DateTimeOffset endTime)
+    {
+        _predicates.Add(e => e.Time.HasValue && e.Time.Value <= endTime);
+        return this;
+    }
+
+    public EventQueryBuilder WhereTimeBetween(DateTimeOffset startTime, DateTimeOffset endTime)
+    {
+        _predicates.Add(e =>
+            e.Time.HasValue && e.Time.Value >= startTime && e.Time.Value <= endTime
+        );
+        return this;
+    }
+
     public EventQueryBuilder WithContinuationToken(string continuationToken)
     {
         Pagination.ContinuationToken? token = Pagination.ParseContinuationToken(continuationToken);

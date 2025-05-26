@@ -121,6 +121,7 @@ public abstract class EventRepositoryTestsBase
                 SpecVersion = "1.0",
                 Source = new Uri("http://testsource.com"),
                 Type = "test.event",
+                Time = null,
             },
             new Event
             {
@@ -131,6 +132,7 @@ public abstract class EventRepositoryTestsBase
                 SpecVersion = "1.0",
                 Source = new Uri("http://testsource.com"),
                 Type = "test.event",
+                Time = null,
             },
             new Event
             {
@@ -141,6 +143,7 @@ public abstract class EventRepositoryTestsBase
                 SpecVersion = "1.0",
                 Source = new Uri("http://testsource.com"),
                 Type = "test.event",
+                Time = null,
             },
         };
 
@@ -178,6 +181,7 @@ public abstract class EventRepositoryTestsBase
             SpecVersion = "1.0",
             Source = new Uri("http://testsource.com"),
             Type = "test.event",
+            Time = null,
         };
 
         await EventRepository.AddEventsAsync(new List<Event> { singleEvent });
@@ -330,6 +334,7 @@ public abstract class EventRepositoryTestsBase
                     Source = new Uri("http://testsource.com"),
                     Type = eventType,
                     Id = Guid.CreateVersion7(),
+                    Time = null, // Optional timestamp set to null by default
                     DataJson = JsonSerializer.SerializeToDocument(
                         new { Index = i, Message = $"{eventType} test event {i}" }
                     ),
