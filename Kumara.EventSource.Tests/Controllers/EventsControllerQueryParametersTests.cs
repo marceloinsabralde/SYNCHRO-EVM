@@ -20,8 +20,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         Event matchingEvent = new()
         {
             Id = targetId,
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -44,8 +44,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         Event nonMatchingEvent = new()
         {
             Id = Guid.NewGuid(),
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -82,16 +82,16 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
     }
 
     [Fact]
-    public async Task GetEvents_WithITwinGuidParameter_ReturnsOnlyMatchingEvents()
+    public async Task GetEvents_WithITwinIdParameter_ReturnsOnlyMatchingEvents()
     {
         DateTimeOffset now = CommonTestUtilities.GetTestDateTimeOffset();
-        Guid targetITwinGuid = Guid.NewGuid();
-        Guid differentITwinGuid = Guid.NewGuid();
+        Guid targetITwinId = Guid.NewGuid();
+        Guid differentITwinId = Guid.NewGuid();
 
         Event matchingEvent = new()
         {
-            ITwinGuid = targetITwinGuid,
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = targetITwinId,
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -113,8 +113,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         Event nonMatchingEvent = new()
         {
-            ITwinGuid = differentITwinGuid,
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = differentITwinId,
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -136,9 +136,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
 
-        HttpResponseMessage response = await _client.GetAsync(
-            $"/events?iTwinGuid={targetITwinGuid}"
-        );
+        HttpResponseMessage response = await _client.GetAsync($"/events?iTwinId={targetITwinId}");
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
@@ -149,7 +147,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         paginatedResponse.ShouldNotBeNull();
         List<Event> events = paginatedResponse.GetEvents();
         events.ShouldNotBeNull();
-        events[0].ITwinGuid.ShouldBe(targetITwinGuid);
+        events[0].ITwinId.ShouldBe(targetITwinId);
     }
 
     [Fact]
@@ -160,8 +158,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         Event matchingEvent = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -171,8 +169,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         Event nonMatchingEvent = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -207,8 +205,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         Event matchingEvent = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = targetCorrelationId,
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -230,8 +228,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         Event nonMatchingEvent = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = differentCorrelationId,
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -270,16 +268,16 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
     }
 
     [Fact]
-    public async Task GetEvents_WithAccountGuidParameter_ReturnsOnlyMatchingEvents()
+    public async Task GetEvents_WithAccountIdParameter_ReturnsOnlyMatchingEvents()
     {
         DateTimeOffset now = CommonTestUtilities.GetTestDateTimeOffset();
-        Guid targetAccountGuid = Guid.NewGuid();
-        Guid differentAccountGuid = Guid.NewGuid();
+        Guid targetAccountId = Guid.NewGuid();
+        Guid differentAccountId = Guid.NewGuid();
 
         Event matchingEvent = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = targetAccountGuid,
+            ITwinId = Guid.NewGuid(),
+            AccountId = targetAccountId,
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -301,8 +299,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         Event nonMatchingEvent = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = differentAccountGuid,
+            ITwinId = Guid.NewGuid(),
+            AccountId = differentAccountId,
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -325,7 +323,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
 
         HttpResponseMessage response = await _client.GetAsync(
-            $"/events?accountGuid={targetAccountGuid}"
+            $"/events?accountId={targetAccountId}"
         );
 
         response.EnsureSuccessStatusCode();
@@ -337,19 +335,19 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         paginatedResponse.ShouldNotBeNull();
         List<Event> events = paginatedResponse.GetEvents();
         events.ShouldNotBeNull();
-        events[0].AccountGuid.ShouldBe(targetAccountGuid);
+        events[0].AccountId.ShouldBe(targetAccountId);
     }
 
     [Fact]
     public async Task GetEvents_WithMultipleParameters_ReturnsOnlyEventsMatchingAllCriteria()
     {
-        Guid targetITwinGuid = Guid.NewGuid();
+        Guid targetITwinId = Guid.NewGuid();
         string targetType = "test.combined.filter";
 
         Event matchingEvent = new()
         {
-            ITwinGuid = targetITwinGuid,
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = targetITwinId,
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -361,8 +359,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         Event matchingITwinOnly = new()
         {
-            ITwinGuid = targetITwinGuid,
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = targetITwinId,
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -372,8 +370,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         Event matchingTypeOnly = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -386,7 +384,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         );
 
         HttpResponseMessage response = await _client.GetAsync(
-            $"/events?iTwinGuid={targetITwinGuid}&type={targetType}"
+            $"/events?iTwinId={targetITwinId}&type={targetType}"
         );
 
         response.EnsureSuccessStatusCode();
@@ -400,7 +398,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         events.ShouldNotBeNull();
         events[0]
             .ShouldSatisfyAllConditions(
-                e => e.ITwinGuid.ShouldBe(targetITwinGuid),
+                e => e.ITwinId.ShouldBe(targetITwinId),
                 e => e.Type.ShouldBe(targetType)
             );
     }
@@ -411,8 +409,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         DateTimeOffset now = CommonTestUtilities.GetTestDateTimeOffset();
         Event event1 = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -434,8 +432,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         Event event2 = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -457,7 +455,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         await _eventRepository.AddEventsAsync(new[] { event1, event2 });
 
-        HttpResponseMessage response = await _client.GetAsync("/events?iTwinGuid=not-a-valid-guid");
+        HttpResponseMessage response = await _client.GetAsync("/events?iTwinId=not-a-valid-guid");
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         string content = await response.Content.ReadAsStringAsync();
@@ -471,12 +469,12 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         string? detail = problemDetails.GetProperty("detail").GetString();
         detail.ShouldNotBeNull();
         detail.ShouldContain("'not-a-valid-guid'");
-        detail.ShouldContain("'iTwinGuid'");
+        detail.ShouldContain("'iTwinId'");
 
         problemDetails.GetProperty("status").GetInt32().ShouldBe(400);
 
         string? invalidParam = problemDetails.GetProperty("invalidParameter").GetString();
         invalidParam.ShouldNotBeNull();
-        invalidParam.ShouldBe("iTwinGuid");
+        invalidParam.ShouldBe("iTwinId");
     }
 }

@@ -20,15 +20,15 @@ public class EventQueryBuilder
         return this;
     }
 
-    public EventQueryBuilder WhereITwinGuid(Guid iTwinGuid)
+    public EventQueryBuilder WhereITwinId(Guid iTwinId)
     {
-        _predicates.Add(e => e.ITwinGuid == iTwinGuid);
+        _predicates.Add(e => e.ITwinId == iTwinId);
         return this;
     }
 
-    public EventQueryBuilder WhereAccountGuid(Guid accountGuid)
+    public EventQueryBuilder WhereAccountId(Guid accountId)
     {
-        _predicates.Add(e => e.AccountGuid == accountGuid);
+        _predicates.Add(e => e.AccountId == accountId);
         return this;
     }
 

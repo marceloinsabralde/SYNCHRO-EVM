@@ -10,12 +10,12 @@ namespace Kumara.EventSource.Models;
 public class Event
 {
     [Required]
-    [JsonPropertyName("iTwinGuid")]
-    public required Guid ITwinGuid { get; set; }
+    [JsonPropertyName("iTwinId")]
+    public required Guid ITwinId { get; set; }
 
     [Required]
-    [JsonPropertyName("accountGuid")]
-    public required Guid AccountGuid { get; set; }
+    [JsonPropertyName("accountId")]
+    public required Guid AccountId { get; set; }
 
     [Required]
     [JsonPropertyName("correlationId")]

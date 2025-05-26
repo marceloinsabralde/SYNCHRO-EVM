@@ -28,37 +28,35 @@ public abstract class EventRepositoryTestsBase
             new EventQueryBuilder()
         );
 
-        events.Select(e => e.ITwinGuid).ShouldBeSubsetOf(retrievedEvents.Select(e => e.ITwinGuid));
+        events.Select(e => e.ITwinId).ShouldBeSubsetOf(retrievedEvents.Select(e => e.ITwinId));
     }
 
     [Fact]
-    public async Task QueryEventsByITwinGuid_ShouldReturnMatchingEvents()
+    public async Task QueryEventsByITwinId_ShouldReturnMatchingEvents()
     {
         List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
         await EventRepository.AddEventsAsync(events);
-        Guid targetITwinGuid = events.First().ITwinGuid;
+        Guid targetITwinId = events.First().ITwinId;
 
-        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereITwinGuid(targetITwinGuid);
+        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereITwinId(targetITwinId);
         IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
-        retrievedEvents.All(e => e.ITwinGuid == targetITwinGuid).ShouldBeTrue();
+        retrievedEvents.All(e => e.ITwinId == targetITwinId).ShouldBeTrue();
     }
 
     [Fact]
-    public async Task QueryEventsByAccountGuid_ShouldReturnMatchingEvents()
+    public async Task QueryEventsByAccountId_ShouldReturnMatchingEvents()
     {
         List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
         await EventRepository.AddEventsAsync(events);
-        Guid targetAccountGuid = events.First().AccountGuid;
+        Guid targetAccountId = events.First().AccountId;
 
-        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereAccountGuid(
-            targetAccountGuid
-        );
+        EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereAccountId(targetAccountId);
         IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
-        retrievedEvents.All(e => e.AccountGuid == targetAccountGuid).ShouldBeTrue();
+        retrievedEvents.All(e => e.AccountId == targetAccountId).ShouldBeTrue();
     }
 
     [Fact]
@@ -97,18 +95,16 @@ public abstract class EventRepositoryTestsBase
         List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
         await EventRepository.AddEventsAsync(events);
         string targetType = events.First().Type;
-        Guid targetITwinGuid = events.First().ITwinGuid;
+        Guid targetITwinId = events.First().ITwinId;
 
         EventQueryBuilder queryBuilder = new EventQueryBuilder()
             .WhereType(targetType)
-            .WhereITwinGuid(targetITwinGuid);
+            .WhereITwinId(targetITwinId);
 
         IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(queryBuilder);
 
         retrievedEvents.ShouldNotBeEmpty();
-        retrievedEvents
-            .All(e => e.Type == targetType && e.ITwinGuid == targetITwinGuid)
-            .ShouldBeTrue();
+        retrievedEvents.All(e => e.Type == targetType && e.ITwinId == targetITwinId).ShouldBeTrue();
     }
 
     [Fact]
@@ -119,8 +115,8 @@ public abstract class EventRepositoryTestsBase
             new Event
             {
                 Id = GuidUtility.CreateGuid(),
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://testsource.com"),
@@ -129,8 +125,8 @@ public abstract class EventRepositoryTestsBase
             new Event
             {
                 Id = GuidUtility.CreateGuid(),
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://testsource.com"),
@@ -139,8 +135,8 @@ public abstract class EventRepositoryTestsBase
             new Event
             {
                 Id = GuidUtility.CreateGuid(),
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://testsource.com"),
@@ -176,8 +172,8 @@ public abstract class EventRepositoryTestsBase
         Event singleEvent = new()
         {
             Id = GuidUtility.CreateGuid(),
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://testsource.com"),
@@ -327,8 +323,8 @@ public abstract class EventRepositoryTestsBase
             testEvents.Add(
                 new Event
                 {
-                    ITwinGuid = Guid.NewGuid(),
-                    AccountGuid = Guid.NewGuid(),
+                    ITwinId = Guid.NewGuid(),
+                    AccountId = Guid.NewGuid(),
                     CorrelationId = Guid.NewGuid().ToString(),
                     SpecVersion = "1.0",
                     Source = new Uri("http://testsource.com"),

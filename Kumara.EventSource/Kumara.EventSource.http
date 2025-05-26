@@ -17,8 +17,8 @@ Content-Type: application/json
     "type": "control.account.created.v1",
     "source": "/events/control-account",
     "time": "2023-10-01T12:15:00Z",
-    "iTwinGuid": "12345678-1234-1234-1234-123456789abc",
-    "accountGuid": "ABCDEF12-3456-789A-BCDE-F123456789AB",
+    "iTwinId": "12345678-1234-1234-1234-123456789abc",
+    "accountId": "ABCDEF12-3456-789A-BCDE-F123456789AB",
     "correlationId": "12345678-1234-1234-1234-123456789abc",
     "data": {
       "id": "F00ACE35-5DB2-4207-B5C0-B515B953BD03",
@@ -36,8 +36,8 @@ Content-Type: application/json
     "type": "control.account.updated.v1",
     "source": "/events/control-account",
     "time": "2023-10-01T12:20:00Z",
-    "iTwinGuid": "12345678-1234-1234-1234-123456789abc",
-    "accountGuid": "ABCDEF12-3456-789A-BCDE-F123456789AB",
+    "iTwinId": "12345678-1234-1234-1234-123456789abc",
+    "accountId": "ABCDEF12-3456-789A-BCDE-F123456789AB",
     "correlationId": "98765432-10AB-CDEF-1234-567890ABCDEF",
     "data": {
       "id": "F00ACE35-5DB2-4207-B5C0-B515B953BD03",
@@ -55,8 +55,8 @@ Content-Type: application/json
     "type": "control.account.created.v1",
     "source": "/events/control-account",
     "time": "2023-10-01T12:25:00Z",
-    "iTwinGuid": "ABCDEF12-3456-789A-BCDE-F123456789AB",
-    "accountGuid": "12345678-1234-1234-1234-123456789abc",
+    "iTwinId": "ABCDEF12-3456-789A-BCDE-F123456789AB",
+    "accountId": "12345678-1234-1234-1234-123456789abc",
     "correlationId": "12345678-1234-1234-1234-123456789abc",
     "data": {
       "id": "1BBB957E-BCC4-452A-9C34-7245AC23F626",
@@ -80,7 +80,7 @@ GET {{Kumara_EventSource_HostAddress}}/events?top=1
 Accept: application/json
 
 ### Get filtered events
-GET {{Kumara_EventSource_HostAddress}}/events?top=5&iTwinGuid=12345678-1234-1234-1234-123456789abc&type=control.account.created.v1
+GET {{Kumara_EventSource_HostAddress}}/events?top=5&iTwinId=12345678-1234-1234-1234-123456789abc&type=control.account.created.v1
 Accept: application/json
 
 ### Get next page with continuation token

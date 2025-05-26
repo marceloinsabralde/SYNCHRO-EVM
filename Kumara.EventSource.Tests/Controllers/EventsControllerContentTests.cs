@@ -35,8 +35,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
                 Type = "control.account.created.v1",
                 Source = new Uri("/events/test"),
                 SpecVersion = "1.0",
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 DataJson = JsonSerializer.SerializeToDocument(
                     new ControlAccountCreatedV1
@@ -57,8 +57,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
                 Type = "control.account.created.v1",
                 Source = new Uri("/events/test"),
                 SpecVersion = "1.0",
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 DataJson = JsonSerializer.SerializeToDocument(
                     new ControlAccountCreatedV1
@@ -97,8 +97,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
                 Source = new Uri("/source/user"),
                 Id = Guid.NewGuid(),
                 SpecVersion = "1.0",
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
             },
             new()
@@ -107,8 +107,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
                 Source = new Uri("/source/file"),
                 Id = Guid.NewGuid(),
                 SpecVersion = "1.0",
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
             },
         }.AsQueryable();
@@ -148,8 +148,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
         DateTimeOffset now = CommonTestUtilities.GetTestDateTimeOffset();
         Event @event = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -183,8 +183,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
         DateTimeOffset now = CommonTestUtilities.GetTestDateTimeOffset();
         Event @event = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -234,8 +234,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
         {
             new Event
             {
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://example.com/TestSource1"),
@@ -256,8 +256,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
             },
             new Event
             {
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://example.com/TestSource2"),

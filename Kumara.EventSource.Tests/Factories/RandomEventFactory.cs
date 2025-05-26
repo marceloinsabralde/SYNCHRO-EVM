@@ -17,8 +17,8 @@ public class RandomEventFactory : IEventFactory<Event>
     {
         return new Event
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = TestSource,
@@ -43,8 +43,8 @@ public class RandomEventFactory : IEventFactory<Event>
     {
         return new Event
         {
-            ITwinGuid = Guid.Empty,
-            AccountGuid = Guid.Empty,
+            ITwinId = Guid.Empty,
+            AccountId = Guid.Empty,
             CorrelationId = string.Empty,
             SpecVersion = "0.0",
             Source = TestSource,

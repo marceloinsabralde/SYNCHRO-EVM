@@ -18,8 +18,8 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
         string expectedContentType = "application/json";
         Event expectedEvent = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -60,8 +60,8 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
 
         Event firstEvent = events[0];
         firstEvent.ShouldSatisfyAllConditions(
-            e => e.ITwinGuid.ShouldBe(expectedEvent.ITwinGuid),
-            e => e.AccountGuid.ShouldBe(expectedEvent.AccountGuid),
+            e => e.ITwinId.ShouldBe(expectedEvent.ITwinId),
+            e => e.AccountId.ShouldBe(expectedEvent.AccountId),
             e => e.CorrelationId.ShouldBe(expectedEvent.CorrelationId),
             e => e.Id.ShouldBe(expectedEvent.Id),
             e => e.SpecVersion.ShouldBe(expectedEvent.SpecVersion),
@@ -82,8 +82,8 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
         {
             new Event
             {
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://example.com/TestSource"),
