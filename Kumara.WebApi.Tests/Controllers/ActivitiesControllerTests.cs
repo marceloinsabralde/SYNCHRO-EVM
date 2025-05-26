@@ -116,7 +116,11 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
     public async Task Update_WithAllFields_Accepted()
     {
         var existingActivity = Factories.Activity(
-            actualStart: new DateOnly(year: 2025, month: 1, day: 1),
+            actualStart: new DateTimeOffset(
+                new DateOnly(year: 2025, month: 1, day: 1),
+                TimeOnly.MinValue,
+                TimeSpan.Zero
+            ),
             actualFinish: null
         );
         await _dbContext.Activities.AddAsync(
@@ -142,8 +146,20 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             TestContext.Current.CancellationToken
         );
         activity.ShouldNotBeNull();
-        activity.ActualStart.ShouldBe(new DateOnly(year: 2025, month: 3, day: 18));
-        activity.ActualFinish.ShouldBe(new DateOnly(year: 2025, month: 3, day: 19));
+        activity.ActualStart.ShouldBe(
+            new DateTimeOffset(
+                new DateOnly(year: 2025, month: 3, day: 18),
+                TimeOnly.MinValue,
+                new TimeSpan(hours: 10, minutes: 0, seconds: 0)
+            ).ToUniversalTime()
+        );
+        activity.ActualFinish.ShouldBe(
+            new DateTimeOffset(
+                new DateOnly(year: 2025, month: 3, day: 19),
+                TimeOnly.MinValue,
+                new TimeSpan(hours: 10, minutes: 0, seconds: 0)
+            ).ToUniversalTime()
+        );
 
         // TODO: Ensure an Event is emitted to update the specified Activity
     }
@@ -152,8 +168,16 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
     public async Task Update_WithPartialFields_Accepted()
     {
         var existingActivity = Factories.Activity(
-            actualStart: new DateOnly(year: 2025, month: 1, day: 1),
-            actualFinish: new DateOnly(year: 2025, month: 2, day: 1)
+            actualStart: new DateTimeOffset(
+                new DateOnly(year: 2025, month: 1, day: 1),
+                TimeOnly.MinValue,
+                TimeSpan.Zero
+            ),
+            actualFinish: new DateTimeOffset(
+                new DateOnly(year: 2025, month: 2, day: 1),
+                TimeOnly.MinValue,
+                TimeSpan.Zero
+            )
         );
         await _dbContext.Activities.AddAsync(
             existingActivity,
@@ -179,7 +203,13 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         );
         activity.ShouldNotBeNull();
         activity.ActualStart.ShouldBe(existingActivity.ActualStart);
-        activity.ActualFinish.ShouldBe(new DateOnly(year: 2025, month: 3, day: 19));
+        activity.ActualFinish.ShouldBe(
+            new DateTimeOffset(
+                new DateOnly(year: 2025, month: 3, day: 19),
+                TimeOnly.MinValue,
+                new TimeSpan(hours: 10, minutes: 0, seconds: 0)
+            ).ToUniversalTime()
+        );
 
         // TODO: Ensure an Event is emitted to update the specified Activity
     }
@@ -188,7 +218,11 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
     public async Task Update_WithBadData_BadRequest()
     {
         var existingActivity = Factories.Activity(
-            actualStart: new DateOnly(year: 2025, month: 1, day: 1)
+            actualStart: new DateTimeOffset(
+                new DateOnly(year: 2025, month: 1, day: 1),
+                TimeOnly.MinValue,
+                TimeSpan.Zero
+            )
         );
         await _dbContext.Activities.AddAsync(
             existingActivity,

@@ -14,10 +14,10 @@ public static partial class Factories
         ControlAccount? controlAccount = null,
         string? referenceCode = null,
         string? name = null,
-        DateOnly? actualStart = null,
-        DateOnly? actualFinish = null,
-        DateOnly? plannedStart = null,
-        DateOnly? plannedFinish = null
+        DateTimeOffset? actualStart = null,
+        DateTimeOffset? actualFinish = null,
+        DateTimeOffset? plannedStart = null,
+        DateTimeOffset? plannedFinish = null
     )
     {
         _activityCount++;

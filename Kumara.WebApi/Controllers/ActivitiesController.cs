@@ -47,10 +47,10 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
             return NotFound();
 
         if (activityUpdate.HasChanged(nameof(activityUpdate.ActualStart)))
-            activity.ActualStart = activityUpdate.ActualStart;
+            activity.ActualStart = activityUpdate.ActualStart?.ToUniversalTime();
 
         if (activityUpdate.HasChanged(nameof(activityUpdate.ActualFinish)))
-            activity.ActualFinish = activityUpdate.ActualFinish;
+            activity.ActualFinish = activityUpdate.ActualFinish?.ToUniversalTime();
 
         dbContext.SaveChanges();
 

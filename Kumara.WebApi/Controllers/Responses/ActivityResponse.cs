@@ -13,10 +13,10 @@ public class ActivityResponse
 
     public required string ReferenceCode { get; set; }
     public required string Name { get; set; }
-    public DateOnly? ActualStart { get; set; }
-    public DateOnly? ActualFinish { get; set; }
-    public DateOnly? PlannedStart { get; set; }
-    public DateOnly? PlannedFinish { get; set; }
+    public DateTimeOffset? ActualStart { get; set; }
+    public DateTimeOffset? ActualFinish { get; set; }
+    public DateTimeOffset? PlannedStart { get; set; }
+    public DateTimeOffset? PlannedFinish { get; set; }
 
     public static ActivityResponse FromActivity(Activity activity)
     {
