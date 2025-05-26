@@ -31,6 +31,8 @@ dotnet tool restore
 script/dcl up --wait # run services using docker
 ```
 
+Note: Rider users should install the Mise plugin per the instructions [here](https://github.com/134130/intellij-mise).
+
 ## Running Tests
 
 From the root directory of the solution run `dotnet test`, you should see an output similar to this:
