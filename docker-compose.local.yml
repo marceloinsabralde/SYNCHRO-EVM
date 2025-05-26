@@ -4,15 +4,23 @@ services:
     environment:
       POSTGRES_USER: "${POSTGRES_USER?}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD?}"
+    volumes:
+      - .docker/postgresql/health.sh:/health.sh:ro
     ports:
       - 127.0.0.1:5434:5432
     restart: unless-stopped
+    healthcheck:
+      test: /health.sh
 
   mongodb:
     image: mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: "${MONGO_INITDB_ROOT_USERNAME?}"
       MONGO_INITDB_ROOT_PASSWORD: "${MONGO_INITDB_ROOT_PASSWORD?}"
+    volumes:
+      - .docker/mongo/health.sh:/health.sh:ro
     ports:
       - 127.0.0.1:27017:27017
     restart: unless-stopped
+    healthcheck:
+      test: /health.sh
