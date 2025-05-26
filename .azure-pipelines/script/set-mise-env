@@ -1,0 +1,8 @@
+#!/bin/bash
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+set -euo pipefail
+
+curl --fail https://mise.run | MISE_INSTALL_HELP=0 bash
+export PATH="$HOME/.local/bin:$PATH"
+
+mise env --json | jq -r 'to_entries | map("##vso[task.setvariable variable=\(.key)]\(.value)") | join("\n")'

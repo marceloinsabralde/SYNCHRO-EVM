@@ -84,6 +84,12 @@ jobs:
           version: $(DotNetVersion)
 
       - task: CmdLine@2
+        displayName: Set environment
+        inputs:
+          script: |
+            .azure-pipelines/script/set-mise-env
+
+      - task: CmdLine@2
         displayName: Start PostgreSQL container
         inputs:
           script: |
