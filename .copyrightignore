@@ -52,4 +52,3 @@ wwwroot/lib/
 
 # Ignore schema dump files
 structure.sql
-**/.generated

@@ -11,17 +11,6 @@ public static class JsonSchemaGenerator
 {
     public static void GenerateJsonSchemas()
     {
-        string assemblyPath = Assembly.GetExecutingAssembly().Location;
-        string generatedFilePath = Path.Combine("Models", "Events", "Schemas", ".generated");
-
-        if (
-            File.Exists(generatedFilePath)
-            && File.GetLastWriteTime(assemblyPath) <= File.GetLastWriteTime(generatedFilePath)
-        )
-        {
-            return;
-        }
-
         IEnumerable<Type> eventTypes = Assembly
             .GetExecutingAssembly()
             .GetTypes()
@@ -49,7 +38,5 @@ public static class JsonSchemaGenerator
 
             File.WriteAllText(schemaPath, schema.ToJson(Formatting.Indented));
         }
-
-        File.WriteAllText(generatedFilePath, string.Empty);
     }
 }
