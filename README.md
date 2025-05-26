@@ -18,8 +18,9 @@ Kumara.Scenarios << for BDD scenarios
 ## Prerequisites
 ### General
 - [.NET Core SDK Version 9.0](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
-- [PostgreSQL](https://www.postgresql.org) note, the homebrew version is suitable.
-- [MongoDB](https://www.mongodb.com) (use the docker version).
+- A container runtime such as Podman or Docker, along with Docker Compose for container orchestration.
+  - Tip: `brew install podman podman-desktop docker docker-compose` will get you close.
+  - Tip: Check out [`podman-machine-run`](https://github.com/jasoncodes/dotfiles/blob/master/bin/podman-machine-run) (and accompanying [`launchd.plist`](https://github.com/jasoncodes/dotfiles/blob/master/LaunchAgents/podman-machine.plist)) to automate creation and starting of Podman Machine on macOS.
 - [mise](https://mise.jdx.dev) to manage environment variables.
 
 ### Tools
