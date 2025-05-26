@@ -78,13 +78,13 @@ jobs:
     cancelTimeoutInMinutes: 5
     steps:
       - task: UseDotNet@2
-        displayName: Use .NET sdk
+        displayName: Use .NET SDK
         inputs:
           packageType: sdk
           version: $(DotNetVersion)
 
       - task: CmdLine@2
-        displayName: Start postgresql container
+        displayName: Start PostgreSQL container
         inputs:
           script: |
             docker compose up postgresql -d --wait
@@ -110,7 +110,7 @@ jobs:
     displayName: Check Code Formatting
     steps:
       - task: UseDotNet@2
-        displayName: Use .NET sdk
+        displayName: Use .NET SDK
         inputs:
           packageType: sdk
           version: $(DotNetVersion)
