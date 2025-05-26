@@ -96,3 +96,9 @@ We're using [CSharpier](https://csharpier.com) to format the .cs files in this r
 dotnet csharpier . # format all files in the current directory
 dotnet csharpier --check . # check that all files in the current directory are formatted according to csharpier's rules
 ```
+
+## Databases
+
+Use `mongosh "${ConnectionStrings__KumaraEventSourceDB?}"` to connect to Event Source's MongoDB database.
+Use `psql kumara-web-api` to connect to Web API's PostgreSQL database.
+See `mise.toml` for a list of environment variables if you want to use other database tools.
