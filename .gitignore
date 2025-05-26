@@ -410,5 +410,3 @@ __blobstorage__
 __queuestorage__
 .vs
 /.vs
-
-/.envrc

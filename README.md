@@ -20,11 +20,12 @@ Kumara.Scenarios << for BDD scenarios
 - [.NET Core SDK Version 9.0](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 - [PostgreSQL](https://www.postgresql.org) note, the homebrew version is suitable.
 - [MongoDB](https://www.mongodb.com) (use the docker version).
-- [direnv](https://github.com/direnv/direnv) or similar to manage your project directory ENV vars
+- [mise](https://mise.jdx.dev) to manage environment variables.
 
 ### Tools
 
 ```shell
+mise trust
 dotnet tool restore
 script/dcl up -d # run services using docker
 ```
