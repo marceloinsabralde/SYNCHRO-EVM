@@ -21,7 +21,9 @@ public class MongoDbEventRepositoryTests : EventRepositoryTestsBase, IDisposable
 
     static MongoDbEventRepositoryTests()
     {
-        SMongoDbContainer = new MongoDbBuilder().WithCleanUp(true).Build();
+        SMongoDbContainer = new MongoDbBuilder()
+            .WithCleanUp(true)
+            .Build();
 
         SMongoDbContainer.StartAsync().GetAwaiter().GetResult();
 
