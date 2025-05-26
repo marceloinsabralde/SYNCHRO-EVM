@@ -96,24 +96,3 @@ We're using [CSharpier](https://csharpier.com) to format the .cs files in this r
 dotnet csharpier . # format all files in the current directory
 dotnet csharpier --check . # check that all files in the current directory are formatted according to csharpier's rules
 ```
-
-## Environment Variables
-
-The application uses the following environment variables:
-
-### Connection String Configuration
-
-The application is configured to retrieve connection strings exclusively from environment variables.
-This is to ensure that sensitive information, such as database connection strings, are never hard-coded in the source code.
-
-Ensure that the following environment variables are set:
-
-- `ConnectionStrings__KumaraEventSourceDB`: The MongoDB URL connection string for the EventSource database.
-     Example: `mongodb://user:password@host:port/database_name?authSource=admin`
-       or
-     using 1Password CLI
-   ```shell
-    eval $(op signin)
-    op read 'op://E7 Developers/ConnectionStrings__KumaraEventSource/url'
-    ```
-`

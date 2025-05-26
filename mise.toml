@@ -6,3 +6,8 @@ PGPASSWORD="{{exec(command='script/make-secret pgpassword', cache_key='pgpasswor
 
 ConnectionStrings__KumaraWebApiDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database=kumara-web-api;Username={{env.PGUSER}};Password={{env.PGPASSWORD}}"
 TEST_ConnectionStrings__KumaraWebApiDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database=kumara-web-api-test;Username={{env.PGUSER}};Password={{env.PGPASSWORD}}"
+
+MONGO_INITDB_ROOT_USERNAME="kumara-admin"
+MONGO_INITDB_ROOT_PASSWORD="{{exec(command='script/make-secret MONGO_ROOT_PASSWORD', cache_key='MONGO_ROOT_PASSWORD', cache_duration='1h')}}"
+
+ConnectionStrings__KumaraEventSourceDB="mongodb://{{env.MONGO_INITDB_ROOT_USERNAME}}:{{env.MONGO_INITDB_ROOT_PASSWORD}}@localhost:27017/kumara-event-source?authSource=admin"
