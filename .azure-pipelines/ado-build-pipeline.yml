@@ -148,6 +148,12 @@ jobs:
     dependsOn: Build
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     steps:
+      - task: UseDotNet@2
+        displayName: Use .NET SDK
+        inputs:
+          packageType: sdk
+          version: $(DotNetVersion)
+
       - task: DownloadBuildArtifacts@0
         displayName: Download built artifacts
         inputs:
