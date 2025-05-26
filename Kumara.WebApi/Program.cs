@@ -17,7 +17,7 @@ builder.Configuration.AddEnvironmentVariables(
 // Add services to the container.
 builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
     opt.UseNpgsql(
-            builder.Configuration.GetConnectionString("PerformNextGen"),
+            builder.Configuration.GetConnectionString("KumaraWebApiDB"),
             o => o.SetPostgresVersion(16, 4).UseNodaTime()
         )
         .UseSnakeCaseNamingConvention()

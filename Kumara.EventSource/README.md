@@ -103,7 +103,7 @@ The EventSource module follows Clean Architecture principles and is organized as
 Configure MongoDB connection via a connection string environment variable
 
 ```
-export ConnectionStrings__KumaraEventSource="mongodb://user:password@host:port/database?authSource=admin"
+export ConnectionStrings__KumaraEventSourceDB="mongodb://user:password@host:port/database?authSource=admin"
 ```
 
 ### Running the Service

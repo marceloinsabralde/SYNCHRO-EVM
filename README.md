@@ -107,7 +107,7 @@ This is to ensure that sensitive information, such as database connection string
 
 Ensure that the following environment variables are set:
 
-- `ConnectionStrings__KumaraEventSource`: The MongoDB URL connection string for the EventSource database.
+- `ConnectionStrings__KumaraEventSourceDB`: The MongoDB URL connection string for the EventSource database.
      Example: `mongodb://user:password@host:port/database_name?authSource=admin`
        or
      using 1Password CLI

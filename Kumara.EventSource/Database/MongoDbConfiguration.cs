@@ -12,11 +12,11 @@ public static class MongoDbConfiguration
         IConfiguration configuration
     )
     {
-        string? mongoConnectionString = configuration.GetConnectionString("KumaraEventSource");
+        string? mongoConnectionString = configuration.GetConnectionString("KumaraEventSourceDB");
 
         ArgumentException.ThrowIfNullOrEmpty(
             mongoConnectionString,
-            "ConnectionStrings__KumaraEventSource"
+            "ConnectionStrings__KumaraEventSourceDB"
         );
 
         MongoUrl mongoUrl = MongoUrl.Create(mongoConnectionString);
