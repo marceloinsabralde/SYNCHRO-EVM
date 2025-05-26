@@ -22,6 +22,7 @@ public class MongoDbEventRepositoryTests : EventRepositoryTestsBase, IDisposable
     static MongoDbEventRepositoryTests()
     {
         SMongoDbContainer = new MongoDbBuilder()
+            .WithImage(Environment.GetEnvironmentVariable("MONGO_IMAGE"))
             .WithCleanUp(true)
             .Build();
 
