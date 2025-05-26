@@ -1,0 +1,21 @@
+[env]
+PGHOST="127.0.0.1"
+PGPORT="5434"
+PGUSER="kumara-admin"
+PGPASSWORD="{{exec(command='script/make-secret pgpassword', cache_key='pgpassword', cache_duration='1h')}}"
+
+KUMARA_WEB_API_DB_USERNAME="kumara-web-api"
+KUMARA_WEB_API_DB_PASSWORD="{{exec(command='script/make-secret KUMARA_WEB_API_DB_PASSWORD', cache_key='KUMARA_WEB_API_DB_PASSWORD', cache_duration='1h')}}"
+ConnectionStrings__KumaraWebApiDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.KUMARA_WEB_API_DB_USERNAME}};Username={{env.KUMARA_WEB_API_DB_USERNAME}};Password={{env.KUMARA_WEB_API_DB_PASSWORD}}"
+
+TEST_KUMARA_WEB_API_DB_USERNAME="kumara-web-api-test"
+TEST_KUMARA_WEB_API_DB_PASSWORD="{{exec(command='script/make-secret TEST_KUMARA_WEB_API_DB_PASSWORD', cache_key='TEST_KUMARA_WEB_API_DB_PASSWORD', cache_duration='1h')}}"
+TEST_ConnectionStrings__KumaraWebApiDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.TEST_KUMARA_WEB_API_DB_USERNAME}};Username={{env.TEST_KUMARA_WEB_API_DB_USERNAME}};Password={{env.TEST_KUMARA_WEB_API_DB_PASSWORD}}"
+
+MONGO_IMAGE="mongo:8"
+MONGO_INITDB_ROOT_USERNAME="kumara-admin"
+MONGO_INITDB_ROOT_PASSWORD="{{exec(command='script/make-secret MONGO_ROOT_PASSWORD', cache_key='MONGO_ROOT_PASSWORD', cache_duration='1h')}}"
+
+KUMARA_EVENTS_DB_USERNAME="kumara-events"
+KUMARA_EVENTS_DB_PASSWORD="{{exec(command='script/make-secret KUMARA_EVENTS_DB_PASSWORD', cache_key='KUMARA_EVENTS_DB_PASSWORD', cache_duration='1h')}}"
+ConnectionStrings__KumaraEventSourceDB="mongodb://{{env.KUMARA_EVENTS_DB_USERNAME}}:{{env.KUMARA_EVENTS_DB_PASSWORD}}@localhost:27017/{{env.KUMARA_EVENTS_DB_USERNAME}}?authSource=admin"

@@ -10,10 +10,14 @@ using OpenTelemetry.Trace;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables(
+    prefix: $"{builder.Environment.EnvironmentName.ToUpper()}_"
+);
+
 // Add services to the container.
 builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
     opt.UseNpgsql(
-            builder.Configuration.GetConnectionString("PerformNextGen"),
+            builder.Configuration.GetConnectionString("KumaraWebApiDB"),
             o => o.SetPostgresVersion(16, 4).UseNodaTime()
         )
         .UseSnakeCaseNamingConvention()

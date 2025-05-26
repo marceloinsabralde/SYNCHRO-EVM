@@ -1,6 +1,0 @@
-[env]
-PGHOST="127.0.0.1"
-PGUSER="PerformNextGen"
-PGPASSWORD="PerformNextGen"
-PGDATABASE="PerformNextGen"
-PGPORT="5434"

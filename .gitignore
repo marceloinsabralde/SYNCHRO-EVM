@@ -410,6 +410,3 @@ __blobstorage__
 __queuestorage__
 .vs
 /.vs
-/PerformApi.WebApi/appsettings.Development.json
-
-/.envrc

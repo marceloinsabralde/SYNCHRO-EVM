@@ -18,16 +18,20 @@ Kumara.Scenarios << for BDD scenarios
 ## Prerequisites
 ### General
 - [.NET Core SDK Version 9.0](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
-- [PostgreSQL](https://www.postgresql.org) note, the homebrew version is suitable.
-- [MongoDB](https://www.mongodb.com) (use the docker version).
-- [direnv](https://github.com/direnv/direnv) or similar to manage your project directory ENV vars
+- A container runtime such as Podman or Docker, along with Docker Compose for container orchestration.
+  - Tip: `brew install podman podman-desktop docker docker-compose` will get you close.
+  - Tip: Check out [`podman-machine-run`](https://github.com/jasoncodes/dotfiles/blob/master/bin/podman-machine-run) (and accompanying [`launchd.plist`](https://github.com/jasoncodes/dotfiles/blob/master/LaunchAgents/podman-machine.plist)) to automate creation and starting of Podman Machine on macOS.
+- [mise](https://mise.jdx.dev) to manage environment variables.
 
 ### Tools
 
 ```shell
+mise trust
 dotnet tool restore
-script/dcl up -d # run services using docker
+script/dcl up --wait # run services using docker
 ```
+
+Note: Rider users should install the Mise plugin per the instructions [here](https://github.com/134130/intellij-mise).
 
 ## Running Tests
 
@@ -95,23 +99,8 @@ dotnet csharpier . # format all files in the current directory
 dotnet csharpier --check . # check that all files in the current directory are formatted according to csharpier's rules
 ```
 
-## Environment Variables
+## Databases
 
-The application uses the following environment variables:
-
-### Connection String Configuration
-
-The application is configured to retrieve connection strings exclusively from environment variables.
-This is to ensure that sensitive information, such as database connection strings, are never hard-coded in the source code.
-
-Ensure that the following environment variables are set:
-
-- `ConnectionStrings__KumaraEventSource`: The MongoDB URL connection string for the EventSource database.
-     Example: `mongodb://user:password@host:port/database_name?authSource=admin`
-       or
-     using 1Password CLI
-   ```shell
-    eval $(op signin)
-    op read 'op://E7 Developers/ConnectionStrings__KumaraEventSource/url'
-    ```
-`
+Use `mongosh "${ConnectionStrings__KumaraEventSourceDB?}"` to connect to Event Source's MongoDB database.
+Use `psql kumara-web-api` to connect to Web API's PostgreSQL database.
+See `mise.toml` for a list of environment variables if you want to use other database tools.

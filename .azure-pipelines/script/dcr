@@ -1,8 +1,0 @@
-#!/bin/bash
-# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-set -euo pipefail
-
-SYSTEM_DEFINITIONNAME_SLUG="$(echo "$SYSTEM_DEFINITIONNAME" | tr A-Z a-z | tr ' ' '-')"
-export COMPOSE_PROJECT_NAME="$SYSTEM_DEFINITIONNAME_SLUG-$BUILD_BUILDID"
-
-docker compose run --rm app "$@"

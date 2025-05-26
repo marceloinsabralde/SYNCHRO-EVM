@@ -17,8 +17,7 @@ packages/
 *.json
 *.yml
 *.yaml
-*.env*
-.mise.toml
+mise.toml
 
 # Ignore test data
 TestData/
@@ -53,4 +52,3 @@ wwwroot/lib/
 
 # Ignore schema dump files
 structure.sql
-**/.generated

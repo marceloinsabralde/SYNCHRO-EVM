@@ -78,24 +78,28 @@ jobs:
     cancelTimeoutInMinutes: 5
     steps:
       - task: UseDotNet@2
-        displayName: Use .NET sdk
+        displayName: Use .NET SDK
         inputs:
           packageType: sdk
           version: $(DotNetVersion)
 
       - task: CmdLine@2
-        displayName: Start postgresql container
+        displayName: Set environment
         inputs:
           script: |
-            docker compose up postgresql -d --wait
+            .azure-pipelines/script/set-mise-env
+
+      - task: CmdLine@2
+        displayName: Start PostgreSQL container
+        inputs:
+          script: |
+            script/dcl up --detach --wait postgresql
 
       - task: DotNetCoreCLI@2
         displayName: Run tests
         inputs:
           command: test
           arguments: '--collect "Code Coverage"'
-        env:
-          ConnectionStrings__KumaraEventSource: $(ConnectionStrings__KumaraEventSource)
 
   - job: Check_Copyright
     displayName: Check Copyright Notice
@@ -110,7 +114,7 @@ jobs:
     displayName: Check Code Formatting
     steps:
       - task: UseDotNet@2
-        displayName: Use .NET sdk
+        displayName: Use .NET SDK
         inputs:
           packageType: sdk
           version: $(DotNetVersion)
@@ -148,6 +152,12 @@ jobs:
     dependsOn: Build
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     steps:
+      - task: UseDotNet@2
+        displayName: Use .NET SDK
+        inputs:
+          packageType: sdk
+          version: $(DotNetVersion)
+
       - task: DownloadBuildArtifacts@0
         displayName: Download built artifacts
         inputs:

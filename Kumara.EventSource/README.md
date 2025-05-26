@@ -98,14 +98,6 @@ The EventSource module follows Clean Architecture principles and is organized as
 - .NET SDK 9.0 or higher
 - MongoDB instance
 
-### Configuration
-
-Configure MongoDB connection via a connection string environment variable
-
-```
-export ConnectionStrings__KumaraEventSource="mongodb://user:password@host:port/database?authSource=admin"
-```
-
 ### Running the Service
 
 (If the environment variable is set)
