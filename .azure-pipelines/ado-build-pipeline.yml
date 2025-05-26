@@ -93,7 +93,7 @@ jobs:
         displayName: Start PostgreSQL container
         inputs:
           script: |
-            docker compose up postgresql -d --wait
+            script/dcl up --detach --wait postgresql
 
       - task: DotNetCoreCLI@2
         displayName: Run tests
