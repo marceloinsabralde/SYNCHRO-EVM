@@ -28,7 +28,7 @@ Kumara.Scenarios << for BDD scenarios
 ```shell
 mise trust
 dotnet tool restore
-script/dcl up -d # run services using docker
+script/dcl up --wait # run services using docker
 ```
 
 ## Running Tests
