@@ -120,7 +120,7 @@ public class EventsControllerActivityEventsTests : EventsControllerTestBase
 
         string getResponseString = await getResponse.Content.ReadAsStringAsync();
         getResponseString.ShouldNotBeNull();
-        getResponseString.ShouldContain("\"reference_code\":\"" + referenceCode + "\"");
+        getResponseString.ShouldContain("\"referenceCode\":\"" + referenceCode + "\"");
         getResponseString.ShouldContain(activityId.ToString());
     }
 
@@ -162,6 +162,6 @@ public class EventsControllerActivityEventsTests : EventsControllerTestBase
         HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         string responseString = await response.Content.ReadAsStringAsync();
-        responseString.ShouldContain("reference_code");
+        responseString.ShouldContain("referenceCode");
     }
 }

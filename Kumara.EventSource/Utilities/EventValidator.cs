@@ -42,6 +42,7 @@ public class EventValidator : IEventValidator
                 JsonSerializerOptions options = new()
                 {
                     PropertyNameCaseInsensitive = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     ReferenceHandler = ReferenceHandler.Preserve,
                 };
 

@@ -9,7 +9,15 @@ public class JsonDocumentConverter : ValueConverter<JsonDocument, string>
 {
     public JsonDocumentConverter()
         : base(
-            v => JsonSerializer.Serialize(v, new JsonSerializerOptions { WriteIndented = false }),
+            v =>
+                JsonSerializer.Serialize(
+                    v,
+                    new JsonSerializerOptions
+                    {
+                        WriteIndented = false,
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    }
+                ),
             v => JsonDocument.Parse(string.IsNullOrEmpty(v) ? "{}" : v, new JsonDocumentOptions())
         ) { }
 }

@@ -3,7 +3,10 @@
 using System.Reflection;
 using CaseConverter;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NJsonSchema;
+using NJsonSchema.Generation;
+using NJsonSchema.NewtonsoftJson.Generation;
 
 namespace Kumara.EventSource.Utilities;
 
@@ -11,6 +14,15 @@ public static class JsonSchemaGenerator
 {
     public static void GenerateJsonSchemas()
     {
+        // Configure schema generation with camelCase naming
+        NewtonsoftJsonSchemaGeneratorSettings settings = new()
+        {
+            SerializerSettings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            },
+        };
+
         IEnumerable<Type> eventTypes = Assembly
             .GetExecutingAssembly()
             .GetTypes()
@@ -21,8 +33,13 @@ public static class JsonSchemaGenerator
             string eventTypeNameInKebabCase = type.Name.ToKebabCase();
             string eventTypeNameInDottedCase = eventTypeNameInKebabCase.Replace("-", ".");
             string eventTypeNameInTitleCase = type.Name.InsertCharacterBeforeUpperCase();
-            JsonSchema schema = JsonSchema.FromType(type);
+
+            // Generate the schema with camelCase settings
+            JsonSchema schema = JsonSchema.FromType(type, settings);
+
+            // Create absolute path for schema files
             string schemaPath = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
                 "Models",
                 "Events",
                 "Schemas",
@@ -36,7 +53,21 @@ public static class JsonSchemaGenerator
             schema.Id =
                 $"https://schemas.bentley.com/construction/events/{eventTypeNameInDottedCase}.schema.json";
 
-            File.WriteAllText(schemaPath, schema.ToJson(Formatting.Indented));
+            // Write the schema to file with custom JsonSerializerSettings
+            JsonSerializerSettings serializerSettings = new()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Formatting = Formatting.Indented,
+            };
+
+            // Create directory if it doesn't exist
+            string? directory = Path.GetDirectoryName(schemaPath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            File.WriteAllText(schemaPath, JsonConvert.SerializeObject(schema, serializerSettings));
         }
     }
 }
