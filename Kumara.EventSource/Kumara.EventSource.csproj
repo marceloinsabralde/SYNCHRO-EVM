@@ -10,10 +10,10 @@
 
     <ItemGroup>
         <PackageReference Include="CaseConverter" Version="2.0.1"/>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2"/>
-        <PackageReference Include="MongoDB.Driver" Version="3.3.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.5" />
+        <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
         <PackageReference Include="MongoDB.EntityFrameworkCore" Version="9.0.0"/>
-        <PackageReference Include="NJsonSchema" Version="11.2.0"/>
+        <PackageReference Include="NJsonSchema" Version="11.3.2" />
     </ItemGroup>
 
     <ItemGroup>
