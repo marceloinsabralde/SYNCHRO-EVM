@@ -15,6 +15,10 @@ public class ActivityUpdatedV1
     [JsonPropertyName("name")]
     public required string Name { get; set; }
 
+    [Required(AllowEmptyStrings = false)]
+    [JsonPropertyName("reference_code")]
+    public required string ReferenceCode { get; set; }
+
     [JsonPropertyName("control_account_id")]
     public Guid ControlAccountId { get; set; }
 
