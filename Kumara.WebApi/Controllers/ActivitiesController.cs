@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using System.ComponentModel.DataAnnotations;
 using Kumara.Database;
+using Kumara.Types;
 using Kumara.WebApi.Controllers.Requests;
 using Kumara.WebApi.Controllers.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -47,10 +48,28 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
             return NotFound();
 
         if (activityUpdate.HasChanged(nameof(activityUpdate.ActualStart)))
-            activity.ActualStart = activityUpdate.ActualStart?.ToUniversalTime();
+            if (activityUpdate.ActualStart is not null)
+            {
+                activity.ActualStart = activityUpdate.ActualStart?.DateTime.ToUniversalTime();
+                activity.ActualStartHasTime = activityUpdate.ActualStart?.HasTime;
+            }
+            else
+            {
+                activity.ActualStart = null;
+                activity.ActualStartHasTime = null;
+            }
 
         if (activityUpdate.HasChanged(nameof(activityUpdate.ActualFinish)))
-            activity.ActualFinish = activityUpdate.ActualFinish?.ToUniversalTime();
+            if (activityUpdate.ActualFinish is not null)
+            {
+                activity.ActualFinish = activityUpdate.ActualFinish?.DateTime.ToUniversalTime();
+                activity.ActualFinishHasTime = activityUpdate.ActualFinish?.HasTime;
+            }
+            else
+            {
+                activity.ActualFinish = null;
+                activity.ActualFinishHasTime = null;
+            }
 
         dbContext.SaveChanges();
 

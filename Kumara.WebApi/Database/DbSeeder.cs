@@ -76,11 +76,13 @@ public static class DbSeeder
                         time: new TimeOnly(hour: 8, minute: 30),
                         offset: TimeSpan.Zero
                     ),
+                    ActualStartHasTime = true,
                     ActualFinish = new DateTimeOffset(
                         date: new DateOnly(2025, 1, 1),
                         time: new TimeOnly(hour: 14, minute: 23),
                         offset: TimeSpan.Zero
                     ),
+                    ActualFinishHasTime = true,
                 },
                 new Activity
                 {

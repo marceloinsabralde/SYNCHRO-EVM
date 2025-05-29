@@ -17,7 +17,9 @@ public class Activity
     public required string ReferenceCode { get; set; }
     public required string Name { get; set; }
     public DateTimeOffset? ActualStart { get; set; }
+    public bool? ActualStartHasTime { get; set; }
     public DateTimeOffset? ActualFinish { get; set; }
+    public bool? ActualFinishHasTime { get; set; }
     public DateTimeOffset? PlannedStart { get; set; }
     public DateTimeOffset? PlannedFinish { get; set; }
 }

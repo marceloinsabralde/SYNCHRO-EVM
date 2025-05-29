@@ -131,7 +131,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
 
         var response = await _client.PatchAsJsonAsync(
             $"/api/v1/activities/{existingActivity.Id}",
-            new { actualStart = "2025-03-18", actualFinish = "2025-03-19" },
+            new { actualStart = "2025-03-18T10:47:05.288+10:00", actualFinish = "2025-03-19" },
             TestContext.Current.CancellationToken
         );
         response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
@@ -149,16 +149,16 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         activity.ActualStart.ShouldBe(
             new DateTimeOffset(
                 new DateOnly(year: 2025, month: 3, day: 18),
-                TimeOnly.MinValue,
-                new TimeSpan(hours: 10, minutes: 0, seconds: 0)
-            ).ToUniversalTime()
+                new TimeOnly(00, 47, 05, 288),
+                TimeSpan.Zero
+            )
         );
         activity.ActualFinish.ShouldBe(
             new DateTimeOffset(
                 new DateOnly(year: 2025, month: 3, day: 19),
                 TimeOnly.MinValue,
-                new TimeSpan(hours: 10, minutes: 0, seconds: 0)
-            ).ToUniversalTime()
+                TimeSpan.Zero
+            )
         );
 
         // TODO: Ensure an Event is emitted to update the specified Activity
@@ -207,8 +207,8 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             new DateTimeOffset(
                 new DateOnly(year: 2025, month: 3, day: 19),
                 TimeOnly.MinValue,
-                new TimeSpan(hours: 10, minutes: 0, seconds: 0)
-            ).ToUniversalTime()
+                TimeSpan.Zero
+            )
         );
 
         // TODO: Ensure an Event is emitted to update the specified Activity
