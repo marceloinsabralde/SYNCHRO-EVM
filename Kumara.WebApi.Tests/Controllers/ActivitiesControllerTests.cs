@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using System.Net;
 using System.Net.Http.Json;
+using Kumara.Types;
 using Kumara.WebApi.Controllers.Responses;
 
 namespace Kumara.WebApi.Tests.Controllers;
@@ -147,18 +148,26 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         );
         activity.ShouldNotBeNull();
         activity.ActualStart.ShouldBe(
-            new DateTimeOffset(
-                new DateOnly(year: 2025, month: 3, day: 18),
-                new TimeOnly(00, 47, 05, 288),
-                TimeSpan.Zero
-            )
+            new DateWithOptionalTime
+            {
+                DateTime = new DateTimeOffset(
+                    new DateOnly(year: 2025, month: 3, day: 18),
+                    new TimeOnly(00, 47, 05, 288),
+                    TimeSpan.Zero
+                ),
+                HasTime = true,
+            }
         );
         activity.ActualFinish.ShouldBe(
-            new DateTimeOffset(
-                new DateOnly(year: 2025, month: 3, day: 19),
-                TimeOnly.MinValue,
-                TimeSpan.Zero
-            )
+            new DateWithOptionalTime
+            {
+                DateTime = new DateTimeOffset(
+                    new DateOnly(year: 2025, month: 3, day: 19),
+                    TimeOnly.MinValue,
+                    TimeSpan.Zero
+                ),
+                HasTime = false,
+            }
         );
 
         // TODO: Ensure an Event is emitted to update the specified Activity
@@ -202,13 +211,23 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             TestContext.Current.CancellationToken
         );
         activity.ShouldNotBeNull();
-        activity.ActualStart.ShouldBe(existingActivity.ActualStart);
+        activity.ActualStart.ShouldBe(
+            new DateWithOptionalTime
+            {
+                DateTime = existingActivity.ActualStart.GetValueOrDefault(),
+                HasTime = existingActivity.ActualStartHasTime.GetValueOrDefault(),
+            }
+        );
         activity.ActualFinish.ShouldBe(
-            new DateTimeOffset(
-                new DateOnly(year: 2025, month: 3, day: 19),
-                TimeOnly.MinValue,
-                TimeSpan.Zero
-            )
+            new DateWithOptionalTime
+            {
+                DateTime = new DateTimeOffset(
+                    new DateOnly(year: 2025, month: 3, day: 19),
+                    TimeOnly.MinValue,
+                    TimeSpan.Zero
+                ),
+                HasTime = false,
+            }
         );
 
         // TODO: Ensure an Event is emitted to update the specified Activity
