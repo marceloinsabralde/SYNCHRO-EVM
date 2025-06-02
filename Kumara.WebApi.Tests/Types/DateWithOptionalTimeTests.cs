@@ -6,22 +6,11 @@ namespace Kumara.WebApi.Tests.Types;
 
 public class DateWithOptionalTimeTests
 {
-    private readonly JsonSerializerOptions _serializerOptions;
-
-    public DateWithOptionalTimeTests()
-    {
-        _serializerOptions = new JsonSerializerOptions();
-        _serializerOptions.Converters.Add(new DateWithOptionalTimeConverter());
-    }
-
     [Theory]
     [MemberData(nameof(TestData))]
     public void DeserializeTest(string input, DateWithOptionalTime expected)
     {
-        DateWithOptionalTime actual = JsonSerializer.Deserialize<DateWithOptionalTime>(
-            input,
-            _serializerOptions
-        );
+        DateWithOptionalTime actual = JsonSerializer.Deserialize<DateWithOptionalTime>(input);
         actual.HasTime.ShouldBe(expected.HasTime);
         actual.DateTime.ShouldBe(expected.DateTime);
     }
@@ -30,7 +19,7 @@ public class DateWithOptionalTimeTests
     [MemberData(nameof(TestData))]
     public void SerializeTest(string expected, DateWithOptionalTime input)
     {
-        string actual = JsonSerializer.Serialize(input, _serializerOptions);
+        string actual = JsonSerializer.Serialize(input);
         actual.ShouldBe(expected);
     }
 
@@ -40,9 +29,7 @@ public class DateWithOptionalTimeTests
     [InlineData("2025-05-05 11:55 am +10:00")]
     public void InvalidDeserializationInputTest(string input)
     {
-        Should.Throw<JsonException>(
-            () => JsonSerializer.Deserialize<DateWithOptionalTime>(input, _serializerOptions)
-        );
+        Should.Throw<JsonException>(() => JsonSerializer.Deserialize<DateWithOptionalTime>(input));
     }
 
     public static TheoryData<string, DateWithOptionalTime> TestData =>
