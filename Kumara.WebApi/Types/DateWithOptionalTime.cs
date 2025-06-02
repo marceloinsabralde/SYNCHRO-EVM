@@ -9,6 +9,11 @@ public readonly struct DateWithOptionalTime
 {
     public required DateTimeOffset DateTime { get; init; }
     public required bool HasTime { get; init; }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(this))!;
+    }
 }
 
 public class DateWithOptionalTimeConverter : JsonConverter<DateWithOptionalTime>

@@ -24,6 +24,15 @@ public class DateWithOptionalTimeTests
     }
 
     [Theory]
+    [MemberData(nameof(TestData))]
+    public void ToStringTest(string expectedJson, DateWithOptionalTime input)
+    {
+        string expected = JsonSerializer.Deserialize<string>(expectedJson)!;
+        string actual = input.ToString();
+        actual.ShouldBe(expected);
+    }
+
+    [Theory]
     [InlineData("2025/05/05")]
     [InlineData("foo")]
     [InlineData("2025-05-05 11:55 am +10:00")]
