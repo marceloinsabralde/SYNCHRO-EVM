@@ -44,7 +44,11 @@ public class EventsController : ControllerBase
             );
         }
 
-        List<Event> events = JsonSerializer.Deserialize<List<Event>>(payload.GetRawText()) ?? [];
+        List<Event> events =
+            JsonSerializer.Deserialize<List<Event>>(
+                payload.GetRawText(),
+                KumaraJsonOptions.DefaultOptions
+            ) ?? [];
 
         foreach (Event @event in events)
         {
