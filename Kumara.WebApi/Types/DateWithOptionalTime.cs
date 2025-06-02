@@ -7,8 +7,8 @@ namespace Kumara.Types;
 [JsonConverter(typeof(DateWithOptionalTimeConverter))]
 public readonly struct DateWithOptionalTime
 {
-    public DateTimeOffset DateTime { get; init; }
-    public bool HasTime { get; init; }
+    public required DateTimeOffset DateTime { get; init; }
+    public required bool HasTime { get; init; }
 }
 
 public class DateWithOptionalTimeConverter : JsonConverter<DateWithOptionalTime>
