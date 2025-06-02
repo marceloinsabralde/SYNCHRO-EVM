@@ -8,10 +8,8 @@ namespace Kumara.EventSource.Models.Events;
 public class ControlAccountDeletedV1
 {
     [Required]
-    [JsonPropertyName("id")]
     public required Guid Id { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    [JsonPropertyName("event_type_version")]
     public string EventTypeVersion => "1.0";
 }

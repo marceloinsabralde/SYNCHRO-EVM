@@ -22,8 +22,8 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
             events.Add(
                 new Event
                 {
-                    ITwinGuid = Guid.NewGuid(),
-                    AccountGuid = Guid.NewGuid(),
+                    ITwinId = Guid.NewGuid(),
+                    AccountId = Guid.NewGuid(),
                     CorrelationId = Guid.NewGuid().ToString(),
                     SpecVersion = "1.0",
                     Source = new Uri($"http://example.com/TestSource{i}"),
@@ -38,15 +38,14 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
 
         await _eventRepository.AddEventsAsync(events);
 
-        HttpResponseMessage response = await _client.GetAsync("/events");
+        HttpResponseMessage response = await _client.GetAsync(ApiBasePath);
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
 
         // Deserialize as PaginatedEvents
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
         // Verify pagination structure
         paginatedResponse.ShouldNotBeNull();
@@ -69,8 +68,8 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
             events.Add(
                 new Event
                 {
-                    ITwinGuid = Guid.NewGuid(),
-                    AccountGuid = Guid.NewGuid(),
+                    ITwinId = Guid.NewGuid(),
+                    AccountId = Guid.NewGuid(),
                     CorrelationId = Guid.NewGuid().ToString(),
                     SpecVersion = "1.0",
                     Source = new Uri($"http://example.com/TestSource{i}"),
@@ -87,15 +86,15 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
 
         // Set custom page size
         int customPageSize = 15;
-
-        HttpResponseMessage response = await _client.GetAsync($"/events?top={customPageSize}");
+        HttpResponseMessage response = await _client.GetAsync(
+            GetEventsEndpoint($"top={customPageSize}")
+        );
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
 
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
         paginatedResponse.ShouldNotBeNull();
         paginatedResponse.Items.ShouldNotBeNull();
@@ -116,8 +115,8 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
             events.Add(
                 new Event
                 {
-                    ITwinGuid = Guid.NewGuid(),
-                    AccountGuid = Guid.NewGuid(),
+                    ITwinId = Guid.NewGuid(),
+                    AccountId = Guid.NewGuid(),
                     CorrelationId = Guid.NewGuid().ToString(),
                     SpecVersion = "1.0",
                     Source = new Uri($"http://example.com/TestSource{i}"),
@@ -135,16 +134,15 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         // Get first page
         int pageSize = 10;
         HttpResponseMessage firstResponse = await _client.GetAsync(
-            $"/events?type=test.pagination.continuation&top={pageSize}"
+            GetEventsEndpoint($"type=test.pagination.continuation&top={pageSize}")
         );
         firstResponse.EnsureSuccessStatusCode();
 
         string firstResponseContent = await firstResponse.Content.ReadAsStringAsync();
 
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? firstPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
             firstResponseContent,
-            options
+            JsonOptions
         );
 
         firstPage.ShouldNotBeNull();
@@ -164,14 +162,14 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         );
 
         HttpResponseMessage secondResponse = await _client.GetAsync(
-            $"/events?top={pageSize}&continuationtoken={continuationToken}"
+            GetEventsEndpoint($"top={pageSize}&continuationtoken={continuationToken}")
         );
 
         secondResponse.EnsureSuccessStatusCode();
         string secondResponseContent = await secondResponse.Content.ReadAsStringAsync();
         PaginatedResponseWrapper? secondPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
             secondResponseContent,
-            options
+            JsonOptions
         );
 
         secondPage.ShouldNotBeNull();
@@ -193,7 +191,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
     [Fact]
     public async Task GetEvents_WithContinuationTokenAndFilters_ReturnsCombinedResult()
     {
-        Guid targetITwinGuid = Guid.NewGuid();
+        Guid targetITwinId = Guid.NewGuid();
         string eventType = "test.pagination.combined";
 
         List<Event> events = new();
@@ -203,8 +201,8 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
             events.Add(
                 new Event
                 {
-                    ITwinGuid = targetITwinGuid, // Use the same ITwinGuid for all events
-                    AccountGuid = Guid.NewGuid(),
+                    ITwinId = targetITwinId, // Use the same ITwinId for all events
+                    AccountId = Guid.NewGuid(),
                     CorrelationId = Guid.NewGuid().ToString(),
                     SpecVersion = "1.0",
                     Source = new Uri($"http://example.com/TestSource{i}"),
@@ -222,17 +220,16 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         // Get first page with filters
         int pageSize = 10;
         HttpResponseMessage firstResponse = await _client.GetAsync(
-            $"/events?iTwinGuid={targetITwinGuid}&type={eventType}&top={pageSize}"
+            GetEventsEndpoint($"iTwinId={targetITwinId}&type={eventType}&top={pageSize}")
         );
 
         firstResponse.EnsureSuccessStatusCode();
         string firstResponseContent = await firstResponse.Content.ReadAsStringAsync();
         Console.WriteLine($"First page response: {firstResponseContent}");
 
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? firstPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
             firstResponseContent,
-            options
+            JsonOptions
         );
 
         firstPage.ShouldNotBeNull();
@@ -254,14 +251,16 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         );
 
         HttpResponseMessage secondResponse = await _client.GetAsync(
-            $"/events?iTwinGuid={targetITwinGuid}&type={eventType}&top={pageSize}&continuationtoken={continuationToken}"
+            GetEventsEndpoint(
+                $"iTwinId={targetITwinId}&type={eventType}&top={pageSize}&continuationtoken={continuationToken}"
+            )
         );
 
         secondResponse.EnsureSuccessStatusCode();
         string secondResponseContent = await secondResponse.Content.ReadAsStringAsync();
         PaginatedResponseWrapper? secondPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
             secondResponseContent,
-            options
+            JsonOptions
         );
 
         secondPage.ShouldNotBeNull();
@@ -270,7 +269,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         // Verify all events match the filter criteria
         foreach (Event evt in secondPage.Items)
         {
-            evt.ITwinGuid.ShouldBe(targetITwinGuid);
+            evt.ITwinId.ShouldBe(targetITwinId);
             evt.Type.ShouldBe(eventType);
         }
     }

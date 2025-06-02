@@ -23,13 +23,14 @@ public abstract class EventFactory<TData>
     {
         return new Event
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = TestSource,
             Type = GetEventType(),
             DataJson = JsonSerializer.SerializeToDocument(data),
+            Time = null,
         };
     }
 

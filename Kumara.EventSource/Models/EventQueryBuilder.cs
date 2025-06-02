@@ -20,15 +20,15 @@ public class EventQueryBuilder
         return this;
     }
 
-    public EventQueryBuilder WhereITwinGuid(Guid iTwinGuid)
+    public EventQueryBuilder WhereITwinId(Guid iTwinId)
     {
-        _predicates.Add(e => e.ITwinGuid == iTwinGuid);
+        _predicates.Add(e => e.ITwinId == iTwinId);
         return this;
     }
 
-    public EventQueryBuilder WhereAccountGuid(Guid accountGuid)
+    public EventQueryBuilder WhereAccountId(Guid accountId)
     {
-        _predicates.Add(e => e.AccountGuid == accountGuid);
+        _predicates.Add(e => e.AccountId == accountId);
         return this;
     }
 
@@ -47,6 +47,26 @@ public class EventQueryBuilder
     public EventQueryBuilder WhereDataJson(Func<JsonDocument, bool> dataPredicate)
     {
         _predicates.Add(e => dataPredicate(e.DataJson));
+        return this;
+    }
+
+    public EventQueryBuilder WhereTimeAfter(DateTimeOffset startTime)
+    {
+        _predicates.Add(e => e.Time.HasValue && e.Time.Value >= startTime);
+        return this;
+    }
+
+    public EventQueryBuilder WhereTimeBefore(DateTimeOffset endTime)
+    {
+        _predicates.Add(e => e.Time.HasValue && e.Time.Value <= endTime);
+        return this;
+    }
+
+    public EventQueryBuilder WhereTimeBetween(DateTimeOffset startTime, DateTimeOffset endTime)
+    {
+        _predicates.Add(e =>
+            e.Time.HasValue && e.Time.Value >= startTime && e.Time.Value <= endTime
+        );
         return this;
     }
 

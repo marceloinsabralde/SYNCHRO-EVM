@@ -27,14 +27,15 @@ public class MongoDbContext : Microsoft.EntityFrameworkCore.DbContext
             entity.ToCollection("events");
 
             entity.Property(e => e.Id);
-            entity.Property(e => e.ITwinGuid);
-            entity.Property(e => e.AccountGuid);
+            entity.Property(e => e.ITwinId);
+            entity.Property(e => e.AccountId);
             entity.Property(e => e.CorrelationId);
             entity.Property(e => e.SpecVersion);
             entity
                 .Property(e => e.Source)
                 .HasConversion(uri => uri.ToString(), str => new Uri(str));
             entity.Property(e => e.Type);
+            entity.Property(e => e.Time);
             entity
                 .Property(e => e.DataJson)
                 .HasConversion(new JsonDocumentConverter())

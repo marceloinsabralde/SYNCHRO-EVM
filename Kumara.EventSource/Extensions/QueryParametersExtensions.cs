@@ -45,10 +45,10 @@ public static class QueryParametersExtensions
 
                     break;
 
-                case "itwinguid":
-                    if (Guid.TryParse(value, out Guid iTwinGuid))
+                case "itwinid":
+                    if (Guid.TryParse(value, out Guid iTwinId))
                     {
-                        queryBuilder.WhereITwinGuid(iTwinGuid);
+                        queryBuilder.WhereITwinId(iTwinId);
                     }
                     else
                     {
@@ -61,10 +61,10 @@ public static class QueryParametersExtensions
 
                     break;
 
-                case "accountguid":
-                    if (Guid.TryParse(value, out Guid accountGuid))
+                case "accountid":
+                    if (Guid.TryParse(value, out Guid accountId))
                     {
-                        queryBuilder.WhereAccountGuid(accountGuid);
+                        queryBuilder.WhereAccountId(accountId);
                     }
                     else
                     {

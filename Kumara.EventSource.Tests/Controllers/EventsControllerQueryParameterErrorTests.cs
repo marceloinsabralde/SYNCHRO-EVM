@@ -10,7 +10,9 @@ public class EventsControllerQueryParameterErrorTests : EventsControllerTestBase
     [Fact]
     public async Task GetEvents_UnknownQueryParameter_ReturnsBadRequest()
     {
-        HttpResponseMessage response = await _client.GetAsync("/events?unknownParam=value");
+        HttpResponseMessage response = await _client.GetAsync(
+            GetEventsEndpoint("unknownParam=value")
+        );
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
@@ -36,7 +38,9 @@ public class EventsControllerQueryParameterErrorTests : EventsControllerTestBase
     [Fact]
     public async Task GetEvents_InvalidIdFormat_ReturnsBadRequest()
     {
-        HttpResponseMessage response = await _client.GetAsync("/events?id=invalid-guid-format");
+        HttpResponseMessage response = await _client.GetAsync(
+            GetEventsEndpoint("id=invalid-guid-format")
+        );
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
@@ -61,9 +65,11 @@ public class EventsControllerQueryParameterErrorTests : EventsControllerTestBase
     }
 
     [Fact]
-    public async Task GetEvents_InvalidITwinGuidFormat_ReturnsBadRequest()
+    public async Task GetEvents_InvalidITwinIdFormat_ReturnsBadRequest()
     {
-        HttpResponseMessage response = await _client.GetAsync("/events?itwinguid=not-a-valid-guid");
+        HttpResponseMessage response = await _client.GetAsync(
+            GetEventsEndpoint("iTwinId=not-a-valid-guid")
+        );
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
@@ -78,19 +84,21 @@ public class EventsControllerQueryParameterErrorTests : EventsControllerTestBase
         string? detail = problemDetails.GetProperty("detail").GetString();
         detail.ShouldNotBeNull();
         detail.ShouldContain("'not-a-valid-guid'");
-        detail.ShouldContain("'itwinguid'");
+        detail.ShouldContain("'iTwinId'");
 
         problemDetails.GetProperty("status").GetInt32().ShouldBe(400);
 
         string? invalidParam = problemDetails.GetProperty("invalidParameter").GetString();
         invalidParam.ShouldNotBeNull();
-        invalidParam.ShouldBe("itwinguid");
+        invalidParam.ShouldBe("iTwinId");
     }
 
     [Fact]
-    public async Task GetEvents_InvalidAccountGuidFormat_ReturnsBadRequest()
+    public async Task GetEvents_InvalidAccountIdFormat_ReturnsBadRequest()
     {
-        HttpResponseMessage response = await _client.GetAsync("/events?accountguid=123-invalid");
+        HttpResponseMessage response = await _client.GetAsync(
+            GetEventsEndpoint("accountId=123-invalid")
+        );
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
@@ -105,12 +113,12 @@ public class EventsControllerQueryParameterErrorTests : EventsControllerTestBase
         string? detail = problemDetails.GetProperty("detail").GetString();
         detail.ShouldNotBeNull();
         detail.ShouldContain("'123-invalid'");
-        detail.ShouldContain("'accountguid'");
+        detail.ShouldContain("'accountId'");
 
         problemDetails.GetProperty("status").GetInt32().ShouldBe(400);
 
         string? invalidParam = problemDetails.GetProperty("invalidParameter").GetString();
         invalidParam.ShouldNotBeNull();
-        invalidParam.ShouldBe("accountguid");
+        invalidParam.ShouldBe("accountId");
     }
 }

@@ -18,8 +18,8 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
         string expectedContentType = "application/json";
         Event expectedEvent = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
@@ -41,17 +41,16 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
 
         await _eventRepository.AddEventsAsync(new[] { expectedEvent });
 
-        HttpResponseMessage response = await _client.GetAsync("/events");
+        HttpResponseMessage response = await _client.GetAsync(ApiBasePath);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         string? contentType = response.Content.Headers.ContentType?.MediaType;
         contentType.ShouldBe(expectedContentType);
 
         string responseContent = await response.Content.ReadAsStringAsync();
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
 
         PaginatedResponseWrapper? paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
         paginatedResponse.ShouldNotBeNull();
         List<Event> events = paginatedResponse.GetEvents();
@@ -60,8 +59,8 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
 
         Event firstEvent = events[0];
         firstEvent.ShouldSatisfyAllConditions(
-            e => e.ITwinGuid.ShouldBe(expectedEvent.ITwinGuid),
-            e => e.AccountGuid.ShouldBe(expectedEvent.AccountGuid),
+            e => e.ITwinId.ShouldBe(expectedEvent.ITwinId),
+            e => e.AccountId.ShouldBe(expectedEvent.AccountId),
             e => e.CorrelationId.ShouldBe(expectedEvent.CorrelationId),
             e => e.Id.ShouldBe(expectedEvent.Id),
             e => e.SpecVersion.ShouldBe(expectedEvent.SpecVersion),
@@ -82,8 +81,8 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
         {
             new Event
             {
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://example.com/TestSource"),
@@ -107,7 +106,7 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
         string serialized = JsonSerializer.Serialize(eventsPayload);
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -117,7 +116,7 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
     {
         StringContent content = new("Invalid content", System.Text.Encoding.UTF8, "text/plain");
 
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.StatusCode.ShouldBe(HttpStatusCode.UnsupportedMediaType);
     }

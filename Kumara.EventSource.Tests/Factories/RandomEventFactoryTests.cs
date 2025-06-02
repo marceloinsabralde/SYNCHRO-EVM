@@ -17,8 +17,8 @@ public class RandomEventFactoryTests
 
         // Assert
         result.ShouldNotBeNull();
-        result.ITwinGuid.ShouldNotBe(Guid.Empty);
-        result.AccountGuid.ShouldNotBe(Guid.Empty);
+        result.ITwinId.ShouldNotBe(Guid.Empty);
+        result.AccountId.ShouldNotBe(Guid.Empty);
         result.CorrelationId.ShouldNotBeEmpty();
         result.SpecVersion.ShouldBe("1.0");
         result.Source.ShouldBe(new Uri("http://testsource.com"));
@@ -47,8 +47,8 @@ public class RandomEventFactoryTests
 
         // Assert
         result.ShouldNotBeNull();
-        result.ITwinGuid.ShouldBe(Guid.Empty);
-        result.AccountGuid.ShouldBe(Guid.Empty);
+        result.ITwinId.ShouldBe(Guid.Empty);
+        result.AccountId.ShouldBe(Guid.Empty);
         result.CorrelationId.ShouldBeEmpty();
         result.SpecVersion.ShouldBe("0.0");
         result.Type.ShouldBe("some.random.event");
@@ -63,19 +63,19 @@ public class RandomEventFactoryTests
     public void WithCustomProperties_AllowsCustomization()
     {
         // Arrange
-        Guid customITwinGuid = Guid.NewGuid();
+        Guid customITwinId = Guid.NewGuid();
         string customCorrelationId = "custom-correlation-id";
 
         // Act
         Event result = _factory.WithCustomProperties(evt =>
         {
-            evt.ITwinGuid = customITwinGuid;
+            evt.ITwinId = customITwinId;
             evt.CorrelationId = customCorrelationId;
         });
 
         // Assert
         result.ShouldNotBeNull();
-        result.ITwinGuid.ShouldBe(customITwinGuid);
+        result.ITwinId.ShouldBe(customITwinId);
         result.CorrelationId.ShouldBe(customCorrelationId);
     }
 }

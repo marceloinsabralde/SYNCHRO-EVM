@@ -20,7 +20,20 @@ builder.Services.AddSingleton<Dictionary<string, Type>>(
 
 builder.Services.AddMongoDbContext(builder.Configuration);
 
-builder.Services.AddControllers();
+builder
+    .Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = KumaraJsonOptions
+            .DefaultOptions
+            .PropertyNamingPolicy;
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = KumaraJsonOptions
+            .DefaultOptions
+            .PropertyNameCaseInsensitive;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = KumaraJsonOptions
+            .DefaultOptions
+            .DefaultIgnoreCondition;
+    });
 
 WebApplication app = builder.Build();
 

@@ -12,7 +12,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 namespace Kumara.EventSource.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/v1/events")]
 public class EventsController : ControllerBase
 {
     private const string ContinuationTokenKey = "continuationtoken";
@@ -205,5 +205,8 @@ public class QueryCollection(Dictionary<string, StringValues> dictionary)
 {
     ICollection<string> IQueryCollection.Keys => GetKeys();
 
-    private List<string> GetKeys() => base.Keys.ToList();
+    private List<string> GetKeys()
+    {
+        return base.Keys.ToList();
+    }
 }

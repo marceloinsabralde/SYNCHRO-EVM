@@ -15,7 +15,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
     public async Task PostEvents_WithZeroEvents_ReturnsSuccessAndCountZero()
     {
         StringContent content = new("[]", System.Text.Encoding.UTF8, "application/json");
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.EnsureSuccessStatusCode();
         string responseString = await response.Content.ReadAsStringAsync();
@@ -35,8 +35,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
                 Type = "control.account.created.v1",
                 Source = new Uri("/events/test"),
                 SpecVersion = "1.0",
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 DataJson = JsonSerializer.SerializeToDocument(
                     new ControlAccountCreatedV1
@@ -57,8 +57,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
                 Type = "control.account.created.v1",
                 Source = new Uri("/events/test"),
                 SpecVersion = "1.0",
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 DataJson = JsonSerializer.SerializeToDocument(
                     new ControlAccountCreatedV1
@@ -78,7 +78,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
 
         string serialized = JsonSerializer.Serialize(eventsPayload);
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.EnsureSuccessStatusCode();
         string responseString = await response.Content.ReadAsStringAsync();
@@ -97,8 +97,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
                 Source = new Uri("/source/user"),
                 Id = Guid.NewGuid(),
                 SpecVersion = "1.0",
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
             },
             new()
@@ -107,15 +107,15 @@ public class EventsControllerContentTests : EventsControllerTestBase
                 Source = new Uri("/source/file"),
                 Id = Guid.NewGuid(),
                 SpecVersion = "1.0",
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
             },
         }.AsQueryable();
 
         await _eventRepository.AddEventsAsync(testEvents);
 
-        HttpResponseMessage response = await _client.GetAsync("/events");
+        HttpResponseMessage response = await _client.GetAsync(GetEventsEndpoint());
 
         response.EnsureSuccessStatusCode();
         response
@@ -123,9 +123,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
             .ShouldBe("application/json; charset=utf-8");
 
         string responseString = await response.Content.ReadAsStringAsync();
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseString, options);
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseString, JsonOptions);
 
         paginatedResponse.ShouldNotBeNull();
         List<Event> events = paginatedResponse.GetEvents();
@@ -148,12 +147,13 @@ public class EventsControllerContentTests : EventsControllerTestBase
         DateTimeOffset now = CommonTestUtilities.GetTestDateTimeOffset();
         Event @event = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
             Type = "control.account.created.v1",
+            Time = now,
             DataJson = JsonSerializer.SerializeToDocument(
                 new ControlAccountCreatedV1
                 {
@@ -172,7 +172,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
         string serialized = JsonSerializer.Serialize(new[] { @event });
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -183,12 +183,13 @@ public class EventsControllerContentTests : EventsControllerTestBase
         DateTimeOffset now = CommonTestUtilities.GetTestDateTimeOffset();
         Event @event = new()
         {
-            ITwinGuid = Guid.NewGuid(),
-            AccountGuid = Guid.NewGuid(),
+            ITwinId = Guid.NewGuid(),
+            AccountId = Guid.NewGuid(),
             CorrelationId = Guid.NewGuid().ToString(),
             SpecVersion = "1.0",
             Source = new Uri("http://example.com/TestSource"),
             Type = "control.account.updated.v1",
+            Time = now,
             DataJson = JsonSerializer.SerializeToDocument(
                 new ControlAccountUpdatedV1
                 {
@@ -207,7 +208,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
         string serialized = JsonSerializer.Serialize(new[] { @event });
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -221,7 +222,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
         );
 
         // Submit POST request with invalid media type
-        HttpResponseMessage response = await _client.PostAsync("/events", content);
+        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
 
         response.StatusCode.ShouldBe(HttpStatusCode.UnsupportedMediaType);
     }
@@ -234,8 +235,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
         {
             new Event
             {
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://example.com/TestSource1"),
@@ -256,8 +257,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
             },
             new Event
             {
-                ITwinGuid = Guid.NewGuid(),
-                AccountGuid = Guid.NewGuid(),
+                ITwinId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 CorrelationId = Guid.NewGuid().ToString(),
                 SpecVersion = "1.0",
                 Source = new Uri("http://example.com/TestSource2"),
@@ -277,15 +278,13 @@ public class EventsControllerContentTests : EventsControllerTestBase
                 ),
             },
         };
-
         string serialized = JsonSerializer.Serialize(events);
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
-
-        HttpResponseMessage postResponse = await _client.PostAsync("/events", content);
+        HttpResponseMessage postResponse = await _client.PostAsync(ApiBasePath, content);
 
         postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        HttpResponseMessage response = await _client.GetAsync("/Events");
+        HttpResponseMessage response = await _client.GetAsync(ApiBasePath);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         string responseContent = await response.Content.ReadAsStringAsync();

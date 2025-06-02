@@ -8,32 +8,23 @@ namespace Kumara.EventSource.Models.Events;
 public class ControlAccountUpdatedV1
 {
     [Required]
-    [JsonPropertyName("id")]
     public required Guid Id { get; set; }
 
     [Required(AllowEmptyStrings = false)]
-    [JsonPropertyName("name")]
     public required string Name { get; set; }
 
-    [JsonPropertyName("wbs_path")]
     public string? WbsPath { get; set; }
 
-    [JsonPropertyName("task_id")]
     public Guid? TaskId { get; set; }
 
-    [JsonPropertyName("planned_start")]
     public DateTimeOffset? PlannedStart { get; set; }
 
-    [JsonPropertyName("planned_finish")]
     public DateTimeOffset? PlannedFinish { get; set; }
 
-    [JsonPropertyName("actual_start")]
     public DateTimeOffset? ActualStart { get; set; }
 
-    [JsonPropertyName("actual_finish")]
     public DateTimeOffset? ActualFinish { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    [JsonPropertyName("event_type_version")]
     public string EventTypeVersion => "1.0";
 }

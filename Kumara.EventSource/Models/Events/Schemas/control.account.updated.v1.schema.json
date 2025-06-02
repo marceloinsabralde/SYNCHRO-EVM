@@ -1,13 +1,12 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
   "id": "https://schemas.bentley.com/construction/events/control.account.updated.v1.schema.json",
   "title": "Control Account Updated V1 Schema",
   "type": "object",
   "description": "Schema for the data payload of a Control Account Updated V1. Use `control.account.updated.v1` as the `type` attribute.",
   "additionalProperties": false,
   "required": [
-    "id",
-    "name"
+    "Id",
+    "Name"
   ],
   "properties": {
     "id": {
@@ -19,48 +18,48 @@
       "type": "string",
       "minLength": 1
     },
-    "wbs_path": {
+    "wbsPath": {
       "type": [
         "null",
         "string"
       ]
     },
-    "task_id": {
+    "taskId": {
       "type": [
         "null",
         "string"
       ],
       "format": "guid"
     },
-    "planned_start": {
+    "plannedStart": {
       "type": [
         "null",
         "string"
       ],
       "format": "date-time"
     },
-    "planned_finish": {
+    "plannedFinish": {
       "type": [
         "null",
         "string"
       ],
       "format": "date-time"
     },
-    "actual_start": {
+    "actualStart": {
       "type": [
         "null",
         "string"
       ],
       "format": "date-time"
     },
-    "actual_finish": {
+    "actualFinish": {
       "type": [
         "null",
         "string"
       ],
       "format": "date-time"
     },
-    "event_type_version": {
+    "eventTypeVersion": {
       "type": "string"
     }
   }

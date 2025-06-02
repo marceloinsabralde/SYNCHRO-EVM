@@ -32,8 +32,8 @@ The EventSource module follows Clean Architecture principles and is organized as
 ### Models
 
 - `Event`: Core domain model representing an event in the system with properties like:
-    - ITwinGuid: Identifier for the digital twin of a construction project.
-    - AccountGuid: Account identifier.
+    - ITwinId: Identifier for the digital twin of a construction project.
+    - AccountId: Account identifier.
     - CorrelationId: Used to track related events.
     - Id: Unique identifier for the event.
     - SpecVersion: The version of the CloudEvents spec.
@@ -76,8 +76,8 @@ The EventSource module follows Clean Architecture principles and is organized as
 1. **Event Validation**: Events are validated against JSON schemas that are auto-generated from .NET model classes.
 
 2. **Query Capabilities**: The API supports querying events by:
-    - ITwinGuid
-    - AccountGuid
+    - ITwinId
+    - AccountId
     - CorrelationId
     - Event Type
     - Other custom queries via query parameters
@@ -118,8 +118,8 @@ Content-Type: application/json
 
 [
   {
-    "iTwinGuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "accountGuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "iTwinId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "accountId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "correlationId": "correlation123",
     "id": "6fa85f64-5717-4562-b3fc-2c963f66afa7",
     "specVersion": "1.0",
@@ -136,13 +136,13 @@ Content-Type: application/json
 ### Query Events
 
 ```http
-GET /Events?itwinguid=3fa85f64-5717-4562-b3fc-2c963f66afa6&type=test.created.v1
+GET /Events?iTwinId=3fa85f64-5717-4562-b3fc-2c963f66afa6&type=test.created.v1
 ```
 
 ### Paginated Query
 
 ```http
-GET /Events?itwinguid=3fa85f64-5717-4562-b3fc-2c963f66afa6&pagesize=50
+GET /Events?iTwinId=3fa85f64-5717-4562-b3fc-2c963f66afa6&pagesize=50
 ```
 
 ### Using Continuation Token
@@ -164,7 +164,7 @@ The GET /Events endpoint returns a paginated response with the following structu
   "pageSize": 50,
   "hasMoreItems": true,
   "links": {
-    "self": "https://api.example.com/events?itwinguid=3fa85f64-5717-4562-b3fc-2c963f66afa6&pagesize=50",
+    "self": "https://api.example.com/events?iTwinId=3fa85f64-5717-4562-b3fc-2c963f66afa6&pagesize=50",
     "next": "https://api.example.com/events?continuationtoken=eyJsYXN0SWQiOiI2ZmE4NWY2NC01NzE3LTQ1NjItYjNmYy0yYzk2M2Y2NmFmYTciLCJxdWVyeVBhcmFtZXRlcnMiOnsiaXR3aW5ndWlkIjoiM2ZhODVmNjQtNTcxNy00NTYyLWIzZmMtMmM5NjNmNjZhZmE2In19"
   }
 }

@@ -10,34 +10,28 @@ namespace Kumara.EventSource.Models;
 public class Event
 {
     [Required]
-    [JsonPropertyName("iTwinGuid")]
-    public required Guid ITwinGuid { get; set; }
+    public required Guid ITwinId { get; set; }
 
     [Required]
-    [JsonPropertyName("accountGuid")]
-    public required Guid AccountGuid { get; set; }
+    public required Guid AccountId { get; set; }
 
     [Required]
-    [JsonPropertyName("correlationId")]
     public required string CorrelationId { get; set; }
 
     [Required]
-    [JsonPropertyName("id")]
     public Guid Id { get; set; } = GuidUtility.CreateGuid();
 
     [Required]
-    [JsonPropertyName("specVersion")]
     public required string SpecVersion { get; set; }
 
     [Required]
-    [JsonPropertyName("source")]
     public required Uri Source { get; set; }
 
     [Required]
-    [JsonPropertyName("type")]
     public required string Type { get; set; }
 
+    public DateTimeOffset? Time { get; set; }
+
     [Required]
-    [JsonPropertyName("data")]
     public JsonDocument DataJson { get; set; } = JsonDocument.Parse("{}");
 }

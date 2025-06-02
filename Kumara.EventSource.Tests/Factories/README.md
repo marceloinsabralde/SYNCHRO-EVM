@@ -22,7 +22,7 @@ var invalidEvent = factory.CreateInvalid();
 
 // Customizing event properties
 var customEvent = factory.WithCustomProperties(evt => {
-    evt.ITwinGuid = Guid.NewGuid();
+    evt.ITwinId = Guid.NewGuid();
     evt.CorrelationId = "custom-id";
 });
 ```
