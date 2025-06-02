@@ -123,9 +123,8 @@ public class EventsControllerContentTests : EventsControllerTestBase
             .ShouldBe("application/json; charset=utf-8");
 
         string responseString = await response.Content.ReadAsStringAsync();
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseString, options);
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseString, JsonOptions);
 
         paginatedResponse.ShouldNotBeNull();
         List<Event> events = paginatedResponse.GetEvents();

@@ -7,11 +7,8 @@ namespace Kumara.EventSource.Utilities;
 
 public static class Pagination
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new()
-    {
-        WriteIndented = false,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-    };
+    private static readonly JsonSerializerOptions SerializerOptions =
+        KumaraJsonOptions.DefaultOptions;
 
     public static string CreateContinuationToken(
         Guid id,

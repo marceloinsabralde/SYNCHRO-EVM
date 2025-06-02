@@ -44,9 +44,8 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         string responseContent = await response.Content.ReadAsStringAsync();
 
         // Deserialize as PaginatedEvents
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
         // Verify pagination structure
         paginatedResponse.ShouldNotBeNull();
@@ -94,9 +93,8 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
 
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
         paginatedResponse.ShouldNotBeNull();
         paginatedResponse.Items.ShouldNotBeNull();
@@ -142,10 +140,9 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
 
         string firstResponseContent = await firstResponse.Content.ReadAsStringAsync();
 
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? firstPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
             firstResponseContent,
-            options
+            JsonOptions
         );
 
         firstPage.ShouldNotBeNull();
@@ -172,7 +169,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         string secondResponseContent = await secondResponse.Content.ReadAsStringAsync();
         PaginatedResponseWrapper? secondPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
             secondResponseContent,
-            options
+            JsonOptions
         );
 
         secondPage.ShouldNotBeNull();
@@ -230,10 +227,9 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         string firstResponseContent = await firstResponse.Content.ReadAsStringAsync();
         Console.WriteLine($"First page response: {firstResponseContent}");
 
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? firstPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
             firstResponseContent,
-            options
+            JsonOptions
         );
 
         firstPage.ShouldNotBeNull();
@@ -264,7 +260,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         string secondResponseContent = await secondResponse.Content.ReadAsStringAsync();
         PaginatedResponseWrapper? secondPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
             secondResponseContent,
-            options
+            JsonOptions
         );
 
         secondPage.ShouldNotBeNull();

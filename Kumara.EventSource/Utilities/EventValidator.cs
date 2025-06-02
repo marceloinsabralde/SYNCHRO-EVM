@@ -39,10 +39,8 @@ public class EventValidator : IEventValidator
                     System.Text.Encoding.UTF8.GetBytes(eventData.RootElement.ToString())
                 );
 
-                JsonSerializerOptions options = new()
+                JsonSerializerOptions options = new(KumaraJsonOptions.DefaultOptions)
                 {
-                    PropertyNameCaseInsensitive = true,
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     ReferenceHandler = ReferenceHandler.Preserve,
                 };
 

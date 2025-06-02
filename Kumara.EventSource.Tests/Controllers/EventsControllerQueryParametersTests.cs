@@ -71,9 +71,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
         paginatedResponse.ShouldNotBeNull();
         List<Event> events = paginatedResponse.GetEvents();
@@ -142,9 +141,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
         paginatedResponse.ShouldNotBeNull();
         List<Event> events = paginatedResponse.GetEvents();
@@ -190,9 +188,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
         paginatedResponse.ShouldNotBeNull();
         List<Event> events = paginatedResponse.GetEvents();
@@ -261,9 +258,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
         paginatedResponse.ShouldNotBeNull();
         List<Event> events = paginatedResponse.GetEvents();
@@ -332,9 +328,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
         paginatedResponse.ShouldNotBeNull();
         List<Event> events = paginatedResponse.GetEvents();
@@ -393,9 +388,8 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
 
         response.EnsureSuccessStatusCode();
         string responseContent = await response.Content.ReadAsStringAsync();
-        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
         PaginatedResponseWrapper? paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, options);
+            JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
         paginatedResponse.ShouldNotBeNull();
         List<Event> events = paginatedResponse.GetEvents();
