@@ -33,5 +33,6 @@ public class Event
     public DateTimeOffset? Time { get; set; }
 
     [Required]
+    [JsonPropertyName("data")]
     public JsonDocument DataJson { get; set; } = JsonDocument.Parse("{}");
 }
