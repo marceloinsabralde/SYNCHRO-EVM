@@ -60,7 +60,7 @@ Notes:
 ### Running Kumara.EventSource
 
 From the root directory of the solution run `dotnet run --project Kumara.EventSource`
-This will start the EventSource service on https://localhost:7104 or http://localhost:5220 (check launchSettings.json for the port).
+Then visit https://localhost:7104/swagger/index.html to view in browser.
 
 Notes:
 - Like the WebApi, you can also use your IDE's "Build and Run" feature to start this service.
