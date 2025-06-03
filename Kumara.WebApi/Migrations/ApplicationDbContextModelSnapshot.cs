@@ -29,22 +29,6 @@ namespace Kumara.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset?>("ActualFinish")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("actual_finish");
-
-                    b.Property<bool?>("ActualFinishHasTime")
-                        .HasColumnType("boolean")
-                        .HasColumnName("actual_finish_has_time");
-
-                    b.Property<DateTimeOffset?>("ActualStart")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("actual_start");
-
-                    b.Property<bool?>("ActualStartHasTime")
-                        .HasColumnType("boolean")
-                        .HasColumnName("actual_start_has_time");
-
                     b.Property<Guid>("ControlAccountId")
                         .HasColumnType("uuid")
                         .HasColumnName("control_account_id");
@@ -70,6 +54,22 @@ namespace Kumara.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("reference_code");
+
+                    b.Property<DateTimeOffset?>("_actualFinish")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("actual_finish");
+
+                    b.Property<bool?>("_actualFinishHasTime")
+                        .HasColumnType("boolean")
+                        .HasColumnName("actual_finish_has_time");
+
+                    b.Property<DateTimeOffset?>("_actualStart")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("actual_start");
+
+                    b.Property<bool?>("_actualStartHasTime")
+                        .HasColumnType("boolean")
+                        .HasColumnName("actual_start_has_time");
 
                     b.HasKey("Id")
                         .HasName("pk_activities");

@@ -117,11 +117,15 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
     public async Task Update_WithAllFields_Accepted()
     {
         var existingActivity = Factories.Activity(
-            actualStart: new DateTimeOffset(
-                new DateOnly(year: 2025, month: 1, day: 1),
-                TimeOnly.MinValue,
-                TimeSpan.Zero
-            ),
+            actualStart: new DateWithOptionalTime
+            {
+                DateTime = new DateTimeOffset(
+                    new DateOnly(year: 2025, month: 1, day: 1),
+                    TimeOnly.MinValue,
+                    TimeSpan.Zero
+                ),
+                HasTime = false,
+            },
             actualFinish: null
         );
         await _dbContext.Activities.AddAsync(
@@ -177,16 +181,24 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
     public async Task Update_WithPartialFields_Accepted()
     {
         var existingActivity = Factories.Activity(
-            actualStart: new DateTimeOffset(
-                new DateOnly(year: 2025, month: 1, day: 1),
-                TimeOnly.MinValue,
-                TimeSpan.Zero
-            ),
-            actualFinish: new DateTimeOffset(
-                new DateOnly(year: 2025, month: 2, day: 1),
-                TimeOnly.MinValue,
-                TimeSpan.Zero
-            )
+            actualStart: new DateWithOptionalTime
+            {
+                DateTime = new DateTimeOffset(
+                    new DateOnly(year: 2025, month: 1, day: 1),
+                    TimeOnly.MinValue,
+                    TimeSpan.Zero
+                ),
+                HasTime = false,
+            },
+            actualFinish: new DateWithOptionalTime
+            {
+                DateTime = new DateTimeOffset(
+                    new DateOnly(year: 2025, month: 2, day: 1),
+                    TimeOnly.MinValue,
+                    TimeSpan.Zero
+                ),
+                HasTime = false,
+            }
         );
         await _dbContext.Activities.AddAsync(
             existingActivity,
@@ -211,13 +223,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             TestContext.Current.CancellationToken
         );
         activity.ShouldNotBeNull();
-        activity.ActualStart.ShouldBe(
-            new DateWithOptionalTime
-            {
-                DateTime = existingActivity.ActualStart.GetValueOrDefault(),
-                HasTime = existingActivity.ActualStartHasTime.GetValueOrDefault(),
-            }
-        );
+        activity.ActualStart.ShouldBe(existingActivity.ActualStart);
         activity.ActualFinish.ShouldBe(
             new DateWithOptionalTime
             {
@@ -237,11 +243,15 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
     public async Task Update_WithBadData_BadRequest()
     {
         var existingActivity = Factories.Activity(
-            actualStart: new DateTimeOffset(
-                new DateOnly(year: 2025, month: 1, day: 1),
-                TimeOnly.MinValue,
-                TimeSpan.Zero
-            )
+            actualStart: new DateWithOptionalTime
+            {
+                DateTime = new DateTimeOffset(
+                    new DateOnly(year: 2025, month: 1, day: 1),
+                    TimeOnly.MinValue,
+                    TimeSpan.Zero
+                ),
+                HasTime = false,
+            }
         );
         await _dbContext.Activities.AddAsync(
             existingActivity,

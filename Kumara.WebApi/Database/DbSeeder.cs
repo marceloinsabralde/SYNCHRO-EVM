@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Kumara.Models;
+using Kumara.Types;
 
 namespace Kumara.Database;
 
@@ -71,18 +72,24 @@ public static class DbSeeder
                         time: TimeOnly.MaxValue,
                         offset: TimeSpan.Zero
                     ),
-                    ActualStart = new DateTimeOffset(
-                        date: new DateOnly(2023, 1, 1),
-                        time: new TimeOnly(hour: 8, minute: 30),
-                        offset: TimeSpan.Zero
-                    ),
-                    ActualStartHasTime = true,
-                    ActualFinish = new DateTimeOffset(
-                        date: new DateOnly(2025, 1, 1),
-                        time: new TimeOnly(hour: 14, minute: 23),
-                        offset: TimeSpan.Zero
-                    ),
-                    ActualFinishHasTime = true,
+                    ActualStart = new DateWithOptionalTime
+                    {
+                        DateTime = new DateTimeOffset(
+                            date: new DateOnly(2023, 1, 1),
+                            time: new TimeOnly(hour: 8, minute: 30),
+                            offset: TimeSpan.Zero
+                        ),
+                        HasTime = true,
+                    },
+                    ActualFinish = new DateWithOptionalTime
+                    {
+                        DateTime = new DateTimeOffset(
+                            date: new DateOnly(2025, 1, 1),
+                            time: new TimeOnly(hour: 14, minute: 23),
+                            offset: TimeSpan.Zero
+                        ),
+                        HasTime = true,
+                    },
                 },
                 new Activity
                 {

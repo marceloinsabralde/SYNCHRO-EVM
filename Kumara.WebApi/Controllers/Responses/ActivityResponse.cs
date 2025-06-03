@@ -21,35 +21,17 @@ public class ActivityResponse
 
     public static ActivityResponse FromActivity(Activity activity)
     {
-        var response = new ActivityResponse
+        return new ActivityResponse
         {
             Id = activity.Id,
             ITwinId = activity.ITwinId,
             ControlAccountId = activity.ControlAccountId,
             ReferenceCode = activity.ReferenceCode,
             Name = activity.Name,
+            ActualStart = activity.ActualStart,
+            ActualFinish = activity.ActualFinish,
             PlannedStart = activity.PlannedStart,
             PlannedFinish = activity.PlannedFinish,
         };
-
-        if (activity.ActualStart is not null)
-        {
-            response.ActualStart = new DateWithOptionalTime
-            {
-                DateTime = activity.ActualStart.Value,
-                HasTime = activity.ActualStartHasTime.GetValueOrDefault(),
-            };
-        }
-
-        if (activity.ActualFinish is not null)
-        {
-            response.ActualFinish = new DateWithOptionalTime
-            {
-                DateTime = activity.ActualFinish.Value,
-                HasTime = activity.ActualFinishHasTime.GetValueOrDefault(),
-            };
-        }
-
-        return response;
     }
 }

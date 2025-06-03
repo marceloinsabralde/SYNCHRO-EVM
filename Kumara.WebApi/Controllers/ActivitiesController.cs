@@ -48,28 +48,10 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
             return NotFound();
 
         if (activityUpdate.HasChanged(nameof(activityUpdate.ActualStart)))
-            if (activityUpdate.ActualStart is not null)
-            {
-                activity.ActualStart = activityUpdate.ActualStart?.DateTime.ToUniversalTime();
-                activity.ActualStartHasTime = activityUpdate.ActualStart?.HasTime;
-            }
-            else
-            {
-                activity.ActualStart = null;
-                activity.ActualStartHasTime = null;
-            }
+            activity.ActualStart = activityUpdate.ActualStart;
 
         if (activityUpdate.HasChanged(nameof(activityUpdate.ActualFinish)))
-            if (activityUpdate.ActualFinish is not null)
-            {
-                activity.ActualFinish = activityUpdate.ActualFinish?.DateTime.ToUniversalTime();
-                activity.ActualFinishHasTime = activityUpdate.ActualFinish?.HasTime;
-            }
-            else
-            {
-                activity.ActualFinish = null;
-                activity.ActualFinishHasTime = null;
-            }
+            activity.ActualFinish = activityUpdate.ActualFinish;
 
         dbContext.SaveChanges();
 
