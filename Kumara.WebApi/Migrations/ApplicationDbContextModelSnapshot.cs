@@ -300,8 +300,7 @@ namespace Kumara.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("quantity_to_date");
 
-                    b.HasKey("ITwinId", "ActivityId", "MaterialId", "QuantityUnitOfMeasureId")
-                        .HasName("pk_progress_summaries");
+                    b.HasKey("ITwinId", "ActivityId", "MaterialId", "QuantityUnitOfMeasureId");
 
                     b.ToTable((string)null);
 
@@ -461,8 +460,7 @@ namespace Kumara.Migrations
                             b1.ToJson("recent_progress_entries");
 
                             b1.WithOwner()
-                                .HasForeignKey("ProgressSummaryITwinId", "ProgressSummaryActivityId", "ProgressSummaryMaterialId", "ProgressSummaryQuantityUnitOfMeasureId")
-                                .HasConstraintName("fk_recent_progress_entry_progress_summaries_progress_summary_i");
+                                .HasForeignKey("ProgressSummaryITwinId", "ProgressSummaryActivityId", "ProgressSummaryMaterialId", "ProgressSummaryQuantityUnitOfMeasureId");
                         });
 
                     b.Navigation("RecentProgressEntries");
