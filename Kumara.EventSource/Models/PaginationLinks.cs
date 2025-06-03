@@ -4,24 +4,19 @@ using System.Text.Json.Serialization;
 
 namespace Kumara.EventSource.Models;
 
-public class PaginatedList<T>
-{
-    public List<T> Items { get; set; } = new();
-    public PaginationLinks Links { get; set; } = new();
-
-    [JsonIgnore]
-    public bool HasMoreItems { get; set; }
-}
-
+/// <summary>
+/// Contains links for navigating between pages of results.
+/// </summary>
 public class PaginationLinks
 {
+    /// <summary>
+    /// Link to the current page.
+    /// </summary>
     public PaginationLink Self { get; set; } = new();
 
+    /// <summary>
+    /// Link to the next page, if available.
+    /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public PaginationLink? Next { get; set; }
-}
-
-public class PaginationLink
-{
-    public string Href { get; set; } = string.Empty;
 }

@@ -1,5 +1,5 @@
 # Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-@Kumara_EventSource_HostAddress = http://localhost:5220
+@Kumara_EventSource_HostAddress = https://localhost:7104
 
 ### without events
 POST {{Kumara_EventSource_HostAddress}}/api/v1/events

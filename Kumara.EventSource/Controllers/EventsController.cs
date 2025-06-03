@@ -4,9 +4,11 @@ using System.Text.Json;
 using Kumara.EventSource.Extensions;
 using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Models;
+using Kumara.EventSource.OpenApi;
 using Kumara.EventSource.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using Swashbuckle.AspNetCore.Filters;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Kumara.EventSource.Controllers;
@@ -25,7 +27,16 @@ public class EventsController : ControllerBase
         _eventValidator = eventValidator;
     }
 
+    /// <summary>
+    /// Creates or updates one or more event records.
+    /// </summary>
+    /// <param name="payload">Array of event objects to save</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Count of events saved</returns>
     [HttpPost]
+    [SwaggerRequestExample(typeof(List<EventDto>), typeof(PostEventsRequestExampleDto))]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> PostEvents(
         [FromBody] JsonElement payload,
         CancellationToken cancellationToken = default
@@ -44,7 +55,11 @@ public class EventsController : ControllerBase
             );
         }
 
-        List<Event> events = JsonSerializer.Deserialize<List<Event>>(payload.GetRawText()) ?? [];
+        List<Event> events =
+            JsonSerializer.Deserialize<List<Event>>(
+                payload.GetRawText(),
+                KumaraJsonOptions.DefaultOptions
+            ) ?? [];
 
         foreach (Event @event in events)
         {
@@ -66,7 +81,16 @@ public class EventsController : ControllerBase
         return Ok(new { count = events.Count });
     }
 
+    /// <summary>
+    /// Retrieves events based on filter criteria with pagination support.
+    /// </summary>
+    /// <param name="continuationToken">Optional token for paginated results</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Paginated list of events</returns>
     [HttpGet]
+    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetEventsResponseExampleDto))]
+    [ProducesResponseType(typeof(PaginatedList<Event>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetEvents(
         [FromQuery(Name = ContinuationTokenKey)] string? continuationToken = null,
         CancellationToken cancellationToken = default

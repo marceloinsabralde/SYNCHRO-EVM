@@ -6,7 +6,6 @@ using Kumara.EventSource.Models;
 using Kumara.EventSource.Models.Events;
 using Kumara.EventSource.Tests.Common;
 using Kumara.EventSource.Tests.Factories;
-using Shouldly;
 
 namespace Kumara.EventSource.Tests.Controllers;
 
@@ -65,6 +64,7 @@ public class EventsControllerActivityEventsTests : EventsControllerTestBase
         getResponseString.ShouldNotBeNull();
         getResponseString.ShouldContain("\"referenceCode\":\"" + referenceCode + "\"");
         getResponseString.ShouldContain(activityId.ToString());
+        getResponseString.ShouldContain("\"data\":");
     }
 
     [Fact]
@@ -122,6 +122,7 @@ public class EventsControllerActivityEventsTests : EventsControllerTestBase
         getResponseString.ShouldNotBeNull();
         getResponseString.ShouldContain("\"referenceCode\":\"" + referenceCode + "\"");
         getResponseString.ShouldContain(activityId.ToString());
+        getResponseString.ShouldContain("\"data\":");
     }
 
     [Fact]
