@@ -10,6 +10,9 @@ namespace Kumara.EventSource.Models;
 public class Event
 {
     [Required]
+    public Guid Id { get; set; } = GuidUtility.CreateGuid();
+
+    [Required]
     public required Guid ITwinId { get; set; }
 
     [Required]
@@ -19,7 +22,7 @@ public class Event
     public required string CorrelationId { get; set; }
 
     [Required]
-    public Guid Id { get; set; } = GuidUtility.CreateGuid();
+    public Guid IdempotencyId { get; set; } = GuidUtility.CreateGuid();
 
     [Required]
     public required string SpecVersion { get; set; }
