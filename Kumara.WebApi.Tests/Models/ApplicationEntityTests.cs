@@ -1,0 +1,86 @@
+// Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+using Kumara.Database;
+using Kumara.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.InMemory;
+using NodaTime;
+using NodaTime.Testing;
+
+namespace Kumara.WebApi.Tests.Models;
+
+public class ApplicationEntityTests(ApplicationEntityTests.TestFixture testFixture)
+    : IClassFixture<ApplicationEntityTests.TestFixture>
+{
+    private TestDbContext dbContext => testFixture.DbContext;
+    private readonly FakeClock fakeClock = testFixture.FakeClock;
+
+    [Fact]
+    public void PersistsTimestamps()
+    {
+        var entity = new TestEntity { Id = Guid.CreateVersion7(), Name = "Foo" };
+        entity.CreatedAt.ShouldBe(default);
+
+        dbContext.Entities.Add(entity);
+        dbContext.SaveChanges();
+        entity.CreatedAt.ShouldNotBe(default);
+        entity.UpdatedAt.ShouldNotBe(default);
+        entity.UpdatedAt.ShouldBe(entity.CreatedAt);
+
+        fakeClock.AdvanceSeconds(30);
+
+        entity.Name = "New Name";
+        dbContext.SaveChanges();
+        entity.UpdatedAt.ShouldNotBe(default);
+        entity.UpdatedAt.ShouldBe(entity.CreatedAt.Plus(Duration.FromSeconds(30)));
+    }
+
+    [Fact]
+    public async Task PersistsTimestampsAsync()
+    {
+        var entity = new TestEntity { Id = Guid.CreateVersion7(), Name = "Foo" };
+        entity.CreatedAt.ShouldBe(default);
+
+        await dbContext.Entities.AddAsync(entity, TestContext.Current.CancellationToken);
+        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        entity.CreatedAt.ShouldNotBe(default);
+        entity.UpdatedAt.ShouldNotBe(default);
+        entity.UpdatedAt.ShouldBe(entity.CreatedAt);
+
+        fakeClock.AdvanceSeconds(30);
+
+        entity.Name = "New Name";
+        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        entity.UpdatedAt.ShouldNotBe(default);
+        entity.UpdatedAt.ShouldBe(entity.CreatedAt.Plus(Duration.FromSeconds(30)));
+    }
+
+    public class TestEntity : ApplicationEntity
+    {
+        public required Guid Id { get; init; }
+        public required string Name { get; set; }
+    }
+
+    public class TestFixture
+    {
+        public FakeClock FakeClock;
+        public TestDbContext DbContext;
+
+        public TestFixture()
+        {
+            FakeClock = new FakeClock(Instant.FromUtc(2025, 05, 05, 13, 37));
+            DbContext = new TestDbContext(FakeClock);
+        }
+    }
+
+    public class TestDbContext(IClock clock) : ApplicationDbContext(Options, clock)
+    {
+        public DbSet<TestEntity> Entities { get; set; }
+
+        private static readonly DbContextOptions<ApplicationDbContext> Options =
+            new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(nameof(ApplicationEntityTests))
+                .UseSnakeCaseNamingConvention()
+                .Options;
+    }
+}
