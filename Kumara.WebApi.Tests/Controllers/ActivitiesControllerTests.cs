@@ -39,11 +39,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             $"/api/v1/activities?iTwinId={iTwinId}",
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
-
-        var apiResponse = await response.Content.ReadFromJsonAsync<ListResponse<ActivityResponse>>(
-            TestContext.Current.CancellationToken
-        );
+        var apiResponse = await response.ShouldBeApiResponse<ListResponse<ActivityResponse>>();
         var activities = apiResponse?.items.ToList();
 
         activities.ShouldNotBeNull();
@@ -94,11 +90,8 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             $"/api/v1/activities/{expected.Id}",
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var activity = await response.Content.ReadFromJsonAsync<ActivityResponse>(
-            TestContext.Current.CancellationToken
-        );
+        var activity = await response.ShouldBeApiResponse<ActivityResponse>();
         activity.ShouldBeEquivalentTo(ActivityResponse.FromActivity(expected));
     }
 
@@ -145,11 +138,8 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             $"/api/v1/activities/{existingActivity.Id}",
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var activity = await response.Content.ReadFromJsonAsync<ActivityResponse>(
-            TestContext.Current.CancellationToken
-        );
+        var activity = await response.ShouldBeApiResponse<ActivityResponse>();
         activity.ShouldNotBeNull();
         activity.ActualStart.ShouldBe(
             new DateWithOptionalTime
@@ -217,11 +207,8 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             $"/api/v1/activities/{existingActivity.Id}",
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var activity = await response.Content.ReadFromJsonAsync<ActivityResponse>(
-            TestContext.Current.CancellationToken
-        );
+        var activity = await response.ShouldBeApiResponse<ActivityResponse>();
         activity.ShouldNotBeNull();
         activity.ActualStart.ShouldBe(existingActivity.ActualStart);
         activity.ActualFinish.ShouldBe(

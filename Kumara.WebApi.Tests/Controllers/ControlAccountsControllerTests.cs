@@ -38,11 +38,10 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
             $"/api/v1/control-accounts?iTwinId={iTwinId}",
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var apiResponse = await response.Content.ReadFromJsonAsync<
+        var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<ControlAccountResponse>
-        >(TestContext.Current.CancellationToken);
+        >();
         var controlAccounts = apiResponse?.items.ToList();
 
         controlAccounts.ShouldNotBeNull();
@@ -96,12 +95,8 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
             $"/api/v1/control-accounts/{controlAccount.Id}",
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var controlAccountResponse =
-            await response.Content.ReadFromJsonAsync<ControlAccountResponse>(
-                TestContext.Current.CancellationToken
-            );
+        var controlAccountResponse = await response.ShouldBeApiResponse<ControlAccountResponse>();
         controlAccountResponse.ShouldBeEquivalentTo(
             ControlAccountResponse.FromControlAccount(controlAccount)
         );

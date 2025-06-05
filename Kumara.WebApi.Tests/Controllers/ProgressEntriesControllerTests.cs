@@ -71,10 +71,8 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
             },
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
-
-        var createdResponse = await response.Content.ReadFromJsonAsync<CreatedResponse>(
-            cancellationToken: TestContext.Current.CancellationToken
+        var createdResponse = await response.ShouldBeApiResponse<CreatedResponse>(
+            statusCode: HttpStatusCode.Accepted
         );
         createdResponse.ShouldNotBeNull();
         createdResponse.Id.ShouldNotBe(Guid.Empty);

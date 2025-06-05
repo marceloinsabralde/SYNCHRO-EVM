@@ -38,11 +38,8 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
             $"/api/v1/materials?iTwinId={iTwinId}",
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var apiResponse = await response.Content.ReadFromJsonAsync<ListResponse<MaterialResponse>>(
-            TestContext.Current.CancellationToken
-        );
+        var apiResponse = await response.ShouldBeApiResponse<ListResponse<MaterialResponse>>();
         var materials = apiResponse?.items.ToList();
 
         materials.ShouldNotBeNull();
@@ -93,11 +90,8 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
             $"/api/v1/materials/{expected.Id}",
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var material = await response.Content.ReadFromJsonAsync<MaterialResponse>(
-            TestContext.Current.CancellationToken
-        );
+        var material = await response.ShouldBeApiResponse<MaterialResponse>();
         material.ShouldBeEquivalentTo(MaterialResponse.FromMaterial(expected));
     }
 

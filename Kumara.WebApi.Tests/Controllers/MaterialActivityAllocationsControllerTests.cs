@@ -38,11 +38,10 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
             $"/api/v1/material-activity-allocations?iTwinId={iTwinId}",
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var apiResponse = await response.Content.ReadFromJsonAsync<
+        var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<MaterialActivityAllocationResponse>
-        >(TestContext.Current.CancellationToken);
+        >();
         var allocations = apiResponse?.items;
 
         allocations.ShouldNotBeNull();
@@ -96,11 +95,10 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
             $"/api/v1/material-activity-allocations?iTwinId={iTwinId}&activityId={activity.Id}",
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var apiResponse = await response.Content.ReadFromJsonAsync<
+        var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<MaterialActivityAllocationResponse>
-        >(TestContext.Current.CancellationToken);
+        >();
         var allocations = apiResponse?.items;
 
         allocations.ShouldNotBeNull();
@@ -155,11 +153,10 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
             $"/api/v1/material-activity-allocations?iTwinId={iTwinId}&materialId={material.Id}",
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var apiResponse = await response.Content.ReadFromJsonAsync<
+        var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<MaterialActivityAllocationResponse>
-        >(TestContext.Current.CancellationToken);
+        >();
         var allocations = apiResponse?.items;
 
         allocations.ShouldNotBeNull();

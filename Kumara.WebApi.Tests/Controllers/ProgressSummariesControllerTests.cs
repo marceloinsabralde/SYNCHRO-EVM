@@ -45,11 +45,8 @@ public sealed class ProgressSummariesControllerTests : DatabaseTestBase
             $"/api/v1/progress-summaries?iTwinId={iTwinId}",
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var apiResponse = await response.Content.ReadFromJsonAsync<ListResponse<ProgressSummary>>(
-            TestContext.Current.CancellationToken
-        );
+        var apiResponse = await response.ShouldBeApiResponse<ListResponse<ProgressSummary>>();
         var progressSummaries = apiResponse?.items.ToList();
 
         progressSummaries.ShouldNotBeNull();
