@@ -3,7 +3,10 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 
 namespace Kumara.WebApi.Tests;
 
@@ -102,6 +105,11 @@ public static class HttpResponseMessageExtensions
         );
     }
 
+    private static readonly JsonSerializerOptions _jsonSerializerOptions =
+        new JsonSerializerOptions(JsonSerializerDefaults.Web).ConfigureForNodaTime(
+            DateTimeZoneProviders.Tzdb
+        );
+
     public static Task<T?> ShouldBeApiResponse<T>(
         this HttpResponseMessage response,
         HttpStatusCode statusCode = HttpStatusCode.OK
@@ -111,6 +119,9 @@ public static class HttpResponseMessageExtensions
         response.Content.Headers.ContentType.ShouldNotBeNull();
         response.Content.Headers.ContentType.MediaType.ShouldBe("application/json");
 
-        return response.Content.ReadFromJsonAsync<T>(TestContext.Current.CancellationToken);
+        return response.Content.ReadFromJsonAsync<T>(
+            _jsonSerializerOptions,
+            TestContext.Current.CancellationToken
+        );
     }
 }

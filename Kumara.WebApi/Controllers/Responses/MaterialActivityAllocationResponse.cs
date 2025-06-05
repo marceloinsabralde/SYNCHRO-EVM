@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Kumara.Models;
+using NodaTime;
 
 namespace Kumara.WebApi.Controllers.Responses;
 
@@ -12,6 +13,8 @@ public class MaterialActivityAllocationResponse
     public Guid ActivityId { get; set; }
     public Guid QuantityUnitOfMeasureId { get; set; }
     public decimal QuantityAtComplete { get; set; }
+    public Instant CreatedAt { get; set; }
+    public Instant UpdatedAt { get; set; }
 
     public static MaterialActivityAllocationResponse FromMaterialActivityAllocation(
         MaterialActivityAllocation allocation
@@ -25,6 +28,8 @@ public class MaterialActivityAllocationResponse
             MaterialId = allocation.MaterialId,
             QuantityUnitOfMeasureId = allocation.QuantityUnitOfMeasureId,
             QuantityAtComplete = allocation.QuantityAtComplete,
+            CreatedAt = allocation.CreatedAt,
+            UpdatedAt = allocation.UpdatedAt,
         };
     }
 }

@@ -3,6 +3,7 @@ using Kumara.Database;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 using Npgsql;
 using OpenTelemetry;
 using OpenTelemetry.Logs;
@@ -24,7 +25,11 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
         .UseSnakeCaseNamingConvention()
 );
 
-builder.Services.AddControllers();
+builder
+    .Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb)
+    );
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi(options =>

@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Kumara.Models;
 using Kumara.Types;
+using NodaTime;
 
 namespace Kumara.WebApi.Controllers.Responses;
 
@@ -19,6 +20,10 @@ public class ActivityResponse
     public DateTimeOffset? PlannedStart { get; set; }
     public DateTimeOffset? PlannedFinish { get; set; }
 
+    public Instant CreatedAt { get; set; }
+
+    public Instant UpdatedAt { get; set; }
+
     public static ActivityResponse FromActivity(Activity activity)
     {
         return new ActivityResponse
@@ -32,6 +37,8 @@ public class ActivityResponse
             ActualFinish = activity.ActualFinish,
             PlannedStart = activity.PlannedStart,
             PlannedFinish = activity.PlannedFinish,
+            CreatedAt = activity.CreatedAt,
+            UpdatedAt = activity.UpdatedAt,
         };
     }
 }
