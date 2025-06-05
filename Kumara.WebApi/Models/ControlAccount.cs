@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kumara.Models;
 
-public class ControlAccount
+public class ControlAccount : ApplicationEntity
 {
     public Guid Id { get; set; }
 

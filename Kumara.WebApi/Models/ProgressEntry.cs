@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kumara.Models;
 
-public class ProgressEntry
+public class ProgressEntry : ApplicationEntity
 {
     public Guid Id { get; set; }
 

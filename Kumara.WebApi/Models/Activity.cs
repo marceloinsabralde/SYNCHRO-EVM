@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Kumara.Models;
 
 [EntityTypeConfiguration(typeof(Activity.Configuration))]
-public class Activity
+public class Activity : ApplicationEntity
 {
     private DateTimeOffset? _actualStart;
     private bool? _actualStartHasTime;

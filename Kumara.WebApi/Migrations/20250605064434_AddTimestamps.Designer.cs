@@ -3,6 +3,7 @@ using System;
 using Kumara.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kumara.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250605064434_AddTimestamps")]
+    partial class AddTimestamps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,9 +88,6 @@ namespace Kumara.Migrations
 
                     b.HasIndex("ControlAccountId")
                         .HasDatabaseName("ix_activities_control_account_id");
-
-                    b.HasIndex("ITwinId")
-                        .HasDatabaseName("ix_activities_itwin_id");
 
                     b.ToTable("activities", (string)null);
                 });
@@ -174,9 +174,6 @@ namespace Kumara.Migrations
                     b.HasKey("Id")
                         .HasName("pk_control_accounts");
 
-                    b.HasIndex("ITwinId")
-                        .HasDatabaseName("ix_control_accounts_itwin_id");
-
                     b.ToTable("control_accounts", (string)null);
                 });
 
@@ -214,9 +211,6 @@ namespace Kumara.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_materials");
-
-                    b.HasIndex("ITwinId")
-                        .HasDatabaseName("ix_materials_itwin_id");
 
                     b.HasIndex("QuantityUnitOfMeasureId")
                         .HasDatabaseName("ix_materials_quantity_unit_of_measure_id");
@@ -264,9 +258,6 @@ namespace Kumara.Migrations
 
                     b.HasIndex("ActivityId")
                         .HasDatabaseName("ix_material_activity_allocations_activity_id");
-
-                    b.HasIndex("ITwinId")
-                        .HasDatabaseName("ix_material_activity_allocations_itwin_id");
 
                     b.HasIndex("MaterialId")
                         .HasDatabaseName("ix_material_activity_allocations_material_id");
@@ -321,9 +312,6 @@ namespace Kumara.Migrations
 
                     b.HasIndex("ActivityId")
                         .HasDatabaseName("ix_progress_entries_activity_id");
-
-                    b.HasIndex("ITwinId")
-                        .HasDatabaseName("ix_progress_entries_itwin_id");
 
                     b.HasIndex("MaterialId")
                         .HasDatabaseName("ix_progress_entries_material_id");
@@ -402,9 +390,6 @@ namespace Kumara.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_units_of_measure");
-
-                    b.HasIndex("ITwinId")
-                        .HasDatabaseName("ix_units_of_measure_itwin_id");
 
                     b.ToTable("units_of_measure", (string)null);
                 });
