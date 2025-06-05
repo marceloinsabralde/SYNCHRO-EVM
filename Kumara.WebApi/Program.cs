@@ -2,6 +2,7 @@
 using Kumara.Database;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
 using Npgsql;
 using OpenTelemetry;
 using OpenTelemetry.Logs;
@@ -40,6 +41,8 @@ builder.Services.AddSwaggerGen(options =>
     options.UseAllOfToExtendReferenceSchemas();
     options.EnableAnnotations();
 });
+
+builder.Services.AddSingleton<IClock>(SystemClock.Instance);
 
 // Learn more about configuring HTTP Logging at https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/?view=aspnetcore-9.0
 builder.Services.AddHttpLogging(options =>

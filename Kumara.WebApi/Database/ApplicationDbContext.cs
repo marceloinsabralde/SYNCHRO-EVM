@@ -1,10 +1,11 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Kumara.Models;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
 
 namespace Kumara.Database;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IClock clock)
     : DbContext(options)
 {
     public DbSet<Company> Companies { get; set; }
