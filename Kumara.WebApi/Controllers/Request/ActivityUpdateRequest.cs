@@ -1,20 +1,22 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
+using Kumara.Types;
 using Kumara.Utilities;
 
 namespace Kumara.WebApi.Controllers.Requests;
 
 public class ActivityUpdateRequest : TrackPropertySet
 {
-    private DateOnly? _actualStart;
-    private DateOnly? _actualFinish;
+    private DateWithOptionalTime? _actualStart;
+    private DateWithOptionalTime? _actualFinish;
 
-    public DateOnly? ActualStart
+    public DateWithOptionalTime? ActualStart
     {
         get => _actualStart;
         set => SetProperty(ref _actualStart, value);
     }
 
-    public DateOnly? ActualFinish
+    public DateWithOptionalTime? ActualFinish
     {
         get => _actualFinish;
         set => SetProperty(ref _actualFinish, value);

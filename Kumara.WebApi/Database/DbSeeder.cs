@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Kumara.Models;
+using Kumara.Types;
 
 namespace Kumara.Database;
 
@@ -61,10 +62,34 @@ public static class DbSeeder
                     ),
                     ReferenceCode = "CIV001-A1",
                     Name = "Activity 1",
-                    PlannedStart = new DateOnly(2023, 1, 1),
-                    PlannedFinish = new DateOnly(2024, 12, 1),
-                    ActualStart = new DateOnly(2023, 1, 1),
-                    ActualFinish = new DateOnly(2025, 1, 1),
+                    PlannedStart = new DateTimeOffset(
+                        date: new DateOnly(2023, 1, 1),
+                        time: TimeOnly.MinValue,
+                        offset: TimeSpan.Zero
+                    ),
+                    PlannedFinish = new DateTimeOffset(
+                        date: new DateOnly(2024, 12, 1),
+                        time: TimeOnly.MaxValue,
+                        offset: TimeSpan.Zero
+                    ),
+                    ActualStart = new DateWithOptionalTime
+                    {
+                        DateTime = new DateTimeOffset(
+                            date: new DateOnly(2023, 1, 1),
+                            time: new TimeOnly(hour: 8, minute: 30),
+                            offset: TimeSpan.Zero
+                        ),
+                        HasTime = true,
+                    },
+                    ActualFinish = new DateWithOptionalTime
+                    {
+                        DateTime = new DateTimeOffset(
+                            date: new DateOnly(2025, 1, 1),
+                            time: new TimeOnly(hour: 14, minute: 23),
+                            offset: TimeSpan.Zero
+                        ),
+                        HasTime = true,
+                    },
                 },
                 new Activity
                 {

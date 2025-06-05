@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Bogus;
 using Kumara.Models;
+using Kumara.Types;
 
 namespace Kumara.WebApi.Tests;
 
@@ -14,10 +15,10 @@ public static partial class Factories
         ControlAccount? controlAccount = null,
         string? referenceCode = null,
         string? name = null,
-        DateOnly? actualStart = null,
-        DateOnly? actualFinish = null,
-        DateOnly? plannedStart = null,
-        DateOnly? plannedFinish = null
+        DateWithOptionalTime? actualStart = null,
+        DateWithOptionalTime? actualFinish = null,
+        DateTimeOffset? plannedStart = null,
+        DateTimeOffset? plannedFinish = null
     )
     {
         _activityCount++;

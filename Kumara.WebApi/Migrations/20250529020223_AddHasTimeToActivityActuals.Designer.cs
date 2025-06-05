@@ -3,6 +3,7 @@ using System;
 using Kumara.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kumara.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250529020223_AddHasTimeToActivityActuals")]
+    partial class AddHasTimeToActivityActuals
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,6 +31,22 @@ namespace Kumara.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<DateTimeOffset?>("ActualFinish")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("actual_finish");
+
+                    b.Property<bool?>("ActualFinishHasTime")
+                        .HasColumnType("boolean")
+                        .HasColumnName("actual_finish_has_time");
+
+                    b.Property<DateTimeOffset?>("ActualStart")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("actual_start");
+
+                    b.Property<bool?>("ActualStartHasTime")
+                        .HasColumnType("boolean")
+                        .HasColumnName("actual_start_has_time");
 
                     b.Property<Guid>("ControlAccountId")
                         .HasColumnType("uuid")
@@ -54,22 +73,6 @@ namespace Kumara.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("reference_code");
-
-                    b.Property<DateTimeOffset?>("_actualFinish")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("actual_finish");
-
-                    b.Property<bool?>("_actualFinishHasTime")
-                        .HasColumnType("boolean")
-                        .HasColumnName("actual_finish_has_time");
-
-                    b.Property<DateTimeOffset?>("_actualStart")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("actual_start");
-
-                    b.Property<bool?>("_actualStartHasTime")
-                        .HasColumnType("boolean")
-                        .HasColumnName("actual_start_has_time");
 
                     b.HasKey("Id")
                         .HasName("pk_activities");
@@ -300,7 +303,8 @@ namespace Kumara.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("quantity_to_date");
 
-                    b.HasKey("ITwinId", "ActivityId", "MaterialId", "QuantityUnitOfMeasureId");
+                    b.HasKey("ITwinId", "ActivityId", "MaterialId", "QuantityUnitOfMeasureId")
+                        .HasName("pk_progress_summaries");
 
                     b.ToTable((string)null);
 
@@ -460,7 +464,8 @@ namespace Kumara.Migrations
                             b1.ToJson("recent_progress_entries");
 
                             b1.WithOwner()
-                                .HasForeignKey("ProgressSummaryITwinId", "ProgressSummaryActivityId", "ProgressSummaryMaterialId", "ProgressSummaryQuantityUnitOfMeasureId");
+                                .HasForeignKey("ProgressSummaryITwinId", "ProgressSummaryActivityId", "ProgressSummaryMaterialId", "ProgressSummaryQuantityUnitOfMeasureId")
+                                .HasConstraintName("fk_recent_progress_entry_progress_summaries_progress_summary_i");
                         });
 
                     b.Navigation("RecentProgressEntries");

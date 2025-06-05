@@ -15,21 +15,4 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ProgressEntry> ProgressEntries { get; set; }
     public DbSet<MaterialActivityAllocation> MaterialActivityAllocations { get; set; }
     public DbSet<ProgressSummary> ProgressSummaries { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder
-            .Entity<ProgressSummary>()
-            .ToView("progress_summaries")
-            .OwnsMany(
-                ps => ps.RecentProgressEntries,
-                builder =>
-                {
-                    builder.ToJson();
-                    builder.Property(pe => pe.Id).HasJsonPropertyName("id");
-                    builder.Property(pe => pe.QuantityDelta).HasJsonPropertyName("quantity_delta");
-                    builder.Property(pe => pe.ProgressDate).HasJsonPropertyName("progress_date");
-                }
-            );
-    }
 }

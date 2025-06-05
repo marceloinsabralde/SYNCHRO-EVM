@@ -26,11 +26,20 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
 builder.Services.AddControllers();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddSchemaTransformer(
+        new Kumara.Utilities.OpenApiSchemaTransformerAttributeTransformer()
+    );
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.UseAllOfToExtendReferenceSchemas();
+    options.EnableAnnotations();
+});
 
 // Learn more about configuring HTTP Logging at https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/?view=aspnetcore-9.0
 builder.Services.AddHttpLogging(options =>
@@ -69,10 +78,13 @@ app.MapControllers();
 if (app.Environment.IsDevelopment())
 {
     app.SeedDevelopmentData();
+    app.UseHttpLogging();
+}
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
+{
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseHttpLogging();
 }
 
 app.Run();

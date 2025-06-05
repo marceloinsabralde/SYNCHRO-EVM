@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Kumara.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Kumara.Models;
 
@@ -12,6 +13,7 @@ namespace Kumara.Models;
     nameof(QuantityUnitOfMeasureId)
 )]
 [SqlView(Name = "progress_summaries", SqlFileName = "ProgressSummary.sql")]
+[EntityTypeConfiguration(typeof(ProgressSummary.Configuration))]
 public class ProgressSummary
 {
     [Column("itwin_id")]
@@ -25,6 +27,29 @@ public class ProgressSummary
     public decimal QuantityToComplete { get; set; }
 
     public List<RecentProgressEntry>? RecentProgressEntries { get; set; }
+
+    public class Configuration : IEntityTypeConfiguration<ProgressSummary>
+    {
+        public void Configure(EntityTypeBuilder<ProgressSummary> builder)
+        {
+            builder
+                .ToView("progress_summaries")
+                .OwnsMany(
+                    ps => ps.RecentProgressEntries,
+                    builder =>
+                    {
+                        builder.ToJson();
+                        builder.Property(pe => pe.Id).HasJsonPropertyName("id");
+                        builder
+                            .Property(pe => pe.QuantityDelta)
+                            .HasJsonPropertyName("quantity_delta");
+                        builder
+                            .Property(pe => pe.ProgressDate)
+                            .HasJsonPropertyName("progress_date");
+                    }
+                );
+        }
+    }
 }
 
 public class RecentProgressEntry

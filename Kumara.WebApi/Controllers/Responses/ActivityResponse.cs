@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Kumara.Models;
+using Kumara.Types;
 
 namespace Kumara.WebApi.Controllers.Responses;
 
@@ -13,10 +14,10 @@ public class ActivityResponse
 
     public required string ReferenceCode { get; set; }
     public required string Name { get; set; }
-    public DateOnly? ActualStart { get; set; }
-    public DateOnly? ActualFinish { get; set; }
-    public DateOnly? PlannedStart { get; set; }
-    public DateOnly? PlannedFinish { get; set; }
+    public DateWithOptionalTime? ActualStart { get; set; }
+    public DateWithOptionalTime? ActualFinish { get; set; }
+    public DateTimeOffset? PlannedStart { get; set; }
+    public DateTimeOffset? PlannedFinish { get; set; }
 
     public static ActivityResponse FromActivity(Activity activity)
     {
