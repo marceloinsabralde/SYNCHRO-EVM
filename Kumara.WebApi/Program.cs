@@ -77,10 +77,13 @@ app.MapControllers();
 if (app.Environment.IsDevelopment())
 {
     app.SeedDevelopmentData();
+    app.UseHttpLogging();
+}
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
+{
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseHttpLogging();
 }
 
 app.Run();
