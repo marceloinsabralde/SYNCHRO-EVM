@@ -23,4 +23,14 @@ public abstract class SchemaPatcher : ISchemaFilter, IOpenApiSchemaTransformer
         Patch(schema);
         return Task.CompletedTask;
     }
+
+    public static void Clear(OpenApiSchema schema)
+    {
+        OpenApiSchema defaultSchema = new OpenApiSchema();
+
+        foreach (var property in schema.GetType().GetProperties())
+        {
+            property.SetValue(schema, property.GetValue(defaultSchema));
+        }
+    }
 }

@@ -37,6 +37,7 @@ builder.Services.AddOpenApi(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    options.UseAllOfToExtendReferenceSchemas();
     options.EnableAnnotations();
 });
 
