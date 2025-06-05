@@ -1,3 +1,6 @@
+[tools]
+dotnet = "9"
+
 [env]
 PGHOST="127.0.0.1"
 PGPORT="5434"
