@@ -55,6 +55,65 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
     }
 
     [Fact]
+    public async ValueTask Index_WithControlAccountFilter()
+    {
+        var iTwinId = Guid.CreateVersion7();
+        var otherITwinId = Guid.CreateVersion7();
+
+        // We're supplying a timestamp when we generate our UUIDs so we can control order
+        var timestamp = DateTimeOffset.UtcNow.AddDays(-7);
+
+        var controlAccount = Factories.ControlAccount(iTwinId: iTwinId);
+        await _dbContext.ControlAccounts.AddAsync(
+            controlAccount,
+            TestContext.Current.CancellationToken
+        );
+
+        var activity1 = Factories.Activity(
+            id: Guid.CreateVersion7(timestamp.AddDays(0)),
+            iTwinId: iTwinId,
+            controlAccount: controlAccount
+        );
+        var activity2 = Factories.Activity(
+            id: Guid.CreateVersion7(timestamp.AddDays(1)),
+            iTwinId: iTwinId,
+            controlAccount: controlAccount
+        );
+        var otherControlAccountActivity = Factories.Activity(
+            id: Guid.CreateVersion7(timestamp.AddDays(2)),
+            iTwinId: iTwinId
+        );
+        var otherITwinActivity = Factories.Activity(
+            id: Guid.CreateVersion7(timestamp.AddDays(2)),
+            iTwinId: otherITwinId
+        );
+        await _dbContext.Activities.AddRangeAsync(
+            [activity1, activity2, otherControlAccountActivity, otherITwinActivity],
+            TestContext.Current.CancellationToken
+        );
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var response = await _client.GetAsync(
+            $"/api/v1/activities?iTwinId={iTwinId}&controlAccountId={controlAccount.Id}",
+            TestContext.Current.CancellationToken
+        );
+        var apiResponse = await response.ShouldBeApiResponse<ListResponse<ActivityResponse>>();
+        var activities = apiResponse?.items.ToList();
+
+        activities.ShouldNotBeNull();
+        activities.ShouldAllBe(activity => activity.ITwinId == iTwinId);
+        activities.ShouldAllBe(activity => activity.ControlAccountId == controlAccount.Id);
+        activities.Count().ShouldBe(2);
+        activities.ShouldBeEquivalentTo(
+            new List<ActivityResponse>
+            {
+                ActivityResponse.FromActivity(activity1),
+                ActivityResponse.FromActivity(activity2),
+            }
+        );
+    }
+
+    [Fact]
     public async Task Index_WhenITwinIdMissing_BadRequest()
     {
         var response = await _client.GetAsync(
