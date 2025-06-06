@@ -70,6 +70,8 @@ public sealed class ProgressSummariesControllerTests : DatabaseTestBase
                             Id = progressEntry.Id,
                             QuantityDelta = 5m,
                             ProgressDate = new(2025, 04, 08),
+                            CreatedAt = progressEntry.CreatedAt,
+                            UpdatedAt = progressEntry.UpdatedAt,
                         },
                     ],
                 },
