@@ -99,7 +99,11 @@ jobs:
         displayName: Run tests
         inputs:
           command: test
-          arguments: '--collect "Code Coverage"'
+          arguments: >
+            --collect "Code Coverage"
+            --
+            --report-trx
+            --results-directory "$(Agent.TempDirectory)"
 
   - job: Check_Copyright
     displayName: Check Copyright Notice
