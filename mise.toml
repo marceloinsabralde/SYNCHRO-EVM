@@ -1,3 +1,10 @@
+[tools]
+dotnet = "9"
+
+[tasks.rider-test-env]
+description = "populate Rider Test Runner environment variables"
+run = "dotnet run --project script/MiseRiderTestRunnerEnv Kumara.sln.DotSettings.user"
+
 [env]
 PGHOST="127.0.0.1"
 PGPORT="5434"
