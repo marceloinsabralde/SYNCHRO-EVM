@@ -1,7 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using System.ComponentModel.DataAnnotations;
 using Kumara.Database;
-using Kumara.Types;
 using Kumara.WebApi.Controllers.Requests;
 using Kumara.WebApi.Controllers.Responses;
 using Microsoft.AspNetCore.Mvc;

@@ -1,5 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-using System.ComponentModel.DataAnnotations;
+
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kumara.Models;

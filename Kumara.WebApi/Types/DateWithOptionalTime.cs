@@ -1,6 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using System.Text.Json;
-using System.Text.Json.Schema;
 using System.Text.Json.Serialization;
 using Kumara.Utilities;
 using Microsoft.OpenApi.Models;
