@@ -11,21 +11,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CaseConverter" Version="2.0.1"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.2"/>
+        <PackageReference Include="CaseConverter" Version="2.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.5" />
         <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
-        <PackageReference Include="MongoDB.EntityFrameworkCore" Version="9.0.0"/>
-        <PackageReference Include="NJsonSchema" Version="11.3.2"/>
-        <PackageReference Include="NJsonSchema.NewtonsoftJson" Version="11.3.2"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.2"/>
-        <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.3"/>
-        <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="8.1.2"/>
+        <PackageReference Include="MongoDB.EntityFrameworkCore" Version="9.0.0" />
+        <PackageReference Include="NJsonSchema" Version="11.3.2" />
+        <PackageReference Include="NJsonSchema.NewtonsoftJson" Version="11.3.2" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="8.1.4" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Models\Events\"/>
-        <Folder Include="Models\Events\Schemas\"/>
+        <Folder Include="Models\Events\" />
+        <Folder Include="Models\Events\Schemas\" />
     </ItemGroup>
 
 </Project>
