@@ -31,7 +31,23 @@ dotnet tool restore
 script/dcl up --wait # run services using docker
 ```
 
-Note: Rider users should install the Mise plugin per the instructions [here](https://github.com/134130/intellij-mise).
+### JetBrains Rider
+
+Rider users should install the Mise plugin per the instructions [here](https://github.com/134130/intellij-mise).
+
+Note that this plugin does not currently automatically set environment variables when using the Test Runner
+(i.e. running an individual test vs the entire test project). To workaround this you can run `mise run rider-test-env`
+to populate the environment variables in Settings > Build, Execution, Deployment > Unit Testing > Test Runner > Environment variables.
+
+It is recommended to configure this as a Startup Task to ensure the Test Runner always has the current configuration:
+
+1. Navigate to Rider > Settings > Tools > Startup Tasks
+2. Click the "+", "Add New Configuration", then "Mise Toml Task"
+3. Set "Name" to "Mise Test Runner environment"
+4. Set "Mise task name" to "rider-test-env"
+5. Uncheck "Activate tool window"
+6. Click "OK" then "Save"
+7. Close and re-open the project to test
 
 ## Running Tests
 
