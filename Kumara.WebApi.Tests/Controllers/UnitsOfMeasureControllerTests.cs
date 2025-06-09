@@ -38,11 +38,8 @@ public sealed class UnitsOfMeasureControllerTests : DatabaseTestBase
             $"/api/v1/units-of-measure?iTwinId={iTwinId}",
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var apiResponse = await response.Content.ReadFromJsonAsync<
-            ListResponse<UnitOfMeasureResponse>
-        >(TestContext.Current.CancellationToken);
+        var apiResponse = await response.ShouldBeApiResponse<ListResponse<UnitOfMeasureResponse>>();
         var unitsOfMeasure = apiResponse?.items.ToList();
 
         unitsOfMeasure.ShouldNotBeNull();

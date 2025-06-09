@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json.Nodes;
 
@@ -99,5 +100,17 @@ public static class HttpResponseMessageExtensions
             title: "Conflict",
             type: "https://tools.ietf.org/html/rfc9110#section-15.5.10"
         );
+    }
+
+    public static Task<T?> ShouldBeApiResponse<T>(
+        this HttpResponseMessage response,
+        HttpStatusCode statusCode = HttpStatusCode.OK
+    )
+    {
+        response.StatusCode.ShouldBe(statusCode);
+        response.Content.Headers.ContentType.ShouldNotBeNull();
+        response.Content.Headers.ContentType.MediaType.ShouldBe("application/json");
+
+        return response.Content.ReadFromJsonAsync<T>(TestContext.Current.CancellationToken);
     }
 }

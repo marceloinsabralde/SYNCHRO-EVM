@@ -13,9 +13,12 @@ namespace Kumara.WebApi.Controllers;
 public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
-    public IActionResult Index([Required] Guid iTwinId)
+    public IActionResult Index([Required] Guid iTwinId, Guid? controlAccountId)
     {
         var activities = dbContext.Activities.Where(act => act.ITwinId == iTwinId);
+
+        if (controlAccountId is not null)
+            activities = activities.Where(act => act.ControlAccountId == controlAccountId);
 
         if (!activities.Any())
             return NotFound();
