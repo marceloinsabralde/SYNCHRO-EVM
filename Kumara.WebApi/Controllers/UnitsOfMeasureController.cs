@@ -12,6 +12,7 @@ namespace Kumara.WebApi.Controllers;
 public class UnitsOfMeasureController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
+    [EndpointName("ListUnitsOfMeasure")]
     public IActionResult Index([Required] Guid iTwinId)
     {
         var unitsOfMeasure = dbContext.UnitsOfMeasure.Where(uom => uom.ITwinId == iTwinId);

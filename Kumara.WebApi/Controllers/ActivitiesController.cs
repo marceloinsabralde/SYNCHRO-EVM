@@ -13,6 +13,7 @@ namespace Kumara.WebApi.Controllers;
 public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
+    [EndpointName("ListActivities")]
     public IActionResult Index([Required] Guid iTwinId, Guid? controlAccountId)
     {
         var activities = dbContext.Activities.Where(act => act.ITwinId == iTwinId);
@@ -32,6 +33,7 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
     }
 
     [HttpGet("{id}")]
+    [EndpointName("GetActivity")]
     public IActionResult Show([Required] Guid id)
     {
         var activity = dbContext.Activities.Find(id);
@@ -43,6 +45,7 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
     }
 
     [HttpPatch("{id}")]
+    [EndpointName("UpdateActivity")]
     public IActionResult Update([Required] Guid id, [FromBody] ActivityUpdateRequest activityUpdate)
     {
         var activity = dbContext.Activities.Find(id);

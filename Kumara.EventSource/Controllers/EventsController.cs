@@ -34,6 +34,7 @@ public class EventsController : ControllerBase
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Count of events saved</returns>
     [HttpPost]
+    [EndpointName("CreateEvents")]
     [SwaggerRequestExample(typeof(List<EventDto>), typeof(CreateEventsRequestExampleDto))]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -88,6 +89,7 @@ public class EventsController : ControllerBase
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Paginated list of events</returns>
     [HttpGet]
+    [EndpointName("GetEvents")]
     [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetEventsResponseExampleDto))]
     [ProducesResponseType(typeof(PaginatedList<Event>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]

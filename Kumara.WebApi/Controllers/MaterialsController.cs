@@ -12,6 +12,7 @@ namespace Kumara.WebApi.Controllers;
 public class MaterialsController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
+    [EndpointName("ListMaterials")]
     public IActionResult Index([Required] Guid iTwinId)
     {
         var materials = dbContext.Materials.Where(materials => materials.ITwinId == iTwinId);
@@ -27,6 +28,7 @@ public class MaterialsController(ApplicationDbContext dbContext) : ControllerBas
     }
 
     [HttpGet("{id}")]
+    [EndpointName("GetMaterial")]
     public IActionResult Show([Required] Guid id)
     {
         var material = dbContext.Materials.Find(id);

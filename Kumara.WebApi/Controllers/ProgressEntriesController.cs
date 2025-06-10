@@ -13,6 +13,7 @@ namespace Kumara.WebApi.Controllers;
 public class ProgressEntriesController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpPost]
+    [EndpointName("CreateProgressEntry")]
     public IActionResult Create([FromBody] ProgressEntryCreateRequest progressEntryRequest)
     {
         Activity? activity = dbContext.Activities.FirstOrDefault(a =>

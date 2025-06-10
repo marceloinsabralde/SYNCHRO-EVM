@@ -13,6 +13,7 @@ namespace Kumara.WebApi.Controllers;
 public class ProgressSummariesController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
+    [EndpointName("ListProgressSummaries")]
     public IActionResult Index([Required] Guid iTwinId, Guid? activityId, Guid? materialId)
     {
         var progressSummaries = dbContext.ProgressSummaries.Where(ps => ps.ITwinId == iTwinId);

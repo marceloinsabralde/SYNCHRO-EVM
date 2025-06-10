@@ -12,6 +12,7 @@ namespace Kumara.WebApi.Controllers;
 public class ControlAccountsController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
+    [EndpointName("ListControlAccounts")]
     public IActionResult Index([Required] Guid iTwinId)
     {
         var controlAccounts = dbContext.ControlAccounts.Where(ca => ca.ITwinId == iTwinId);
@@ -30,6 +31,7 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpGet("{id}")]
+    [EndpointName("GetControlAccount")]
     public IActionResult Show([Required] Guid id)
     {
         var controlAccount = dbContext.ControlAccounts.Find(id);

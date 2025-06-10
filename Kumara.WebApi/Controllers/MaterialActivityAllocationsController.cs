@@ -12,6 +12,7 @@ namespace Kumara.WebApi.Controllers;
 public class MaterialActivityAllocationsController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
+    [EndpointName("ListMaterialActivityAllocations")]
     public IActionResult Index([Required] Guid iTwinId, Guid? activityId, Guid? materialId)
     {
         var allocations = dbContext.MaterialActivityAllocations.Where(allocation =>
