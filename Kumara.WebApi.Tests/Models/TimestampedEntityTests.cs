@@ -31,6 +31,12 @@ public class TimestampedEntityTests(TimestampedEntityTests.TestFixture testFixtu
         dbContext.SaveChanges();
         entity.UpdatedAt.ShouldNotBe(default);
         entity.UpdatedAt.ShouldBe(entity.CreatedAt.Plus(Duration.FromSeconds(30)));
+
+        fakeClock.AdvanceSeconds(30);
+
+        dbContext.SaveChanges();
+        entity.UpdatedAt.ShouldNotBe(default);
+        entity.UpdatedAt.ShouldBe(entity.CreatedAt.Plus(Duration.FromSeconds(30)));
     }
 
     [Fact]
@@ -49,6 +55,12 @@ public class TimestampedEntityTests(TimestampedEntityTests.TestFixture testFixtu
         fakeClock.AdvanceSeconds(30);
 
         entity.Name = "New Name";
+        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        entity.UpdatedAt.ShouldNotBe(default);
+        entity.UpdatedAt.ShouldBe(entity.CreatedAt.Plus(Duration.FromSeconds(30)));
+
+        fakeClock.AdvanceSeconds(30);
+
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         entity.UpdatedAt.ShouldNotBe(default);
         entity.UpdatedAt.ShouldBe(entity.CreatedAt.Plus(Duration.FromSeconds(30)));
