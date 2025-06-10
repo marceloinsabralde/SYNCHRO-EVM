@@ -26,13 +26,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         var createdEntites = ChangeTracker
             .Entries()
-            .Where(e => e.Entity is ApplicationEntity && e.State == EntityState.Added)
-            .Select(e => e.Entity as ApplicationEntity);
+            .Where(e => e.Entity is ITimestampedEntity && e.State == EntityState.Added)
+            .Select(e => e.Entity as ITimestampedEntity);
 
         var updatedEntities = ChangeTracker
             .Entries()
-            .Where(e => e.Entity is ApplicationEntity && e.State == EntityState.Modified)
-            .Select(e => e.Entity as ApplicationEntity);
+            .Where(e => e.Entity is ITimestampedEntity && e.State == EntityState.Modified)
+            .Select(e => e.Entity as ITimestampedEntity);
 
         foreach (var createdEntity in createdEntites)
         {

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Kumara.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NodaTime;
 
 namespace Kumara.Models;
 

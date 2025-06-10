@@ -8,8 +8,8 @@ using NodaTime.Testing;
 
 namespace Kumara.WebApi.Tests.Models;
 
-public class ApplicationEntityTests(ApplicationEntityTests.TestFixture testFixture)
-    : IClassFixture<ApplicationEntityTests.TestFixture>
+public class TimestampedEntityTests(TimestampedEntityTests.TestFixture testFixture)
+    : IClassFixture<TimestampedEntityTests.TestFixture>
 {
     private TestDbContext dbContext => testFixture.DbContext;
     private readonly FakeClock fakeClock = testFixture.FakeClock;
@@ -55,10 +55,12 @@ public class ApplicationEntityTests(ApplicationEntityTests.TestFixture testFixtu
         entity.UpdatedAt.ShouldBe(entity.CreatedAt.Plus(Duration.FromSeconds(30)));
     }
 
-    public class TestEntity : ApplicationEntity
+    public class TestEntity : ITimestampedEntity
     {
         public required Guid Id { get; init; }
         public required string Name { get; set; }
+        public Instant CreatedAt { get; set; }
+        public Instant UpdatedAt { get; set; }
     }
 
     public class TestFixture
@@ -79,7 +81,7 @@ public class ApplicationEntityTests(ApplicationEntityTests.TestFixture testFixtu
 
         private static readonly DbContextOptions<ApplicationDbContext> Options =
             new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(nameof(ApplicationEntityTests))
+                .UseInMemoryDatabase(nameof(TimestampedEntityTests))
                 .UseSnakeCaseNamingConvention()
                 .Options;
     }

@@ -4,7 +4,7 @@ using NodaTime;
 
 namespace Kumara.Models;
 
-public abstract class ApplicationEntity : ITimestampedEntity
+public interface ITimestampedEntity
 {
     public Instant CreatedAt { get; set; }
     public Instant UpdatedAt { get; set; }
