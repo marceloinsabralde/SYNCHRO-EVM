@@ -18,12 +18,17 @@ builder.Configuration.AddEnvironmentVariables(
 );
 
 // Add services to the container.
-builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
-    opt.UseNpgsql(
-            builder.Configuration.GetConnectionString("KumaraWebApiDB"),
-            o => o.SetPostgresVersion(16, 4).UseNodaTime()
-        )
-        .UseSnakeCaseNamingConvention()
+builder.Services.AddSingleton<IClock>(NanosecondSystemClock.Instance);
+builder.Services.AddSingleton<TimestampedEntityInterceptor>();
+
+builder.Services.AddDbContextPool<ApplicationDbContext>(
+    (serviceProvider, opt) =>
+        opt.UseNpgsql(
+                builder.Configuration.GetConnectionString("KumaraWebApiDB"),
+                o => o.SetPostgresVersion(16, 4).UseNodaTime()
+            )
+            .UseSnakeCaseNamingConvention()
+            .AddInterceptors(serviceProvider.GetRequiredService<TimestampedEntityInterceptor>())
 );
 
 builder
@@ -47,8 +52,6 @@ builder.Services.AddSwaggerGen(options =>
     options.UseAllOfToExtendReferenceSchemas();
     options.EnableAnnotations();
 });
-
-builder.Services.AddSingleton<IClock>(NanosecondSystemClock.Instance);
 
 // Learn more about configuring HTTP Logging at https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/?view=aspnetcore-9.0
 builder.Services.AddHttpLogging(options =>

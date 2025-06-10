@@ -1,11 +1,10 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Kumara.Models;
 using Microsoft.EntityFrameworkCore;
-using NodaTime;
 
 namespace Kumara.Database;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IClock clock)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : DbContext(options)
 {
     public DbSet<Company> Companies { get; set; }
@@ -20,40 +19,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.Conventions.Add(_ => new ITwinIdIndexConvention());
-    }
-
-    private void SetTimestampColumns()
-    {
-        var createdEntites = ChangeTracker
-            .Entries()
-            .Where(e => e.Entity is ITimestampedEntity && e.State == EntityState.Added)
-            .Select(e => e.Entity as ITimestampedEntity);
-
-        var updatedEntities = ChangeTracker
-            .Entries()
-            .Where(e => e.Entity is ITimestampedEntity && e.State == EntityState.Modified)
-            .Select(e => e.Entity as ITimestampedEntity);
-
-        foreach (var createdEntity in createdEntites)
-        {
-            createdEntity!.CreatedAt = clock.GetCurrentInstant();
-            createdEntity.UpdatedAt = clock.GetCurrentInstant();
-        }
-        foreach (var updatedEntity in updatedEntities)
-        {
-            updatedEntity!.UpdatedAt = clock.GetCurrentInstant();
-        }
-    }
-
-    public override int SaveChanges()
-    {
-        SetTimestampColumns();
-        return base.SaveChanges();
-    }
-
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        SetTimestampColumns();
-        return base.SaveChangesAsync(cancellationToken);
     }
 }

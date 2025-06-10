@@ -2,7 +2,6 @@
 using Kumara.Database;
 using Kumara.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.InMemory;
 using NodaTime;
 using NodaTime.Testing;
 
@@ -65,24 +64,32 @@ public class TimestampedEntityTests(TimestampedEntityTests.TestFixture testFixtu
 
     public class TestFixture
     {
-        public FakeClock FakeClock;
-        public TestDbContext DbContext;
+        public readonly FakeClock FakeClock;
+        public readonly TestDbContext DbContext;
 
         public TestFixture()
         {
             FakeClock = new FakeClock(Instant.FromUtc(2025, 05, 05, 13, 37));
-            DbContext = new TestDbContext(FakeClock);
+            var timestampedEntityInterceptor = new TimestampedEntityInterceptor(FakeClock);
+            DbContext = new TestDbContext(timestampedEntityInterceptor);
         }
     }
 
-    public class TestDbContext(IClock clock) : ApplicationDbContext(Options, clock)
+    public class TestDbContext(TimestampedEntityInterceptor timestampedEntityInterceptor)
+        : DbContext(Options)
     {
         public DbSet<TestEntity> Entities { get; set; }
 
-        private static readonly DbContextOptions<ApplicationDbContext> Options =
-            new DbContextOptionsBuilder<ApplicationDbContext>()
+        private static readonly DbContextOptions<TestDbContext> Options =
+            new DbContextOptionsBuilder<TestDbContext>()
                 .UseInMemoryDatabase(nameof(TimestampedEntityTests))
                 .UseSnakeCaseNamingConvention()
                 .Options;
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.AddInterceptors(timestampedEntityInterceptor);
+            base.OnConfiguring(optionsBuilder);
+        }
     }
 }
