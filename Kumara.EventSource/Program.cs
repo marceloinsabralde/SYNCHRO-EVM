@@ -49,6 +49,7 @@ if (!app.Environment.IsProduction())
         options.RoutePrefix = "swagger";
         // Disable resource loading
         options.InjectStylesheet("");
+        options.EnableDeepLinking();
     });
 }
 
