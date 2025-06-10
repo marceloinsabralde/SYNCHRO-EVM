@@ -3,11 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Kumara.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NodaTime;
 
 namespace Kumara.Models;
 
 [EntityTypeConfiguration(typeof(Activity.Configuration))]
-public class Activity
+public class Activity : ApplicationEntity
 {
     private DateTimeOffset? _actualStart;
     private bool? _actualStartHasTime;

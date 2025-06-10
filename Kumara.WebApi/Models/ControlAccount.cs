@@ -1,9 +1,10 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using System.ComponentModel.DataAnnotations.Schema;
+using NodaTime;
 
 namespace Kumara.Models;
 
-public class ControlAccount
+public class ControlAccount : ApplicationEntity
 {
     public Guid Id { get; set; }
 

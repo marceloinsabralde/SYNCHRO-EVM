@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Kumara.Models;
+using NodaTime;
 
 namespace Kumara.WebApi.Controllers.Responses;
 
@@ -23,6 +24,10 @@ public class ControlAccountResponse
 
     public DateOnly? PlannedFinish { get; set; }
 
+    public Instant CreatedAt { get; set; }
+
+    public Instant UpdatedAt { get; set; }
+
     public static ControlAccountResponse FromControlAccount(ControlAccount controlAccount)
     {
         return new ControlAccountResponse
@@ -36,6 +41,8 @@ public class ControlAccountResponse
             ActualFinish = controlAccount.ActualFinish,
             PlannedStart = controlAccount.PlannedStart,
             PlannedFinish = controlAccount.PlannedFinish,
+            CreatedAt = controlAccount.CreatedAt,
+            UpdatedAt = controlAccount.UpdatedAt,
         };
     }
 }

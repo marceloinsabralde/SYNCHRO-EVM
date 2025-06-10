@@ -1,7 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using System.Reflection;
-using Kumara.Utilities;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
 
 namespace Kumara.Database;
 

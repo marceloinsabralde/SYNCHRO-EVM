@@ -3,7 +3,15 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 
 namespace Kumara.WebApi.Tests;
 
@@ -102,6 +110,22 @@ public static class HttpResponseMessageExtensions
         );
     }
 
+    private static readonly Lazy<JsonSerializerOptions> _lazyJsonSerializerOptions = new(() =>
+    {
+        var appFactory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.UseEnvironment("Test");
+            builder.ConfigureLogging(logging => logging.ClearProviders());
+        });
+
+        var mvcOptions = appFactory.Services.GetRequiredService<
+            IOptions<Microsoft.AspNetCore.Mvc.JsonOptions>
+        >();
+        var jsonOptions = mvcOptions.Value.JsonSerializerOptions;
+
+        return jsonOptions;
+    });
+
     public static Task<T?> ShouldBeApiResponse<T>(
         this HttpResponseMessage response,
         HttpStatusCode statusCode = HttpStatusCode.OK
@@ -111,6 +135,9 @@ public static class HttpResponseMessageExtensions
         response.Content.Headers.ContentType.ShouldNotBeNull();
         response.Content.Headers.ContentType.MediaType.ShouldBe("application/json");
 
-        return response.Content.ReadFromJsonAsync<T>(TestContext.Current.CancellationToken);
+        return response.Content.ReadFromJsonAsync<T>(
+            _lazyJsonSerializerOptions.Value,
+            TestContext.Current.CancellationToken
+        );
     }
 }

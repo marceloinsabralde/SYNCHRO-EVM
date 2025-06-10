@@ -16,7 +16,17 @@ FROM (
     progress_entries.quantity_unit_of_measure_id,
     progress_entries.quantity_delta,
     material_activity_allocations.quantity_at_complete,
-    (SELECT row_to_json(_) FROM (SELECT progress_entries.id, progress_entries.quantity_delta, progress_entries.progress_date) _) AS entry_summary,
+    progress_entries.created_at,
+    progress_entries.updated_at,
+    (SELECT row_to_json(_) FROM (
+        SELECT
+            progress_entries.id,
+            progress_entries.quantity_delta,
+            progress_entries.progress_date,
+            progress_entries.created_at,
+            progress_entries.updated_at
+        )
+    _) AS entry_summary,
     row_number() OVER (PARTITION BY progress_entries.itwin_id, progress_entries.activity_id, progress_entries.material_id, progress_entries.quantity_unit_of_measure_id ORDER BY progress_entries.progress_date DESC, progress_entries.id DESC) as row_number
   FROM
     progress_entries

@@ -1,10 +1,11 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-using System.ComponentModel.DataAnnotations;
+
 using System.ComponentModel.DataAnnotations.Schema;
+using NodaTime;
 
 namespace Kumara.Models;
 
-public class MaterialActivityAllocation
+public class MaterialActivityAllocation : ApplicationEntity
 {
     public Guid Id { get; set; }
 

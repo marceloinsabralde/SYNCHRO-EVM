@@ -1,10 +1,11 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-using System.ComponentModel.DataAnnotations;
+
 using System.ComponentModel.DataAnnotations.Schema;
+using NodaTime;
 
 namespace Kumara.Models;
 
-public class Material
+public class Material : ApplicationEntity
 {
     public Guid Id { get; set; }
 

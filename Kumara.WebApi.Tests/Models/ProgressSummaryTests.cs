@@ -124,12 +124,16 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
                             Id = activityProgressEntries[1].Id,
                             QuantityDelta = 7m,
                             ProgressDate = new(2025, 04, 09),
+                            CreatedAt = activityProgressEntries[1].CreatedAt,
+                            UpdatedAt = activityProgressEntries[1].UpdatedAt,
                         },
                         new RecentProgressEntry
                         {
                             Id = activityProgressEntries[0].Id,
                             QuantityDelta = 5m,
                             ProgressDate = new(2025, 04, 08),
+                            CreatedAt = activityProgressEntries[0].CreatedAt,
+                            UpdatedAt = activityProgressEntries[0].UpdatedAt,
                         },
                     ],
                 },
@@ -149,12 +153,16 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
                             Id = activityProgressEntries[3].Id,
                             QuantityDelta = 20m,
                             ProgressDate = new(2025, 04, 09),
+                            CreatedAt = activityProgressEntries[3].CreatedAt,
+                            UpdatedAt = activityProgressEntries[3].UpdatedAt,
                         },
                         new RecentProgressEntry
                         {
                             Id = activityProgressEntries[2].Id,
                             QuantityDelta = 10m,
                             ProgressDate = new(2025, 04, 08),
+                            CreatedAt = activityProgressEntries[2].CreatedAt,
+                            UpdatedAt = activityProgressEntries[2].UpdatedAt,
                         },
                     ],
                 },
@@ -174,12 +182,16 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
                             Id = activity2ProgressEntries[1].Id,
                             QuantityDelta = 5m,
                             ProgressDate = new(2025, 04, 07),
+                            CreatedAt = activity2ProgressEntries[1].CreatedAt,
+                            UpdatedAt = activity2ProgressEntries[1].UpdatedAt,
                         },
                         new RecentProgressEntry
                         {
                             Id = activity2ProgressEntries[0].Id,
                             QuantityDelta = 8m,
                             ProgressDate = new(2025, 04, 06),
+                            CreatedAt = activity2ProgressEntries[0].CreatedAt,
+                            UpdatedAt = activity2ProgressEntries[0].UpdatedAt,
                         },
                     ],
                 },
@@ -201,6 +213,8 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
                             Id = otherITwinProgressEntry.Id,
                             QuantityDelta = otherITwinProgressEntry.QuantityDelta,
                             ProgressDate = otherITwinProgressEntry.ProgressDate,
+                            CreatedAt = otherITwinProgressEntry.CreatedAt,
+                            UpdatedAt = otherITwinProgressEntry.UpdatedAt,
                         },
                     ],
                 },
@@ -244,6 +258,8 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
                     Id = pe.Id,
                     QuantityDelta = pe.QuantityDelta,
                     ProgressDate = pe.ProgressDate,
+                    CreatedAt = pe.CreatedAt,
+                    UpdatedAt = pe.UpdatedAt,
                 })
                 .Reverse()
                 .ToList()

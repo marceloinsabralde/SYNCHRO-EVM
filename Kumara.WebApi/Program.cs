@@ -1,7 +1,10 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Kumara.Database;
+using Kumara.Utilities;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 using Npgsql;
 using OpenTelemetry;
 using OpenTelemetry.Logs;
@@ -15,15 +18,24 @@ builder.Configuration.AddEnvironmentVariables(
 );
 
 // Add services to the container.
-builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
-    opt.UseNpgsql(
-            builder.Configuration.GetConnectionString("KumaraWebApiDB"),
-            o => o.SetPostgresVersion(16, 4).UseNodaTime()
-        )
-        .UseSnakeCaseNamingConvention()
+builder.Services.AddSingleton<IClock>(NanosecondSystemClock.Instance);
+builder.Services.AddSingleton<TimestampedEntityInterceptor>();
+
+builder.Services.AddDbContextPool<ApplicationDbContext>(
+    (serviceProvider, opt) =>
+        opt.UseNpgsql(
+                builder.Configuration.GetConnectionString("KumaraWebApiDB"),
+                o => o.SetPostgresVersion(16, 4).UseNodaTime()
+            )
+            .UseSnakeCaseNamingConvention()
+            .AddInterceptors(serviceProvider.GetRequiredService<TimestampedEntityInterceptor>())
 );
 
-builder.Services.AddControllers();
+builder
+    .Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb)
+    );
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi(options =>
