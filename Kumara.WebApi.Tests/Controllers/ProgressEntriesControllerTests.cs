@@ -77,7 +77,7 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
             statusCode: HttpStatusCode.Accepted
         );
         createdResponse.ShouldNotBeNull();
-        createdResponse.Id.ShouldNotBe(Guid.Empty);
+        createdResponse.item.Id.ShouldNotBe(Guid.Empty);
     }
 
     [Theory]

@@ -70,6 +70,6 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
 
         dbContext.SaveChanges();
 
-        return Accepted(new UpdatedResponse { Id = activity.Id });
+        return Accepted(new UpdatedResponse { item = new IdResponse { Id = activity.Id } });
     }
 }

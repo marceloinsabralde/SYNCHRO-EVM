@@ -198,7 +198,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             statusCode: HttpStatusCode.Accepted
         );
         updatedResponse.ShouldNotBeNull();
-        updatedResponse.Id.ShouldBe(existingActivity.Id);
+        updatedResponse.item.Id.ShouldBe(existingActivity.Id);
 
         response = await _client.GetAsync(
             $"/api/v1/activities/{existingActivity.Id}",
@@ -272,7 +272,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             statusCode: HttpStatusCode.Accepted
         );
         updatedResponse.ShouldNotBeNull();
-        updatedResponse.Id.ShouldBe(existingActivity.Id);
+        updatedResponse.item.Id.ShouldBe(existingActivity.Id);
 
         response = await _client.GetAsync(
             $"/api/v1/activities/{existingActivity.Id}",

@@ -4,5 +4,5 @@ namespace Kumara.Common.Controllers.Responses;
 
 public class CreatedResponse
 {
-    public required Guid Id { get; set; }
+    public required IdResponse item { get; set; }
 }

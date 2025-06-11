@@ -75,6 +75,6 @@ public class ProgressEntriesController(ApplicationDbContext dbContext) : Control
         dbContext.ProgressEntries.Add(progressEntry);
         dbContext.SaveChanges();
 
-        return Accepted(new CreatedResponse { Id = progressEntry.Id });
+        return Accepted(new CreatedResponse { item = new IdResponse { Id = progressEntry.Id } });
     }
 }
