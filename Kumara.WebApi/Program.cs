@@ -35,8 +35,9 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(
 builder
     .Services.AddControllers()
     .AddJsonOptions(options =>
-        options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb)
-    );
+    {
+        options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+    });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi(options =>
