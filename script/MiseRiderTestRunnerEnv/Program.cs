@@ -1,4 +1,5 @@
 ﻿// Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using System.CommandLine;
 using System.Diagnostics;
 using System.Text.Json;

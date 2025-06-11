@@ -1,4 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using System.Data.Common;
 using Kumara.WebApi.Database;
 using Microsoft.AspNetCore.Hosting;

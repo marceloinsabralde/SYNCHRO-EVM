@@ -1,4 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
