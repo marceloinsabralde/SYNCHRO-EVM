@@ -2,7 +2,7 @@
 
 namespace Kumara.Common.Controllers.Responses;
 
-public class UpdatedResponse
+public class UpdatedResponse<T>
 {
     public required IdResponse item { get; set; }
 }

@@ -52,7 +52,7 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
 
     [HttpPatch("{id}")]
     [EndpointName("UpdateActivity")]
-    public ActionResult<UpdatedResponse> Update(
+    public ActionResult<UpdatedResponse<ActivityResponse>> Update(
         [Required] Guid id,
         [FromBody] ActivityUpdateRequest activityUpdate
     )
@@ -70,6 +70,8 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
 
         dbContext.SaveChanges();
 
-        return Accepted(new UpdatedResponse { item = new IdResponse { Id = activity.Id } });
+        return Accepted(
+            new UpdatedResponse<ActivityResponse> { item = new IdResponse { Id = activity.Id } }
+        );
     }
 }

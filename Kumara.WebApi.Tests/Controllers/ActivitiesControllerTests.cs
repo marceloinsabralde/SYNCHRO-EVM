@@ -194,7 +194,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             new { actualStart = "2025-03-18T10:47:05.288+10:00", actualFinish = "2025-03-19" },
             TestContext.Current.CancellationToken
         );
-        var updatedResponse = await response.ShouldBeApiResponse<UpdatedResponse>(
+        var updatedResponse = await response.ShouldBeApiResponse<UpdatedResponse<ActivityResponse>>(
             statusCode: HttpStatusCode.Accepted
         );
         updatedResponse.ShouldNotBeNull();
@@ -268,7 +268,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             new { actualFinish = "2025-03-19" },
             TestContext.Current.CancellationToken
         );
-        var updatedResponse = await response.ShouldBeApiResponse<UpdatedResponse>(
+        var updatedResponse = await response.ShouldBeApiResponse<UpdatedResponse<ActivityResponse>>(
             statusCode: HttpStatusCode.Accepted
         );
         updatedResponse.ShouldNotBeNull();

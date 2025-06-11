@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Requests;
 using Kumara.WebApi.Controllers.Responses;
+using Kumara.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kumara.WebApi.Tests.Controllers;
@@ -73,7 +74,7 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
             },
             TestContext.Current.CancellationToken
         );
-        var createdResponse = await response.ShouldBeApiResponse<CreatedResponse>(
+        var createdResponse = await response.ShouldBeApiResponse<CreatedResponse<ProgressEntry>>(
             statusCode: HttpStatusCode.Accepted
         );
         createdResponse.ShouldNotBeNull();

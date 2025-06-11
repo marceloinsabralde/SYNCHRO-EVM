@@ -65,10 +65,10 @@ public sealed class ControllerConventionTests
             {
                 typeof(ListResponse<>),
                 typeof(ShowResponse<>),
-                typeof(CreatedResponse),
-                typeof(UpdatedResponse),
+                typeof(CreatedResponse<>),
+                typeof(UpdatedResponse<>),
             },
-            $"{methodName} should return a ListResponse<>, ShowResponse<>, CreatedResponse, or UpdatedResponse"
+            $"{methodName} should return a ListResponse<>, ShowResponse<>, CreatedResponse<>, or UpdatedResponse<>"
         );
     }
 
