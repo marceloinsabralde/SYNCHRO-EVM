@@ -34,4 +34,9 @@ public static class Inflector
     {
         return Inflect(value, part => part.Singularize());
     }
+
+    public static string Camelize(string value)
+    {
+        return value.Camelize();
+    }
 }
