@@ -20,13 +20,22 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
         .UseSnakeCaseNamingConvention()
 );
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.UseAllOfToExtendReferenceSchemas();
+    options.EnableAnnotations();
+});
+
 var app = builder.Build();
 
 await app.MigrateDbAsync<ApplicationDbContext>();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

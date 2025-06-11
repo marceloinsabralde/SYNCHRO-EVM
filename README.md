@@ -90,7 +90,7 @@ Notes:
 ### Running Kumara.Core
 
 From the root directory of the solution run `dotnet run --project Kumara.Core`
-Then visit https://localhost:7133 to view in browser.
+Then visit https://localhost:7133/swagger/index.html to view in browser.
 
 #### Using the HTTP Test File
 
