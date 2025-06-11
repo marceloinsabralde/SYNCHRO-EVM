@@ -1,8 +1,9 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-using Kumara.Models;
-using Kumara.Types;
 
-namespace Kumara.Database;
+using Kumara.WebApi.Models;
+using Kumara.WebApi.Types;
+
+namespace Kumara.WebApi.Database;
 
 public static class DbSeeder
 {

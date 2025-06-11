@@ -1,7 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using Bogus;
-using Kumara.Models;
-using Kumara.Types;
+using Kumara.WebApi.Models;
+using Kumara.WebApi.Types;
 
 namespace Kumara.WebApi.Tests;
 

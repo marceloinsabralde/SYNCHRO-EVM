@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Kumara.Migrations
+namespace Kumara.WebApi.Migrations
 {
     /// <inheritdoc />
     public partial class AddHasTimeToActivityActuals : Migration

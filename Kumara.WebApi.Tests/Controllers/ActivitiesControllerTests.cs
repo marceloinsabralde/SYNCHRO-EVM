@@ -1,8 +1,8 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 using System.Net;
 using System.Net.Http.Json;
-using Kumara.Types;
 using Kumara.WebApi.Controllers.Responses;
+using Kumara.WebApi.Types;
 
 namespace Kumara.WebApi.Tests.Controllers;
 

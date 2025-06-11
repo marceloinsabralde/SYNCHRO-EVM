@@ -1,6 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.Database;
+using Kumara.WebApi.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kumara.WebApi.Tests.Database;

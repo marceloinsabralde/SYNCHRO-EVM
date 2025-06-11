@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
-namespace Kumara.Database;
+namespace Kumara.WebApi.Database;
 
 public class ITwinIdIndexConvention : IPropertyAddedConvention
 {

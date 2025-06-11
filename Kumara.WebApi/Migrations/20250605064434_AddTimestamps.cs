@@ -3,7 +3,7 @@ using NodaTime;
 
 #nullable disable
 
-namespace Kumara.Migrations
+namespace Kumara.WebApi.Migrations
 {
     /// <inheritdoc />
     public partial class AddTimestamps : Migration
