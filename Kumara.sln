@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kumara.WebApi.Tests", "Kuma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kumara.EventSource.Tests", "Kumara.EventSource.Tests\Kumara.EventSource.Tests.csproj", "{5E11AC35-251E-46C5-B120-8763C829CF9A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kumara.Common", "Kumara.Common\Kumara.Common.csproj", "{F5F16D3E-4EEE-4CD7-BEA8-6CC3F0218E74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +82,18 @@ Global
 		{5E11AC35-251E-46C5-B120-8763C829CF9A}.Release|x64.Build.0 = Release|Any CPU
 		{5E11AC35-251E-46C5-B120-8763C829CF9A}.Release|x86.ActiveCfg = Release|Any CPU
 		{5E11AC35-251E-46C5-B120-8763C829CF9A}.Release|x86.Build.0 = Release|Any CPU
+		{F5F16D3E-4EEE-4CD7-BEA8-6CC3F0218E74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5F16D3E-4EEE-4CD7-BEA8-6CC3F0218E74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5F16D3E-4EEE-4CD7-BEA8-6CC3F0218E74}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F5F16D3E-4EEE-4CD7-BEA8-6CC3F0218E74}.Debug|x64.Build.0 = Debug|Any CPU
+		{F5F16D3E-4EEE-4CD7-BEA8-6CC3F0218E74}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F5F16D3E-4EEE-4CD7-BEA8-6CC3F0218E74}.Debug|x86.Build.0 = Debug|Any CPU
+		{F5F16D3E-4EEE-4CD7-BEA8-6CC3F0218E74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5F16D3E-4EEE-4CD7-BEA8-6CC3F0218E74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5F16D3E-4EEE-4CD7-BEA8-6CC3F0218E74}.Release|x64.ActiveCfg = Release|Any CPU
+		{F5F16D3E-4EEE-4CD7-BEA8-6CC3F0218E74}.Release|x64.Build.0 = Release|Any CPU
+		{F5F16D3E-4EEE-4CD7-BEA8-6CC3F0218E74}.Release|x86.ActiveCfg = Release|Any CPU
+		{F5F16D3E-4EEE-4CD7-BEA8-6CC3F0218E74}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
