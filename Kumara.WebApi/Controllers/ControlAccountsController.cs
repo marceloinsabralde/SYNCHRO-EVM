@@ -32,7 +32,7 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
 
     [HttpGet("{id}")]
     [EndpointName("GetControlAccount")]
-    public IActionResult Show([Required] Guid id)
+    public ActionResult<ShowResponse<ControlAccountResponse>> Show([Required] Guid id)
     {
         var controlAccount = dbContext.ControlAccounts.Find(id);
 
@@ -41,6 +41,11 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
             return NotFound();
         }
 
-        return Ok(ControlAccountResponse.FromControlAccount(controlAccount));
+        return Ok(
+            new ShowResponse<ControlAccountResponse>
+            {
+                item = ControlAccountResponse.FromControlAccount(controlAccount),
+            }
+        );
     }
 }

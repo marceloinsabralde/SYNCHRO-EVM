@@ -97,7 +97,10 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
             TestContext.Current.CancellationToken
         );
 
-        var controlAccountResponse = await response.ShouldBeApiResponse<ControlAccountResponse>();
+        var apiResponse = await response.ShouldBeApiResponse<
+            ShowResponse<ControlAccountResponse>
+        >();
+        var controlAccountResponse = apiResponse?.item;
         controlAccountResponse.ShouldBeEquivalentTo(
             ControlAccountResponse.FromControlAccount(controlAccount)
         );
