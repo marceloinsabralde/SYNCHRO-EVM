@@ -7,9 +7,6 @@ namespace Kumara.EventSource.Utilities;
 
 public static class Pagination
 {
-    private static readonly JsonSerializerOptions SerializerOptions =
-        KumaraJsonOptions.DefaultOptions;
-
     public static string CreateContinuationToken(
         Guid id,
         Dictionary<string, string>? queryParameters = null
@@ -21,7 +18,7 @@ public static class Pagination
             QueryParameters = queryParameters ?? new Dictionary<string, string>(),
         };
 
-        string json = JsonSerializer.Serialize(tokenData, SerializerOptions);
+        string json = JsonSerializer.Serialize(tokenData, JsonSerializerOptions.Default);
         byte[] bytes = Encoding.UTF8.GetBytes(json);
         return Convert.ToBase64String(bytes);
     }
@@ -35,7 +32,7 @@ public static class Pagination
 
             ContinuationToken? result = JsonSerializer.Deserialize<ContinuationToken>(
                 json,
-                SerializerOptions
+                JsonSerializerOptions.Default
             );
 
             if (result != null && result.QueryParameters == null)
