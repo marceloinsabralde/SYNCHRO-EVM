@@ -35,11 +35,6 @@ public static class Pagination
                 JsonSerializerOptions.Default
             );
 
-            if (result != null && result.QueryParameters == null)
-            {
-                result.QueryParameters = new Dictionary<string, string>();
-            }
-
             return result;
         }
         catch
