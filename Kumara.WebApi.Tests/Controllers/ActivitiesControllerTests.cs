@@ -193,15 +193,19 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             new { actualStart = "2025-03-18T10:47:05.288+10:00", actualFinish = "2025-03-19" },
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        var updatedResponse = await response.ShouldBeApiResponse<UpdatedResponse>(
+            statusCode: HttpStatusCode.Accepted
+        );
+        updatedResponse.ShouldNotBeNull();
+        updatedResponse.Id.ShouldBe(existingActivity.Id);
 
         response = await _client.GetAsync(
             $"/api/v1/activities/{existingActivity.Id}",
             TestContext.Current.CancellationToken
         );
 
-        var apiResponse = await response.ShouldBeApiResponse<ShowResponse<ActivityResponse>>();
-        var activity = apiResponse?.item;
+        var showResponse = await response.ShouldBeApiResponse<ShowResponse<ActivityResponse>>();
+        var activity = showResponse?.item;
         activity.ShouldNotBeNull();
         activity.ActualStart.ShouldBe(
             new DateWithOptionalTime
@@ -263,15 +267,19 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             new { actualFinish = "2025-03-19" },
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        var updatedResponse = await response.ShouldBeApiResponse<UpdatedResponse>(
+            statusCode: HttpStatusCode.Accepted
+        );
+        updatedResponse.ShouldNotBeNull();
+        updatedResponse.Id.ShouldBe(existingActivity.Id);
 
         response = await _client.GetAsync(
             $"/api/v1/activities/{existingActivity.Id}",
             TestContext.Current.CancellationToken
         );
 
-        var apiResponse = await response.ShouldBeApiResponse<ShowResponse<ActivityResponse>>();
-        var activity = apiResponse?.item;
+        var showResponse = await response.ShouldBeApiResponse<ShowResponse<ActivityResponse>>();
+        var activity = showResponse?.item;
         activity.ShouldNotBeNull();
         activity.ActualStart.ShouldBe(existingActivity.ActualStart);
         activity.ActualFinish.ShouldBe(
