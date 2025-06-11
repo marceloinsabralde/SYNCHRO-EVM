@@ -55,7 +55,7 @@ public class DateWithOptionalTimeConverter : JsonConverter<DateWithOptionalTime>
 
 public class DateWithOptionalTimeSchemaPatcher : SchemaPatcher
 {
-    protected override void Patch(OpenApiSchema schema)
+    protected override void Patch(OpenApiSchema schema, Type type)
     {
         var nullable = schema.Nullable;
         Clear(schema);
