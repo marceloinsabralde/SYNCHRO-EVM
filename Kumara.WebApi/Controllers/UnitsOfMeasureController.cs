@@ -13,7 +13,7 @@ public class UnitsOfMeasureController(ApplicationDbContext dbContext) : Controll
 {
     [HttpGet]
     [EndpointName("ListUnitsOfMeasure")]
-    public IActionResult Index([Required] Guid iTwinId)
+    public ActionResult<ListResponse<UnitOfMeasureResponse>> Index([Required] Guid iTwinId)
     {
         var unitsOfMeasure = dbContext.UnitsOfMeasure.Where(uom => uom.ITwinId == iTwinId);
 

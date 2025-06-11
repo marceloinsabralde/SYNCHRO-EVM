@@ -14,7 +14,11 @@ public class ProgressSummariesController(ApplicationDbContext dbContext) : Contr
 {
     [HttpGet]
     [EndpointName("ListProgressSummaries")]
-    public IActionResult Index([Required] Guid iTwinId, Guid? activityId, Guid? materialId)
+    public ActionResult<ListResponse<ProgressSummary>> Index(
+        [Required] Guid iTwinId,
+        Guid? activityId,
+        Guid? materialId
+    )
     {
         var progressSummaries = dbContext.ProgressSummaries.Where(ps => ps.ITwinId == iTwinId);
 

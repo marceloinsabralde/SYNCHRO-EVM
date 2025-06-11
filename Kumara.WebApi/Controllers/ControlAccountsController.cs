@@ -13,7 +13,7 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
 {
     [HttpGet]
     [EndpointName("ListControlAccounts")]
-    public IActionResult Index([Required] Guid iTwinId)
+    public ActionResult<ListResponse<ControlAccountResponse>> Index([Required] Guid iTwinId)
     {
         var controlAccounts = dbContext.ControlAccounts.Where(ca => ca.ITwinId == iTwinId);
 

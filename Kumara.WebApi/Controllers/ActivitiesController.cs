@@ -14,7 +14,10 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
 {
     [HttpGet]
     [EndpointName("ListActivities")]
-    public IActionResult Index([Required] Guid iTwinId, Guid? controlAccountId)
+    public ActionResult<ListResponse<ActivityResponse>> Index(
+        [Required] Guid iTwinId,
+        Guid? controlAccountId
+    )
     {
         var activities = dbContext.Activities.Where(act => act.ITwinId == iTwinId);
 

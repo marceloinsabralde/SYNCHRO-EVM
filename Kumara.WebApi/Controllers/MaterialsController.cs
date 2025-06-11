@@ -13,7 +13,7 @@ public class MaterialsController(ApplicationDbContext dbContext) : ControllerBas
 {
     [HttpGet]
     [EndpointName("ListMaterials")]
-    public IActionResult Index([Required] Guid iTwinId)
+    public ActionResult<ListResponse<MaterialResponse>> Index([Required] Guid iTwinId)
     {
         var materials = dbContext.Materials.Where(materials => materials.ITwinId == iTwinId);
         if (!materials.Any())

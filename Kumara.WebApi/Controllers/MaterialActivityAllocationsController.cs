@@ -13,7 +13,11 @@ public class MaterialActivityAllocationsController(ApplicationDbContext dbContex
 {
     [HttpGet]
     [EndpointName("ListMaterialActivityAllocations")]
-    public IActionResult Index([Required] Guid iTwinId, Guid? activityId, Guid? materialId)
+    public ActionResult<ListResponse<MaterialActivityAllocationResponse>> Index(
+        [Required] Guid iTwinId,
+        Guid? activityId,
+        Guid? materialId
+    )
     {
         var allocations = dbContext.MaterialActivityAllocations.Where(allocation =>
             allocation.ITwinId == iTwinId
