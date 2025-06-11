@@ -1,7 +1,8 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using System.ComponentModel.DataAnnotations;
 
-namespace Kumara.Validations;
+namespace Kumara.WebApi.Validations;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
 public class NotEmptyAttribute() : ValidationAttribute(DefaultErrorMessage)

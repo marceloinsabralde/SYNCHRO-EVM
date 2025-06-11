@@ -1,11 +1,12 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Kumara.Utilities;
+using Kumara.WebApi.Utilities;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Kumara.Types;
+namespace Kumara.WebApi.Types;
 
 [JsonConverter(typeof(DateWithOptionalTimeConverter))]
 [SwaggerSchemaFilter(typeof(DateWithOptionalTimeSchemaPatcher))]

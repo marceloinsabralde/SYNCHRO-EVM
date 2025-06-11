@@ -1,4 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using System.Collections;
 using System.Xml;
 using System.Xml.Linq;

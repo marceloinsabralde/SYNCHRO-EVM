@@ -1,9 +1,10 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Kumara.Utilities;
+namespace Kumara.WebApi.Utilities;
 
 public abstract class SchemaPatcher : ISchemaFilter, IOpenApiSchemaTransformer
 {

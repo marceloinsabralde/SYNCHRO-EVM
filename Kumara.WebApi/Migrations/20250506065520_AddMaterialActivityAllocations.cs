@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Kumara.Migrations
+namespace Kumara.WebApi.Migrations
 {
     /// <inheritdoc />
     public partial class AddMaterialActivityAllocations : Migration

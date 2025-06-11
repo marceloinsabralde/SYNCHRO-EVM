@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-using Kumara.Database;
-using Kumara.Utilities;
+
+using Kumara.WebApi.Database;
+using Kumara.WebApi.Utilities;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
@@ -40,9 +41,7 @@ builder
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi(options =>
 {
-    options.AddSchemaTransformer(
-        new Kumara.Utilities.OpenApiSchemaTransformerAttributeTransformer()
-    );
+    options.AddSchemaTransformer(new OpenApiSchemaTransformerAttributeTransformer());
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

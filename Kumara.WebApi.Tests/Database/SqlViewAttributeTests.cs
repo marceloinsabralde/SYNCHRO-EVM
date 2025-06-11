@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using System.Reflection;
-using Kumara.Database;
+using Kumara.WebApi.Database;
 
 public class SqlViewAttributeTests
 {

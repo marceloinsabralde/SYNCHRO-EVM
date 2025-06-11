@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using System.Text.Json;
-using Kumara.Types;
+using Kumara.WebApi.Types;
 
 namespace Kumara.WebApi.Tests.Types;
 

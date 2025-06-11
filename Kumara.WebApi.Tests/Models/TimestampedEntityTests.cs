@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-using Kumara.Database;
-using Kumara.Models;
+
+using Kumara.WebApi.Database;
+using Kumara.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using NodaTime.Testing;

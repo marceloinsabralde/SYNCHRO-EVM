@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-using Kumara.Models;
-using Kumara.Types;
+
+using Kumara.WebApi.Models;
+using Kumara.WebApi.Types;
 using NodaTime;
 
 namespace Kumara.WebApi.Controllers.Responses;

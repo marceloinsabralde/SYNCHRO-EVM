@@ -1,8 +1,9 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 
-namespace Kumara.Utilities;
+namespace Kumara.WebApi.Utilities;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public class OpenApiSchemaTransformerAttribute : Attribute

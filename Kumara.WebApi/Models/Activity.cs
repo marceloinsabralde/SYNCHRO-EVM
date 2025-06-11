@@ -1,11 +1,11 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using System.ComponentModel.DataAnnotations.Schema;
-using Kumara.Types;
+using Kumara.WebApi.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NodaTime;
 
-namespace Kumara.Models;
+namespace Kumara.WebApi.Models;
 
 [EntityTypeConfiguration(typeof(Activity.Configuration))]
 public class Activity : ApplicationEntity

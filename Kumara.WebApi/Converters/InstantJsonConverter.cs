@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using NodaTime.Text;
 
-namespace Kumara.Converters;
+namespace Kumara.WebApi.Converters;
 
 public class InstantJsonConverter : ValueConverter<Instant, string>
 {

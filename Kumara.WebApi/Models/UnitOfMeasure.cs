@@ -1,8 +1,8 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-using System.ComponentModel.DataAnnotations.Schema;
-using NodaTime;
 
-namespace Kumara.Models;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Kumara.WebApi.Models;
 
 public class UnitOfMeasure : ApplicationEntity
 {

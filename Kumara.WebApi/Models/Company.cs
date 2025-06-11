@@ -1,8 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using NodaTime;
-
-namespace Kumara.Models;
+namespace Kumara.WebApi.Models;
 
 public class Company : ApplicationEntity
 {

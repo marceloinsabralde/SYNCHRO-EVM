@@ -1,4 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Interfaces;
