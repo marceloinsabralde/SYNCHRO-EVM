@@ -26,7 +26,7 @@ public class UnitsOfMeasureController(ApplicationDbContext dbContext) : Controll
         return Ok(
             new ListResponse<UnitOfMeasureResponse>
             {
-                items = unitsOfMeasure.Select(uom => UnitOfMeasureResponse.FromUnitOfMeasure(uom)),
+                Items = unitsOfMeasure.Select(uom => UnitOfMeasureResponse.FromUnitOfMeasure(uom)),
             }
         );
     }

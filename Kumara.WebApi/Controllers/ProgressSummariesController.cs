@@ -36,6 +36,6 @@ public class ProgressSummariesController(ApplicationDbContext dbContext) : Contr
         if (!progressSummaries.Any())
             return NotFound();
 
-        return Ok(new ListResponse<ProgressSummary> { items = progressSummaries });
+        return Ok(new ListResponse<ProgressSummary> { Items = progressSummaries });
     }
 }

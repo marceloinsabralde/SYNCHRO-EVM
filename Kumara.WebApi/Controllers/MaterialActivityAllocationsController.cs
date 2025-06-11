@@ -36,7 +36,7 @@ public class MaterialActivityAllocationsController(ApplicationDbContext dbContex
         return Ok(
             new ListResponse<MaterialActivityAllocationResponse>
             {
-                items = allocations.Select(allocation =>
+                Items = allocations.Select(allocation =>
                     MaterialActivityAllocationResponse.FromMaterialActivityAllocation(allocation)
                 ),
             }

@@ -23,7 +23,7 @@ public class MaterialsController(ApplicationDbContext dbContext) : ControllerBas
         return Ok(
             new ListResponse<MaterialResponse>
             {
-                items = materials.Select(material => MaterialResponse.FromMaterial(material)),
+                Items = materials.Select(material => MaterialResponse.FromMaterial(material)),
             }
         );
     }
@@ -38,7 +38,7 @@ public class MaterialsController(ApplicationDbContext dbContext) : ControllerBas
             return NotFound();
 
         return Ok(
-            new ShowResponse<MaterialResponse> { item = MaterialResponse.FromMaterial(material) }
+            new ShowResponse<MaterialResponse> { Item = MaterialResponse.FromMaterial(material) }
         );
     }
 }

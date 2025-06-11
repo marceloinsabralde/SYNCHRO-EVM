@@ -31,7 +31,7 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
         return Ok(
             new ListResponse<ActivityResponse>
             {
-                items = activities.Select(act => ActivityResponse.FromActivity(act)),
+                Items = activities.Select(act => ActivityResponse.FromActivity(act)),
             }
         );
     }
@@ -46,7 +46,7 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
             return NotFound();
 
         return Ok(
-            new ShowResponse<ActivityResponse> { item = ActivityResponse.FromActivity(activity) }
+            new ShowResponse<ActivityResponse> { Item = ActivityResponse.FromActivity(activity) }
         );
     }
 
@@ -71,7 +71,7 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
         dbContext.SaveChanges();
 
         return Accepted(
-            new UpdatedResponse<ActivityResponse> { item = new IdResponse { Id = activity.Id } }
+            new UpdatedResponse<ActivityResponse> { Item = new IdResponse { Id = activity.Id } }
         );
     }
 }

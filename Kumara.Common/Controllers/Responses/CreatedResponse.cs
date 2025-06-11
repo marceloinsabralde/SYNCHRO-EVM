@@ -8,5 +8,5 @@ public class CreatedResponse<T>
     where T : class
 {
     [Required]
-    public required IdResponse item { get; set; }
+    public required IdResponse Item { get; set; }
 }

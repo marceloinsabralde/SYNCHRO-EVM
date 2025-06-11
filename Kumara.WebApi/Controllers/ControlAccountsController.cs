@@ -26,7 +26,7 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
         return Ok(
             new ListResponse<ControlAccountResponse>
             {
-                items = controlAccounts.Select(ca => ControlAccountResponse.FromControlAccount(ca)),
+                Items = controlAccounts.Select(ca => ControlAccountResponse.FromControlAccount(ca)),
             }
         );
     }
@@ -45,7 +45,7 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
         return Ok(
             new ShowResponse<ControlAccountResponse>
             {
-                item = ControlAccountResponse.FromControlAccount(controlAccount),
+                Item = ControlAccountResponse.FromControlAccount(controlAccount),
             }
         );
     }

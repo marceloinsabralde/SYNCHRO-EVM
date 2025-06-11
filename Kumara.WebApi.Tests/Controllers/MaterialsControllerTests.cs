@@ -42,7 +42,7 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
         );
 
         var apiResponse = await response.ShouldBeApiResponse<ListResponse<MaterialResponse>>();
-        var materials = apiResponse?.items.ToList();
+        var materials = apiResponse?.Items.ToList();
 
         materials.ShouldNotBeNull();
         materials.ShouldAllBe(activity => activity.ITwinId == iTwinId);
@@ -94,7 +94,7 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
         );
 
         var apiResponse = await response.ShouldBeApiResponse<ShowResponse<MaterialResponse>>();
-        var material = apiResponse?.item;
+        var material = apiResponse?.Item;
         material.ShouldBeEquivalentTo(MaterialResponse.FromMaterial(expected));
     }
 

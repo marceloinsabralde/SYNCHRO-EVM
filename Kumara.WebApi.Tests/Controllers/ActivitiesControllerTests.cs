@@ -42,7 +42,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             TestContext.Current.CancellationToken
         );
         var apiResponse = await response.ShouldBeApiResponse<ListResponse<ActivityResponse>>();
-        var activities = apiResponse?.items.ToList();
+        var activities = apiResponse?.Items.ToList();
 
         activities.ShouldNotBeNull();
         activities.ShouldAllBe(activity => activity.ITwinId == iTwinId);
@@ -100,7 +100,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             TestContext.Current.CancellationToken
         );
         var apiResponse = await response.ShouldBeApiResponse<ListResponse<ActivityResponse>>();
-        var activities = apiResponse?.items.ToList();
+        var activities = apiResponse?.Items.ToList();
 
         activities.ShouldNotBeNull();
         activities.ShouldAllBe(activity => activity.ITwinId == iTwinId);
@@ -153,7 +153,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         );
 
         var apiResponse = await response.ShouldBeApiResponse<ShowResponse<ActivityResponse>>();
-        var activity = apiResponse?.item;
+        var activity = apiResponse?.Item;
         activity.ShouldBeEquivalentTo(ActivityResponse.FromActivity(expected));
     }
 
@@ -198,7 +198,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             statusCode: HttpStatusCode.Accepted
         );
         updatedResponse.ShouldNotBeNull();
-        updatedResponse.item.Id.ShouldBe(existingActivity.Id);
+        updatedResponse.Item.Id.ShouldBe(existingActivity.Id);
 
         response = await _client.GetAsync(
             $"/api/v1/activities/{existingActivity.Id}",
@@ -206,7 +206,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         );
 
         var showResponse = await response.ShouldBeApiResponse<ShowResponse<ActivityResponse>>();
-        var activity = showResponse?.item;
+        var activity = showResponse?.Item;
         activity.ShouldNotBeNull();
         activity.ActualStart.ShouldBe(
             new DateWithOptionalTime
@@ -272,7 +272,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             statusCode: HttpStatusCode.Accepted
         );
         updatedResponse.ShouldNotBeNull();
-        updatedResponse.item.Id.ShouldBe(existingActivity.Id);
+        updatedResponse.Item.Id.ShouldBe(existingActivity.Id);
 
         response = await _client.GetAsync(
             $"/api/v1/activities/{existingActivity.Id}",
@@ -280,7 +280,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         );
 
         var showResponse = await response.ShouldBeApiResponse<ShowResponse<ActivityResponse>>();
-        var activity = showResponse?.item;
+        var activity = showResponse?.Item;
         activity.ShouldNotBeNull();
         activity.ActualStart.ShouldBe(existingActivity.ActualStart);
         activity.ActualFinish.ShouldBe(

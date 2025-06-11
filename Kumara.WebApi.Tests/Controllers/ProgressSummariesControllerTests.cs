@@ -49,7 +49,7 @@ public sealed class ProgressSummariesControllerTests : DatabaseTestBase
         );
 
         var apiResponse = await response.ShouldBeApiResponse<ListResponse<ProgressSummary>>();
-        var progressSummaries = apiResponse?.items.ToList();
+        var progressSummaries = apiResponse?.Items.ToList();
 
         progressSummaries.ShouldNotBeNull();
         progressSummaries.Count().ShouldBe(1);

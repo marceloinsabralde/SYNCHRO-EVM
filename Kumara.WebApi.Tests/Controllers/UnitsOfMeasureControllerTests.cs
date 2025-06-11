@@ -42,7 +42,7 @@ public sealed class UnitsOfMeasureControllerTests : DatabaseTestBase
         );
 
         var apiResponse = await response.ShouldBeApiResponse<ListResponse<UnitOfMeasureResponse>>();
-        var unitsOfMeasure = apiResponse?.items.ToList();
+        var unitsOfMeasure = apiResponse?.Items.ToList();
 
         unitsOfMeasure.ShouldNotBeNull();
         unitsOfMeasure.ShouldAllBe(uom => uom.ITwinId == iTwinId);

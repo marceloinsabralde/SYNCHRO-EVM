@@ -8,5 +8,5 @@ public class ShowResponse<T>
     where T : class
 {
     [Required]
-    public required T item { get; set; }
+    public required T Item { get; set; }
 }

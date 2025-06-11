@@ -8,5 +8,5 @@ public class ListResponse<T>
     where T : class
 {
     [Required]
-    public required IEnumerable<T> items { get; set; }
+    public required IEnumerable<T> Items { get; set; }
 }

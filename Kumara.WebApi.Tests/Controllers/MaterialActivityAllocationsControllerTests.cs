@@ -44,7 +44,7 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
         var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<MaterialActivityAllocationResponse>
         >();
-        var allocations = apiResponse?.items;
+        var allocations = apiResponse?.Items;
 
         allocations.ShouldNotBeNull();
         allocations.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
@@ -101,7 +101,7 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
         var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<MaterialActivityAllocationResponse>
         >();
-        var allocations = apiResponse?.items;
+        var allocations = apiResponse?.Items;
 
         allocations.ShouldNotBeNull();
         allocations.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
@@ -159,7 +159,7 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
         var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<MaterialActivityAllocationResponse>
         >();
-        var allocations = apiResponse?.items;
+        var allocations = apiResponse?.Items;
 
         allocations.ShouldNotBeNull();
         allocations.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
