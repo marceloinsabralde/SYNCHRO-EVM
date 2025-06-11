@@ -9,9 +9,13 @@ Kumara (3579) (formerly SYNCHRO Perform (3221)) is a module of Project Delivery 
 The solution is broken down into the following projects:
 
 ```
+Kumara.TestCommon << to test common functionality
+Kumara.Common << for common functionality used across the Kumara projects
+Kumara.Common.Tests << for unit tests to test Kumara.Common
 Kumara.EventSource << for Event storage and retrieval
-Kumara.WebApi << for actual code
-Kumara.Tests << for unit tests via MSTest
+Kumara.EventSource.Tests << for unit tests to test Kumara.EventSource
+Kumara.WebApi << exposes API for all of Kumara project and POC entities via CRUD
+Kumara.WebApi.Tests << for unit tests to test Kumara.WebApi
 Kumara.Scenarios << for BDD scenarios
 ```
 
