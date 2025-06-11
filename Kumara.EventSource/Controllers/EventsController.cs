@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.Text.Json;
+using Kumara.Common.Utilities;
 using Kumara.EventSource.Extensions;
 using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Models;

@@ -2,6 +2,7 @@
 
 using System.Linq.Expressions;
 using System.Text.Json;
+using Kumara.Common.Utilities;
 using Kumara.EventSource.Utilities;
 
 namespace Kumara.EventSource.Models;

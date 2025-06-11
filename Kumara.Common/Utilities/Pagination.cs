@@ -3,7 +3,7 @@
 using System.Text;
 using System.Text.Json;
 
-namespace Kumara.EventSource.Utilities;
+namespace Kumara.Common.Utilities;
 
 public static class Pagination
 {
