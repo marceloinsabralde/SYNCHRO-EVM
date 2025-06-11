@@ -37,6 +37,10 @@ builder
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+        options.JsonSerializerOptions.TypeInfoResolverChain.Insert(
+            0,
+            new JsonTypeInfoResolverAttributeResolver()
+        );
     });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
