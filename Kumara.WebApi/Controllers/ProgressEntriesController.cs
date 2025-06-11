@@ -14,7 +14,9 @@ public class ProgressEntriesController(ApplicationDbContext dbContext) : Control
 {
     [HttpPost]
     [EndpointName("CreateProgressEntry")]
-    public IActionResult Create([FromBody] ProgressEntryCreateRequest progressEntryRequest)
+    public ActionResult<CreatedResponse> Create(
+        [FromBody] ProgressEntryCreateRequest progressEntryRequest
+    )
     {
         Activity? activity = dbContext.Activities.FirstOrDefault(a =>
             a.ITwinId == progressEntryRequest.iTwinId && a.Id == progressEntryRequest.activityId
