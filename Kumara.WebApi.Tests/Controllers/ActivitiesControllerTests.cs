@@ -151,7 +151,8 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             TestContext.Current.CancellationToken
         );
 
-        var activity = await response.ShouldBeApiResponse<ActivityResponse>();
+        var apiResponse = await response.ShouldBeApiResponse<ShowResponse<ActivityResponse>>();
+        var activity = apiResponse?.item;
         activity.ShouldBeEquivalentTo(ActivityResponse.FromActivity(expected));
     }
 
@@ -199,7 +200,8 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             TestContext.Current.CancellationToken
         );
 
-        var activity = await response.ShouldBeApiResponse<ActivityResponse>();
+        var apiResponse = await response.ShouldBeApiResponse<ShowResponse<ActivityResponse>>();
+        var activity = apiResponse?.item;
         activity.ShouldNotBeNull();
         activity.ActualStart.ShouldBe(
             new DateWithOptionalTime
@@ -268,7 +270,8 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             TestContext.Current.CancellationToken
         );
 
-        var activity = await response.ShouldBeApiResponse<ActivityResponse>();
+        var apiResponse = await response.ShouldBeApiResponse<ShowResponse<ActivityResponse>>();
+        var activity = apiResponse?.item;
         activity.ShouldNotBeNull();
         activity.ActualStart.ShouldBe(existingActivity.ActualStart);
         activity.ActualFinish.ShouldBe(

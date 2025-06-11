@@ -37,14 +37,16 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
 
     [HttpGet("{id}")]
     [EndpointName("GetActivity")]
-    public IActionResult Show([Required] Guid id)
+    public ActionResult<ShowResponse<ActivityResponse>> Show([Required] Guid id)
     {
         var activity = dbContext.Activities.Find(id);
 
         if (activity is null)
             return NotFound();
 
-        return Ok(ActivityResponse.FromActivity(activity));
+        return Ok(
+            new ShowResponse<ActivityResponse> { item = ActivityResponse.FromActivity(activity) }
+        );
     }
 
     [HttpPatch("{id}")]
