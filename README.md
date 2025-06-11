@@ -6,7 +6,7 @@ Kumara (3579) (formerly SYNCHRO Perform (3221)) is a module of Project Delivery 
 
 ## Project Structure
 
-The solution is broken down into 4 separate projects, these are:
+The solution is broken down into the following projects:
 
 ```
 Kumara.EventSource << for Event storage and retrieval
