@@ -92,7 +92,8 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
             TestContext.Current.CancellationToken
         );
 
-        var material = await response.ShouldBeApiResponse<MaterialResponse>();
+        var apiResponse = await response.ShouldBeApiResponse<ShowResponse<MaterialResponse>>();
+        var material = apiResponse?.item;
         material.ShouldBeEquivalentTo(MaterialResponse.FromMaterial(expected));
     }
 

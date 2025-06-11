@@ -29,13 +29,15 @@ public class MaterialsController(ApplicationDbContext dbContext) : ControllerBas
 
     [HttpGet("{id}")]
     [EndpointName("GetMaterial")]
-    public IActionResult Show([Required] Guid id)
+    public ActionResult<ShowResponse<MaterialResponse>> Show([Required] Guid id)
     {
         var material = dbContext.Materials.Find(id);
 
         if (material is null)
             return NotFound();
 
-        return Ok(MaterialResponse.FromMaterial(material));
+        return Ok(
+            new ShowResponse<MaterialResponse> { item = MaterialResponse.FromMaterial(material) }
+        );
     }
 }
