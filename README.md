@@ -14,6 +14,7 @@ Kumara.Common << for common functionality used across the Kumara projects
 Kumara.Common.Tests << for unit tests to test Kumara.Common
 Kumara.EventSource << for Event storage and retrieval
 Kumara.EventSource.Tests << for unit tests to test Kumara.EventSource
+Kumara.Core << for event sourced entities and functionality
 Kumara.WebApi << exposes API for all of Kumara project and POC entities via CRUD
 Kumara.WebApi.Tests << for unit tests to test Kumara.WebApi
 Kumara.Scenarios << for BDD scenarios
@@ -84,6 +85,11 @@ Then visit https://localhost:7104/swagger/index.html to view in browser.
 
 Notes:
 - Like the WebApi, you can also use your IDE's "Build and Run" feature to start this service.
+
+### Running Kumara.Core
+
+From the root directory of the solution run `dotnet run --project Kumara.Core`
+Then visit https://localhost:7133 to view in browser.
 
 #### Using the HTTP Test File
 
