@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Kumara.WebApi.Tests;
 
@@ -24,6 +25,15 @@ class SchemaHelpers
         );
 
         return document;
+    }
+
+    public static OpenApiSchema GenerateSwaggerSchema(Type type)
+    {
+        var schemaRepository = new SchemaRepository();
+        AppServicesHelper.SwaggerSchemaGenerator.GenerateSchema(type, schemaRepository);
+        var schema = schemaRepository.Schemas[type.Name];
+
+        return schema;
     }
 
     public static OpenApiSchema ShallowClone(OpenApiSchema schema)

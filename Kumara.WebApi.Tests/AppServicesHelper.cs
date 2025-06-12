@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Kumara.WebApi.Tests;
 
@@ -32,5 +33,10 @@ public static class AppServicesHelper
 
             return jsonOptions;
         }
+    }
+
+    public static ISchemaGenerator SwaggerSchemaGenerator
+    {
+        get { return _lazyServiceProvider.Value.GetRequiredService<ISchemaGenerator>(); }
     }
 }
