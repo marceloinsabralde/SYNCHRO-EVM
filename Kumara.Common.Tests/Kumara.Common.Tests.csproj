@@ -33,6 +33,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Kumara.Common\Kumara.Common.csproj" />
+        <ProjectReference Include="..\Kumara.TestCommon\Kumara.TestCommon.csproj" />
     </ItemGroup>
 
 </Project>
