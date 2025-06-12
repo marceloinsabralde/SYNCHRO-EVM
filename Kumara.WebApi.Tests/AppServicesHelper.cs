@@ -3,6 +3,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -38,5 +39,13 @@ public static class AppServicesHelper
     public static ISchemaGenerator SwaggerSchemaGenerator
     {
         get { return _lazyServiceProvider.Value.GetRequiredService<ISchemaGenerator>(); }
+    }
+
+    public static IOptionsMonitor<OpenApiOptions> OpenApiOptionsMonitor
+    {
+        get
+        {
+            return _lazyServiceProvider.Value.GetRequiredService<IOptionsMonitor<OpenApiOptions>>();
+        }
     }
 }
