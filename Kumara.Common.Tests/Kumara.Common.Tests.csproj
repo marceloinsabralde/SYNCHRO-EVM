@@ -36,4 +36,9 @@
         <ProjectReference Include="..\Kumara.TestCommon\Kumara.TestCommon.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Compile Include="..\Kumara.TestCommon\Tests\**\*.cs" />
+        <Compile Remove="..\Kumara.TestCommon\Tests\AspNetCore\**\*.cs" />
+    </ItemGroup>
+
 </Project>

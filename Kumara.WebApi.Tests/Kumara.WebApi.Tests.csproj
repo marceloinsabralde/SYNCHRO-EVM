@@ -49,4 +49,8 @@
     <ProjectReference Include="..\Kumara.WebApi\Kumara.WebApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="..\Kumara.TestCommon\Tests\**\*.cs" />
+  </ItemGroup>
+
 </Project>

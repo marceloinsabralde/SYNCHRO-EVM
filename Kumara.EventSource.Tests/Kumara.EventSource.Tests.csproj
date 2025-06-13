@@ -39,6 +39,9 @@
     <ProjectReference Include="..\Kumara.TestCommon\Kumara.TestCommon.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="..\Kumara.TestCommon\Tests\**\*.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Update="xunit.runner.json">
