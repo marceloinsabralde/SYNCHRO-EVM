@@ -46,4 +46,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kumara.Common\Kumara.Common.csproj" />
+  </ItemGroup>
 </Project>

@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Kumara.EventSource\Kumara.EventSource.csproj" />
+    <ProjectReference Include="..\Kumara.TestCommon\Kumara.TestCommon.csproj" />
   </ItemGroup>
 
 

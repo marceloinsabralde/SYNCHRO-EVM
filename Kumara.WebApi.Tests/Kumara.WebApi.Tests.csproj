@@ -45,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Kumara.TestCommon\Kumara.TestCommon.csproj" />
     <ProjectReference Include="..\Kumara.WebApi\Kumara.WebApi.csproj" />
   </ItemGroup>
 

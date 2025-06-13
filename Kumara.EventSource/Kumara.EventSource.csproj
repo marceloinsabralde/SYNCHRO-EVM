@@ -28,4 +28,8 @@
         <Folder Include="Models\Events\Schemas\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Kumara.Common\Kumara.Common.csproj" />
+    </ItemGroup>
+
 </Project>
