@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Kumara.Common.Controllers.Responses;
 
-public class ShowResponse<T>
+public class ShowResponse<T> : NamedResponse<T>
     where T : class
 {
     [Required]
