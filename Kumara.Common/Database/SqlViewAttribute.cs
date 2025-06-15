@@ -1,6 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-namespace Kumara.WebApi.Database;
+namespace Kumara.Common.Database;
 
 [System.AttributeUsage(System.AttributeTargets.Class)]
 public class SqlViewAttribute : Attribute
