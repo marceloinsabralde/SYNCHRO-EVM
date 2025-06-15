@@ -34,10 +34,10 @@ public class EventsController : ControllerBase
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Count of events saved</returns>
     [HttpPost]
-    [SwaggerRequestExample(typeof(List<EventDto>), typeof(PostEventsRequestExampleDto))]
+    [SwaggerRequestExample(typeof(List<EventDto>), typeof(CreateEventsRequestExampleDto))]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> PostEvents(
+    public async Task<IActionResult> CreateEvents(
         [FromBody] JsonElement payload,
         CancellationToken cancellationToken = default
     )
