@@ -225,7 +225,6 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
 
         firstResponse.EnsureSuccessStatusCode();
         string firstResponseContent = await firstResponse.Content.ReadAsStringAsync();
-        Console.WriteLine($"First page response: {firstResponseContent}");
 
         PaginatedResponseWrapper? firstPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
             firstResponseContent,
@@ -237,7 +236,6 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
 
         // Debug the Next URL
         string nextUrl = firstPage.Links.Next.Href;
-        Console.WriteLine($"Next URL: {nextUrl}");
 
         // Extract continuation token from the next link URL using more robust parsing
         NameValueCollection queryParams = System.Web.HttpUtility.ParseQueryString(
