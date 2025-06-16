@@ -14,8 +14,8 @@ namespace Kumara.WebApi.Tests;
 [Collection("Non-Parallel Collection")]
 public class DatabaseTestBase : IAsyncLifetime
 {
+    private readonly WebApplicationFactory<Program> _factory;
     protected readonly HttpClient _client;
-
     protected readonly ApplicationDbContext _dbContext;
 
     private Respawner? _respawner;
@@ -23,14 +23,14 @@ public class DatabaseTestBase : IAsyncLifetime
 
     public DatabaseTestBase()
     {
-        var appFactory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder.UseEnvironment("Test");
             builder.ConfigureLogging(logging => logging.ClearProviders());
         });
 
-        _client = appFactory.CreateClient();
-        _dbContext = appFactory.Services.GetService<ApplicationDbContext>()!;
+        _client = _factory.CreateClient();
+        _dbContext = _factory.Services.GetRequiredService<ApplicationDbContext>();
     }
 
     public async ValueTask InitializeAsync()
@@ -59,5 +59,6 @@ public class DatabaseTestBase : IAsyncLifetime
     public async ValueTask DisposeAsync()
     {
         await ResetDatabase();
+        _factory.Dispose();
     }
 }
