@@ -30,11 +30,18 @@ public class DatabaseTestBase : IAsyncLifetime
         _connection = _dbContext.Database.GetDbConnection();
         await _connection.OpenAsync();
 
+        var dbAdapter = _connection.GetType().Name switch
+        {
+            "NpgsqlConnection" => DbAdapter.Postgres,
+            "SqlConnection" => DbAdapter.SqlServer,
+            _ => throw new ArgumentException("Unknown database adapter"),
+        };
+
         _respawner = await Respawner.CreateAsync(
             _connection,
             new RespawnerOptions
             {
-                DbAdapter = DbAdapter.Postgres,
+                DbAdapter = dbAdapter,
                 // Ignore Migration history table otherwise we attempt to migrate
                 // each test run and the tables already exist.
                 TablesToIgnore = ["__EFMigrationsHistory"],
