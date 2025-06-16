@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Kumara.WebApi.Utilities;
+namespace Kumara.Common.Utilities;
 
 public abstract class SchemaPatcher : ISchemaFilter, IOpenApiSchemaTransformer
 {

@@ -1,7 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.Common.Utilities;
 using Kumara.WebApi.Types;
-using Kumara.WebApi.Utilities;
 
 namespace Kumara.WebApi.Controllers.Requests;
 
