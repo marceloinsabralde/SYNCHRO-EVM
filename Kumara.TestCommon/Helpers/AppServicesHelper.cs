@@ -42,6 +42,41 @@ public static class AppServicesHelper
         return (IDisposable)builderMethod.Invoke(factoryInstance, [configureBuilder])!;
     }
 
+    public class AppFactory(IDisposable instance) : IDisposable
+    {
+        public HttpClient CreateClient()
+        {
+            var clientMethod = instance.GetType().GetMethod("CreateClient", Type.EmptyTypes)!;
+            return (HttpClient)clientMethod.Invoke(instance, [])!;
+        }
+
+        public T GetRequiredService<T>()
+            where T : notnull
+        {
+            var servicesProperty = instance.GetType().GetProperty("Services")!;
+            var services = (IServiceProvider)servicesProperty.GetValue(instance)!;
+            return services.GetRequiredService<T>();
+        }
+
+        public void Dispose()
+        {
+            instance.Dispose();
+        }
+    }
+
+    public static AppFactory CreateWebApplicationFactory()
+    {
+        var entryPoint = FindProgramEntryPoint();
+        if (entryPoint is null)
+        {
+            throw new InvalidOperationException("Cannot find program entry point.");
+        }
+
+        var appFactory = CreateWebApplicationFactory(entryPoint);
+
+        return new AppFactory(appFactory);
+    }
+
     private static readonly Lazy<IServiceProvider> _lazyServiceProvider = new(() =>
     {
         var entryPoint = FindProgramEntryPoint();
