@@ -2,6 +2,7 @@
 
 using System.Net;
 using System.Net.Http.Json;
+using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Types;
 

@@ -1,6 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-namespace Kumara.WebApi.Controllers.Responses;
+namespace Kumara.Common.Controllers.Responses;
 
 public class ShowResponse<T>
 {
