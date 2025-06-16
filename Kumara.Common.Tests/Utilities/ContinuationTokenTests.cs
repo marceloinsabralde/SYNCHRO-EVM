@@ -1,3 +1,5 @@
+// Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
 using System.Text;
 using Kumara.Common.Utilities;
 
@@ -6,7 +8,7 @@ namespace Kumara.Common.Tests.Utilities;
 public class PaginationTests
 {
     [Fact]
-    public void CreateContinuationTokenTest()
+    public void ToBase64String()
     {
         var id = Guid.CreateVersion7();
         var jsonString = $$$"""
@@ -14,7 +16,7 @@ public class PaginationTests
             """;
 
         var expected = Convert.ToBase64String(Encoding.Default.GetBytes(jsonString));
-        var actual = Pagination.CreateContinuationToken(id);
+        var actual = new ContinuationToken() { Id = id }.ToBase64String();
         actual.ShouldBe(expected);
     }
 
@@ -26,8 +28,8 @@ public class PaginationTests
             {"Id":"{{{id}}}","QueryParameters":{}}
             """;
         var tokenString = Convert.ToBase64String(Encoding.Default.GetBytes(jsonString));
-        var expected = new Pagination.ContinuationToken() { Id = id };
-        var actual = Pagination.ParseContinuationToken(tokenString);
+        var expected = new ContinuationToken() { Id = id };
+        var actual = ContinuationToken.Parse(tokenString);
         actual.ShouldBeEquivalentTo(expected);
     }
 }

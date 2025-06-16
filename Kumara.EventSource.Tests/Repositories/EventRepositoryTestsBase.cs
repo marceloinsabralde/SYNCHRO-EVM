@@ -273,7 +273,10 @@ public abstract class EventRepositoryTestsBase
         List<Event> firstPageResults = firstPage.Items.ToList();
 
         Guid lastEventId = firstPageResults.Last().Id;
-        string realContinuationToken = Pagination.CreateContinuationToken(lastEventId);
+        string realContinuationToken = new ContinuationToken()
+        {
+            Id = lastEventId,
+        }.ToBase64String();
 
         EventRepositoryTestUtilities.BuildPaginationLinks(
             firstPage,
@@ -314,7 +317,10 @@ public abstract class EventRepositoryTestsBase
 
         List<Event> secondPageResults = secondPage.Items.ToList();
         Guid lastSecondPageEventId = secondPageResults.Last().Id;
-        string thirdPageToken = Pagination.CreateContinuationToken(lastSecondPageEventId);
+        string thirdPageToken = new ContinuationToken()
+        {
+            Id = lastSecondPageEventId,
+        }.ToBase64String();
 
         EventQueryBuilder thirdQueryBuilder = new EventQueryBuilder()
             .WhereType("test.pagination.continuation")

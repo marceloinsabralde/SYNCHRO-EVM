@@ -105,9 +105,7 @@ public class EventsController : ControllerBase
 
         if (!string.IsNullOrEmpty(continuationToken))
         {
-            Pagination.ContinuationToken? token = Pagination.ParseContinuationToken(
-                continuationToken
-            );
+            ContinuationToken? token = ContinuationToken.Parse(continuationToken);
             if (token != null)
             {
                 QueryCollection tokenParams = new(
@@ -205,7 +203,7 @@ public class EventsController : ControllerBase
             }
         }
 
-        string? continuationToken = null;
+        ContinuationToken? continuationToken = null;
         if (paginatedList.Items.Count > 0 && paginatedList.HasMoreItems)
         {
             T? lastItem = paginatedList.Items.LastOrDefault();
@@ -213,13 +211,17 @@ public class EventsController : ControllerBase
             {
                 Guid lastItemId = ((dynamic)lastItem).Id;
 
-                continuationToken = Pagination.CreateContinuationToken(lastItemId, queryParams);
+                continuationToken = new ContinuationToken()
+                {
+                    Id = lastItemId,
+                    QueryParameters = queryParams,
+                };
             }
         }
 
         paginatedList.SetPaginationLinks(
             paginatedList.HasMoreItems,
-            continuationToken,
+            continuationToken?.ToBase64String(),
             baseUrl,
             queryParams
         );

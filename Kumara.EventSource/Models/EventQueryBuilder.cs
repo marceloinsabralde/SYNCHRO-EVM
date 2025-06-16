@@ -73,7 +73,7 @@ public class EventQueryBuilder
 
     public EventQueryBuilder WithContinuationToken(string continuationToken)
     {
-        Pagination.ContinuationToken? token = Pagination.ParseContinuationToken(continuationToken);
+        ContinuationToken? token = ContinuationToken.Parse(continuationToken);
         if (token != null)
         {
             _predicates.Add(e => e.Id > token.Id);
