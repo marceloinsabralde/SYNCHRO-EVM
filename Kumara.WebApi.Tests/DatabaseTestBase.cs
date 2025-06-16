@@ -1,12 +1,9 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.Data.Common;
+using Kumara.TestCommon.Helpers;
 using Kumara.WebApi.Database;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Respawn;
 
 namespace Kumara.WebApi.Tests;
@@ -14,7 +11,7 @@ namespace Kumara.WebApi.Tests;
 [Collection("Non-Parallel Collection")]
 public class DatabaseTestBase : IAsyncLifetime
 {
-    private readonly WebApplicationFactory<Program> _factory;
+    private readonly AppServicesHelper.AppFactory _factory;
     protected readonly HttpClient _client;
     protected readonly ApplicationDbContext _dbContext;
 
@@ -23,14 +20,9 @@ public class DatabaseTestBase : IAsyncLifetime
 
     public DatabaseTestBase()
     {
-        _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-        {
-            builder.UseEnvironment("Test");
-            builder.ConfigureLogging(logging => logging.ClearProviders());
-        });
-
+        _factory = AppServicesHelper.CreateWebApplicationFactory();
         _client = _factory.CreateClient();
-        _dbContext = _factory.Services.GetRequiredService<ApplicationDbContext>();
+        _dbContext = _factory.GetRequiredService<ApplicationDbContext>();
     }
 
     public async ValueTask InitializeAsync()
