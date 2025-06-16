@@ -15,9 +15,9 @@ using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Kumara.WebApi.Tests;
+namespace Kumara.TestCommon.Helpers;
 
-class SchemaHelpers
+public class SchemaHelpers
 {
     public const string SwaggerPath = "/swagger/v1/swagger.json";
     public const string OpenApiPath = "/openapi/v1.json";

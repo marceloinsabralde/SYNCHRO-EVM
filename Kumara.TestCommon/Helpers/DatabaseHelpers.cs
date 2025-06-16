@@ -3,7 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Kumara.WebApi.Tests;
+namespace Kumara.TestCommon.Helpers;
 
 public static class DatabaseHelpers
 {

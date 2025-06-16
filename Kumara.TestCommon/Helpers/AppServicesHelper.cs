@@ -9,18 +9,42 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Kumara.WebApi.Tests;
+namespace Kumara.TestCommon.Helpers;
 
 public static class AppServicesHelper
 {
-    private static readonly Lazy<IServiceProvider> _lazyServiceProvider = new(() =>
+    private static Type FindProgramEntryPoint()
     {
-        var appFactory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        return AppDomain
+            .CurrentDomain.GetAssemblies()
+            .SelectMany(assembly => assembly.GetTypes())
+            .Where(type => type.IsClass && type.Name == "Program")
+            .Single();
+    }
+
+    private static IDisposable CreateWebApplicationFactory(Type entryPoint)
+    {
+        var factoryType = typeof(WebApplicationFactory<>).MakeGenericType(entryPoint);
+        var factoryInstance = Activator.CreateInstance(factoryType);
+        var builderMethod = factoryType.GetMethod(
+            "WithWebHostBuilder",
+            new[] { typeof(Action<IWebHostBuilder>) }
+        )!;
+
+        Action<IWebHostBuilder> configureBuilder = builder =>
         {
             builder.UseEnvironment("Test");
             builder.ConfigureLogging(logging => logging.ClearProviders());
-        });
-        return appFactory.Services;
+        };
+        return (IDisposable)builderMethod.Invoke(factoryInstance, [configureBuilder])!;
+    }
+
+    private static readonly Lazy<IServiceProvider> _lazyServiceProvider = new(() =>
+    {
+        var entryPoint = FindProgramEntryPoint();
+        var appFactory = CreateWebApplicationFactory(entryPoint);
+        var servicesProperty = appFactory.GetType().GetProperty("Services")!;
+        return (IServiceProvider)servicesProperty.GetValue(appFactory)!;
     });
 
     public static JsonSerializerOptions JsonSerializerOptions
