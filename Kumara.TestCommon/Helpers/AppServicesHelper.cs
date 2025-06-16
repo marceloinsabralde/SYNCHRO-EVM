@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -13,13 +14,15 @@ namespace Kumara.TestCommon.Helpers;
 
 public static class AppServicesHelper
 {
-    private static Type FindProgramEntryPoint()
+    public static IHost? FallbackHost { get; set; }
+
+    private static Type? FindProgramEntryPoint()
     {
         return AppDomain
             .CurrentDomain.GetAssemblies()
             .SelectMany(assembly => assembly.GetTypes())
             .Where(type => type.IsClass && type.Name == "Program")
-            .Single();
+            .SingleOrDefault();
     }
 
     private static IDisposable CreateWebApplicationFactory(Type entryPoint)
@@ -42,9 +45,21 @@ public static class AppServicesHelper
     private static readonly Lazy<IServiceProvider> _lazyServiceProvider = new(() =>
     {
         var entryPoint = FindProgramEntryPoint();
-        var appFactory = CreateWebApplicationFactory(entryPoint);
-        var servicesProperty = appFactory.GetType().GetProperty("Services")!;
-        return (IServiceProvider)servicesProperty.GetValue(appFactory)!;
+        if (entryPoint is not null)
+        {
+            var appFactory = CreateWebApplicationFactory(entryPoint);
+            var servicesProperty = appFactory.GetType().GetProperty("Services")!;
+            return (IServiceProvider)servicesProperty.GetValue(appFactory)!;
+        }
+
+        if (FallbackHost is not null)
+        {
+            return FallbackHost.Services;
+        }
+
+        throw new InvalidOperationException(
+            "Cannot find program entry point and no FallbackHost configured."
+        );
     });
 
     public static JsonSerializerOptions JsonSerializerOptions
