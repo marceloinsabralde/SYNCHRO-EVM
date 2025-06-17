@@ -39,7 +39,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         await _eventRepository.AddEventsAsync(events, TestContext.Current.CancellationToken);
 
         HttpResponseMessage response = await _client.GetAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             TestContext.Current.CancellationToken
         );
 

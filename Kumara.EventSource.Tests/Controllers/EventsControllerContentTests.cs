@@ -16,7 +16,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
     {
         StringContent content = new("[]", System.Text.Encoding.UTF8, "application/json");
         HttpResponseMessage response = await _client.PostAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             content,
             TestContext.Current.CancellationToken
         );
@@ -85,7 +85,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
         string serialized = JsonSerializer.Serialize(eventsPayload);
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
         HttpResponseMessage response = await _client.PostAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             content,
             TestContext.Current.CancellationToken
         );
@@ -190,7 +190,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
         HttpResponseMessage response = await _client.PostAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             content,
             TestContext.Current.CancellationToken
         );
@@ -230,7 +230,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
         HttpResponseMessage response = await _client.PostAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             content,
             TestContext.Current.CancellationToken
         );
@@ -248,7 +248,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
 
         // Submit POST request with invalid media type
         HttpResponseMessage response = await _client.PostAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             content,
             TestContext.Current.CancellationToken
         );
@@ -310,7 +310,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
         string serialized = JsonSerializer.Serialize(events);
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
         HttpResponseMessage postResponse = await _client.PostAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             content,
             TestContext.Current.CancellationToken
         );
@@ -318,7 +318,7 @@ public class EventsControllerContentTests : EventsControllerTestBase
         postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         HttpResponseMessage response = await _client.GetAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             TestContext.Current.CancellationToken
         );
 

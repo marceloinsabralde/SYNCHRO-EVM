@@ -50,7 +50,7 @@ public class EventsControllerActivityEventsTests : EventsControllerTestBase
             "application/json"
         );
         HttpResponseMessage postResponse = await _client.PostAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             content,
             TestContext.Current.CancellationToken
         );
@@ -119,7 +119,7 @@ public class EventsControllerActivityEventsTests : EventsControllerTestBase
             "application/json"
         );
         HttpResponseMessage postResponse = await _client.PostAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             content,
             TestContext.Current.CancellationToken
         );
@@ -183,7 +183,7 @@ public class EventsControllerActivityEventsTests : EventsControllerTestBase
             "application/json"
         );
         HttpResponseMessage response = await _client.PostAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             content,
             TestContext.Current.CancellationToken
         );

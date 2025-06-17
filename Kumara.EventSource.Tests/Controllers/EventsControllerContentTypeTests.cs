@@ -45,7 +45,7 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
         );
 
         HttpResponseMessage response = await _client.GetAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             TestContext.Current.CancellationToken
         );
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -115,7 +115,7 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
         HttpResponseMessage response = await _client.PostAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             content,
             TestContext.Current.CancellationToken
         );
@@ -129,7 +129,7 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
         StringContent content = new("Invalid content", System.Text.Encoding.UTF8, "text/plain");
 
         HttpResponseMessage response = await _client.PostAsync(
-            ApiBasePath,
+            GetEventsEndpoint(),
             content,
             TestContext.Current.CancellationToken
         );
