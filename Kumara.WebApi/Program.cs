@@ -25,12 +25,18 @@ builder.Services.AddSingleton<TimestampedEntityInterceptor>();
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(
     (serviceProvider, options) =>
+    {
         options.UseNpgsql(
-                builder.Configuration.GetConnectionString("KumaraWebApiDB"),
-                npgsqlOptions => npgsqlOptions.SetPostgresVersion(16, 4).UseNodaTime()
-            )
-            .UseSnakeCaseNamingConvention()
-            .AddInterceptors(serviceProvider.GetRequiredService<TimestampedEntityInterceptor>())
+            builder.Configuration.GetConnectionString("KumaraWebApiDB"),
+            npgsqlOptions =>
+            {
+                npgsqlOptions.SetPostgresVersion(16, 4);
+                npgsqlOptions.UseNodaTime();
+            }
+        );
+        options.UseSnakeCaseNamingConvention();
+        options.AddInterceptors(serviceProvider.GetRequiredService<TimestampedEntityInterceptor>());
+    }
 );
 
 builder
