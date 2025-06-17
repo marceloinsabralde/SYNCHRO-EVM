@@ -23,9 +23,10 @@ public abstract class EventRepositoryTestsBase
     {
         List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
 
-        await EventRepository.AddEventsAsync(events);
+        await EventRepository.AddEventsAsync(events, TestContext.Current.CancellationToken);
         IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(
-            new EventQueryBuilder()
+            new EventQueryBuilder(),
+            TestContext.Current.CancellationToken
         );
 
         events.Select(e => e.ITwinId).ShouldBeSubsetOf(retrievedEvents.Select(e => e.ITwinId));
@@ -35,11 +36,14 @@ public abstract class EventRepositoryTestsBase
     public async Task QueryEventsByITwinId_ShouldReturnMatchingEvents()
     {
         List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
-        await EventRepository.AddEventsAsync(events);
+        await EventRepository.AddEventsAsync(events, TestContext.Current.CancellationToken);
         Guid targetITwinId = events.First().ITwinId;
 
         EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereITwinId(targetITwinId);
-        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(queryBuilder);
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(
+            queryBuilder,
+            TestContext.Current.CancellationToken
+        );
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.ITwinId == targetITwinId).ShouldBeTrue();
@@ -49,11 +53,14 @@ public abstract class EventRepositoryTestsBase
     public async Task QueryEventsByAccountId_ShouldReturnMatchingEvents()
     {
         List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
-        await EventRepository.AddEventsAsync(events);
+        await EventRepository.AddEventsAsync(events, TestContext.Current.CancellationToken);
         Guid targetAccountId = events.First().AccountId;
 
         EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereAccountId(targetAccountId);
-        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(queryBuilder);
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(
+            queryBuilder,
+            TestContext.Current.CancellationToken
+        );
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.AccountId == targetAccountId).ShouldBeTrue();
@@ -63,13 +70,16 @@ public abstract class EventRepositoryTestsBase
     public async Task QueryEventsByCorrelationId_ShouldReturnMatchingEvents()
     {
         List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
-        await EventRepository.AddEventsAsync(events);
+        await EventRepository.AddEventsAsync(events, TestContext.Current.CancellationToken);
         string targetCorrelationId = events.First().CorrelationId;
 
         EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereCorrelationId(
             targetCorrelationId
         );
-        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(queryBuilder);
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(
+            queryBuilder,
+            TestContext.Current.CancellationToken
+        );
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.CorrelationId == targetCorrelationId).ShouldBeTrue();
@@ -79,11 +89,14 @@ public abstract class EventRepositoryTestsBase
     public async Task QueryEventsByType_ShouldReturnMatchingEvents()
     {
         List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
-        await EventRepository.AddEventsAsync(events);
+        await EventRepository.AddEventsAsync(events, TestContext.Current.CancellationToken);
         string targetType = events.First().Type;
 
         EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereType(targetType);
-        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(queryBuilder);
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(
+            queryBuilder,
+            TestContext.Current.CancellationToken
+        );
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.Type == targetType).ShouldBeTrue();
@@ -93,7 +106,7 @@ public abstract class EventRepositoryTestsBase
     public async Task QueryEventsWithBuilder_ShouldReturnMatchingEvents()
     {
         List<Event> events = EventRepositoryTestUtilities.GetTestEvents();
-        await EventRepository.AddEventsAsync(events);
+        await EventRepository.AddEventsAsync(events, TestContext.Current.CancellationToken);
         string targetType = events.First().Type;
         Guid targetITwinId = events.First().ITwinId;
 
@@ -101,7 +114,10 @@ public abstract class EventRepositoryTestsBase
             .WhereType(targetType)
             .WhereITwinId(targetITwinId);
 
-        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(queryBuilder);
+        IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(
+            queryBuilder,
+            TestContext.Current.CancellationToken
+        );
 
         retrievedEvents.ShouldNotBeEmpty();
         retrievedEvents.All(e => e.Type == targetType && e.ITwinId == targetITwinId).ShouldBeTrue();
@@ -149,9 +165,10 @@ public abstract class EventRepositoryTestsBase
 
         events = events.OrderBy(_ => GuidUtility.CreateGuid()).ToList();
 
-        await EventRepository.AddEventsAsync(events);
+        await EventRepository.AddEventsAsync(events, TestContext.Current.CancellationToken);
         IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(
-            new EventQueryBuilder()
+            new EventQueryBuilder(),
+            TestContext.Current.CancellationToken
         );
 
         retrievedEvents
@@ -163,7 +180,8 @@ public abstract class EventRepositoryTestsBase
     public async Task GetAllEvents_ShouldHandleEmptyRepository()
     {
         IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(
-            new EventQueryBuilder()
+            new EventQueryBuilder(),
+            TestContext.Current.CancellationToken
         );
 
         retrievedEvents.ShouldBeEmpty();
@@ -184,9 +202,13 @@ public abstract class EventRepositoryTestsBase
             Time = null,
         };
 
-        await EventRepository.AddEventsAsync(new List<Event> { singleEvent });
+        await EventRepository.AddEventsAsync(
+            new List<Event> { singleEvent },
+            TestContext.Current.CancellationToken
+        );
         IQueryable<Event> retrievedEvents = await EventRepository.QueryEventsAsync(
-            new EventQueryBuilder()
+            new EventQueryBuilder(),
+            TestContext.Current.CancellationToken
         );
 
         retrievedEvents.Count().ShouldBe(1);
@@ -197,7 +219,7 @@ public abstract class EventRepositoryTestsBase
     public async Task GetPaginatedEvents_ShouldReturnPaginatedResult()
     {
         List<Event> testEvents = await CreatePaginatedTestEvents("test.pagination.event", 25);
-        await EventRepository.AddEventsAsync(testEvents);
+        await EventRepository.AddEventsAsync(testEvents, TestContext.Current.CancellationToken);
 
         // Create a query builder for pagination
         EventQueryBuilder queryBuilder = new EventQueryBuilder().WhereType("test.pagination.event");
@@ -205,7 +227,8 @@ public abstract class EventRepositoryTestsBase
         int pageSize = 10;
         PaginatedList<Event> paginatedResult = await EventRepository.GetPaginatedEventsAsync(
             queryBuilder,
-            pageSize
+            pageSize,
+            TestContext.Current.CancellationToken
         );
 
         const string testContinuationToken = "test-continuation-token-123";
@@ -234,7 +257,7 @@ public abstract class EventRepositoryTestsBase
     public async Task GetPaginatedEvents_WithContinuationToken_ShouldReturnNextPage()
     {
         List<Event> events = await CreatePaginatedTestEvents("test.pagination.continuation", 30);
-        await EventRepository.AddEventsAsync(events);
+        await EventRepository.AddEventsAsync(events, TestContext.Current.CancellationToken);
 
         EventQueryBuilder firstPageQueryBuilder = new EventQueryBuilder().WhereType(
             "test.pagination.continuation"
@@ -242,7 +265,8 @@ public abstract class EventRepositoryTestsBase
         int pageSize = 10;
         PaginatedList<Event> firstPage = await EventRepository.GetPaginatedEventsAsync(
             firstPageQueryBuilder,
-            pageSize
+            pageSize,
+            TestContext.Current.CancellationToken
         );
 
         List<Event> firstPageResults = firstPage.Items.ToList();
@@ -262,7 +286,8 @@ public abstract class EventRepositoryTestsBase
 
         PaginatedList<Event> secondPage = await EventRepository.GetPaginatedEventsAsync(
             secondQueryBuilder,
-            pageSize
+            pageSize,
+            TestContext.Current.CancellationToken
         );
 
         EventRepositoryTestUtilities.BuildPaginationLinks(
@@ -296,7 +321,8 @@ public abstract class EventRepositoryTestsBase
 
         PaginatedList<Event> thirdPage = await EventRepository.GetPaginatedEventsAsync(
             thirdQueryBuilder,
-            pageSize
+            pageSize,
+            TestContext.Current.CancellationToken
         );
 
         EventRepositoryTestUtilities.BuildPaginationLinks(

@@ -65,12 +65,20 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
             ),
         };
 
-        await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
+        await _eventRepository.AddEventsAsync(
+            new[] { matchingEvent, nonMatchingEvent },
+            TestContext.Current.CancellationToken
+        );
 
-        HttpResponseMessage response = await _client.GetAsync(GetEventsEndpoint($"id={targetId}"));
+        HttpResponseMessage response = await _client.GetAsync(
+            GetEventsEndpoint($"id={targetId}"),
+            TestContext.Current.CancellationToken
+        );
 
         response.EnsureSuccessStatusCode();
-        string responseContent = await response.Content.ReadAsStringAsync();
+        string responseContent = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         PaginatedResponseWrapper? paginatedResponse =
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
@@ -133,14 +141,20 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
             ),
         };
 
-        await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
+        await _eventRepository.AddEventsAsync(
+            new[] { matchingEvent, nonMatchingEvent },
+            TestContext.Current.CancellationToken
+        );
 
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint($"iTwinId={targetITwinId}")
+            GetEventsEndpoint($"iTwinId={targetITwinId}"),
+            TestContext.Current.CancellationToken
         );
 
         response.EnsureSuccessStatusCode();
-        string responseContent = await response.Content.ReadAsStringAsync();
+        string responseContent = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         PaginatedResponseWrapper? paginatedResponse =
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
@@ -180,14 +194,20 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
             ),
         };
 
-        await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
+        await _eventRepository.AddEventsAsync(
+            new[] { matchingEvent, nonMatchingEvent },
+            TestContext.Current.CancellationToken
+        );
 
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint($"type={targetType}")
+            GetEventsEndpoint($"type={targetType}"),
+            TestContext.Current.CancellationToken
         );
 
         response.EnsureSuccessStatusCode();
-        string responseContent = await response.Content.ReadAsStringAsync();
+        string responseContent = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         PaginatedResponseWrapper? paginatedResponse =
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
@@ -250,14 +270,20 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
             ),
         };
 
-        await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
+        await _eventRepository.AddEventsAsync(
+            new[] { matchingEvent, nonMatchingEvent },
+            TestContext.Current.CancellationToken
+        );
 
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint($"correlationId={targetCorrelationId}")
+            GetEventsEndpoint($"correlationId={targetCorrelationId}"),
+            TestContext.Current.CancellationToken
         );
 
         response.EnsureSuccessStatusCode();
-        string responseContent = await response.Content.ReadAsStringAsync();
+        string responseContent = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         PaginatedResponseWrapper? paginatedResponse =
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
@@ -320,14 +346,20 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
             ),
         };
 
-        await _eventRepository.AddEventsAsync(new[] { matchingEvent, nonMatchingEvent });
+        await _eventRepository.AddEventsAsync(
+            new[] { matchingEvent, nonMatchingEvent },
+            TestContext.Current.CancellationToken
+        );
 
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint($"accountId={targetAccountId}")
+            GetEventsEndpoint($"accountId={targetAccountId}"),
+            TestContext.Current.CancellationToken
         );
 
         response.EnsureSuccessStatusCode();
-        string responseContent = await response.Content.ReadAsStringAsync();
+        string responseContent = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         PaginatedResponseWrapper? paginatedResponse =
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
@@ -379,15 +411,19 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         };
 
         await _eventRepository.AddEventsAsync(
-            new[] { matchingEvent, matchingITwinOnly, matchingTypeOnly }
+            new[] { matchingEvent, matchingITwinOnly, matchingTypeOnly },
+            TestContext.Current.CancellationToken
         );
 
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint($"iTwinId={targetITwinId}&type={targetType}")
+            GetEventsEndpoint($"iTwinId={targetITwinId}&type={targetType}"),
+            TestContext.Current.CancellationToken
         );
 
         response.EnsureSuccessStatusCode();
-        string responseContent = await response.Content.ReadAsStringAsync();
+        string responseContent = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         PaginatedResponseWrapper? paginatedResponse =
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
 
@@ -451,14 +487,20 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
             ),
         };
 
-        await _eventRepository.AddEventsAsync(new[] { event1, event2 });
+        await _eventRepository.AddEventsAsync(
+            new[] { event1, event2 },
+            TestContext.Current.CancellationToken
+        );
 
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint("iTwinId=not-a-valid-guid")
+            GetEventsEndpoint("iTwinId=not-a-valid-guid"),
+            TestContext.Current.CancellationToken
         );
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        string content = await response.Content.ReadAsStringAsync();
+        string content = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         content.ShouldNotBeNull();
         JsonElement problemDetails = JsonSerializer.Deserialize<JsonElement>(content);
 

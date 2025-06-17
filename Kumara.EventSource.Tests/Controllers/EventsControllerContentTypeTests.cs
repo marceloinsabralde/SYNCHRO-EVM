@@ -39,15 +39,23 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
             ),
         };
 
-        await _eventRepository.AddEventsAsync(new[] { expectedEvent });
+        await _eventRepository.AddEventsAsync(
+            new[] { expectedEvent },
+            TestContext.Current.CancellationToken
+        );
 
-        HttpResponseMessage response = await _client.GetAsync(ApiBasePath);
+        HttpResponseMessage response = await _client.GetAsync(
+            ApiBasePath,
+            TestContext.Current.CancellationToken
+        );
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         string? contentType = response.Content.Headers.ContentType?.MediaType;
         contentType.ShouldBe(expectedContentType);
 
-        string responseContent = await response.Content.ReadAsStringAsync();
+        string responseContent = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
 
         PaginatedResponseWrapper? paginatedResponse =
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
@@ -106,7 +114,11 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
         string serialized = JsonSerializer.Serialize(eventsPayload);
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
+        HttpResponseMessage response = await _client.PostAsync(
+            ApiBasePath,
+            content,
+            TestContext.Current.CancellationToken
+        );
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -116,7 +128,11 @@ public class EventsControllerContentTypeTests : EventsControllerTestBase
     {
         StringContent content = new("Invalid content", System.Text.Encoding.UTF8, "text/plain");
 
-        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
+        HttpResponseMessage response = await _client.PostAsync(
+            ApiBasePath,
+            content,
+            TestContext.Current.CancellationToken
+        );
 
         response.StatusCode.ShouldBe(HttpStatusCode.UnsupportedMediaType);
     }

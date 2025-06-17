@@ -56,7 +56,10 @@ public class EventValidatorTests
             ),
         };
 
-        EventValidationResult result = await SEventValidator.ValidateEventAsync(@event);
+        EventValidationResult result = await SEventValidator.ValidateEventAsync(
+            @event,
+            TestContext.Current.CancellationToken
+        );
 
         result.IsValid.ShouldBeTrue();
         result.Errors.ShouldBeEmpty();
@@ -83,7 +86,10 @@ public class EventValidatorTests
             ),
         };
 
-        EventValidationResult result = await SEventValidator.ValidateEventAsync(@event);
+        EventValidationResult result = await SEventValidator.ValidateEventAsync(
+            @event,
+            TestContext.Current.CancellationToken
+        );
 
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();
@@ -104,7 +110,10 @@ public class EventValidatorTests
             DataJson = JsonDocument.Parse("{}"),
         };
 
-        EventValidationResult result = await SEventValidator.ValidateEventAsync(@event);
+        EventValidationResult result = await SEventValidator.ValidateEventAsync(
+            @event,
+            TestContext.Current.CancellationToken
+        );
 
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();
@@ -140,7 +149,10 @@ public class EventValidatorTests
             ),
         };
 
-        EventValidationResult result = await SEventValidator.ValidateEventAsync(@event);
+        EventValidationResult result = await SEventValidator.ValidateEventAsync(
+            @event,
+            TestContext.Current.CancellationToken
+        );
 
         result.IsValid.ShouldBeTrue();
         result.Errors.ShouldBeEmpty();
@@ -172,7 +184,10 @@ public class EventValidatorTests
             ),
         };
 
-        EventValidationResult result = await SEventValidator.ValidateEventAsync(@event);
+        EventValidationResult result = await SEventValidator.ValidateEventAsync(
+            @event,
+            TestContext.Current.CancellationToken
+        );
 
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();
@@ -208,7 +223,10 @@ public class EventValidatorTests
             ),
         };
 
-        EventValidationResult result = await SActivityEventValidator.ValidateEventAsync(@event);
+        EventValidationResult result = await SActivityEventValidator.ValidateEventAsync(
+            @event,
+            TestContext.Current.CancellationToken
+        );
 
         result.IsValid.ShouldBeTrue();
         if (result.Errors != null)
@@ -239,7 +257,10 @@ public class EventValidatorTests
             ),
         };
 
-        EventValidationResult result = await SActivityEventValidator.ValidateEventAsync(@event);
+        EventValidationResult result = await SActivityEventValidator.ValidateEventAsync(
+            @event,
+            TestContext.Current.CancellationToken
+        );
 
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();
@@ -276,7 +297,10 @@ public class EventValidatorTests
             ),
         };
 
-        EventValidationResult result = await SActivityEventValidator.ValidateEventAsync(@event);
+        EventValidationResult result = await SActivityEventValidator.ValidateEventAsync(
+            @event,
+            TestContext.Current.CancellationToken
+        );
 
         result.IsValid.ShouldBeTrue();
         if (result.Errors != null)
@@ -307,7 +331,10 @@ public class EventValidatorTests
             ),
         };
 
-        EventValidationResult result = await SActivityEventValidator.ValidateEventAsync(@event);
+        EventValidationResult result = await SActivityEventValidator.ValidateEventAsync(
+            @event,
+            TestContext.Current.CancellationToken
+        );
 
         result.IsValid.ShouldBeFalse();
         result.Errors.ShouldNotBeNull();

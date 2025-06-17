@@ -17,7 +17,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         for (int i = 0; i < 60; i++)
         {
             // Add delay to ensure different UUID v7 IDs (time-ordered)
-            await Task.Delay(5);
+            await Task.Delay(5, TestContext.Current.CancellationToken);
 
             events.Add(
                 new Event
@@ -36,12 +36,17 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
             );
         }
 
-        await _eventRepository.AddEventsAsync(events);
+        await _eventRepository.AddEventsAsync(events, TestContext.Current.CancellationToken);
 
-        HttpResponseMessage response = await _client.GetAsync(ApiBasePath);
+        HttpResponseMessage response = await _client.GetAsync(
+            ApiBasePath,
+            TestContext.Current.CancellationToken
+        );
 
         response.EnsureSuccessStatusCode();
-        string responseContent = await response.Content.ReadAsStringAsync();
+        string responseContent = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
 
         // Deserialize as PaginatedEvents
         PaginatedResponseWrapper? paginatedResponse =
@@ -64,7 +69,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         List<Event> events = new();
         for (int i = 0; i < 30; i++)
         {
-            await Task.Delay(5);
+            await Task.Delay(5, TestContext.Current.CancellationToken);
             events.Add(
                 new Event
                 {
@@ -82,16 +87,19 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
             );
         }
 
-        await _eventRepository.AddEventsAsync(events);
+        await _eventRepository.AddEventsAsync(events, TestContext.Current.CancellationToken);
 
         // Set custom page size
         int customPageSize = 15;
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint($"top={customPageSize}")
+            GetEventsEndpoint($"top={customPageSize}"),
+            TestContext.Current.CancellationToken
         );
 
         response.EnsureSuccessStatusCode();
-        string responseContent = await response.Content.ReadAsStringAsync();
+        string responseContent = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
 
         PaginatedResponseWrapper? paginatedResponse =
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseContent, JsonOptions);
@@ -111,7 +119,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         List<Event> events = new();
         for (int i = 0; i < 30; i++)
         {
-            await Task.Delay(5);
+            await Task.Delay(5, TestContext.Current.CancellationToken);
             events.Add(
                 new Event
                 {
@@ -129,16 +137,19 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
             );
         }
 
-        await _eventRepository.AddEventsAsync(events);
+        await _eventRepository.AddEventsAsync(events, TestContext.Current.CancellationToken);
 
         // Get first page
         int pageSize = 10;
         HttpResponseMessage firstResponse = await _client.GetAsync(
-            GetEventsEndpoint($"type=test.pagination.continuation&top={pageSize}")
+            GetEventsEndpoint($"type=test.pagination.continuation&top={pageSize}"),
+            TestContext.Current.CancellationToken
         );
         firstResponse.EnsureSuccessStatusCode();
 
-        string firstResponseContent = await firstResponse.Content.ReadAsStringAsync();
+        string firstResponseContent = await firstResponse.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
 
         PaginatedResponseWrapper? firstPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
             firstResponseContent,
@@ -162,11 +173,14 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         );
 
         HttpResponseMessage secondResponse = await _client.GetAsync(
-            GetEventsEndpoint($"top={pageSize}&continuationtoken={continuationToken}")
+            GetEventsEndpoint($"top={pageSize}&continuationtoken={continuationToken}"),
+            TestContext.Current.CancellationToken
         );
 
         secondResponse.EnsureSuccessStatusCode();
-        string secondResponseContent = await secondResponse.Content.ReadAsStringAsync();
+        string secondResponseContent = await secondResponse.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         PaginatedResponseWrapper? secondPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
             secondResponseContent,
             JsonOptions
@@ -197,7 +211,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         List<Event> events = new();
         for (int i = 0; i < 30; i++)
         {
-            await Task.Delay(5);
+            await Task.Delay(5, TestContext.Current.CancellationToken);
             events.Add(
                 new Event
                 {
@@ -215,16 +229,19 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
             );
         }
 
-        await _eventRepository.AddEventsAsync(events);
+        await _eventRepository.AddEventsAsync(events, TestContext.Current.CancellationToken);
 
         // Get first page with filters
         int pageSize = 10;
         HttpResponseMessage firstResponse = await _client.GetAsync(
-            GetEventsEndpoint($"iTwinId={targetITwinId}&type={eventType}&top={pageSize}")
+            GetEventsEndpoint($"iTwinId={targetITwinId}&type={eventType}&top={pageSize}"),
+            TestContext.Current.CancellationToken
         );
 
         firstResponse.EnsureSuccessStatusCode();
-        string firstResponseContent = await firstResponse.Content.ReadAsStringAsync();
+        string firstResponseContent = await firstResponse.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
 
         PaginatedResponseWrapper? firstPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
             firstResponseContent,
@@ -251,11 +268,14 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         HttpResponseMessage secondResponse = await _client.GetAsync(
             GetEventsEndpoint(
                 $"iTwinId={targetITwinId}&type={eventType}&top={pageSize}&continuationtoken={continuationToken}"
-            )
+            ),
+            TestContext.Current.CancellationToken
         );
 
         secondResponse.EnsureSuccessStatusCode();
-        string secondResponseContent = await secondResponse.Content.ReadAsStringAsync();
+        string secondResponseContent = await secondResponse.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         PaginatedResponseWrapper? secondPage = JsonSerializer.Deserialize<PaginatedResponseWrapper>(
             secondResponseContent,
             JsonOptions
