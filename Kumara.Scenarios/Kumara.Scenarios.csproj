@@ -2,10 +2,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-        <PackageReference Include="Reqnroll.MsTest" Version="2.4.1" />
-        <PackageReference Include="MSTest.TestFramework" Version="3.9.1" />
-        <PackageReference Include="MSTest.TestAdapter" Version="3.9.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Reqnroll.MsTest" />
+        <PackageReference Include="MSTest.TestFramework" />
+        <PackageReference Include="MSTest.TestAdapter" />
     </ItemGroup>
 
     <ItemGroup>
