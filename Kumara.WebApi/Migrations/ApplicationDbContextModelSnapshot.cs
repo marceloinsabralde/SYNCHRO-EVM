@@ -514,6 +514,11 @@ namespace Kumara.WebApi.Migrations
                                 .HasColumnType("integer")
                                 .HasColumnName("__synthesized_ordinal");
 
+                            b1.Property<string>("CreatedAt")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasAnnotation("Relational:JsonPropertyName", "created_at");
+
                             b1.Property<Guid>("Id")
                                 .HasColumnType("uuid")
                                 .HasAnnotation("Relational:JsonPropertyName", "id");
@@ -525,6 +530,11 @@ namespace Kumara.WebApi.Migrations
                             b1.Property<decimal>("QuantityDelta")
                                 .HasColumnType("numeric")
                                 .HasAnnotation("Relational:JsonPropertyName", "quantity_delta");
+
+                            b1.Property<string>("UpdatedAt")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasAnnotation("Relational:JsonPropertyName", "updated_at");
 
                             b1.HasKey("ProgressSummaryITwinId", "ProgressSummaryActivityId", "ProgressSummaryMaterialId", "ProgressSummaryQuantityUnitOfMeasureId", "__synthesizedOrdinal");
 
