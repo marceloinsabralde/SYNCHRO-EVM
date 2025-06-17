@@ -12,10 +12,11 @@ builder.Configuration.AddEnvironmentVariables(
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
-    opt.UseNpgsql(
+builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
+    options
+        .UseNpgsql(
             builder.Configuration.GetConnectionString("KumaraCoreDB"),
-            o => o.SetPostgresVersion(16, 4).UseNodaTime()
+            npgsqlOptions => npgsqlOptions.SetPostgresVersion(16, 4).UseNodaTime()
         )
         .UseSnakeCaseNamingConvention()
 );

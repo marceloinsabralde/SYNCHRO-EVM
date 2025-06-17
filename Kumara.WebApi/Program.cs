@@ -24,10 +24,10 @@ builder.Services.AddSingleton<IClock>(NanosecondSystemClock.Instance);
 builder.Services.AddSingleton<TimestampedEntityInterceptor>();
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(
-    (serviceProvider, opt) =>
-        opt.UseNpgsql(
+    (serviceProvider, options) =>
+        options.UseNpgsql(
                 builder.Configuration.GetConnectionString("KumaraWebApiDB"),
-                o => o.SetPostgresVersion(16, 4).UseNodaTime()
+                npgsqlOptions => npgsqlOptions.SetPostgresVersion(16, 4).UseNodaTime()
             )
             .UseSnakeCaseNamingConvention()
             .AddInterceptors(serviceProvider.GetRequiredService<TimestampedEntityInterceptor>())
