@@ -15,6 +15,7 @@ Kumara.Common.Tests << for unit tests to test Kumara.Common
 Kumara.EventSource << for Event storage and retrieval
 Kumara.EventSource.Tests << for unit tests to test Kumara.EventSource
 Kumara.Core << for event sourced entities and functionality
+Kumara.Core.Tests << for unit tests to test Kumara.Core
 Kumara.WebApi << exposes API for all of Kumara project and POC entities via CRUD
 Kumara.WebApi.Tests << for unit tests to test Kumara.WebApi
 Kumara.Scenarios << for BDD scenarios
