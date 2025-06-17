@@ -2,7 +2,7 @@
 
 using NodaTime;
 
-namespace Kumara.WebApi.Models;
+namespace Kumara.WebApi.Database;
 
 public interface ITimestampedEntity
 {
