@@ -25,7 +25,10 @@ public static class AppServicesHelper
             .SingleOrDefault();
     }
 
-    private static IDisposable CreateWebApplicationFactory(Type entryPoint)
+    private static IDisposable CreateWebApplicationFactory(
+        Type entryPoint,
+        Action<IWebHostBuilder>? config = null
+    )
     {
         var factoryType = typeof(WebApplicationFactory<>).MakeGenericType(entryPoint);
         var factoryInstance = Activator.CreateInstance(factoryType);
@@ -38,6 +41,7 @@ public static class AppServicesHelper
         {
             builder.UseEnvironment("Test");
             builder.ConfigureLogging(logging => logging.ClearProviders());
+            config?.Invoke(builder);
         };
         return (IDisposable)builderMethod.Invoke(factoryInstance, [configureBuilder])!;
     }
@@ -64,7 +68,7 @@ public static class AppServicesHelper
         }
     }
 
-    public static AppFactory CreateWebApplicationFactory()
+    public static AppFactory CreateWebApplicationFactory(Action<IWebHostBuilder>? config = null)
     {
         var entryPoint = FindProgramEntryPoint();
         if (entryPoint is null)
@@ -72,7 +76,7 @@ public static class AppServicesHelper
             throw new InvalidOperationException("Cannot find program entry point.");
         }
 
-        var appFactory = CreateWebApplicationFactory(entryPoint);
+        var appFactory = CreateWebApplicationFactory(entryPoint, config);
 
         return new AppFactory(appFactory);
     }
