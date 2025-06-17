@@ -23,6 +23,10 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
         }
     );
     options.UseSnakeCaseNamingConvention();
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableSensitiveDataLogging();
+    }
 });
 
 builder.Services.AddEndpointsApiExplorer();

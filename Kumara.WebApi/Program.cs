@@ -36,6 +36,10 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(
         );
         options.UseSnakeCaseNamingConvention();
         options.AddInterceptors(serviceProvider.GetRequiredService<TimestampedEntityInterceptor>());
+        if (builder.Environment.IsDevelopment())
+        {
+            options.EnableSensitiveDataLogging();
+        }
     }
 );
 
