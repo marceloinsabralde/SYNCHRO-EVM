@@ -62,9 +62,8 @@ public class EventsControllerActivityEventsTests : EventsControllerTestBase
         postResponseString.ShouldContain("\"count\":1");
 
         // Get the event back to verify it was stored
-        string queryString = $"iTwinId={itwinId}&type=activity.created.v1";
         HttpResponseMessage getResponse = await _client.GetAsync(
-            GetEventsEndpoint(queryString),
+            GetEventsEndpoint(new { itwinId, type = "activity.created.v1" }),
             TestContext.Current.CancellationToken
         );
         getResponse.EnsureSuccessStatusCode();
@@ -131,9 +130,8 @@ public class EventsControllerActivityEventsTests : EventsControllerTestBase
         postResponseString.ShouldContain("\"count\":1");
 
         // Get the event back to verify it was stored
-        string queryString = $"iTwinId={itwinId}&type=activity.updated.v1";
         HttpResponseMessage getResponse = await _client.GetAsync(
-            GetEventsEndpoint(queryString),
+            GetEventsEndpoint(new { itwinId, type = "activity.updated.v1" }),
             TestContext.Current.CancellationToken
         );
         getResponse.EnsureSuccessStatusCode();

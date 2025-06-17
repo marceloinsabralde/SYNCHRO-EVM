@@ -71,7 +71,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         );
 
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint($"id={targetId}"),
+            GetEventsEndpoint(new { id = targetId }),
             TestContext.Current.CancellationToken
         );
 
@@ -147,7 +147,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         );
 
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint($"iTwinId={targetITwinId}"),
+            GetEventsEndpoint(new { iTwinId = targetITwinId }),
             TestContext.Current.CancellationToken
         );
 
@@ -200,7 +200,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         );
 
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint($"type={targetType}"),
+            GetEventsEndpoint(new { type = targetType }),
             TestContext.Current.CancellationToken
         );
 
@@ -276,7 +276,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         );
 
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint($"correlationId={targetCorrelationId}"),
+            GetEventsEndpoint(new { correlationId = targetCorrelationId }),
             TestContext.Current.CancellationToken
         );
 
@@ -352,7 +352,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         );
 
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint($"accountId={targetAccountId}"),
+            GetEventsEndpoint(new { accountId = targetAccountId }),
             TestContext.Current.CancellationToken
         );
 
@@ -416,7 +416,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         );
 
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint($"iTwinId={targetITwinId}&type={targetType}"),
+            GetEventsEndpoint(new { iTwinId = targetITwinId, type = targetType }),
             TestContext.Current.CancellationToken
         );
 
@@ -493,7 +493,7 @@ public class EventsControllerQueryParametersTests : EventsControllerTestBase
         );
 
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint("iTwinId=not-a-valid-guid"),
+            GetEventsEndpoint(new { iTwinId = "not-a-valid-guid" }),
             TestContext.Current.CancellationToken
         );
 

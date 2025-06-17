@@ -6,6 +6,7 @@ using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Repositories;
 using Kumara.EventSource.Utilities;
 using Kumara.TestCommon.Helpers;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kumara.EventSource.Tests.Controllers;
@@ -15,7 +16,7 @@ public abstract class EventsControllerTestBase : IDisposable
     private readonly AppServicesHelper.AppFactory _factory;
     protected readonly HttpClient _client;
     protected readonly IEventRepository _eventRepository = new EventRepositoryInMemoryList();
-    protected const string ApiBasePath = "/api/v1/events";
+    protected readonly LinkGenerator _linkGenerator;
     protected static readonly JsonSerializerOptions JsonOptions = KumaraJsonOptions.DefaultOptions;
 
     protected EventsControllerTestBase()
@@ -25,6 +26,7 @@ public abstract class EventsControllerTestBase : IDisposable
             builder.ConfigureServices(services => services.AddSingleton(_eventRepository));
         });
         _client = _factory.CreateClient();
+        _linkGenerator = _factory.GetRequiredService<LinkGenerator>();
     }
 
     public void Dispose()
@@ -32,8 +34,8 @@ public abstract class EventsControllerTestBase : IDisposable
         _factory.Dispose();
     }
 
-    protected string GetEventsEndpoint(string? queryString = null)
+    protected string GetEventsEndpoint(object? values = null)
     {
-        return string.IsNullOrEmpty(queryString) ? ApiBasePath : $"{ApiBasePath}?{queryString}";
+        return _linkGenerator.GetPathByName("GetEvents", values)!;
     }
 }

@@ -92,7 +92,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         // Set custom page size
         int customPageSize = 15;
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint($"top={customPageSize}"),
+            GetEventsEndpoint(new { top = customPageSize }),
             TestContext.Current.CancellationToken
         );
 
@@ -142,7 +142,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         // Get first page
         int pageSize = 10;
         HttpResponseMessage firstResponse = await _client.GetAsync(
-            GetEventsEndpoint($"type=test.pagination.continuation&top={pageSize}"),
+            GetEventsEndpoint(new { type = "test.pagination.continuation", top = pageSize }),
             TestContext.Current.CancellationToken
         );
         firstResponse.EnsureSuccessStatusCode();
@@ -173,7 +173,7 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         );
 
         HttpResponseMessage secondResponse = await _client.GetAsync(
-            GetEventsEndpoint($"top={pageSize}&continuationtoken={continuationToken}"),
+            GetEventsEndpoint(new { top = pageSize, continuationToken }),
             TestContext.Current.CancellationToken
         );
 
@@ -234,7 +234,14 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
         // Get first page with filters
         int pageSize = 10;
         HttpResponseMessage firstResponse = await _client.GetAsync(
-            GetEventsEndpoint($"iTwinId={targetITwinId}&type={eventType}&top={pageSize}"),
+            GetEventsEndpoint(
+                new
+                {
+                    iTwinId = targetITwinId,
+                    type = eventType,
+                    top = pageSize,
+                }
+            ),
             TestContext.Current.CancellationToken
         );
 
@@ -267,7 +274,13 @@ public class EventsControllerPaginationTests : EventsControllerTestBase
 
         HttpResponseMessage secondResponse = await _client.GetAsync(
             GetEventsEndpoint(
-                $"iTwinId={targetITwinId}&type={eventType}&top={pageSize}&continuationtoken={continuationToken}"
+                new
+                {
+                    iTwinId = targetITwinId,
+                    type = eventType,
+                    top = pageSize,
+                    continuationToken,
+                }
             ),
             TestContext.Current.CancellationToken
         );
