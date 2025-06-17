@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using NodaTime.Testing;
 
-namespace Kumara.WebApi.Tests.Models;
+namespace Kumara.WebApi.Tests.Databases;
 
-public class TimestampedEntityTests(TimestampedEntityTests.TestFixture testFixture)
-    : IClassFixture<TimestampedEntityTests.TestFixture>
+public class TimestampedEntityInterceptorTests(
+    TimestampedEntityInterceptorTests.TestFixture testFixture
+) : IClassFixture<TimestampedEntityInterceptorTests.TestFixture>
 {
     private TestDbContext dbContext => testFixture.DbContext;
     private readonly FakeClock fakeClock = testFixture.FakeClock;
@@ -95,7 +96,7 @@ public class TimestampedEntityTests(TimestampedEntityTests.TestFixture testFixtu
 
         private static readonly DbContextOptions<TestDbContext> Options =
             new DbContextOptionsBuilder<TestDbContext>()
-                .UseInMemoryDatabase(nameof(TimestampedEntityTests))
+                .UseInMemoryDatabase(nameof(TimestampedEntityInterceptorTests))
                 .UseSnakeCaseNamingConvention()
                 .Options;
 
