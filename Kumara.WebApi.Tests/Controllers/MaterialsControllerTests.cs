@@ -37,7 +37,7 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/materials?iTwinId={iTwinId}",
+            GetPathByName("ListMaterials", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 
@@ -60,7 +60,7 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
     public async Task Index_WhenITwinIdMissing_BadRequest()
     {
         var response = await _client.GetAsync(
-            "/api/v1/materials",
+            GetPathByName("ListMaterials"),
             TestContext.Current.CancellationToken
         );
 
@@ -74,7 +74,7 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
     {
         var iTwinId = Guid.CreateVersion7();
         var response = await _client.GetAsync(
-            $"/api/v1/materials?iTwinId={iTwinId}",
+            GetPathByName("ListMaterials", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 
@@ -89,7 +89,7 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/materials/{expected.Id}",
+            GetPathByName("GetMaterial", new { expected.Id }),
             TestContext.Current.CancellationToken
         );
 
@@ -102,7 +102,7 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
     public async Task Show_WhenMaterialNotFound_NotFound()
     {
         var response = await _client.GetAsync(
-            $"/api/v1/materials/{Guid.NewGuid()}",
+            GetPathByName("GetMaterial", new { Id = Guid.NewGuid() }),
             TestContext.Current.CancellationToken
         );
 

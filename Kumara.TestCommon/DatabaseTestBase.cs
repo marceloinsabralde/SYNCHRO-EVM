@@ -2,6 +2,7 @@
 
 using System.Data.Common;
 using Kumara.TestCommon.Helpers;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Respawn;
 
@@ -14,6 +15,7 @@ public class DatabaseTestBase<T> : IAsyncLifetime
     private readonly AppServicesHelper.AppFactory _factory;
     protected readonly HttpClient _client;
     protected readonly T _dbContext;
+    protected readonly LinkGenerator _linkGenerator;
 
     private Respawner? _respawner;
     private DbConnection? _connection;
@@ -23,6 +25,17 @@ public class DatabaseTestBase<T> : IAsyncLifetime
         _factory = AppServicesHelper.CreateWebApplicationFactory();
         _client = _factory.CreateClient();
         _dbContext = _factory.GetRequiredService<T>();
+        _linkGenerator = _factory.GetRequiredService<LinkGenerator>();
+    }
+
+    public string GetPathByName(string endpointName, object? values = null)
+    {
+        var path = _linkGenerator.GetPathByName(endpointName, values);
+        if (path is null)
+        {
+            throw new ArgumentException($"Could not find path for {endpointName}");
+        }
+        return path;
     }
 
     public async ValueTask InitializeAsync()

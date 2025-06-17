@@ -37,7 +37,7 @@ public sealed class UnitsOfMeasureControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/units-of-measure?iTwinId={iTwinId}",
+            GetPathByName("ListUnitsOfMeasure", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 
@@ -60,7 +60,7 @@ public sealed class UnitsOfMeasureControllerTests : DatabaseTestBase
     public async Task Index_WhenITwinIdMissing_BadRequest()
     {
         var response = await _client.GetAsync(
-            "/api/v1/units-of-measure",
+            GetPathByName("ListUnitsOfMeasure"),
             TestContext.Current.CancellationToken
         );
 
@@ -74,7 +74,7 @@ public sealed class UnitsOfMeasureControllerTests : DatabaseTestBase
     {
         var iTwinId = Guid.CreateVersion7();
         var response = await _client.GetAsync(
-            $"/api/v1/units-of-measure?iTwinId={iTwinId}",
+            GetPathByName("ListUnitsOfMeasure", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 

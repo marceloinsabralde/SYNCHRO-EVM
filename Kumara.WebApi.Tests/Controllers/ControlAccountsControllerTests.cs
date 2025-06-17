@@ -37,7 +37,7 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/control-accounts?iTwinId={iTwinId}",
+            GetPathByName("ListControlAccounts", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 
@@ -62,7 +62,7 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
     public async Task Index_WhenITwinIdMissing_BadRequest()
     {
         var response = await _client.GetAsync(
-            "/api/v1/control-accounts",
+            GetPathByName("ListControlAccounts"),
             TestContext.Current.CancellationToken
         );
 
@@ -76,7 +76,7 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
     {
         var iTwinId = Guid.CreateVersion7();
         var response = await _client.GetAsync(
-            $"/api/v1/control-accounts?iTwinId={iTwinId}",
+            GetPathByName("ListControlAccounts", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 
@@ -94,7 +94,7 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/control-accounts/{controlAccount.Id}",
+            GetPathByName("GetControlAccount", new { controlAccount.Id }),
             TestContext.Current.CancellationToken
         );
 
@@ -111,7 +111,7 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
     public async Task Show_WhenActivityNotFound_NotFound()
     {
         var response = await _client.GetAsync(
-            $"/api/v1/control-accounts/{Guid.NewGuid()}",
+            GetPathByName("GetControlAccount", new { Id = Guid.NewGuid() }),
             TestContext.Current.CancellationToken
         );
 

@@ -38,7 +38,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/activities?iTwinId={iTwinId}",
+            GetPathByName("ListActivities", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
         var apiResponse = await response.ShouldBeApiResponse<ListResponse<ActivityResponse>>();
@@ -96,7 +96,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/activities?iTwinId={iTwinId}&controlAccountId={controlAccount.Id}",
+            GetPathByName("ListActivities", new { iTwinId, controlAccountId = controlAccount.Id }),
             TestContext.Current.CancellationToken
         );
         var apiResponse = await response.ShouldBeApiResponse<ListResponse<ActivityResponse>>();
@@ -119,7 +119,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
     public async Task Index_WhenITwinIdMissing_BadRequest()
     {
         var response = await _client.GetAsync(
-            "/api/v1/activities",
+            GetPathByName("ListActivities"),
             TestContext.Current.CancellationToken
         );
 
@@ -133,7 +133,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
     {
         var iTwinId = Guid.CreateVersion7();
         var response = await _client.GetAsync(
-            $"/api/v1/activities?iTwinId={iTwinId}",
+            GetPathByName("ListActivities", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 
@@ -148,7 +148,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/activities/{expected.Id}",
+            GetPathByName("GetActivity", new { expected.Id }),
             TestContext.Current.CancellationToken
         );
 
@@ -161,7 +161,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
     public async Task Show_WhenActivityNotFound_NotFound()
     {
         var response = await _client.GetAsync(
-            $"/api/v1/activities/{Guid.NewGuid()}",
+            GetPathByName("GetActivity", new { Id = Guid.NewGuid() }),
             TestContext.Current.CancellationToken
         );
 
@@ -190,7 +190,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.PatchAsJsonAsync(
-            $"/api/v1/activities/{existingActivity.Id}",
+            GetPathByName("GetActivity", new { existingActivity.Id }),
             new { actualStart = "2025-03-18T10:47:05.288+10:00", actualFinish = "2025-03-19" },
             TestContext.Current.CancellationToken
         );
@@ -201,7 +201,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         updatedResponse.Item.Id.ShouldBe(existingActivity.Id);
 
         response = await _client.GetAsync(
-            $"/api/v1/activities/{existingActivity.Id}",
+            GetPathByName("GetActivity", new { existingActivity.Id }),
             TestContext.Current.CancellationToken
         );
 
@@ -264,7 +264,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.PatchAsJsonAsync(
-            $"/api/v1/activities/{existingActivity.Id}",
+            GetPathByName("GetActivity", new { existingActivity.Id }),
             new { actualFinish = "2025-03-19" },
             TestContext.Current.CancellationToken
         );
@@ -275,7 +275,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         updatedResponse.Item.Id.ShouldBe(existingActivity.Id);
 
         response = await _client.GetAsync(
-            $"/api/v1/activities/{existingActivity.Id}",
+            GetPathByName("GetActivity", new { existingActivity.Id }),
             TestContext.Current.CancellationToken
         );
 
@@ -319,7 +319,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.PatchAsJsonAsync(
-            $"/api/v1/activities/{existingActivity.Id}",
+            GetPathByName("GetActivity", new { existingActivity.Id }),
             new { actualStart = "foo" },
             TestContext.Current.CancellationToken
         );
@@ -335,7 +335,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
     public async Task Update_WhenActivityNotFound_NotFound()
     {
         var response = await _client.PatchAsJsonAsync(
-            $"/api/v1/activities/{Guid.CreateVersion7()}",
+            GetPathByName("GetActivity", new { Id = Guid.CreateVersion7() }),
             new { },
             TestContext.Current.CancellationToken
         );

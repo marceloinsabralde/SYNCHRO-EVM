@@ -62,7 +62,7 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.PostAsJsonAsync(
-            $"/api/v1/progress-entries",
+            GetPathByName("CreateProgressEntry"),
             new ProgressEntryCreateRequest
             {
                 iTwinId = iTwinId,
@@ -92,7 +92,7 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
         createParams.Remove(missingField);
 
         var response = await _client.PostAsJsonAsync(
-            $"/api/v1/progress-entries",
+            GetPathByName("CreateProgressEntry"),
             createParams,
             TestContext.Current.CancellationToken
         );
@@ -120,7 +120,7 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
         createParams[missingEntity] = Guid.CreateVersion7();
 
         var response = await _client.PostAsJsonAsync(
-            $"/api/v1/progress-entries",
+            GetPathByName("CreateProgressEntry"),
             createParams,
             TestContext.Current.CancellationToken
         );
@@ -146,7 +146,7 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
         createParams["id"] = existingEntry.Id;
 
         var response = await _client.PostAsJsonAsync(
-            $"/api/v1/progress-entries",
+            GetPathByName("CreateProgressEntry"),
             createParams,
             TestContext.Current.CancellationToken
         );
