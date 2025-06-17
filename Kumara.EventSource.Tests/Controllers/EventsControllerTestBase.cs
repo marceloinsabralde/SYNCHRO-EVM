@@ -10,8 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Kumara.EventSource.Tests.Controllers;
 
-public abstract class EventsControllerTestBase
+public abstract class EventsControllerTestBase : IDisposable
 {
+    private readonly WebApplicationFactory<EventsController> _factory;
     protected readonly HttpClient _client;
     protected readonly IEventRepository _eventRepository = new EventRepositoryInMemoryList();
     protected const string ApiBasePath = "/api/v1/events";
@@ -19,14 +20,13 @@ public abstract class EventsControllerTestBase
 
     protected EventsControllerTestBase()
     {
-        WebApplicationFactory<EventsController> factory =
-            new WebApplicationFactory<EventsController>().WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services => services.AddSingleton(_eventRepository));
-                builder.UseSetting("https_port", "7104");
-            });
+        _factory = new WebApplicationFactory<EventsController>().WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureServices(services => services.AddSingleton(_eventRepository));
+            builder.UseSetting("https_port", "7104");
+        });
 
-        _client = factory.CreateClient(
+        _client = _factory.CreateClient(
             new WebApplicationFactoryClientOptions
             {
                 AllowAutoRedirect = false,
@@ -34,6 +34,11 @@ public abstract class EventsControllerTestBase
                 BaseAddress = new Uri("https://localhost:7104"),
             }
         );
+    }
+
+    public void Dispose()
+    {
+        _factory.Dispose();
     }
 
     protected string GetEventsEndpoint(string? queryString = null)
