@@ -1,5 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+#
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kumara.WebApi", "Kumara.WebApi\Kumara.WebApi.csproj", "{5D7DC5DF-1D76-401C-9108-C9911346A957}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kumara.Scenarios", "Kumara.Scenarios\Kumara.Scenarios.csproj", "{6AF3AEBF-2A84-4D8E-8315-A29E09EE7470}"
