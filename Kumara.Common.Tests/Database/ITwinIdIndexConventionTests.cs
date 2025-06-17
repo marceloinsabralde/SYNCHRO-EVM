@@ -1,9 +1,9 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.WebApi.Database;
+using Kumara.Common.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kumara.WebApi.Tests.Database;
+namespace Kumara.Common.Tests.Database;
 
 public sealed class ITwinIdIndexConventionTests(ITwinIdIndexConventionTests.TestDbContext dbContext)
     : IClassFixture<ITwinIdIndexConventionTests.TestDbContext>

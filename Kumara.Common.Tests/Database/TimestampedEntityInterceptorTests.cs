@@ -1,11 +1,11 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.WebApi.Database;
+using Kumara.Common.Database;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using NodaTime.Testing;
 
-namespace Kumara.WebApi.Tests.Databases;
+namespace Kumara.Common.Tests.Database;
 
 public class TimestampedEntityInterceptorTests(
     TimestampedEntityInterceptorTests.TestFixture testFixture
