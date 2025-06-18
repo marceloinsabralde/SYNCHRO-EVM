@@ -21,15 +21,10 @@ public class NamedResponse<T>
         }
     }
 
-    public static IDictionary<string, string> JsonPropertyNames
-    {
-        get
+    public static IDictionary<string, string> JsonPropertyNames =>
+        new Dictionary<string, string>
         {
-            return new Dictionary<string, string>
-            {
-                { "item", Inflector.Camelize(BaseTypeName) },
-                { "items", Inflector.Camelize(Inflector.Pluralize(BaseTypeName)) },
-            };
-        }
-    }
+            { "item", Inflector.Camelize(BaseTypeName) },
+            { "items", Inflector.Camelize(Inflector.Pluralize(BaseTypeName)) },
+        };
 }

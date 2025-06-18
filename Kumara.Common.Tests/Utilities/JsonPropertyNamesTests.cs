@@ -19,18 +19,13 @@ public class JsonPropertyNamesTests
         public string SecondName { get; set; }
         public required string ThirdName { get; set; }
 
-        public static IDictionary<string, string> JsonPropertyNames
-        {
-            get
+        public static IDictionary<string, string> JsonPropertyNames =>
+            new Dictionary<string, string>
             {
-                return new Dictionary<string, string>
-                {
-                    { "firstName", "someOtherName" },
-                    { "secondName", "yetAnotherName" },
-                    { "missing", "thisIsIgnored" },
-                };
-            }
-        }
+                { "firstName", "someOtherName" },
+                { "secondName", "yetAnotherName" },
+                { "missing", "thisIsIgnored" },
+            };
     }
 
     [Fact]
