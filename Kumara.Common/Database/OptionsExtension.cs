@@ -3,6 +3,7 @@
 using Kumara.Common.Utilities;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NodaTime;
@@ -22,6 +23,8 @@ public class OptionsExtension(IServiceProvider? serviceProvider) : IDbContextOpt
         services.TryAddSingleton<IClock>(clock);
 
         services.AddSingleton<IInterceptor, TimestampedEntityInterceptor>();
+
+        services.AddSingleton<IConventionSetPlugin, ConventionSetPlugin>();
     }
 
     public void Validate(IDbContextOptions options) { }
