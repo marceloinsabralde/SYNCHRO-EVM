@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Kumara.Common.Database;
+using Kumara.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NodaTime;
@@ -90,16 +91,12 @@ public class TimestampedEntityInterceptorTests(
             FakeClock = new FakeClock(Instant.FromUtc(2025, 05, 05, 13, 37));
             services.AddSingleton<IClock>(FakeClock);
 
-            services.AddSingleton<TimestampedEntityInterceptor>();
-
             services.AddDbContext<TestDbContext>(
                 (serviceProvider, options) =>
                 {
                     options.UseInMemoryDatabase(nameof(TimestampedEntityInterceptorTests));
                     options.UseSnakeCaseNamingConvention();
-                    options.AddInterceptors(
-                        serviceProvider.GetRequiredService<TimestampedEntityInterceptor>()
-                    );
+                    options.UseKumaraCommon(serviceProvider);
                 }
             );
 

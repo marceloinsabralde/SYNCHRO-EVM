@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.Common.Utilities;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,13 @@ public class OptionsExtension(IServiceProvider? serviceProvider) : IDbContextOpt
     private DbContextOptionsExtensionInfo? _info;
     public DbContextOptionsExtensionInfo Info => _info ??= new ExtensionInfo(this);
 
-    public void ApplyServices(IServiceCollection services) { }
+    public void ApplyServices(IServiceCollection services)
+    {
+        var clock = serviceProvider?.GetService<IClock>() ?? NanosecondSystemClock.Instance;
+        services.TryAddSingleton<IClock>(clock);
+
+        services.AddSingleton<IInterceptor, TimestampedEntityInterceptor>();
+    }
 
     public void Validate(IDbContextOptions options) { }
 

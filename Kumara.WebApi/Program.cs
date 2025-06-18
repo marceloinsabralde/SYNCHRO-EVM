@@ -20,10 +20,6 @@ builder.Configuration.AddEnvironmentVariables(
     prefix: $"{builder.Environment.EnvironmentName.ToUpper()}_"
 );
 
-// Add services to the container.
-builder.Services.AddSingleton<IClock>(NanosecondSystemClock.Instance);
-builder.Services.AddSingleton<TimestampedEntityInterceptor>();
-
 builder.Services.AddDbContextPool<ApplicationDbContext>(
     (serviceProvider, options) =>
     {
@@ -37,7 +33,6 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(
         );
         options.UseSnakeCaseNamingConvention();
         options.UseKumaraCommon();
-        options.AddInterceptors(serviceProvider.GetRequiredService<TimestampedEntityInterceptor>());
         if (builder.Environment.IsDevelopment())
         {
             options.EnableSensitiveDataLogging();
