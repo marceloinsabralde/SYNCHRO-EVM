@@ -13,7 +13,10 @@ builder.Configuration.AddEnvironmentVariables(
     prefix: $"{builder.Environment.EnvironmentName.ToUpper()}_"
 );
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.UseKumaraCommon();
+});
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
@@ -37,13 +40,13 @@ builder
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+        options.UseKumaraCommon();
     });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.UseAllOfToExtendReferenceSchemas();
-    options.EnableAnnotations();
+    options.UseKumaraCommon();
 });
 
 var app = builder.Build();

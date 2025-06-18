@@ -2,7 +2,6 @@
 
 using Kumara.Common.Database;
 using Kumara.Common.Extensions;
-using Kumara.Common.Utilities;
 using Kumara.WebApi.Database;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
@@ -42,24 +41,20 @@ builder
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
-        options.JsonSerializerOptions.TypeInfoResolverChain.Insert(
-            0,
-            new JsonTypeInfoResolverAttributeResolver()
-        );
+        options.UseKumaraCommon();
     });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi(options =>
 {
-    options.AddSchemaTransformer(new OpenApiSchemaTransformerAttributeTransformer());
+    options.UseKumaraCommon();
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.UseAllOfToExtendReferenceSchemas();
-    options.EnableAnnotations();
+    options.UseKumaraCommon();
 });
 
 // Learn more about configuring HTTP Logging at https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/?view=aspnetcore-9.0
