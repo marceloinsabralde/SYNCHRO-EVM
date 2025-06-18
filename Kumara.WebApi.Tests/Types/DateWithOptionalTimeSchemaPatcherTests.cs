@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.TestCommon.Helpers;
 using Microsoft.OpenApi.Models;
 
 namespace Kumara.WebApi.Tests.Types;

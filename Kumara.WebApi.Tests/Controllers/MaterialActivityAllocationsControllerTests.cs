@@ -2,6 +2,7 @@
 
 using System.Net;
 using System.Net.Http.Json;
+using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Responses;
 
 namespace Kumara.WebApi.Tests.Controllers;
@@ -36,14 +37,14 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/material-activity-allocations?iTwinId={iTwinId}",
+            GetPathByName("ListMaterialActivityAllocations", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 
         var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<MaterialActivityAllocationResponse>
         >();
-        var allocations = apiResponse?.items;
+        var allocations = apiResponse?.Items;
 
         allocations.ShouldNotBeNull();
         allocations.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
@@ -93,14 +94,17 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/material-activity-allocations?iTwinId={iTwinId}&activityId={activity.Id}",
+            GetPathByName(
+                "ListMaterialActivityAllocations",
+                new { iTwinId, activityId = activity.Id }
+            ),
             TestContext.Current.CancellationToken
         );
 
         var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<MaterialActivityAllocationResponse>
         >();
-        var allocations = apiResponse?.items;
+        var allocations = apiResponse?.Items;
 
         allocations.ShouldNotBeNull();
         allocations.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
@@ -151,14 +155,17 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/material-activity-allocations?iTwinId={iTwinId}&materialId={material.Id}",
+            GetPathByName(
+                "ListMaterialActivityAllocations",
+                new { iTwinId, materialId = material.Id }
+            ),
             TestContext.Current.CancellationToken
         );
 
         var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<MaterialActivityAllocationResponse>
         >();
-        var allocations = apiResponse?.items;
+        var allocations = apiResponse?.Items;
 
         allocations.ShouldNotBeNull();
         allocations.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
@@ -177,7 +184,7 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
     public async Task Index_WhenITwinIdMissing_BadRequest()
     {
         var response = await _client.GetAsync(
-            "/api/v1/material-activity-allocations",
+            GetPathByName("ListMaterialActivityAllocations"),
             TestContext.Current.CancellationToken
         );
 
@@ -191,7 +198,7 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
     {
         var iTwinId = Guid.CreateVersion7();
         var response = await _client.GetAsync(
-            $"/api/v1/material-activity-allocations?iTwinId={iTwinId}",
+            GetPathByName("ListMaterialActivityAllocations", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 

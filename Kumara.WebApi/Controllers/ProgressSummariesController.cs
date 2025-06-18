@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
+using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
 using Kumara.WebApi.Models;
@@ -13,7 +14,12 @@ namespace Kumara.WebApi.Controllers;
 public class ProgressSummariesController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
-    public IActionResult Index([Required] Guid iTwinId, Guid? activityId, Guid? materialId)
+    [EndpointName("ListProgressSummaries")]
+    public ActionResult<ListResponse<ProgressSummary>> Index(
+        [Required] Guid iTwinId,
+        Guid? activityId,
+        Guid? materialId
+    )
     {
         var progressSummaries = dbContext.ProgressSummaries.Where(ps => ps.ITwinId == iTwinId);
 
@@ -30,6 +36,6 @@ public class ProgressSummariesController(ApplicationDbContext dbContext) : Contr
         if (!progressSummaries.Any())
             return NotFound();
 
-        return Ok(new ListResponse<ProgressSummary> { items = progressSummaries });
+        return Ok(new ListResponse<ProgressSummary> { Items = progressSummaries });
     }
 }

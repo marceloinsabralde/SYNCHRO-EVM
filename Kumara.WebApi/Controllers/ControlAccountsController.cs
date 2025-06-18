@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
+using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,8 @@ namespace Kumara.WebApi.Controllers;
 public class ControlAccountsController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
-    public IActionResult Index([Required] Guid iTwinId)
+    [EndpointName("ListControlAccounts")]
+    public ActionResult<ListResponse<ControlAccountResponse>> Index([Required] Guid iTwinId)
     {
         var controlAccounts = dbContext.ControlAccounts.Where(ca => ca.ITwinId == iTwinId);
 
@@ -24,13 +26,14 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
         return Ok(
             new ListResponse<ControlAccountResponse>
             {
-                items = controlAccounts.Select(ca => ControlAccountResponse.FromControlAccount(ca)),
+                Items = controlAccounts.Select(ca => ControlAccountResponse.FromControlAccount(ca)),
             }
         );
     }
 
     [HttpGet("{id}")]
-    public IActionResult Show([Required] Guid id)
+    [EndpointName("GetControlAccount")]
+    public ActionResult<ShowResponse<ControlAccountResponse>> Show([Required] Guid id)
     {
         var controlAccount = dbContext.ControlAccounts.Find(id);
 
@@ -39,6 +42,11 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
             return NotFound();
         }
 
-        return Ok(ControlAccountResponse.FromControlAccount(controlAccount));
+        return Ok(
+            new ShowResponse<ControlAccountResponse>
+            {
+                Item = ControlAccountResponse.FromControlAccount(controlAccount),
+            }
+        );
     }
 }

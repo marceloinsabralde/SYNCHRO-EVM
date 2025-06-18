@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
+using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,8 @@ namespace Kumara.WebApi.Controllers;
 public class UnitsOfMeasureController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
-    public IActionResult Index([Required] Guid iTwinId)
+    [EndpointName("ListUnitsOfMeasure")]
+    public ActionResult<ListResponse<UnitOfMeasureResponse>> Index([Required] Guid iTwinId)
     {
         var unitsOfMeasure = dbContext.UnitsOfMeasure.Where(uom => uom.ITwinId == iTwinId);
 
@@ -24,7 +26,7 @@ public class UnitsOfMeasureController(ApplicationDbContext dbContext) : Controll
         return Ok(
             new ListResponse<UnitOfMeasureResponse>
             {
-                items = unitsOfMeasure.Select(uom => UnitOfMeasureResponse.FromUnitOfMeasure(uom)),
+                Items = unitsOfMeasure.Select(uom => UnitOfMeasureResponse.FromUnitOfMeasure(uom)),
             }
         );
     }

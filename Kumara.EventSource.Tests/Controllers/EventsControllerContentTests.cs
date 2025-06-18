@@ -15,10 +15,16 @@ public class EventsControllerContentTests : EventsControllerTestBase
     public async Task PostEvents_WithZeroEvents_ReturnsSuccessAndCountZero()
     {
         StringContent content = new("[]", System.Text.Encoding.UTF8, "application/json");
-        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
+        HttpResponseMessage response = await _client.PostAsync(
+            GetEventsEndpoint(),
+            content,
+            TestContext.Current.CancellationToken
+        );
 
         response.EnsureSuccessStatusCode();
-        string responseString = await response.Content.ReadAsStringAsync();
+        string responseString = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         responseString.ShouldNotBeNull();
         responseString.ShouldContain("\"count\":0");
     }
@@ -78,10 +84,16 @@ public class EventsControllerContentTests : EventsControllerTestBase
 
         string serialized = JsonSerializer.Serialize(eventsPayload);
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
-        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
+        HttpResponseMessage response = await _client.PostAsync(
+            GetEventsEndpoint(),
+            content,
+            TestContext.Current.CancellationToken
+        );
 
         response.EnsureSuccessStatusCode();
-        string responseString = await response.Content.ReadAsStringAsync();
+        string responseString = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         responseString.ShouldNotBeNull();
         responseString.ShouldContain("\"count\":2");
     }
@@ -113,16 +125,21 @@ public class EventsControllerContentTests : EventsControllerTestBase
             },
         }.AsQueryable();
 
-        await _eventRepository.AddEventsAsync(testEvents);
+        await _eventRepository.AddEventsAsync(testEvents, TestContext.Current.CancellationToken);
 
-        HttpResponseMessage response = await _client.GetAsync(GetEventsEndpoint());
+        HttpResponseMessage response = await _client.GetAsync(
+            GetEventsEndpoint(),
+            TestContext.Current.CancellationToken
+        );
 
         response.EnsureSuccessStatusCode();
         response
             .Content.Headers.ContentType?.ToString()
             .ShouldBe("application/json; charset=utf-8");
 
-        string responseString = await response.Content.ReadAsStringAsync();
+        string responseString = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         PaginatedResponseWrapper? paginatedResponse =
             JsonSerializer.Deserialize<PaginatedResponseWrapper>(responseString, JsonOptions);
 
@@ -172,7 +189,11 @@ public class EventsControllerContentTests : EventsControllerTestBase
         string serialized = JsonSerializer.Serialize(new[] { @event });
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
+        HttpResponseMessage response = await _client.PostAsync(
+            GetEventsEndpoint(),
+            content,
+            TestContext.Current.CancellationToken
+        );
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -208,7 +229,11 @@ public class EventsControllerContentTests : EventsControllerTestBase
         string serialized = JsonSerializer.Serialize(new[] { @event });
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
+        HttpResponseMessage response = await _client.PostAsync(
+            GetEventsEndpoint(),
+            content,
+            TestContext.Current.CancellationToken
+        );
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -222,7 +247,11 @@ public class EventsControllerContentTests : EventsControllerTestBase
         );
 
         // Submit POST request with invalid media type
-        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
+        HttpResponseMessage response = await _client.PostAsync(
+            GetEventsEndpoint(),
+            content,
+            TestContext.Current.CancellationToken
+        );
 
         response.StatusCode.ShouldBe(HttpStatusCode.UnsupportedMediaType);
     }
@@ -280,14 +309,23 @@ public class EventsControllerContentTests : EventsControllerTestBase
         };
         string serialized = JsonSerializer.Serialize(events);
         StringContent content = new(serialized, System.Text.Encoding.UTF8, "application/json");
-        HttpResponseMessage postResponse = await _client.PostAsync(ApiBasePath, content);
+        HttpResponseMessage postResponse = await _client.PostAsync(
+            GetEventsEndpoint(),
+            content,
+            TestContext.Current.CancellationToken
+        );
 
         postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        HttpResponseMessage response = await _client.GetAsync(ApiBasePath);
+        HttpResponseMessage response = await _client.GetAsync(
+            GetEventsEndpoint(),
+            TestContext.Current.CancellationToken
+        );
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        string responseContent = await response.Content.ReadAsStringAsync();
+        string responseContent = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         responseContent.ShouldContain("TestSource1");
         responseContent.ShouldContain("TestSource2");
         responseContent.ShouldContain("control.account.created.v1");

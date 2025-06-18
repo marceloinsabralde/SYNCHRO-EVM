@@ -1,8 +1,8 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.WebApi.Utilities;
+using Kumara.Common.Utilities;
 
-namespace Kumara.WebApi.Tests.Utilities;
+namespace Kumara.Common.Tests.Utilities;
 
 public sealed class TrackPropertySetTests
 {

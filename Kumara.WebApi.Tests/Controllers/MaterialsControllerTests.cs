@@ -2,6 +2,7 @@
 
 using System.Net;
 using System.Net.Http.Json;
+using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Responses;
 
 namespace Kumara.WebApi.Tests.Controllers;
@@ -36,12 +37,12 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/materials?iTwinId={iTwinId}",
+            GetPathByName("ListMaterials", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 
         var apiResponse = await response.ShouldBeApiResponse<ListResponse<MaterialResponse>>();
-        var materials = apiResponse?.items.ToList();
+        var materials = apiResponse?.Items.ToList();
 
         materials.ShouldNotBeNull();
         materials.ShouldAllBe(activity => activity.ITwinId == iTwinId);
@@ -59,7 +60,7 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
     public async Task Index_WhenITwinIdMissing_BadRequest()
     {
         var response = await _client.GetAsync(
-            "/api/v1/materials",
+            GetPathByName("ListMaterials"),
             TestContext.Current.CancellationToken
         );
 
@@ -73,7 +74,7 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
     {
         var iTwinId = Guid.CreateVersion7();
         var response = await _client.GetAsync(
-            $"/api/v1/materials?iTwinId={iTwinId}",
+            GetPathByName("ListMaterials", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 
@@ -88,11 +89,12 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/materials/{expected.Id}",
+            GetPathByName("GetMaterial", new { expected.Id }),
             TestContext.Current.CancellationToken
         );
 
-        var material = await response.ShouldBeApiResponse<MaterialResponse>();
+        var apiResponse = await response.ShouldBeApiResponse<ShowResponse<MaterialResponse>>();
+        var material = apiResponse?.Item;
         material.ShouldBeEquivalentTo(MaterialResponse.FromMaterial(expected));
     }
 
@@ -100,7 +102,7 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
     public async Task Show_WhenMaterialNotFound_NotFound()
     {
         var response = await _client.GetAsync(
-            $"/api/v1/materials/{Guid.NewGuid()}",
+            GetPathByName("GetMaterial", new { Id = Guid.NewGuid() }),
             TestContext.Current.CancellationToken
         );
 

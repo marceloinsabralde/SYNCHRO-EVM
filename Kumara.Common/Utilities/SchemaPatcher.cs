@@ -4,15 +4,15 @@ using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Kumara.WebApi.Utilities;
+namespace Kumara.Common.Utilities;
 
 public abstract class SchemaPatcher : ISchemaFilter, IOpenApiSchemaTransformer
 {
-    protected abstract void Patch(OpenApiSchema schema);
+    protected abstract void Patch(OpenApiSchema schema, Type type);
 
     public void Apply(OpenApiSchema schema, SchemaFilterContext context)
     {
-        Patch(schema);
+        Patch(schema, context.Type);
     }
 
     public Task TransformAsync(
@@ -21,7 +21,7 @@ public abstract class SchemaPatcher : ISchemaFilter, IOpenApiSchemaTransformer
         CancellationToken cancellationToken
     )
     {
-        Patch(schema);
+        Patch(schema, context.JsonTypeInfo.Type);
         return Task.CompletedTask;
     }
 

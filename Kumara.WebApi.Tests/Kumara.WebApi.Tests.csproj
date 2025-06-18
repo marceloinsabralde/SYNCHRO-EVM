@@ -1,16 +1,6 @@
 <!-- Copyright (c) Bentley Systems, Incorporated. All rights reserved. -->
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Kumara.WebApi.Tests</RootNamespace>
-    <TargetFramework>net9.0</TargetFramework>
-    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
-    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
   <ItemGroup>
     <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
@@ -21,24 +11,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Core" Version="1.46.2" />
-    <PackageReference Include="Azure.Identity" Version="1.14.0" />
-    <PackageReference Include="Bogus" Version="35.6.3" />
-    <PackageReference Include="coverlet.collector" Version="6.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.5" />
-    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.12.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.5" />
-    <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.6.24" />
-    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="1.7.1" />
-    <PackageReference Include="NodaTime.Testing" Version="3.2.2" />
-    <PackageReference Include="Respawn" Version="6.2.1" />
-    <PackageReference Include="Shouldly" Version="4.3.0" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.5" />
-    <PackageReference Include="System.Formats.Asn1" Version="9.0.5" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.0" />
-    <PackageReference Include="xunit.v3" Version="2.0.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.1">
+    <PackageReference Include="Azure.Core" />
+    <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Bogus" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.OpenApi.Readers" />
+    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
+    <PackageReference Include="NodaTime.Testing" />
+    <PackageReference Include="Respawn" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="System.Drawing.Common" />
+    <PackageReference Include="System.Formats.Asn1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -47,6 +37,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Kumara.TestCommon\Kumara.TestCommon.csproj" />
     <ProjectReference Include="..\Kumara.WebApi\Kumara.WebApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Kumara.TestCommon\Tests\**\*.cs" />
   </ItemGroup>
 
 </Project>

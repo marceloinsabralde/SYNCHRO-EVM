@@ -76,7 +76,7 @@ public class PaginatedListDto<T>
 /// <summary>
 /// Provides examples of EventDto objects for the POST /events endpoint in Swagger UI
 /// </summary>
-public class PostEventsRequestExampleDto : IExamplesProvider<List<EventDto>>
+public class CreateEventsRequestExampleDto : IExamplesProvider<List<EventDto>>
 {
     public List<EventDto> GetExamples()
     {

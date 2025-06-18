@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 
-namespace Kumara.WebApi.Utilities;
+namespace Kumara.Common.Utilities;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public class OpenApiSchemaTransformerAttribute : Attribute

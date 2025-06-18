@@ -2,7 +2,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Kumara.WebApi.Utilities;
+using Kumara.Common.Utilities;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -55,7 +55,7 @@ public class DateWithOptionalTimeConverter : JsonConverter<DateWithOptionalTime>
 
 public class DateWithOptionalTimeSchemaPatcher : SchemaPatcher
 {
-    protected override void Patch(OpenApiSchema schema)
+    protected override void Patch(OpenApiSchema schema, Type type)
     {
         var nullable = schema.Nullable;
         Clear(schema);

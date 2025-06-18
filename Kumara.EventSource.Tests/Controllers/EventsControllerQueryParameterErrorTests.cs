@@ -11,12 +11,15 @@ public class EventsControllerQueryParameterErrorTests : EventsControllerTestBase
     public async Task GetEvents_UnknownQueryParameter_ReturnsBadRequest()
     {
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint("unknownParam=value")
+            GetEventsEndpoint(new { unknownParam = "value" }),
+            TestContext.Current.CancellationToken
         );
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
-        string content = await response.Content.ReadAsStringAsync();
+        string content = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         content.ShouldNotBeNull();
         JsonElement problemDetails = JsonSerializer.Deserialize<JsonElement>(content);
 
@@ -39,12 +42,15 @@ public class EventsControllerQueryParameterErrorTests : EventsControllerTestBase
     public async Task GetEvents_InvalidIdFormat_ReturnsBadRequest()
     {
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint("id=invalid-guid-format")
+            GetEventsEndpoint(new { id = "invalid-guid-format" }),
+            TestContext.Current.CancellationToken
         );
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
-        string content = await response.Content.ReadAsStringAsync();
+        string content = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         content.ShouldNotBeNull();
         JsonElement problemDetails = JsonSerializer.Deserialize<JsonElement>(content);
 
@@ -68,12 +74,15 @@ public class EventsControllerQueryParameterErrorTests : EventsControllerTestBase
     public async Task GetEvents_InvalidITwinIdFormat_ReturnsBadRequest()
     {
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint("iTwinId=not-a-valid-guid")
+            GetEventsEndpoint(new { iTwinId = "not-a-valid-guid" }),
+            TestContext.Current.CancellationToken
         );
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
-        string content = await response.Content.ReadAsStringAsync();
+        string content = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         content.ShouldNotBeNull();
         JsonElement problemDetails = JsonSerializer.Deserialize<JsonElement>(content);
 
@@ -97,12 +106,15 @@ public class EventsControllerQueryParameterErrorTests : EventsControllerTestBase
     public async Task GetEvents_InvalidAccountIdFormat_ReturnsBadRequest()
     {
         HttpResponseMessage response = await _client.GetAsync(
-            GetEventsEndpoint("accountId=123-invalid")
+            GetEventsEndpoint(new { accountId = "123-invalid" }),
+            TestContext.Current.CancellationToken
         );
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
-        string content = await response.Content.ReadAsStringAsync();
+        string content = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         content.ShouldNotBeNull();
         JsonElement problemDetails = JsonSerializer.Deserialize<JsonElement>(content);
 

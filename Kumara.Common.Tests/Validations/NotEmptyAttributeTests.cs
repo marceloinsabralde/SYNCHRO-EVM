@@ -2,7 +2,7 @@
 
 using Kumara.Validations;
 
-namespace Kumara.WebApi.Tests.Validations;
+namespace Kumara.Common.Tests.Validations;
 
 public sealed class NotEmptyAttributeTests
 {

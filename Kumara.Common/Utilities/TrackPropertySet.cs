@@ -2,7 +2,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace Kumara.WebApi.Utilities;
+namespace Kumara.Common.Utilities;
 
 public abstract class TrackPropertySet
 {

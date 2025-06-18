@@ -2,6 +2,7 @@
 
 using System.Net;
 using System.Net.Http.Json;
+using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Models;
 
@@ -43,12 +44,12 @@ public sealed class ProgressSummariesControllerTests : DatabaseTestBase
         _dbContext.SaveChanges();
 
         var response = await _client.GetAsync(
-            $"/api/v1/progress-summaries?iTwinId={iTwinId}",
+            GetPathByName("ListProgressSummaries", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 
         var apiResponse = await response.ShouldBeApiResponse<ListResponse<ProgressSummary>>();
-        var progressSummaries = apiResponse?.items.ToList();
+        var progressSummaries = apiResponse?.Items.ToList();
 
         progressSummaries.ShouldNotBeNull();
         progressSummaries.Count().ShouldBe(1);
@@ -84,7 +85,7 @@ public sealed class ProgressSummariesControllerTests : DatabaseTestBase
     public async Task Index_WhenITwinIdMissing_BadRequest()
     {
         var response = await _client.GetAsync(
-            "/api/v1/progress-summaries",
+            GetPathByName("ListProgressSummaries"),
             TestContext.Current.CancellationToken
         );
 
@@ -98,7 +99,7 @@ public sealed class ProgressSummariesControllerTests : DatabaseTestBase
     {
         var iTwinId = Guid.CreateVersion7();
         var response = await _client.GetAsync(
-            $"/api/v1/progress-summaries?iTwinId={iTwinId}",
+            GetPathByName("ListProgressSummaries", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 
@@ -121,7 +122,15 @@ public sealed class ProgressSummariesControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/progress-summaries?iTwinId={progressEntry.ITwinId}&activityId={Guid.CreateVersion7()}&materialId={progressEntry.MaterialId}",
+            GetPathByName(
+                "ListProgressSummaries",
+                new
+                {
+                    progressEntry.ITwinId,
+                    activityId = Guid.CreateVersion7(),
+                    progressEntry.MaterialId,
+                }
+            ),
             TestContext.Current.CancellationToken
         );
 
@@ -144,7 +153,15 @@ public sealed class ProgressSummariesControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/progress-summaries?iTwinId={progressEntry.ITwinId}&activityId={progressEntry.ActivityId}&materialId={Guid.CreateVersion7()}",
+            GetPathByName(
+                "ListProgressSummaries",
+                new
+                {
+                    progressEntry.ITwinId,
+                    progressEntry.ActivityId,
+                    materialId = Guid.CreateVersion7(),
+                }
+            ),
             TestContext.Current.CancellationToken
         );
 

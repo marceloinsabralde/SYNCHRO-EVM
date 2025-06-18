@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
+using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Requests;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
@@ -13,7 +14,11 @@ namespace Kumara.WebApi.Controllers;
 public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
-    public IActionResult Index([Required] Guid iTwinId, Guid? controlAccountId)
+    [EndpointName("ListActivities")]
+    public ActionResult<ListResponse<ActivityResponse>> Index(
+        [Required] Guid iTwinId,
+        Guid? controlAccountId
+    )
     {
         var activities = dbContext.Activities.Where(act => act.ITwinId == iTwinId);
 
@@ -26,24 +31,31 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
         return Ok(
             new ListResponse<ActivityResponse>
             {
-                items = activities.Select(act => ActivityResponse.FromActivity(act)),
+                Items = activities.Select(act => ActivityResponse.FromActivity(act)),
             }
         );
     }
 
     [HttpGet("{id}")]
-    public IActionResult Show([Required] Guid id)
+    [EndpointName("GetActivity")]
+    public ActionResult<ShowResponse<ActivityResponse>> Show([Required] Guid id)
     {
         var activity = dbContext.Activities.Find(id);
 
         if (activity is null)
             return NotFound();
 
-        return Ok(ActivityResponse.FromActivity(activity));
+        return Ok(
+            new ShowResponse<ActivityResponse> { Item = ActivityResponse.FromActivity(activity) }
+        );
     }
 
     [HttpPatch("{id}")]
-    public IActionResult Update([Required] Guid id, [FromBody] ActivityUpdateRequest activityUpdate)
+    [EndpointName("UpdateActivity")]
+    public ActionResult<UpdatedResponse<ActivityResponse>> Update(
+        [Required] Guid id,
+        [FromBody] ActivityUpdateRequest activityUpdate
+    )
     {
         var activity = dbContext.Activities.Find(id);
 
@@ -58,6 +70,8 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
 
         dbContext.SaveChanges();
 
-        return Accepted();
+        return Accepted(
+            new UpdatedResponse<ActivityResponse> { Item = new IdResponse { Id = activity.Id } }
+        );
     }
 }

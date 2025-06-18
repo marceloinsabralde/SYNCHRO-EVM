@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
+using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,12 @@ namespace Kumara.WebApi.Controllers;
 public class MaterialActivityAllocationsController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
-    public IActionResult Index([Required] Guid iTwinId, Guid? activityId, Guid? materialId)
+    [EndpointName("ListMaterialActivityAllocations")]
+    public ActionResult<ListResponse<MaterialActivityAllocationResponse>> Index(
+        [Required] Guid iTwinId,
+        Guid? activityId,
+        Guid? materialId
+    )
     {
         var allocations = dbContext.MaterialActivityAllocations.Where(allocation =>
             allocation.ITwinId == iTwinId
@@ -30,7 +36,7 @@ public class MaterialActivityAllocationsController(ApplicationDbContext dbContex
         return Ok(
             new ListResponse<MaterialActivityAllocationResponse>
             {
-                items = allocations.Select(allocation =>
+                Items = allocations.Select(allocation =>
                     MaterialActivityAllocationResponse.FromMaterialActivityAllocation(allocation)
                 ),
             }

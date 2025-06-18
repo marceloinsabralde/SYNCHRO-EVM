@@ -43,12 +43,13 @@ WebApplication app = builder.Build();
 if (!app.Environment.IsProduction())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    app.UseSwaggerUI(options =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "SYNCHRO EVM EventSource API v1");
-        c.RoutePrefix = "swagger";
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "SYNCHRO EVM EventSource API v1");
+        options.RoutePrefix = "swagger";
         // Disable resource loading
-        c.InjectStylesheet("");
+        options.InjectStylesheet("");
+        options.EnableDeepLinking();
     });
 }
 

@@ -2,17 +2,6 @@
 
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <OutputType>Exe</OutputType>
-        <RootNamespace>Kumara.Common.Tests</RootNamespace>
-        <TargetFramework>net9.0</TargetFramework>
-        <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
-        <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    </PropertyGroup>
-
     <ItemGroup>
         <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
@@ -23,17 +12,22 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0"/>
-        <PackageReference Include="xunit.v3" Version="2.0.1"/>
-        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.1"/>
-        <PackageReference Include="coverlet.collector" Version="6.0.4" />
-        <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="1.7.1" />
-        <PackageReference Include="Shouldly" Version="4.3.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="xunit.v3" />
+        <PackageReference Include="xunit.runner.visualstudio" />
+        <PackageReference Include="coverlet.collector" />
+        <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
+        <PackageReference Include="Shouldly" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Kumara.Common\Kumara.Common.csproj" />
         <ProjectReference Include="..\Kumara.TestCommon\Kumara.TestCommon.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\Kumara.TestCommon\Tests\**\*.cs" />
+        <Compile Remove="..\Kumara.TestCommon\Tests\AspNetCore\**\*.cs" />
     </ItemGroup>
 
 </Project>

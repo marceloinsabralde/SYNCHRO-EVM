@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Requests;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
@@ -13,7 +14,10 @@ namespace Kumara.WebApi.Controllers;
 public class ProgressEntriesController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpPost]
-    public IActionResult Create([FromBody] ProgressEntryCreateRequest progressEntryRequest)
+    [EndpointName("CreateProgressEntry")]
+    public ActionResult<CreatedResponse<ProgressEntry>> Create(
+        [FromBody] ProgressEntryCreateRequest progressEntryRequest
+    )
     {
         Activity? activity = dbContext.Activities.FirstOrDefault(a =>
             a.ITwinId == progressEntryRequest.iTwinId && a.Id == progressEntryRequest.activityId
@@ -71,6 +75,8 @@ public class ProgressEntriesController(ApplicationDbContext dbContext) : Control
         dbContext.ProgressEntries.Add(progressEntry);
         dbContext.SaveChanges();
 
-        return Accepted(new CreatedResponse { Id = progressEntry.Id });
+        return Accepted(
+            new CreatedResponse<ProgressEntry> { Item = new IdResponse { Id = progressEntry.Id } }
+        );
     }
 }

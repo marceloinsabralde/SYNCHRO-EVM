@@ -2,9 +2,9 @@
 
 using NodaTime;
 
-namespace Kumara.WebApi.Utilities;
+namespace Kumara.Common.Utilities;
 
-class NanosecondSystemClock : IClock
+public class NanosecondSystemClock : IClock
 {
     public static NanosecondSystemClock Instance { get; } = new();
 

@@ -2,12 +2,12 @@
 
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <RootNamespace>Kumara</RootNamespace>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Humanizer.Core" />
+        <PackageReference Include="NodaTime.Serialization.SystemTextJson" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
+    </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@
 
 using System.Net;
 using System.Net.Http.Json;
+using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Responses;
 
 namespace Kumara.WebApi.Tests.Controllers;
@@ -36,14 +37,14 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/control-accounts?iTwinId={iTwinId}",
+            GetPathByName("ListControlAccounts", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 
         var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<ControlAccountResponse>
         >();
-        var controlAccounts = apiResponse?.items.ToList();
+        var controlAccounts = apiResponse?.Items.ToList();
 
         controlAccounts.ShouldNotBeNull();
         controlAccounts.ShouldAllBe(controlAccount => controlAccount.ITwinId == iTwinId);
@@ -61,7 +62,7 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
     public async Task Index_WhenITwinIdMissing_BadRequest()
     {
         var response = await _client.GetAsync(
-            "/api/v1/control-accounts",
+            GetPathByName("ListControlAccounts"),
             TestContext.Current.CancellationToken
         );
 
@@ -75,7 +76,7 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
     {
         var iTwinId = Guid.CreateVersion7();
         var response = await _client.GetAsync(
-            $"/api/v1/control-accounts?iTwinId={iTwinId}",
+            GetPathByName("ListControlAccounts", new { iTwinId }),
             TestContext.Current.CancellationToken
         );
 
@@ -93,11 +94,14 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            $"/api/v1/control-accounts/{controlAccount.Id}",
+            GetPathByName("GetControlAccount", new { controlAccount.Id }),
             TestContext.Current.CancellationToken
         );
 
-        var controlAccountResponse = await response.ShouldBeApiResponse<ControlAccountResponse>();
+        var apiResponse = await response.ShouldBeApiResponse<
+            ShowResponse<ControlAccountResponse>
+        >();
+        var controlAccountResponse = apiResponse?.Item;
         controlAccountResponse.ShouldBeEquivalentTo(
             ControlAccountResponse.FromControlAccount(controlAccount)
         );
@@ -107,7 +111,7 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
     public async Task Show_WhenActivityNotFound_NotFound()
     {
         var response = await _client.GetAsync(
-            $"/api/v1/control-accounts/{Guid.NewGuid()}",
+            GetPathByName("GetControlAccount", new { Id = Guid.NewGuid() }),
             TestContext.Current.CancellationToken
         );
 

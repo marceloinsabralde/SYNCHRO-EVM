@@ -49,18 +49,28 @@ public class EventsControllerActivityEventsTests : EventsControllerTestBase
             System.Text.Encoding.UTF8,
             "application/json"
         );
-        HttpResponseMessage postResponse = await _client.PostAsync(ApiBasePath, content);
+        HttpResponseMessage postResponse = await _client.PostAsync(
+            GetEventsEndpoint(),
+            content,
+            TestContext.Current.CancellationToken
+        );
         postResponse.EnsureSuccessStatusCode();
-        string postResponseString = await postResponse.Content.ReadAsStringAsync();
+        string postResponseString = await postResponse.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         postResponseString.ShouldNotBeNull();
         postResponseString.ShouldContain("\"count\":1");
 
         // Get the event back to verify it was stored
-        string queryString = $"iTwinId={itwinId}&type=activity.created.v1";
-        HttpResponseMessage getResponse = await _client.GetAsync(GetEventsEndpoint(queryString));
+        HttpResponseMessage getResponse = await _client.GetAsync(
+            GetEventsEndpoint(new { itwinId, type = "activity.created.v1" }),
+            TestContext.Current.CancellationToken
+        );
         getResponse.EnsureSuccessStatusCode();
 
-        string getResponseString = await getResponse.Content.ReadAsStringAsync();
+        string getResponseString = await getResponse.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         getResponseString.ShouldNotBeNull();
         getResponseString.ShouldContain("\"referenceCode\":\"" + referenceCode + "\"");
         getResponseString.ShouldContain(activityId.ToString());
@@ -107,18 +117,28 @@ public class EventsControllerActivityEventsTests : EventsControllerTestBase
             System.Text.Encoding.UTF8,
             "application/json"
         );
-        HttpResponseMessage postResponse = await _client.PostAsync(ApiBasePath, content);
+        HttpResponseMessage postResponse = await _client.PostAsync(
+            GetEventsEndpoint(),
+            content,
+            TestContext.Current.CancellationToken
+        );
         postResponse.EnsureSuccessStatusCode();
-        string postResponseString = await postResponse.Content.ReadAsStringAsync();
+        string postResponseString = await postResponse.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         postResponseString.ShouldNotBeNull();
         postResponseString.ShouldContain("\"count\":1");
 
         // Get the event back to verify it was stored
-        string queryString = $"iTwinId={itwinId}&type=activity.updated.v1";
-        HttpResponseMessage getResponse = await _client.GetAsync(GetEventsEndpoint(queryString));
+        HttpResponseMessage getResponse = await _client.GetAsync(
+            GetEventsEndpoint(new { itwinId, type = "activity.updated.v1" }),
+            TestContext.Current.CancellationToken
+        );
         getResponse.EnsureSuccessStatusCode();
 
-        string getResponseString = await getResponse.Content.ReadAsStringAsync();
+        string getResponseString = await getResponse.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         getResponseString.ShouldNotBeNull();
         getResponseString.ShouldContain("\"referenceCode\":\"" + referenceCode + "\"");
         getResponseString.ShouldContain(activityId.ToString());
@@ -160,9 +180,15 @@ public class EventsControllerActivityEventsTests : EventsControllerTestBase
             System.Text.Encoding.UTF8,
             "application/json"
         );
-        HttpResponseMessage response = await _client.PostAsync(ApiBasePath, content);
+        HttpResponseMessage response = await _client.PostAsync(
+            GetEventsEndpoint(),
+            content,
+            TestContext.Current.CancellationToken
+        );
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        string responseString = await response.Content.ReadAsStringAsync();
+        string responseString = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
         responseString.ShouldContain("referenceCode");
     }
 }

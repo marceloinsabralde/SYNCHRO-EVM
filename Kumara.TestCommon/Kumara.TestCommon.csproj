@@ -2,11 +2,27 @@
 
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    </PropertyGroup>
+    <ItemGroup>
+        <Using Include="Xunit" />
+        <Using Include="Shouldly" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="xunit.v3.extensibility.core" />
+        <PackageReference Include="Shouldly" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Microsoft.AspNetCore.Hosting" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+        <PackageReference Include="Respawn" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
+        <PackageReference Include="Microsoft.OpenApi.Readers" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="Tests\**\*.cs" />
+    </ItemGroup>
 
 </Project>

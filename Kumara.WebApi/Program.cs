@@ -1,7 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.Common.Utilities;
 using Kumara.WebApi.Database;
-using Kumara.WebApi.Utilities;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
@@ -35,8 +35,13 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(
 builder
     .Services.AddControllers()
     .AddJsonOptions(options =>
-        options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb)
-    );
+    {
+        options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+        options.JsonSerializerOptions.TypeInfoResolverChain.Insert(
+            0,
+            new JsonTypeInfoResolverAttributeResolver()
+        );
+    });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi(options =>
@@ -95,7 +100,10 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {
     app.MapOpenApi();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.EnableDeepLinking();
+    });
 }
 
 app.Run();
