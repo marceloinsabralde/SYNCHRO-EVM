@@ -10,6 +10,7 @@ public class ConventionSetPlugin : IConventionSetPlugin
     public ConventionSet ModifyConventions(ConventionSet conventionSet)
     {
         conventionSet.PropertyAddedConventions.Add(new ITwinIdIndexConvention());
+        conventionSet.PropertyAddedConventions.Add(new ITwinIdNamingConvention());
 
         return conventionSet;
     }

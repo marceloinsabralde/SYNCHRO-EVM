@@ -19,7 +19,6 @@ namespace Kumara.WebApi.Models;
 [EntityTypeConfiguration(typeof(ProgressSummary.Configuration))]
 public class ProgressSummary
 {
-    [Column("itwin_id")]
     public Guid ITwinId { get; set; }
 
     public Guid ActivityId { get; set; }

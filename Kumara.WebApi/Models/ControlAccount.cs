@@ -8,7 +8,6 @@ public class ControlAccount : ApplicationEntity
 {
     public Guid Id { get; set; }
 
-    [Column("itwin_id")]
     public Guid ITwinId { get; set; }
     public Guid TaskId { get; set; }
 

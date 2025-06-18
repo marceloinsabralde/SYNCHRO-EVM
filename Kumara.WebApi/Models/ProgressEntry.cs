@@ -8,7 +8,6 @@ public class ProgressEntry : ApplicationEntity
 {
     public Guid Id { get; set; }
 
-    [Column("itwin_id")]
     public Guid ITwinId { get; set; }
 
     public Guid ActivityId { get; set; }
