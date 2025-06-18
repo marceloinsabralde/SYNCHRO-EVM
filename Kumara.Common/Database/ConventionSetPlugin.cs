@@ -9,6 +9,8 @@ public class ConventionSetPlugin : IConventionSetPlugin
 {
     public ConventionSet ModifyConventions(ConventionSet conventionSet)
     {
+        conventionSet.PropertyAddedConventions.Add(new ITwinIdIndexConvention());
+
         return conventionSet;
     }
 }

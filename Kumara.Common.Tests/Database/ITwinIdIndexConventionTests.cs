@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Kumara.Common.Database;
+using Kumara.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kumara.Common.Tests.Database;
@@ -36,15 +37,11 @@ public sealed class ITwinIdIndexConventionTests(ITwinIdIndexConventionTests.Test
     {
         public DbSet<TestEntity> TestEntity { get; set; }
 
-        public static readonly DbContextOptions<TestDbContext> Options =
+        public static readonly DbContextOptions Options =
             new DbContextOptionsBuilder<TestDbContext>()
                 .UseInMemoryDatabase(databaseName: nameof(ITwinIdIndexConventionTests))
                 .UseSnakeCaseNamingConvention()
+                .UseKumaraCommon()
                 .Options;
-
-        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-        {
-            configurationBuilder.Conventions.Add(_ => new ITwinIdIndexConvention());
-        }
     }
 }
