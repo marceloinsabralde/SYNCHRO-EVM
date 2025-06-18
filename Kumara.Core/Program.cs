@@ -1,9 +1,28 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
+using Kumara.Common.Database;
+using Kumara.Core.Database;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddEnvironmentVariables(
+    prefix: $"{builder.Environment.EnvironmentName.ToUpper()}_"
+);
 
 builder.Services.AddOpenApi();
 
+builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
+    opt.UseNpgsql(
+            builder.Configuration.GetConnectionString("KumaraCoreDB"),
+            o => o.SetPostgresVersion(16, 4).UseNodaTime()
+        )
+        .UseSnakeCaseNamingConvention()
+);
+
 var app = builder.Build();
+
+await app.MigrateDbAsync<ApplicationDbContext>();
 
 if (app.Environment.IsDevelopment())
 {
