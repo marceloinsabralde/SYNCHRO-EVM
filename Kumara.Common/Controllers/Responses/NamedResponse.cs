@@ -21,8 +21,8 @@ public class NamedResponse<T>
         }
     }
 
-    public static IDictionary<string, string> JsonPropertyNames =>
-        new Dictionary<string, string>
+    public static Dictionary<string, string> JsonPropertyNames =>
+        new()
         {
             { "item", Inflector.Camelize(BaseTypeName) },
             { "items", Inflector.Camelize(Inflector.Pluralize(BaseTypeName)) },

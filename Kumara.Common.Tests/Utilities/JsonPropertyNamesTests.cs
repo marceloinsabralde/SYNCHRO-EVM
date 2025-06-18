@@ -19,8 +19,8 @@ public class JsonPropertyNamesTests
         public string SecondName { get; set; }
         public required string ThirdName { get; set; }
 
-        public static IDictionary<string, string> JsonPropertyNames =>
-            new Dictionary<string, string>
+        public static Dictionary<string, string> JsonPropertyNames =>
+            new()
             {
                 { "firstName", "someOtherName" },
                 { "secondName", "yetAnotherName" },
