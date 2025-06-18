@@ -23,7 +23,6 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
             npgsqlOptions.UseNodaTime();
         }
     );
-    options.UseSnakeCaseNamingConvention();
     options.UseKumaraCommon();
     if (builder.Environment.IsDevelopment())
     {

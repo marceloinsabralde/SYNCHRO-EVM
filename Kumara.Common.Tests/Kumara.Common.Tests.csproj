@@ -19,7 +19,6 @@
         <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
         <PackageReference Include="Shouldly" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
-        <PackageReference Include="EFCore.NamingConventions" />
         <PackageReference Include="NodaTime.Testing" />
     </ItemGroup>
 

@@ -40,7 +40,6 @@ public sealed class ITwinIdIndexConventionTests(ITwinIdIndexConventionTests.Test
         public static readonly DbContextOptions Options =
             new DbContextOptionsBuilder<TestDbContext>()
                 .UseInMemoryDatabase(databaseName: nameof(ITwinIdIndexConventionTests))
-                .UseSnakeCaseNamingConvention()
                 .UseKumaraCommon()
                 .Options;
     }

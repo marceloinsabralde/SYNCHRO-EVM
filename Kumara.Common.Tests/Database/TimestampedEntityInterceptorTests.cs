@@ -95,7 +95,6 @@ public class TimestampedEntityInterceptorTests(
                 (serviceProvider, options) =>
                 {
                     options.UseInMemoryDatabase(nameof(TimestampedEntityInterceptorTests));
-                    options.UseSnakeCaseNamingConvention();
                     options.UseKumaraCommon(serviceProvider);
                 }
             );

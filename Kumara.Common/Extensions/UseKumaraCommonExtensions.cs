@@ -13,6 +13,8 @@ namespace Kumara.Common.Extensions
             IServiceProvider? serviceProvider = null
         )
         {
+            optionsBuilder.UseSnakeCaseNamingConvention();
+
             var extension =
                 optionsBuilder.Options.FindExtension<OptionsExtension>()
                 ?? new OptionsExtension(serviceProvider);
