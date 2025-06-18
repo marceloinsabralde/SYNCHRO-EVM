@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Kumara.Common.Database;
+using Kumara.Common.Extensions;
 using Kumara.Common.Utilities;
 using Kumara.WebApi.Database;
 using Microsoft.AspNetCore.HttpLogging;
@@ -35,6 +36,7 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(
             }
         );
         options.UseSnakeCaseNamingConvention();
+        options.UseKumaraCommon();
         options.AddInterceptors(serviceProvider.GetRequiredService<TimestampedEntityInterceptor>());
         if (builder.Environment.IsDevelopment())
         {

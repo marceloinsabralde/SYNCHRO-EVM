@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Kumara.Common.Database;
+using Kumara.Common.Extensions;
 using Kumara.Core.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,7 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
         }
     );
     options.UseSnakeCaseNamingConvention();
+    options.UseKumaraCommon();
     if (builder.Environment.IsDevelopment())
     {
         options.EnableSensitiveDataLogging();
