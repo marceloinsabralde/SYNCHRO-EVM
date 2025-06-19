@@ -50,6 +50,8 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
+
 await app.MigrateDbAsync<ApplicationDbContext>();
 
 app.MapControllers();
@@ -63,7 +65,5 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
         options.EnableDeepLinking();
     });
 }
-
-app.UseHttpsRedirection();
 
 app.Run();

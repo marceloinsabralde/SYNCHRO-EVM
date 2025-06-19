@@ -79,10 +79,7 @@ if (!builder.Environment.IsDevelopment())
 
 WebApplication app = builder.Build();
 
-if (!app.Environment.IsEnvironment("Test"))
-{
-    app.UseHttpsRedirection();
-}
+app.UseHttpsRedirection();
 
 await app.MigrateDbAsync<ApplicationDbContext>();
 
