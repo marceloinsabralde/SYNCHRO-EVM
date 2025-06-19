@@ -13,11 +13,6 @@ builder.Configuration.AddEnvironmentVariables(
     prefix: $"{builder.Environment.EnvironmentName.ToUpper()}_"
 );
 
-builder.Services.AddOpenApi(options =>
-{
-    options.UseKumaraCommon();
-});
-
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(
@@ -43,6 +38,10 @@ builder
         options.UseKumaraCommon();
     });
 
+builder.Services.AddOpenApi(options =>
+{
+    options.UseKumaraCommon();
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -59,7 +58,10 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {
     app.MapOpenApi();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.EnableDeepLinking();
+    });
 }
 
 app.UseHttpsRedirection();
