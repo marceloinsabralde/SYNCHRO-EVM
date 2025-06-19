@@ -71,26 +71,22 @@ Notes:
 
 ## Running the apps
 
-### Running Kumara.WebApi
-
-From the root directory of the solution run `dotnet run --project Kumara.WebApi`
-Then visit https://localhost:7029/swagger/index.html to view in browser.
-
-Notes:
-- you may wish to simply use the "Build and Run" feature of your favourite IDE for this.
+Note: You can also use your IDE's "Build and Run" feature to start services.
 
 ### Running Kumara.EventSource
 
 From the root directory of the solution run `dotnet run --project Kumara.EventSource`
 Then visit https://localhost:7104/swagger/index.html to view in browser.
 
-Notes:
-- Like the WebApi, you can also use your IDE's "Build and Run" feature to start this service.
-
 ### Running Kumara.Core
 
 From the root directory of the solution run `dotnet run --project Kumara.Core`
 Then visit https://localhost:7133/swagger/index.html to view in browser.
+
+### Running Kumara.WebApi
+
+From the root directory of the solution run `dotnet run --project Kumara.WebApi`
+Then visit https://localhost:7029/swagger/index.html to view in browser.
 
 #### Using the HTTP Test File
 
