@@ -6,6 +6,7 @@
         <PackageReference Include="Humanizer.Core" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
         <PackageReference Include="EFCore.NamingConventions" />
         <PackageReference Include="NodaTime.Serialization.SystemTextJson" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
