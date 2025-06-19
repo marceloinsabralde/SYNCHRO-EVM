@@ -30,6 +30,8 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
     }
 });
 
+builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -40,6 +42,8 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 await app.MigrateDbAsync<ApplicationDbContext>();
+
+app.MapControllers();
 
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {
