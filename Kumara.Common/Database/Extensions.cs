@@ -23,11 +23,8 @@ public static class Extensions
         var sqlViewAttrs = dbContext
             .GetType()
             .Assembly.GetTypes()
-            .Select(type =>
-                type.GetCustomAttributes(typeof(SqlViewAttribute), false).FirstOrDefault()
-                as SqlViewAttribute
-            )
-            .Where(attr => attr is not null);
+            .SelectMany(type => type.GetCustomAttributes(typeof(SqlViewAttribute), false))
+            .OfType<SqlViewAttribute>();
 
         foreach (var attr in sqlViewAttrs)
         {
