@@ -7,7 +7,7 @@ namespace Kumara.Common.Tests.Validations;
 public sealed class NotEmptyAttributeTests
 {
     [Fact]
-    public void null_NotEmptyValidation()
+    public void Null_NotEmptyValidation()
     {
         var attr = new NotEmptyAttribute();
 

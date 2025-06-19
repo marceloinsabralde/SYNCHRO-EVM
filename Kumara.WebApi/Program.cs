@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.Common.Database;
 using Kumara.Common.Utilities;
 using Kumara.WebApi.Database;
 using Microsoft.AspNetCore.HttpLogging;
@@ -87,7 +88,8 @@ if (!app.Environment.IsEnvironment("Test"))
     app.UseHttpsRedirection();
 }
 
-await app.MigrateDbAsync();
+await app.MigrateDbAsync<ApplicationDbContext>();
+
 app.MapControllers();
 
 // Configure the HTTP request pipeline.

@@ -6,12 +6,18 @@ Kumara (3579) (formerly SYNCHRO Perform (3221)) is a module of Project Delivery 
 
 ## Project Structure
 
-The solution is broken down into 4 separate projects, these are:
+The solution is broken down into the following projects:
 
 ```
+Kumara.TestCommon << to test common functionality
+Kumara.Common << for common functionality used across the Kumara projects
+Kumara.Common.Tests << for unit tests to test Kumara.Common
 Kumara.EventSource << for Event storage and retrieval
-Kumara.WebApi << for actual code
-Kumara.Tests << for unit tests via MSTest
+Kumara.EventSource.Tests << for unit tests to test Kumara.EventSource
+Kumara.Core << for event sourced entities and functionality
+Kumara.Core.Tests << for unit tests to test Kumara.Core
+Kumara.WebApi << exposes API for all of Kumara project and POC entities via CRUD
+Kumara.WebApi.Tests << for unit tests to test Kumara.WebApi
 Kumara.Scenarios << for BDD scenarios
 ```
 
@@ -65,21 +71,23 @@ Notes:
 
 ## Running the apps
 
-### Running Kumara.WebApi
-
-From the root directory of the solution run `dotnet run --project Kumara.WebApi`
-Then visit https://localhost:7029/swagger/index.html to view in browser.
-
-Notes:
-- you may wish to simply use the "Build and Run" feature of your favourite IDE for this.
+Note: You can also use your IDE's "Build and Run" feature to start services.
+Note: If this is the first time using HTTPS with .NET Core, you may need to run `dotnet dev-certs https --trust` first.
 
 ### Running Kumara.EventSource
 
 From the root directory of the solution run `dotnet run --project Kumara.EventSource`
 Then visit https://localhost:7104/swagger/index.html to view in browser.
 
-Notes:
-- Like the WebApi, you can also use your IDE's "Build and Run" feature to start this service.
+### Running Kumara.Core
+
+From the root directory of the solution run `dotnet run --project Kumara.Core`
+Then visit https://localhost:7133/swagger/index.html to view in browser.
+
+### Running Kumara.WebApi
+
+From the root directory of the solution run `dotnet run --project Kumara.WebApi`
+Then visit https://localhost:7029/swagger/index.html to view in browser.
 
 #### Using the HTTP Test File
 
@@ -118,5 +126,6 @@ dotnet csharpier --check . # check that all files in the current directory are f
 ## Databases
 
 Use `mongosh "${ConnectionStrings__KumaraEventSourceDB?}"` to connect to Event Source's MongoDB database.
+Use `psql kumara-core` to connect to Core's PostgreSQL database.
 Use `psql kumara-web-api` to connect to Web API's PostgreSQL database.
 See `mise.toml` for a list of environment variables if you want to use other database tools.
