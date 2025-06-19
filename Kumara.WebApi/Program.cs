@@ -20,25 +20,23 @@ builder.Configuration.AddEnvironmentVariables(
     prefix: $"{builder.Environment.EnvironmentName.ToUpper()}_"
 );
 
-builder.Services.AddDbContextPool<ApplicationDbContext>(
-    (serviceProvider, options) =>
-    {
-        options.UseNpgsql(
-            builder.Configuration.GetConnectionString("KumaraWebApiDB"),
-            npgsqlOptions =>
-            {
-                npgsqlOptions.SetPostgresVersion(16, 4);
-                npgsqlOptions.UseNodaTime();
-            }
-        );
-        options.UseSnakeCaseNamingConvention();
-        options.UseKumaraCommon();
-        if (builder.Environment.IsDevelopment())
+builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
+{
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("KumaraWebApiDB"),
+        npgsqlOptions =>
         {
-            options.EnableSensitiveDataLogging();
+            npgsqlOptions.SetPostgresVersion(16, 4);
+            npgsqlOptions.UseNodaTime();
         }
+    );
+    options.UseSnakeCaseNamingConvention();
+    options.UseKumaraCommon();
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableSensitiveDataLogging();
     }
-);
+});
 
 builder
     .Services.AddControllers()
