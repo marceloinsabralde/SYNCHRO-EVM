@@ -72,6 +72,7 @@ Notes:
 ## Running the apps
 
 Note: You can also use your IDE's "Build and Run" feature to start services.
+Note: If this is the first time using HTTPS with .NET Core, you may need to run `dotnet dev-certs https --trust` first.
 
 ### Running Kumara.EventSource
 
