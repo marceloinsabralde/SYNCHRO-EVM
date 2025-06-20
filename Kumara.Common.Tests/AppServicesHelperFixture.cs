@@ -1,6 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.Common.Utilities;
+using Kumara.Common.Extensions;
 using Kumara.TestCommon.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,21 +29,15 @@ public class AppServicesHelperFixture : IDisposable
                     .AddControllers()
                     .AddJsonOptions(options =>
                     {
-                        options.JsonSerializerOptions.TypeInfoResolverChain.Insert(
-                            0,
-                            new JsonTypeInfoResolverAttributeResolver()
-                        );
+                        options.UseKumaraCommon();
                     });
                 services.AddSwaggerGen(options =>
                 {
-                    options.UseAllOfToExtendReferenceSchemas();
-                    options.EnableAnnotations();
+                    options.UseKumaraCommon();
                 });
                 services.AddOpenApi(options =>
                 {
-                    options.AddSchemaTransformer(
-                        new OpenApiSchemaTransformerAttributeTransformer()
-                    );
+                    options.UseKumaraCommon();
                 });
             });
         });

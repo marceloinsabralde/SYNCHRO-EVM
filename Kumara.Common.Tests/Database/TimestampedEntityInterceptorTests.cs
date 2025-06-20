@@ -1,15 +1,17 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.WebApi.Database;
-using Kumara.WebApi.Models;
+using Kumara.Common.Database;
+using Kumara.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NodaTime;
 using NodaTime.Testing;
 
-namespace Kumara.WebApi.Tests.Models;
+namespace Kumara.Common.Tests.Database;
 
-public class TimestampedEntityTests(TimestampedEntityTests.TestFixture testFixture)
-    : IClassFixture<TimestampedEntityTests.TestFixture>
+public class TimestampedEntityInterceptorTests(
+    TimestampedEntityInterceptorTests.TestFixture testFixture
+) : IClassFixture<TimestampedEntityInterceptorTests.TestFixture>
 {
     private TestDbContext dbContext => testFixture.DbContext;
     private readonly FakeClock fakeClock = testFixture.FakeClock;
@@ -75,34 +77,42 @@ public class TimestampedEntityTests(TimestampedEntityTests.TestFixture testFixtu
         public Instant UpdatedAt { get; set; }
     }
 
-    public class TestFixture
+    public class TestFixture : IDisposable
     {
+        public readonly ServiceProvider ServiceProvider;
+
         public readonly FakeClock FakeClock;
         public readonly TestDbContext DbContext;
 
         public TestFixture()
         {
+            var services = new ServiceCollection();
+
             FakeClock = new FakeClock(Instant.FromUtc(2025, 05, 05, 13, 37));
-            var timestampedEntityInterceptor = new TimestampedEntityInterceptor(FakeClock);
-            DbContext = new TestDbContext(timestampedEntityInterceptor);
+            services.AddSingleton<IClock>(FakeClock);
+
+            services.AddDbContext<TestDbContext>(
+                (serviceProvider, options) =>
+                {
+                    options.UseInMemoryDatabase(nameof(TimestampedEntityInterceptorTests));
+                    options.UseKumaraCommon(serviceProvider);
+                }
+            );
+
+            ServiceProvider = services.BuildServiceProvider();
+            var scope = ServiceProvider.CreateScope();
+
+            DbContext = scope.ServiceProvider.GetRequiredService<TestDbContext>();
+        }
+
+        public void Dispose()
+        {
+            ServiceProvider.Dispose();
         }
     }
 
-    public class TestDbContext(TimestampedEntityInterceptor timestampedEntityInterceptor)
-        : DbContext(Options)
+    public class TestDbContext(DbContextOptions<TestDbContext> options) : DbContext(options)
     {
         public DbSet<TestEntity> Entities { get; set; }
-
-        private static readonly DbContextOptions<TestDbContext> Options =
-            new DbContextOptionsBuilder<TestDbContext>()
-                .UseInMemoryDatabase(nameof(TimestampedEntityTests))
-                .UseSnakeCaseNamingConvention()
-                .Options;
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.AddInterceptors(timestampedEntityInterceptor);
-            base.OnConfiguring(optionsBuilder);
-        }
     }
 }

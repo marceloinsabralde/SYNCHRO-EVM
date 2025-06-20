@@ -1,15 +1,14 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.WebApi.Database;
+using Kumara.Common.Database;
+using Kumara.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kumara.WebApi.Tests.Database;
+namespace Kumara.Common.Tests.Database;
 
 public sealed class ITwinIdIndexConventionTests(ITwinIdIndexConventionTests.TestDbContext dbContext)
     : IClassFixture<ITwinIdIndexConventionTests.TestDbContext>
 {
-    private readonly TestDbContext _dbContext = dbContext;
-
     public sealed class TestEntity
     {
         public required Guid Id { get; set; }
@@ -25,7 +24,7 @@ public sealed class ITwinIdIndexConventionTests(ITwinIdIndexConventionTests.Test
     [InlineData("ITwinId", true)]
     public void AddsIndexToPropertiesEndingWithITwinId(string propertyName, bool shouldHaveIndex)
     {
-        var entityType = _dbContext.Model.FindEntityType(typeof(TestEntity))!;
+        var entityType = dbContext.Model.FindEntityType(typeof(TestEntity))!;
         var indexes = entityType.GetIndexes();
         var hasIndex = indexes.Any(index =>
             index.Properties.Select(p => p.Name).SequenceEqual([propertyName])
@@ -38,15 +37,10 @@ public sealed class ITwinIdIndexConventionTests(ITwinIdIndexConventionTests.Test
     {
         public DbSet<TestEntity> TestEntity { get; set; }
 
-        public static readonly DbContextOptions<TestDbContext> Options =
+        public static readonly DbContextOptions Options =
             new DbContextOptionsBuilder<TestDbContext>()
                 .UseInMemoryDatabase(databaseName: nameof(ITwinIdIndexConventionTests))
-                .UseSnakeCaseNamingConvention()
+                .UseKumaraCommon()
                 .Options;
-
-        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-        {
-            configurationBuilder.Conventions.Add(_ => new ITwinIdIndexConvention());
-        }
     }
 }

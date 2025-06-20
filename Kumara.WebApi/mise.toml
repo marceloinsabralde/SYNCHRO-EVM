@@ -1,0 +1,2 @@
+[env]
+PGDATABASE="kumara-web-api"

@@ -1,8 +1,8 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations.Schema;
+using Kumara.Common.Converters;
 using Kumara.Common.Database;
-using Kumara.WebApi.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NodaTime;
@@ -19,7 +19,6 @@ namespace Kumara.WebApi.Models;
 [EntityTypeConfiguration(typeof(ProgressSummary.Configuration))]
 public class ProgressSummary
 {
-    [Column("itwin_id")]
     public Guid ITwinId { get; set; }
 
     public Guid ActivityId { get; set; }

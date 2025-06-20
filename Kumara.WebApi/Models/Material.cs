@@ -8,7 +8,6 @@ public class Material : ApplicationEntity
 {
     public Guid Id { get; set; }
 
-    [Column("itwin_id")]
     public Guid ITwinId { get; set; }
 
     public required string Name { get; set; }

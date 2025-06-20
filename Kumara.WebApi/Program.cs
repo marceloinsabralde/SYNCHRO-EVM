@@ -1,7 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Kumara.Common.Database;
-using Kumara.Common.Utilities;
+using Kumara.Common.Extensions;
 using Kumara.WebApi.Database;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
@@ -19,43 +19,39 @@ builder.Configuration.AddEnvironmentVariables(
     prefix: $"{builder.Environment.EnvironmentName.ToUpper()}_"
 );
 
-// Add services to the container.
-builder.Services.AddSingleton<IClock>(NanosecondSystemClock.Instance);
-builder.Services.AddSingleton<TimestampedEntityInterceptor>();
-
-builder.Services.AddDbContextPool<ApplicationDbContext>(
-    (serviceProvider, opt) =>
-        opt.UseNpgsql(
-                builder.Configuration.GetConnectionString("KumaraWebApiDB"),
-                o => o.SetPostgresVersion(16, 4).UseNodaTime()
-            )
-            .UseSnakeCaseNamingConvention()
-            .AddInterceptors(serviceProvider.GetRequiredService<TimestampedEntityInterceptor>())
-);
+builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
+{
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("KumaraWebApiDB"),
+        npgsqlOptions =>
+        {
+            npgsqlOptions.SetPostgresVersion(16, 4);
+            npgsqlOptions.UseNodaTime();
+        }
+    );
+    options.UseKumaraCommon();
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableSensitiveDataLogging();
+    }
+});
 
 builder
     .Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
-        options.JsonSerializerOptions.TypeInfoResolverChain.Insert(
-            0,
-            new JsonTypeInfoResolverAttributeResolver()
-        );
+        options.UseKumaraCommon();
     });
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi(options =>
 {
-    options.AddSchemaTransformer(new OpenApiSchemaTransformerAttributeTransformer());
+    options.UseKumaraCommon();
 });
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.UseAllOfToExtendReferenceSchemas();
-    options.EnableAnnotations();
+    options.UseKumaraCommon();
 });
 
 // Learn more about configuring HTTP Logging at https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/?view=aspnetcore-9.0
@@ -83,10 +79,7 @@ if (!builder.Environment.IsDevelopment())
 
 WebApplication app = builder.Build();
 
-if (!app.Environment.IsEnvironment("Test"))
-{
-    app.UseHttpsRedirection();
-}
+app.UseHttpsRedirection();
 
 await app.MigrateDbAsync<ApplicationDbContext>();
 

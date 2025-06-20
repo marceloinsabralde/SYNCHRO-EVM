@@ -8,7 +8,6 @@ public class UnitOfMeasure : ApplicationEntity
 {
     public Guid Id { get; set; }
 
-    [Column("itwin_id")]
     public required Guid ITwinId { get; set; }
 
     public required string Name { get; set; }

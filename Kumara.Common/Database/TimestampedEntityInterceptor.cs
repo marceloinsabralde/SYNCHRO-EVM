@@ -1,11 +1,10 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using NodaTime;
 
-namespace Kumara.WebApi.Database;
+namespace Kumara.Common.Database;
 
 public class TimestampedEntityInterceptor(IClock clock) : SaveChangesInterceptor
 {
