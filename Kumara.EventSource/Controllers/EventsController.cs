@@ -107,19 +107,15 @@ public class EventsController : ControllerBase
         {
             if (ContinuationToken.TryParse(continuationToken, out var token))
             {
-                QueryCollection tokenParams = new(
+                QueryCollection paramsFromContinuationToken = new(
                     token.QueryParameters.ToDictionary(
                         kvp => kvp.Key,
                         kvp => new StringValues(kvp.Value)
                     )
                 );
+                paramsFromContinuationToken[ContinuationTokenKey] = continuationToken;
 
-                Dictionary<string, StringValues> paramsWithToken = new(
-                    tokenParams.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
-                );
-                paramsWithToken[ContinuationTokenKey] = continuationToken;
-
-                queryParsingResult = new QueryCollection(paramsWithToken).ToEventQueryBuilder();
+                queryParsingResult = paramsFromContinuationToken.ToEventQueryBuilder();
             }
             else
             {
