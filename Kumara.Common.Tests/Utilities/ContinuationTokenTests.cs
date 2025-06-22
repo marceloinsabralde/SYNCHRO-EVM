@@ -5,31 +5,58 @@ using Kumara.Common.Utilities;
 
 namespace Kumara.Common.Tests.Utilities;
 
-public class PaginationTests
+public class ContinuationTokenTests
 {
-    [Fact]
-    public void ToBase64String()
-    {
-        var id = Guid.CreateVersion7();
-        var jsonString = $$$"""
-            {"Id":"{{{id}}}","QueryParameters":{}}
-            """;
+    static readonly Guid TestId = Guid.CreateVersion7();
 
-        var expected = Convert.ToBase64String(Encoding.Default.GetBytes(jsonString));
-        var actual = new ContinuationToken() { Id = id }.ToBase64String();
-        actual.ShouldBe(expected);
+    [Theory]
+    [MemberData(nameof(ContinuationTokenTestData))]
+    public void ToBase64String(string expected, ContinuationToken token)
+    {
+        token.ToBase64String().ShouldBe(expected);
     }
 
-    [Fact]
-    public void ParseContinuationTokenTest()
+    [Theory]
+    [MemberData(nameof(ContinuationTokenTestData))]
+    public void ParseTest(string input, ContinuationToken expected)
     {
-        var id = Guid.CreateVersion7();
-        var jsonString = $$$"""
-            {"Id":"{{{id}}}","QueryParameters":{}}
-            """;
-        var tokenString = Convert.ToBase64String(Encoding.Default.GetBytes(jsonString));
-        var expected = new ContinuationToken() { Id = id };
-        var actual = ContinuationToken.Parse(tokenString);
+        var actual = ContinuationToken.Parse(input);
         actual.ShouldBeEquivalentTo(expected);
     }
+
+    [Theory]
+    [MemberData(nameof(ContinuationTokenTestData))]
+    public void TryParseTest(string input, ContinuationToken expected)
+    {
+        var success = ContinuationToken.TryParse(input, out var result);
+        success.ShouldBeTrue();
+        result.ShouldBeEquivalentTo(expected);
+    }
+
+    public static TheoryData<string, ContinuationToken> ContinuationTokenTestData =>
+        new TheoryData<string, ContinuationToken>
+        {
+            {
+                ConvertToBase64String($$$"""{"Id":"{{{TestId}}}","QueryParameters":{}}"""),
+                new ContinuationToken() { Id = TestId }
+            },
+            {
+                ConvertToBase64String(
+                    $$$"""{"Id":"{{{TestId}}}","QueryParameters":{"foo":"bar","baz":"qux","1":"true"}}"""
+                ),
+                new ContinuationToken()
+                {
+                    Id = TestId,
+                    QueryParameters = new()
+                    {
+                        { "foo", "bar" },
+                        { "baz", "qux" },
+                        { "1", "true" },
+                    },
+                }
+            },
+        };
+
+    static string ConvertToBase64String(string input) =>
+        Convert.ToBase64String(Encoding.Default.GetBytes(input));
 }
