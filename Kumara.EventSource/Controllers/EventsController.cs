@@ -105,8 +105,7 @@ public class EventsController : ControllerBase
 
         if (!string.IsNullOrEmpty(continuationToken))
         {
-            ContinuationToken? token = ContinuationToken.Parse(continuationToken);
-            if (token != null)
+            if (ContinuationToken.TryParse(continuationToken, out var token))
             {
                 QueryCollection tokenParams = new(
                     token.QueryParameters.ToDictionary(
