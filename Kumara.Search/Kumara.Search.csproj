@@ -6,4 +6,8 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Kumara.Common\Kumara.Common.csproj" />
+  </ItemGroup>
+
 </Project>
