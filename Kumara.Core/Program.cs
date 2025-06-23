@@ -48,6 +48,8 @@ builder.Services.AddSwaggerGen(options =>
     options.UseKumaraCommon();
 });
 
+builder.Services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
@@ -55,6 +57,7 @@ app.UseHttpsRedirection();
 await app.MigrateDbAsync<ApplicationDbContext>();
 
 app.MapControllers();
+app.MapHealthChecks("/healthz");
 
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {
