@@ -11,6 +11,12 @@ builder.Configuration.AddEnvironmentVariables(
 );
 
 builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.UseAllOfToExtendReferenceSchemas();
+    options.EnableAnnotations();
+});
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
     opt.UseNpgsql(
@@ -22,9 +28,11 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
