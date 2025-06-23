@@ -1,5 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Kumara.Common.Database;
 using Kumara.Common.Utilities;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +36,10 @@ public static class UseKumaraCommonExtensions
         options.JsonSerializerOptions.TypeInfoResolverChain.Insert(
             0,
             new JsonTypeInfoResolverAttributeResolver()
+        );
+
+        options.JsonSerializerOptions.Converters.Add(
+            new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower, false)
         );
     }
 
