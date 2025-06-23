@@ -19,6 +19,7 @@ Kumara.Core.Tests << for unit tests to test Kumara.Core
 Kumara.WebApi << exposes API for all of Kumara project and POC entities via CRUD
 Kumara.WebApi.Tests << for unit tests to test Kumara.WebApi
 Kumara.Search <<  for global search functionality
+Kumara.Search.Tests << for unit tests to test Kumara.Search
 Kumara.Scenarios << for BDD scenarios
 ```
 
