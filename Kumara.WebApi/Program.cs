@@ -54,6 +54,8 @@ builder.Services.AddSwaggerGen(options =>
     options.UseKumaraCommon();
 });
 
+builder.Services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
+
 builder.Services.AddHttpLogging(options =>
 {
     options.CombineLogs = true;
@@ -82,6 +84,7 @@ app.UseHttpsRedirection();
 await app.MigrateDbAsync<ApplicationDbContext>();
 
 app.MapControllers();
+app.MapHealthChecks("/healthz");
 
 if (app.Environment.IsDevelopment())
 {
