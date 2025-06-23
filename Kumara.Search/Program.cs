@@ -12,6 +12,7 @@ builder.Configuration.AddEnvironmentVariables(
 );
 
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -51,6 +52,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 app.UseHttpsRedirection();
 
 await app.MigrateDbAsync<ApplicationDbContext>();
+
+app.MapControllers();
 
 app.Run();
 
