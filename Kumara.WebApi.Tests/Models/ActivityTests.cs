@@ -1,6 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.TestCommon.Helpers;
 using Kumara.WebApi.Types;
 
 namespace Kumara.WebApi.Tests.Models;
@@ -8,7 +7,7 @@ namespace Kumara.WebApi.Tests.Models;
 public sealed class ActivityTests : DatabaseTestBase
 {
     [Fact]
-    public void RoundTripsActualsIntoDatabaseColumns()
+    public void RoundTripsActualsIntoBackingFields()
     {
         var refActivity = Factories.Activity();
         refActivity.ActualStart = new DateWithOptionalTime
@@ -22,23 +21,22 @@ public sealed class ActivityTests : DatabaseTestBase
             HasTime = true,
         };
 
-        var columnValues = DatabaseHelpers.GetEntityColumnValues(_dbContext, refActivity);
-        columnValues["actual_start"].ShouldBe(DateTimeOffset.Parse("2001-02-03T04:05:06Z"));
-        columnValues["actual_start_has_time"].ShouldBe(true);
-        columnValues["actual_finish"].ShouldBe(DateTimeOffset.Parse("2007-08-09T20:11:12+10"));
-        columnValues["actual_finish_has_time"].ShouldBe(true);
+        var currentValues = _dbContext.Entry(refActivity).CurrentValues;
+        currentValues["_actualStart"].ShouldBe(DateTimeOffset.Parse("2001-02-03T04:05:06Z"));
+        currentValues["_actualStartHasTime"].ShouldBe(true);
+        currentValues["_actualFinish"].ShouldBe(DateTimeOffset.Parse("2007-08-09T20:11:12+10"));
+        currentValues["_actualFinishHasTime"].ShouldBe(true);
 
         var newActivity = Factories.Activity();
-        DatabaseHelpers.SetEntityColumnValues(_dbContext, newActivity, columnValues);
+        foreach (var prop in currentValues.Properties)
+        {
+            _dbContext.Entry(newActivity).CurrentValues[prop.Name] = currentValues[prop];
+        }
 
         newActivity.ActualStart.ShouldBe(refActivity.ActualStart);
         newActivity.ActualFinish.ShouldBe(refActivity.ActualFinish);
 
-        DatabaseHelpers.SetEntityColumnValues(
-            _dbContext,
-            newActivity,
-            new Dictionary<string, object?>() { { "actual_start_has_time", false } }
-        );
+        _dbContext.Entry(newActivity).CurrentValues["_actualStartHasTime"] = false;
 
         var newActualStart = new DateWithOptionalTime
         {
