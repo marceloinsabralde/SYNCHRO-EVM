@@ -12,6 +12,8 @@ public class ConventionSetPlugin : IConventionSetPlugin
         conventionSet.PropertyAddedConventions.Add(new ITwinIdIndexConvention());
         conventionSet.PropertyAddedConventions.Add(new ITwinIdNamingConvention());
 
+        conventionSet.ModelFinalizingConventions.Add(new EnumToJsonStringValueConvention());
+
         return conventionSet;
     }
 }
