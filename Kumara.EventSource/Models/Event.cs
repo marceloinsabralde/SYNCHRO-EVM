@@ -3,7 +3,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Kumara.EventSource.Utilities;
+using Kumara.Common.Utilities;
 
 namespace Kumara.EventSource.Models;
 
