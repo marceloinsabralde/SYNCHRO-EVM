@@ -17,6 +17,8 @@ public class ControlAccountResponse
 
     public required string Name { get; set; }
 
+    public decimal PercentComplete { get; set; }
+
     public DateOnly? ActualStart { get; set; }
 
     public DateOnly? ActualFinish { get; set; }
@@ -38,6 +40,7 @@ public class ControlAccountResponse
             TaskId = controlAccount.TaskId,
             ReferenceCode = controlAccount.ReferenceCode,
             Name = controlAccount.Name,
+            PercentComplete = controlAccount.PercentComplete,
             ActualStart = controlAccount.ActualStart,
             ActualFinish = controlAccount.ActualFinish,
             PlannedStart = controlAccount.PlannedStart,

@@ -13,6 +13,7 @@ public class ControlAccount : ApplicationEntity
 
     public required string ReferenceCode { get; set; }
     public required string Name { get; set; }
+    public decimal PercentComplete { get; set; } = 0.0m;
     public DateOnly? ActualStart { get; set; }
     public DateOnly? ActualFinish { get; set; }
     public DateOnly? PlannedStart { get; set; }

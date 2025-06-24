@@ -20,7 +20,8 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
 
         var controlAccount1 = Factories.ControlAccount(
             id: Guid.CreateVersion7(timestamp.AddDays(0)),
-            iTwinId: iTwinId
+            iTwinId: iTwinId,
+            percentComplete: 15.23m
         );
         var controlAccount2 = Factories.ControlAccount(
             id: Guid.CreateVersion7(timestamp.AddDays(1)),

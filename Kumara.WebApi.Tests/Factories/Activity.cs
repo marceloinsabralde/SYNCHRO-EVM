@@ -16,6 +16,7 @@ public static partial class Factories
         ControlAccount? controlAccount = null,
         string? referenceCode = null,
         string? name = null,
+        decimal percentComplete = default,
         DateWithOptionalTime? actualStart = null,
         DateWithOptionalTime? actualFinish = null,
         DateTimeOffset? plannedStart = null,
@@ -33,6 +34,7 @@ public static partial class Factories
             )
             .RuleFor(a => a.ReferenceCode, referenceCode ?? $"ACT{_activityCount:D3}")
             .RuleFor(a => a.Name, name ?? $"Activity {_activityCount:D3}")
+            .RuleFor(a => a.PercentComplete, percentComplete)
             .RuleFor(a => a.ActualStart, actualStart)
             .RuleFor(a => a.ActualFinish, actualFinish)
             .RuleFor(a => a.PlannedStart, plannedStart)

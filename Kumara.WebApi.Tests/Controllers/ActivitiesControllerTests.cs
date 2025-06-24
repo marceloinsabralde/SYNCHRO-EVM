@@ -21,7 +21,8 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
 
         var activity1 = Factories.Activity(
             id: Guid.CreateVersion7(timestamp.AddDays(0)),
-            iTwinId: iTwinId
+            iTwinId: iTwinId,
+            percentComplete: 12.38m
         );
         var activity2 = Factories.Activity(
             id: Guid.CreateVersion7(timestamp.AddDays(1)),

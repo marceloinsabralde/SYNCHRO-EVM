@@ -25,6 +25,7 @@ public class Activity : ApplicationEntity
 
     public required string ReferenceCode { get; set; }
     public required string Name { get; set; }
+    public decimal PercentComplete { get; set; } = 0.0m;
 
     [NotMapped]
     public DateWithOptionalTime? ActualStart
