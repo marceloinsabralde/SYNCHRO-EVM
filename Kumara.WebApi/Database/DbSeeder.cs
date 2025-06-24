@@ -335,5 +335,18 @@ public static class DbSeeder
             dbContext.ProgressEntries.AddRange(progressEntries);
             dbContext.SaveChanges();
         }
+
+        if (!dbContext.Settings.Any())
+        {
+            dbContext.Settings.Add(
+                new()
+                {
+                    ITwinId = iTwinIds[0],
+                    Key = SettingKey.ActualsHaveTime,
+                    Value = true,
+                }
+            );
+            dbContext.SaveChanges();
+        }
     }
 }

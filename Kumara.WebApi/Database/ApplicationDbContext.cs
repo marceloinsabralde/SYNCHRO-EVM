@@ -17,4 +17,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ProgressEntry> ProgressEntries { get; set; }
     public DbSet<MaterialActivityAllocation> MaterialActivityAllocations { get; set; }
     public DbSet<ProgressSummary> ProgressSummaries { get; set; }
+    public DbSet<Setting> Settings { get; set; }
 }
