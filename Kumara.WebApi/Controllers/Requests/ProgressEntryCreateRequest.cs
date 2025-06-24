@@ -1,7 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
-using Kumara.Validations;
+using Kumara.Common.Validations;
 
 namespace Kumara.WebApi.Controllers.Requests;
 

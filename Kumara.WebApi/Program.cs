@@ -54,7 +54,8 @@ builder.Services.AddSwaggerGen(options =>
     options.UseKumaraCommon();
 });
 
-// Learn more about configuring HTTP Logging at https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/?view=aspnetcore-9.0
+builder.Services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
+
 builder.Services.AddHttpLogging(options =>
 {
     options.CombineLogs = true;
@@ -63,10 +64,9 @@ builder.Services.AddHttpLogging(options =>
     options.ResponseBodyLogLimit = 4096;
 });
 
-// Learn about configuring OpenTelemetry at https://opentelemetry.io/docs/languages/net/
 var openTelBuilder = builder
     .Services.AddOpenTelemetry()
-    .UseOtlpExporter() // Use the OpenTelemetry Protocol (OTLP) exporter for all signals
+    .UseOtlpExporter()
     .WithTracing(tracing =>
         tracing.AddAspNetCoreInstrumentation().AddEntityFrameworkCoreInstrumentation().AddNpgsql()
     )
@@ -84,8 +84,8 @@ app.UseHttpsRedirection();
 await app.MigrateDbAsync<ApplicationDbContext>();
 
 app.MapControllers();
+app.MapHealthChecks("/healthz");
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.SeedDevelopmentData();

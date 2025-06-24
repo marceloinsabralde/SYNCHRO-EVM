@@ -1,6 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.Validations;
+using Kumara.Common.Validations;
 
 namespace Kumara.Common.Tests.Validations;
 

@@ -38,6 +38,8 @@ builder
             .DefaultIgnoreCondition;
     });
 
+builder.Services.AddHealthChecks().AddDbContextCheck<MongoDbContext>();
+
 WebApplication app = builder.Build();
 
 if (!app.Environment.IsProduction())
@@ -56,6 +58,7 @@ if (!app.Environment.IsProduction())
 app.UseHttpsRedirection();
 
 app.MapControllers();
+app.MapHealthChecks("/healthz");
 
 await app.RunAsync(CancellationToken.None);
 
