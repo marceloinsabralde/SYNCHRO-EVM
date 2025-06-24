@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations.Schema;
+using Kumara.WebApi.Enums;
 using Kumara.WebApi.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -26,6 +27,7 @@ public class Activity : ApplicationEntity
     public required string ReferenceCode { get; set; }
     public required string Name { get; set; }
     public decimal PercentComplete { get; set; } = 0.0m;
+    public ActivityProgressType ProgressType { get; set; }
 
     [NotMapped]
     public DateWithOptionalTime? ActualStart
@@ -80,6 +82,9 @@ public class Activity : ApplicationEntity
             builder.Property(a => a._actualStartHasTime).HasColumnName("actual_start_has_time");
             builder.Property(a => a._actualFinish).HasColumnName("actual_finish");
             builder.Property(a => a._actualFinishHasTime).HasColumnName("actual_finish_has_time");
+            builder
+                .Property(a => a.ProgressType)
+                .HasConversion(v => v.ToString(), v => Enum.Parse<ActivityProgressType>(v));
         }
     }
 }

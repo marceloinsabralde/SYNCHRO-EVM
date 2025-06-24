@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.WebApi.Enums;
 using Kumara.WebApi.Models;
 using Kumara.WebApi.Types;
 
@@ -91,6 +92,7 @@ public static class DbSeeder
                         ),
                         HasTime = true,
                     },
+                    ProgressType = ActivityProgressType.Physical,
                 },
                 new Activity
                 {
