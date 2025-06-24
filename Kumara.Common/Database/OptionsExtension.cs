@@ -23,6 +23,7 @@ public class OptionsExtension(IServiceProvider? serviceProvider) : IDbContextOpt
         services.TryAddSingleton<IClock>(clock);
 
         services.AddSingleton<IInterceptor, TimestampedEntityInterceptor>();
+        services.AddSingleton<IInterceptor, ValidateChangesInterceptor>();
 
         services.AddSingleton<IConventionSetPlugin, ConventionSetPlugin>();
     }
