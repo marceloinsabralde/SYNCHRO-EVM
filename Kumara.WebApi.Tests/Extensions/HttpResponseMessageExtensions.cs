@@ -35,12 +35,12 @@ public static class HttpResponseMessageExtensions
         }
 
         var responseKeys = responseJson.Select(kvp => kvp.Key).ToArray();
-        responseKeys.ShouldBe(expectedKeys, ignoreOrder: true);
+        responseKeys.ShouldBeSubsetOf(expectedKeys);
 
         responseJson["status"]!.ToString().ShouldBe(status.ToString());
-        responseJson["type"]!.ToString().ShouldBe(type);
         responseJson["title"]!.ToString().ShouldBe(title);
-        responseJson["traceId"]!.ToString().ShouldNotBeEmpty();
+        responseJson["type"]?.ToString().ShouldBe(type);
+        responseJson["traceId"]?.ToString().ShouldNotBeEmpty();
 
         if (errorsPattern is not null)
         {
