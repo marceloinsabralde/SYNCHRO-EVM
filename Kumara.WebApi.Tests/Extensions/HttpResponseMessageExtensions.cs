@@ -86,6 +86,19 @@ public static class HttpResponseMessageExtensions
         );
     }
 
+    public static async Task ShouldBeApiErrorUnprocessableEntity(
+        this HttpResponseMessage response,
+        Dictionary<string, string[]> errorsDict
+    )
+    {
+        await response.ShouldBeApiError(
+            status: 422,
+            title: "One or more validation errors occurred.",
+            type: "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+            errorsDict: errorsDict
+        );
+    }
+
     public static async Task ShouldBeApiErrorNotFound(this HttpResponseMessage response)
     {
         await response.ShouldBeApiError(

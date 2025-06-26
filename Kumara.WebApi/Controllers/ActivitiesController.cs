@@ -5,6 +5,7 @@ using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Requests;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
+using Kumara.WebApi.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kumara.WebApi.Controllers;
@@ -67,6 +68,20 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
 
         if (activityUpdate.HasChanged(nameof(activityUpdate.ActualFinish)))
             activity.ActualFinish = activityUpdate.ActualFinish;
+
+        if (activityUpdate.HasChanged(nameof(activityUpdate.PercentComplete)))
+        {
+            if (activity.ProgressType is not ActivityProgressType.Manual)
+                ModelState.AddModelError(
+                    nameof(activityUpdate.PercentComplete),
+                    $"cannot be updated on an Activity with the progressType: {activity.ProgressType}"
+                );
+
+            activity.PercentComplete = activityUpdate.PercentComplete;
+        }
+
+        if (ModelState.IsValid is not true)
+            return UnprocessableEntity(new ValidationProblemDetails(ModelState));
 
         dbContext.SaveChanges();
 
