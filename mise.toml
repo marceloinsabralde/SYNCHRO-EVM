@@ -17,7 +17,7 @@ ConnectionStrings__KumaraWebApiDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Datab
 
 TEST_KUMARA_WEB_API_DB_USERNAME="kumara-web-api-test"
 TEST_KUMARA_WEB_API_DB_PASSWORD="{{exec(command='script/make-secret TEST_KUMARA_WEB_API_DB_PASSWORD', cache_key='TEST_KUMARA_WEB_API_DB_PASSWORD', cache_duration='1h')}}"
-TEST_ConnectionStrings__KumaraWebApiDB_TEMPLATE="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.TEST_KUMARA_WEB_API_DB_USERNAME}};Username={{env.TEST_KUMARA_WEB_API_DB_USERNAME}};Password={{env.TEST_KUMARA_WEB_API_DB_PASSWORD}}"
+TEST_ConnectionStrings__KumaraWebApiDB_TEMPLATE="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.TEST_KUMARA_WEB_API_DB_USERNAME}}_{1..5};Username={{env.TEST_KUMARA_WEB_API_DB_USERNAME}};Password={{env.TEST_KUMARA_WEB_API_DB_PASSWORD}}"
 
 KUMARA_CORE_DB_USERNAME="kumara-core"
 KUMARA_CORE_DB_PASSWORD="{{exec(command='script/make-secret KUMARA_CORE_DB_PASSWORD', cache_key='KUMARA_CORE_DB_PASSWORD', cache_duration='1h')}}"
