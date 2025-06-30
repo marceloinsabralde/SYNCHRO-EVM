@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Kumara.Common.Controllers.Responses;
 
 public class CreatedResponse<T> : NamedResponse<T>
-    where T : class
+    where T : notnull
 {
     [Required]
     public required IdResponse Item { get; set; }
