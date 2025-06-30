@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,8 +24,7 @@ public static class Extensions
         var sqlViewAttrs = dbContext
             .GetType()
             .Assembly.GetTypes()
-            .SelectMany(type => type.GetCustomAttributes(typeof(SqlViewAttribute), false))
-            .OfType<SqlViewAttribute>();
+            .SelectMany(type => type.GetCustomAttributes<SqlViewAttribute>(false));
 
         foreach (var attr in sqlViewAttrs)
         {

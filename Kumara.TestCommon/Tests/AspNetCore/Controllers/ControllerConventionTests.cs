@@ -41,7 +41,7 @@ public sealed class ControllerConventionTests
         if (returnType == typeof(IActionResult))
         {
             methodInfo
-                .GetCustomAttributes(typeof(ProducesResponseTypeAttribute))
+                .GetCustomAttributes<ProducesResponseTypeAttribute>()
                 .ShouldNotBeEmpty(
                     $"{methodName} should return an ActionResult<> or be annotated with [ProducesResponseType]"
                 );

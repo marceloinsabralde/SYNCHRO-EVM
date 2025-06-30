@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 
@@ -20,8 +21,7 @@ public class JsonTypeInfoResolverAttributeResolver : IJsonTypeInfoResolver
 {
     public JsonTypeInfo? GetTypeInfo(Type type, JsonSerializerOptions options)
     {
-        var attributes = (JsonTypeInfoResolverAttribute[])
-            type.GetCustomAttributes(typeof(JsonTypeInfoResolverAttribute), inherit: true);
+        var attributes = type.GetCustomAttributes<JsonTypeInfoResolverAttribute>(inherit: true);
 
         foreach (var attribute in attributes)
         {

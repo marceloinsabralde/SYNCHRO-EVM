@@ -32,29 +32,17 @@ public class NamedResponseTests
     {
         Type type = typeof(TestResponse<CupOfTea>);
 
-        var jsonAttr = type.GetCustomAttributes(
-                typeof(JsonTypeInfoResolverAttribute),
-                inherit: true
-            )
-            .Cast<JsonTypeInfoResolverAttribute>()
+        var jsonAttr = type.GetCustomAttributes<JsonTypeInfoResolverAttribute>(inherit: true)
             .FirstOrDefault();
         jsonAttr.ShouldNotBeNull();
         jsonAttr.Type.ShouldBe(typeof(JsonPropertyNamesTypeInfoResolver));
 
-        var swaggerAttr = type.GetCustomAttributes(
-                typeof(SwaggerSchemaFilterAttribute),
-                inherit: true
-            )
-            .Cast<SwaggerSchemaFilterAttribute>()
+        var swaggerAttr = type.GetCustomAttributes<SwaggerSchemaFilterAttribute>(inherit: true)
             .FirstOrDefault();
         swaggerAttr.ShouldNotBeNull();
         swaggerAttr.Type.ShouldBe(typeof(JsonPropertyNamesSchemaPatcher));
 
-        var openApiAttr = type.GetCustomAttributes(
-                typeof(OpenApiSchemaTransformerAttribute),
-                inherit: true
-            )
-            .Cast<OpenApiSchemaTransformerAttribute>()
+        var openApiAttr = type.GetCustomAttributes<OpenApiSchemaTransformerAttribute>(inherit: true)
             .FirstOrDefault();
         openApiAttr.ShouldNotBeNull();
         openApiAttr.Type.ShouldBe(typeof(JsonPropertyNamesSchemaPatcher));
