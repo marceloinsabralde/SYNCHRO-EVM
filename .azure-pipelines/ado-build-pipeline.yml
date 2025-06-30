@@ -46,7 +46,7 @@ jobs:
     cancelTimeoutInMinutes: 5
     steps:
       - task: UseDotNet@2
-        displayName: 'Use .NET sdk'
+        displayName: 'Use .NET SDK'
         inputs:
           packageType: sdk
           version: $(DotNetVersion)
