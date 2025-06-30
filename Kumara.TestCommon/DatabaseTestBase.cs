@@ -12,21 +12,13 @@ namespace Kumara.TestCommon;
 public class DatabaseTestBase<T> : IAsyncLifetime
     where T : DbContext
 {
-    private readonly AppServicesHelper.AppFactory _factory;
-    protected readonly HttpClient _client;
-    protected readonly T _dbContext;
-    protected readonly LinkGenerator _linkGenerator;
+    private AppServicesHelper.AppFactory? _factory;
+    protected HttpClient _client = null!;
+    protected T _dbContext = null!;
+    protected LinkGenerator _linkGenerator = null!;
 
     private Respawner? _respawner;
     private DbConnection? _connection;
-
-    public DatabaseTestBase()
-    {
-        _factory = AppServicesHelper.CreateWebApplicationFactory();
-        _client = _factory.CreateClient();
-        _dbContext = _factory.GetRequiredService<T>();
-        _linkGenerator = _factory.GetRequiredService<LinkGenerator>();
-    }
 
     public string GetPathByName(string endpointName, object? values = null)
     {
@@ -40,6 +32,11 @@ public class DatabaseTestBase<T> : IAsyncLifetime
 
     public async ValueTask InitializeAsync()
     {
+        _factory = AppServicesHelper.CreateWebApplicationFactory();
+        _client = _factory.CreateClient();
+        _dbContext = _factory.GetRequiredService<T>();
+        _linkGenerator = _factory.GetRequiredService<LinkGenerator>();
+
         _connection = _dbContext.Database.GetDbConnection();
         await _connection.OpenAsync();
 
@@ -71,6 +68,6 @@ public class DatabaseTestBase<T> : IAsyncLifetime
     public async ValueTask DisposeAsync()
     {
         await ResetDatabase();
-        _factory.Dispose();
+        _factory?.Dispose();
     }
 }
