@@ -5,4 +5,7 @@ using Kumara.WebApi.Database;
 
 namespace Kumara.WebApi.Tests;
 
-public class DatabaseTestBase : DatabaseTestBase<ApplicationDbContext>;
+public class DatabaseTestBase : DatabaseTestBase<ApplicationDbContext>
+{
+    public override string ConnectionStringName => "KumaraWebApiDB";
+}

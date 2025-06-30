@@ -1,17 +1,26 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.Collections.Concurrent;
 using System.Data.Common;
+using BraceExpander;
+using Kumara.Common.Utilities;
 using Kumara.TestCommon.Helpers;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Respawn;
 
 namespace Kumara.TestCommon;
 
-[Collection("Non-Parallel Collection")]
-public class DatabaseTestBase<T> : IAsyncLifetime
+public abstract class DatabaseTestBase<T> : IAsyncLifetime
     where T : DbContext
 {
+    private static readonly ConcurrentDictionary<
+        string,
+        SharedPool<string>
+    > _connectionStringPools = new();
+    private string? _connectionString;
+
     private AppServicesHelper.AppFactory? _factory;
     protected HttpClient _client = null!;
     protected T _dbContext = null!;
@@ -30,9 +39,46 @@ public class DatabaseTestBase<T> : IAsyncLifetime
         return path;
     }
 
+    public abstract string ConnectionStringName { get; }
+
+    public string ConnectionStringTemplate
+    {
+        get
+        {
+            var config = new ConfigurationBuilder()
+                .AddEnvironmentVariables(prefix: "TEST_")
+                .Build();
+
+            var templateName = $"{ConnectionStringName}_TEMPLATE";
+            var templateValue = config.GetConnectionString(templateName);
+
+            if (templateValue is null)
+                throw new InvalidOperationException(
+                    $"Could not find connection string template: {templateName}"
+                );
+
+            return templateValue;
+        }
+    }
+
+    public SharedPool<string> ConnectionStringPool =>
+        _connectionStringPools.GetOrAdd(
+            ConnectionStringTemplate,
+            _ =>
+            {
+                var strings = Expander.Expand(ConnectionStringTemplate);
+                return new(strings);
+            }
+        );
+
     public async ValueTask InitializeAsync()
     {
-        _factory = AppServicesHelper.CreateWebApplicationFactory();
+        _connectionString = await ConnectionStringPool.CheckoutAsync();
+
+        _factory = AppServicesHelper.CreateWebApplicationFactory(builder =>
+        {
+            builder.UseSetting($"ConnectionStrings:{ConnectionStringName}", _connectionString);
+        });
         _client = _factory.CreateClient();
         _dbContext = _factory.GetRequiredService<T>();
         _linkGenerator = _factory.GetRequiredService<LinkGenerator>();
@@ -68,6 +114,10 @@ public class DatabaseTestBase<T> : IAsyncLifetime
     public async ValueTask DisposeAsync()
     {
         await ResetDatabase();
+        if (_connectionString is not null)
+        {
+            await ConnectionStringPool.CheckinAsync(_connectionString);
+        }
         _factory?.Dispose();
     }
 }
