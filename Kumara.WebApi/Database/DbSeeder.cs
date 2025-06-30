@@ -10,7 +10,7 @@ public static class DbSeeder
 {
     public static void SeedDevelopmentData(ApplicationDbContext dbContext)
     {
-        List<Guid> iTwinIds =
+        List<Guid> ProjectITwinIds =
         [
             new Guid("10000000-0000-0000-0000-000000000000"),
             new Guid("20000000-0000-0000-0000-000000000000"),
@@ -28,13 +28,13 @@ public static class DbSeeder
             [
                 new ControlAccount
                 {
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     ReferenceCode = "CIV001",
                     Name = "Clear and Grub",
                 },
                 new ControlAccount
                 {
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     ReferenceCode = "CIV002",
                     Name = "Excavation & Backfill",
                     PlannedStart = new DateOnly(2025, 3, 23),
@@ -42,7 +42,7 @@ public static class DbSeeder
                 },
                 new ControlAccount
                 {
-                    ITwinId = iTwinIds[1],
+                    ITwinId = ProjectITwinIds[1],
                     ReferenceCode = "OTH001",
                     Name = "Staff",
                 },
@@ -57,9 +57,9 @@ public static class DbSeeder
             [
                 new Activity
                 {
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     ControlAccount = dbContext.ControlAccounts.First(controlAccount =>
-                        controlAccount.ITwinId == iTwinIds[0]
+                        controlAccount.ITwinId == ProjectITwinIds[0]
                         && controlAccount.ReferenceCode == "CIV001"
                     ),
                     ReferenceCode = "CIV001-A1",
@@ -96,9 +96,9 @@ public static class DbSeeder
                 },
                 new Activity
                 {
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     ControlAccount = dbContext.ControlAccounts.First(controlAccount =>
-                        controlAccount.ITwinId == iTwinIds[0]
+                        controlAccount.ITwinId == ProjectITwinIds[0]
                         && controlAccount.ReferenceCode == "CIV001"
                     ),
                     ReferenceCode = "CIV001-A2",
@@ -106,9 +106,9 @@ public static class DbSeeder
                 },
                 new Activity
                 {
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     ControlAccount = dbContext.ControlAccounts.First(controlAccount =>
-                        controlAccount.ITwinId == iTwinIds[0]
+                        controlAccount.ITwinId == ProjectITwinIds[0]
                         && controlAccount.ReferenceCode == "CIV002"
                     ),
                     ReferenceCode = "CIV002-A1",
@@ -116,9 +116,9 @@ public static class DbSeeder
                 },
                 new Activity
                 {
-                    ITwinId = iTwinIds[1],
+                    ITwinId = ProjectITwinIds[1],
                     ControlAccount = dbContext.ControlAccounts.First(controlAccount =>
-                        controlAccount.ITwinId == iTwinIds[1]
+                        controlAccount.ITwinId == ProjectITwinIds[1]
                         && controlAccount.ReferenceCode == "OTH001"
                     ),
                     ReferenceCode = "OTH001-A1",
@@ -135,37 +135,37 @@ public static class DbSeeder
             [
                 new UnitOfMeasure
                 {
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     Name = "Hours",
                     Symbol = "h",
                 },
                 new UnitOfMeasure
                 {
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     Name = "Meters",
                     Symbol = "m",
                 },
                 new UnitOfMeasure
                 {
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     Name = "Tonnes",
                     Symbol = "t",
                 },
                 new UnitOfMeasure
                 {
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     Name = "Litres",
                     Symbol = "L",
                 },
                 new UnitOfMeasure
                 {
-                    ITwinId = iTwinIds[1],
+                    ITwinId = ProjectITwinIds[1],
                     Name = "Hours",
                     Symbol = "h",
                 },
                 new UnitOfMeasure
                 {
-                    ITwinId = iTwinIds[1],
+                    ITwinId = ProjectITwinIds[1],
                     Name = "Kilograms",
                     Symbol = "kg",
                 },
@@ -181,19 +181,19 @@ public static class DbSeeder
                 new Material
                 {
                     Name = "Aggregate 10mm",
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     ResourceRoleId = Guid.CreateVersion7(),
                     QuantityUnitOfMeasure = dbContext.UnitsOfMeasure.First(uom =>
-                        uom.ITwinId == iTwinIds[0] && uom.Name == "Tonnes"
+                        uom.ITwinId == ProjectITwinIds[0] && uom.Name == "Tonnes"
                     ),
                 },
                 new Material
                 {
                     Name = "Coarse Sand",
-                    ITwinId = iTwinIds[1],
+                    ITwinId = ProjectITwinIds[1],
                     ResourceRoleId = Guid.CreateVersion7(),
                     QuantityUnitOfMeasure = dbContext.UnitsOfMeasure.First(uom =>
-                        uom.ITwinId == iTwinIds[1] && uom.Name == "Kilograms"
+                        uom.ITwinId == ProjectITwinIds[1] && uom.Name == "Kilograms"
                     ),
                 },
             ];
@@ -207,43 +207,46 @@ public static class DbSeeder
             [
                 new MaterialActivityAllocation
                 {
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     Material = dbContext.Materials.First(material =>
-                        material.ITwinId == iTwinIds[0] && material.Name == "Aggregate 10mm"
+                        material.ITwinId == ProjectITwinIds[0] && material.Name == "Aggregate 10mm"
                     ),
                     Activity = dbContext.Activities.First(activity =>
-                        activity.ITwinId == iTwinIds[0] && activity.ReferenceCode == "CIV001-A1"
+                        activity.ITwinId == ProjectITwinIds[0]
+                        && activity.ReferenceCode == "CIV001-A1"
                     ),
                     QuantityUnitOfMeasure = dbContext.UnitsOfMeasure.First(uom =>
-                        uom.ITwinId == iTwinIds[0] && uom.Name == "Tonnes"
+                        uom.ITwinId == ProjectITwinIds[0] && uom.Name == "Tonnes"
                     ),
                     QuantityAtComplete = 418.02m,
                 },
                 new MaterialActivityAllocation
                 {
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     Material = dbContext.Materials.First(material =>
-                        material.ITwinId == iTwinIds[0] && material.Name == "Aggregate 10mm"
+                        material.ITwinId == ProjectITwinIds[0] && material.Name == "Aggregate 10mm"
                     ),
                     Activity = dbContext.Activities.First(activity =>
-                        activity.ITwinId == iTwinIds[0] && activity.ReferenceCode == "CIV001-A2"
+                        activity.ITwinId == ProjectITwinIds[0]
+                        && activity.ReferenceCode == "CIV001-A2"
                     ),
                     QuantityUnitOfMeasure = dbContext.UnitsOfMeasure.First(uom =>
-                        uom.ITwinId == iTwinIds[0] && uom.Name == "Tonnes"
+                        uom.ITwinId == ProjectITwinIds[0] && uom.Name == "Tonnes"
                     ),
                     QuantityAtComplete = 823.92m,
                 },
                 new MaterialActivityAllocation
                 {
-                    ITwinId = iTwinIds[1],
+                    ITwinId = ProjectITwinIds[1],
                     Material = dbContext.Materials.First(material =>
-                        material.ITwinId == iTwinIds[1] && material.Name == "Coarse Sand"
+                        material.ITwinId == ProjectITwinIds[1] && material.Name == "Coarse Sand"
                     ),
                     Activity = dbContext.Activities.First(activity =>
-                        activity.ITwinId == iTwinIds[1] && activity.ReferenceCode == "OTH001-A1"
+                        activity.ITwinId == ProjectITwinIds[1]
+                        && activity.ReferenceCode == "OTH001-A1"
                     ),
                     QuantityUnitOfMeasure = dbContext.UnitsOfMeasure.First(uom =>
-                        uom.ITwinId == iTwinIds[1] && uom.Name == "Kilograms"
+                        uom.ITwinId == ProjectITwinIds[1] && uom.Name == "Kilograms"
                     ),
                     QuantityAtComplete = 3300m,
                 },
@@ -259,14 +262,15 @@ public static class DbSeeder
                 new ProgressEntry
                 {
                     Activity = dbContext.Activities.First(activity =>
-                        activity.ITwinId == iTwinIds[0] && activity.ReferenceCode == "CIV001-A1"
+                        activity.ITwinId == ProjectITwinIds[0]
+                        && activity.ReferenceCode == "CIV001-A1"
                     ),
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     Material = dbContext.Materials.First(material =>
-                        material.ITwinId == iTwinIds[0] && material.Name == "Aggregate 10mm"
+                        material.ITwinId == ProjectITwinIds[0] && material.Name == "Aggregate 10mm"
                     ),
                     QuantityUnitOfMeasure = dbContext.UnitsOfMeasure.First(uom =>
-                        uom.ITwinId == iTwinIds[0] && uom.Name == "Tonnes"
+                        uom.ITwinId == ProjectITwinIds[0] && uom.Name == "Tonnes"
                     ),
                     ProgressDate = new(2025, 03, 01),
                     QuantityDelta = 1m,
@@ -274,14 +278,15 @@ public static class DbSeeder
                 new ProgressEntry
                 {
                     Activity = dbContext.Activities.First(activity =>
-                        activity.ITwinId == iTwinIds[0] && activity.ReferenceCode == "CIV001-A1"
+                        activity.ITwinId == ProjectITwinIds[0]
+                        && activity.ReferenceCode == "CIV001-A1"
                     ),
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     Material = dbContext.Materials.First(material =>
-                        material.ITwinId == iTwinIds[0] && material.Name == "Aggregate 10mm"
+                        material.ITwinId == ProjectITwinIds[0] && material.Name == "Aggregate 10mm"
                     ),
                     QuantityUnitOfMeasure = dbContext.UnitsOfMeasure.First(uom =>
-                        uom.ITwinId == iTwinIds[0] && uom.Name == "Tonnes"
+                        uom.ITwinId == ProjectITwinIds[0] && uom.Name == "Tonnes"
                     ),
                     ProgressDate = new(2025, 03, 02),
                     QuantityDelta = 2m,
@@ -289,14 +294,15 @@ public static class DbSeeder
                 new ProgressEntry
                 {
                     Activity = dbContext.Activities.First(activity =>
-                        activity.ITwinId == iTwinIds[0] && activity.ReferenceCode == "CIV001-A1"
+                        activity.ITwinId == ProjectITwinIds[0]
+                        && activity.ReferenceCode == "CIV001-A1"
                     ),
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     Material = dbContext.Materials.First(material =>
-                        material.ITwinId == iTwinIds[0] && material.Name == "Aggregate 10mm"
+                        material.ITwinId == ProjectITwinIds[0] && material.Name == "Aggregate 10mm"
                     ),
                     QuantityUnitOfMeasure = dbContext.UnitsOfMeasure.First(uom =>
-                        uom.ITwinId == iTwinIds[0] && uom.Name == "Tonnes"
+                        uom.ITwinId == ProjectITwinIds[0] && uom.Name == "Tonnes"
                     ),
                     ProgressDate = new(2025, 03, 03),
                     QuantityDelta = 3m,
@@ -304,14 +310,15 @@ public static class DbSeeder
                 new ProgressEntry
                 {
                     Activity = dbContext.Activities.First(activity =>
-                        activity.ITwinId == iTwinIds[0] && activity.ReferenceCode == "CIV001-A2"
+                        activity.ITwinId == ProjectITwinIds[0]
+                        && activity.ReferenceCode == "CIV001-A2"
                     ),
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     Material = dbContext.Materials.First(material =>
-                        material.ITwinId == iTwinIds[0] && material.Name == "Aggregate 10mm"
+                        material.ITwinId == ProjectITwinIds[0] && material.Name == "Aggregate 10mm"
                     ),
                     QuantityUnitOfMeasure = dbContext.UnitsOfMeasure.First(uom =>
-                        uom.ITwinId == iTwinIds[0] && uom.Name == "Tonnes"
+                        uom.ITwinId == ProjectITwinIds[0] && uom.Name == "Tonnes"
                     ),
                     ProgressDate = new(2025, 03, 04),
                     QuantityDelta = 4m,
@@ -319,14 +326,15 @@ public static class DbSeeder
                 new ProgressEntry
                 {
                     Activity = dbContext.Activities.First(activity =>
-                        activity.ITwinId == iTwinIds[1] && activity.ReferenceCode == "OTH001-A1"
+                        activity.ITwinId == ProjectITwinIds[1]
+                        && activity.ReferenceCode == "OTH001-A1"
                     ),
-                    ITwinId = iTwinIds[1],
+                    ITwinId = ProjectITwinIds[1],
                     Material = dbContext.Materials.First(material =>
-                        material.ITwinId == iTwinIds[1] && material.Name == "Coarse Sand"
+                        material.ITwinId == ProjectITwinIds[1] && material.Name == "Coarse Sand"
                     ),
                     QuantityUnitOfMeasure = dbContext.UnitsOfMeasure.First(uom =>
-                        uom.ITwinId == iTwinIds[1] && uom.Name == "Kilograms"
+                        uom.ITwinId == ProjectITwinIds[1] && uom.Name == "Kilograms"
                     ),
                     ProgressDate = new(2025, 03, 05),
                     QuantityDelta = 5m,
@@ -341,7 +349,7 @@ public static class DbSeeder
             dbContext.Settings.Add(
                 new()
                 {
-                    ITwinId = iTwinIds[0],
+                    ITwinId = ProjectITwinIds[0],
                     Key = SettingKey.ActualsHaveTime,
                     Value = true,
                 }
