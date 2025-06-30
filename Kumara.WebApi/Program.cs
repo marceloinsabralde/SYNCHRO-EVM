@@ -36,6 +36,12 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
     }
 });
 
+// temporary until we talk to the real iTwin APIs
+builder.Services.AddTransient<
+    Bentley.ConnectCoreLibs.Providers.Abstractions.Interfaces.IITwinProvider,
+    Kumara.WebApi.Providers.FakeITwinProvider
+>();
+
 builder
     .Services.AddControllers()
     .AddJsonOptions(options =>

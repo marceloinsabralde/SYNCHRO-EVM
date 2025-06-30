@@ -3,6 +3,7 @@ using System;
 using Kumara.WebApi.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kumara.WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250626053251_AddFakeITwins")]
+    partial class AddFakeITwins
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,10 +50,6 @@ namespace Kumara.WebApi.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<decimal>("PercentComplete")
-                        .HasColumnType("numeric")
-                        .HasColumnName("percent_complete");
-
                     b.Property<DateTimeOffset?>("PlannedFinish")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("planned_finish");
@@ -58,11 +57,6 @@ namespace Kumara.WebApi.Migrations
                     b.Property<DateTimeOffset?>("PlannedStart")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("planned_start");
-
-                    b.Property<string>("ProgressType")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("progress_type");
 
                     b.Property<string>("ReferenceCode")
                         .IsRequired()
@@ -158,10 +152,6 @@ namespace Kumara.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<decimal>("PercentComplete")
-                        .HasColumnType("numeric")
-                        .HasColumnName("percent_complete");
 
                     b.Property<DateOnly?>("PlannedFinish")
                         .HasColumnType("date")

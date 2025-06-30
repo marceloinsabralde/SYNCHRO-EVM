@@ -18,4 +18,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<MaterialActivityAllocation> MaterialActivityAllocations { get; set; }
     public DbSet<ProgressSummary> ProgressSummaries { get; set; }
     public DbSet<Setting> Settings { get; set; }
+    public DbSet<FakeITwin> FakeITwins { get; set; }
 }

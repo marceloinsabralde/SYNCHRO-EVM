@@ -10,10 +10,12 @@ public static class DbSeeder
 {
     public static void SeedDevelopmentData(ApplicationDbContext dbContext)
     {
+        List<Guid> AccountITwinIds = [new Guid("A0000000-0000-0000-0000-000000000000")];
         List<Guid> ProjectITwinIds =
         [
             new Guid("10000000-0000-0000-0000-000000000000"),
             new Guid("20000000-0000-0000-0000-000000000000"),
+            new Guid("30000000-0000-0000-0000-000000000000"),
         ];
 
         if (!dbContext.Companies.Any())
@@ -352,6 +354,51 @@ public static class DbSeeder
                     ITwinId = ProjectITwinIds[0],
                     Key = SettingKey.ActualsHaveTime,
                     Value = true,
+                }
+            );
+            dbContext.SaveChanges();
+        }
+
+        if (!dbContext.FakeITwins.Any())
+        {
+            dbContext.FakeITwins.Add(
+                new()
+                {
+                    Id = AccountITwinIds[0],
+                    Class = "Account",
+                    SubClass = "Account",
+                    ParentId = null,
+                    iTwinAccountId = AccountITwinIds[0],
+                }
+            );
+            dbContext.FakeITwins.Add(
+                new()
+                {
+                    Id = ProjectITwinIds[0],
+                    Class = "Endeavor",
+                    SubClass = "Project",
+                    ParentId = AccountITwinIds[0],
+                    iTwinAccountId = AccountITwinIds[0],
+                }
+            );
+            dbContext.FakeITwins.Add(
+                new()
+                {
+                    Id = ProjectITwinIds[1],
+                    Class = "Endeavor",
+                    SubClass = "Project",
+                    ParentId = AccountITwinIds[0],
+                    iTwinAccountId = AccountITwinIds[0],
+                }
+            );
+            dbContext.FakeITwins.Add(
+                new()
+                {
+                    Id = ProjectITwinIds[2],
+                    Class = "Endeavor",
+                    SubClass = "Project",
+                    ParentId = ProjectITwinIds[0],
+                    iTwinAccountId = AccountITwinIds[0],
                 }
             );
             dbContext.SaveChanges();
