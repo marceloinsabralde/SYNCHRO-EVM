@@ -22,6 +22,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Kumara.Common\Kumara.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Compile Remove="Tests\**\*.cs" />
     </ItemGroup>
 
