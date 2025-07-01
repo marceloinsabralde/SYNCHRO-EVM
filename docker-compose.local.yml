@@ -1,12 +1,13 @@
 services:
   postgresql:
     image: postgres:16
+    command: -c fsync=off -c full_page_writes=off
     environment:
       POSTGRES_USER: "${PGUSER?}"
       POSTGRES_PASSWORD: "${PGPASSWORD?}"
       EXTRA_USER_DBS:
         "${KUMARA_WEB_API_DB_USERNAME?}:${KUMARA_WEB_API_DB_PASSWORD?}|\
-        ${TEST_KUMARA_WEB_API_DB_USERNAME?}:${TEST_KUMARA_WEB_API_DB_PASSWORD?}|\
+        ${TEST_KUMARA_WEB_API_DB_USERNAME?}:${TEST_KUMARA_WEB_API_DB_PASSWORD?}:${TEST_KUMARA_WEB_API_DB_USERNAME}_{1..5}|\
         ${KUMARA_CORE_DB_USERNAME?}:${KUMARA_CORE_DB_PASSWORD?}|\
         ${TEST_KUMARA_CORE_DB_USERNAME?}:${TEST_KUMARA_CORE_DB_PASSWORD?}"
     volumes:

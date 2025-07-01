@@ -8,6 +8,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="BraceExpander" />
         <PackageReference Include="xunit.v3.extensibility.core" />
         <PackageReference Include="Shouldly" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
@@ -19,6 +20,10 @@
         <PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
         <PackageReference Include="Microsoft.OpenApi.Readers" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Kumara.Common\Kumara.Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>
