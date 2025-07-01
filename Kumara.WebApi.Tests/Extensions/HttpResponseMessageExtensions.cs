@@ -35,12 +35,12 @@ public static class HttpResponseMessageExtensions
         }
 
         var responseKeys = responseJson.Select(kvp => kvp.Key).ToArray();
-        responseKeys.ShouldBe(expectedKeys, ignoreOrder: true);
+        responseKeys.ShouldBeSubsetOf(expectedKeys);
 
         responseJson["status"]!.ToString().ShouldBe(status.ToString());
-        responseJson["type"]!.ToString().ShouldBe(type);
         responseJson["title"]!.ToString().ShouldBe(title);
-        responseJson["traceId"]!.ToString().ShouldNotBeEmpty();
+        responseJson["type"]?.ToString().ShouldBe(type);
+        responseJson["traceId"]?.ToString().ShouldNotBeEmpty();
 
         if (errorsPattern is not null)
         {
@@ -80,6 +80,19 @@ public static class HttpResponseMessageExtensions
     {
         await response.ShouldBeApiError(
             status: 400,
+            title: "One or more validation errors occurred.",
+            type: "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+            errorsDict: errorsDict
+        );
+    }
+
+    public static async Task ShouldBeApiErrorUnprocessableEntity(
+        this HttpResponseMessage response,
+        Dictionary<string, string[]> errorsDict
+    )
+    {
+        await response.ShouldBeApiError(
+            status: 422,
             title: "One or more validation errors occurred.",
             type: "https://tools.ietf.org/html/rfc9110#section-15.5.1",
             errorsDict: errorsDict

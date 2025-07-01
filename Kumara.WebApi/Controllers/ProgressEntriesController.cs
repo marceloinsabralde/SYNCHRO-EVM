@@ -51,7 +51,7 @@ public class ProgressEntriesController(ApplicationDbContext dbContext) : Control
             );
 
         if (ModelState.IsValid is not true)
-            return BadRequest(new ValidationProblemDetails(ModelState));
+            return UnprocessableEntity(new ValidationProblemDetails(ModelState));
 
         if (
             progressEntryRequest.id is not null

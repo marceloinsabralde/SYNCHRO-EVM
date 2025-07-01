@@ -111,7 +111,7 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
         "quantityUnitOfMeasureId",
         "specified Quantity Unit of Measure could not be found."
     )]
-    public async Task Create_WhenEntityCantBeFound_BadRequest(
+    public async Task Create_WhenEntityCantBeFound_UnprocessableEntity(
         string missingEntity,
         string errorMessage
     )
@@ -124,15 +124,10 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
             createParams,
             TestContext.Current.CancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        var problemDetails = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>(
-            cancellationToken: TestContext.Current.CancellationToken
+        response.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+        await response.ShouldBeApiErrorUnprocessableEntity(
+            new Dictionary<string, string[]> { { missingEntity, [errorMessage] } }
         );
-
-        problemDetails.ShouldNotBeNull();
-        problemDetails.Title.ShouldBe("One or more validation errors occurred.");
-        problemDetails.Errors.ShouldContainKey(missingEntity);
-        problemDetails.Errors[missingEntity].ShouldContain(errorMessage);
     }
 
     [Fact]

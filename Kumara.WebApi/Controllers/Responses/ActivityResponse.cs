@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.WebApi.Enums;
 using Kumara.WebApi.Models;
 using Kumara.WebApi.Types;
 using NodaTime;
@@ -16,6 +17,8 @@ public class ActivityResponse
 
     public required string ReferenceCode { get; set; }
     public required string Name { get; set; }
+    public decimal PercentComplete { get; set; }
+    public ActivityProgressType ProgressType { get; set; }
     public DateWithOptionalTime? ActualStart { get; set; }
     public DateWithOptionalTime? ActualFinish { get; set; }
     public DateTimeOffset? PlannedStart { get; set; }
@@ -34,6 +37,7 @@ public class ActivityResponse
             ControlAccountId = activity.ControlAccountId,
             ReferenceCode = activity.ReferenceCode,
             Name = activity.Name,
+            PercentComplete = activity.PercentComplete,
             ActualStart = activity.ActualStart,
             ActualFinish = activity.ActualFinish,
             PlannedStart = activity.PlannedStart,

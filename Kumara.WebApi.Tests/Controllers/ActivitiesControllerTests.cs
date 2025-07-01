@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http.Json;
 using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Responses;
+using Kumara.WebApi.Enums;
 using Kumara.WebApi.Types;
 
 namespace Kumara.WebApi.Tests.Controllers;
@@ -21,7 +22,8 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
 
         var activity1 = Factories.Activity(
             id: Guid.CreateVersion7(timestamp.AddDays(0)),
-            iTwinId: iTwinId
+            iTwinId: iTwinId,
+            percentComplete: 12.38m
         );
         var activity2 = Factories.Activity(
             id: Guid.CreateVersion7(timestamp.AddDays(1)),
@@ -191,7 +193,12 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
 
         var response = await _client.PatchAsJsonAsync(
             GetPathByName("GetActivity", new { existingActivity.Id }),
-            new { actualStart = "2025-03-18T10:47:05.288+10:00", actualFinish = "2025-03-19" },
+            new
+            {
+                actualStart = "2025-03-18T10:47:05.288+10:00",
+                actualFinish = "2025-03-19",
+                percentComplete = 12.5m,
+            },
             TestContext.Current.CancellationToken
         );
         var updatedResponse = await response.ShouldBeApiResponse<UpdatedResponse<ActivityResponse>>(
@@ -230,6 +237,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
                 HasTime = false,
             }
         );
+        activity.PercentComplete.ShouldBe(12.5m);
 
         // TODO: Ensure an Event is emitted to update the specified Activity
     }
@@ -326,6 +334,35 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
 
         await response.ShouldBeApiErrorBadRequest(
             errorsPattern: @"""\$\.actualStart"":\[""The JSON value could not be converted to"
+        );
+
+        // TODO: Ensure no Event is emitted
+    }
+
+    [Fact]
+    public async Task Update_PercentCompleteOnActivityWithUnsupportedProgressType_UnprocessableEntity()
+    {
+        var existingActivity = Factories.Activity(progressType: ActivityProgressType.Physical);
+        await _dbContext.Activities.AddAsync(
+            existingActivity,
+            TestContext.Current.CancellationToken
+        );
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var response = await _client.PatchAsJsonAsync(
+            GetPathByName("GetActivity", new { existingActivity.Id }),
+            new { percentComplete = 32.1m },
+            TestContext.Current.CancellationToken
+        );
+
+        await response.ShouldBeApiErrorUnprocessableEntity(
+            new Dictionary<string, string[]>
+            {
+                {
+                    "percentComplete",
+                    ["cannot be updated on an Activity with the progressType: Physical"]
+                },
+            }
         );
 
         // TODO: Ensure no Event is emitted
