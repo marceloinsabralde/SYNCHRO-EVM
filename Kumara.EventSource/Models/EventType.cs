@@ -1,6 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.EventSource.Utilities;
+using Kumara.Common.Utilities;
 
 namespace Kumara.EventSource.Models;
 

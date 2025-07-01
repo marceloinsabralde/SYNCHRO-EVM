@@ -1,9 +1,9 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.Common.Utilities;
 using Kumara.EventSource.DbContext;
 using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Repositories;
-using Kumara.EventSource.Utilities;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Testcontainers.MongoDb;
