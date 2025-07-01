@@ -91,10 +91,10 @@ jobs:
             .azure-pipelines/script/set-mise-env
 
       - task: CmdLine@2
-        displayName: Start PostgreSQL container
+        displayName: Start containers
         inputs:
           script: |
-            script/dcl up --detach --wait postgresql
+            script/dcl up --detach --wait postgresql elasticsearch
 
       - task: DotNetCoreCLI@2
         displayName: Run tests

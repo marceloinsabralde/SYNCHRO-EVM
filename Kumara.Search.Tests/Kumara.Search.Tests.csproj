@@ -1,0 +1,31 @@
+﻿<!-- Copyright (c) Bentley Systems, Incorporated. All rights reserved. -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <Using Include="Shouldly" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
+    <PackageReference Include="Respawn" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Testcontainers.Elasticsearch" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kumara.TestCommon\Kumara.TestCommon.csproj" />
+    <ProjectReference Include="..\Kumara.Search\Kumara.Search.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Kumara.TestCommon\Tests\**\*.cs" />
+  </ItemGroup>
+
+</Project>

@@ -9,7 +9,8 @@ services:
         "${KUMARA_WEB_API_DB_USERNAME?}:${KUMARA_WEB_API_DB_PASSWORD?}|\
         ${TEST_KUMARA_WEB_API_DB_USERNAME?}:${TEST_KUMARA_WEB_API_DB_PASSWORD?}:${TEST_KUMARA_WEB_API_DB_USERNAME}_{1..5}|\
         ${KUMARA_CORE_DB_USERNAME?}:${KUMARA_CORE_DB_PASSWORD?}|\
-        ${TEST_KUMARA_CORE_DB_USERNAME?}:${TEST_KUMARA_CORE_DB_PASSWORD?}"
+        ${TEST_KUMARA_CORE_DB_USERNAME?}:${TEST_KUMARA_CORE_DB_PASSWORD?}|\
+        ${KUMARA_SEARCH_DB_USERNAME?}:${KUMARA_SEARCH_DB_PASSWORD?}"
     volumes:
       - .docker/postgresql/health.sh:/health.sh:ro
       - .docker/postgresql/initdb.d:/docker-entrypoint-initdb.d:ro
@@ -33,3 +34,22 @@ services:
     restart: unless-stopped
     healthcheck:
       test: /health.sh
+
+  elasticsearch:
+    image: elasticsearch:9.0.2
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    volumes:
+      - .docker/elasticsearch/health.sh:/health.sh:ro
+    ports:
+      - 127.0.0.1:9200:9200
+    restart: unless-stopped
+    healthcheck:
+      test: /health.sh
+      interval: 30s
+      timeout: 30s
+      retries: 10
+      start_period: 60s

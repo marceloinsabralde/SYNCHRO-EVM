@@ -27,6 +27,10 @@ TEST_KUMARA_CORE_DB_USERNAME="kumara-core-test"
 TEST_KUMARA_CORE_DB_PASSWORD="{{exec(command='script/make-secret TEST_KUMARA_CORE_DB_PASSWORD', cache_key='TEST_KUMARA_CORE_DB_PASSWORD', cache_duration='1h')}}"
 TEST_ConnectionStrings__KumaraCoreDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.TEST_KUMARA_CORE_DB_USERNAME}};Username={{env.TEST_KUMARA_CORE_DB_USERNAME}};Password={{env.TEST_KUMARA_CORE_DB_PASSWORD}}"
 
+KUMARA_SEARCH_DB_USERNAME="kumara-search"
+KUMARA_SEARCH_DB_PASSWORD="{{exec(command='script/make-secret KUMARA_SEARCH_DB_PASSWORD', cache_key='KUMARA_SEARCH_DB_PASSWORD', cache_duration='1h')}}"
+ConnectionStrings__KumaraSearchDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.KUMARA_SEARCH_DB_USERNAME}};Username={{env.KUMARA_SEARCH_DB_USERNAME}};Password={{env.KUMARA_SEARCH_DB_PASSWORD}}"
+
 MONGO_IMAGE="mongo:8"
 MONGO_INITDB_ROOT_USERNAME="kumara-admin"
 MONGO_INITDB_ROOT_PASSWORD="{{exec(command='script/make-secret MONGO_ROOT_PASSWORD', cache_key='MONGO_ROOT_PASSWORD', cache_duration='1h')}}"
@@ -34,3 +38,6 @@ MONGO_INITDB_ROOT_PASSWORD="{{exec(command='script/make-secret MONGO_ROOT_PASSWO
 KUMARA_EVENTS_DB_USERNAME="kumara-events"
 KUMARA_EVENTS_DB_PASSWORD="{{exec(command='script/make-secret KUMARA_EVENTS_DB_PASSWORD', cache_key='KUMARA_EVENTS_DB_PASSWORD', cache_duration='1h')}}"
 ConnectionStrings__KumaraEventSourceDB="mongodb://{{env.KUMARA_EVENTS_DB_USERNAME}}:{{env.KUMARA_EVENTS_DB_PASSWORD}}@localhost:27017/{{env.KUMARA_EVENTS_DB_USERNAME}}?authSource=admin"
+
+ELASTIC_PASSWORD="{{exec(command='script/make-secret ELASTIC_PASSWORD', cache_key='ELASTIC_PASSWORD', cache_duration='1h')}}"
+ConnectionStrings__Elasticsearch = "http://localhost:9200"
