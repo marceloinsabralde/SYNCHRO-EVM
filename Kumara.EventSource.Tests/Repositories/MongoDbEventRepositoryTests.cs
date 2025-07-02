@@ -10,14 +10,14 @@ using Testcontainers.MongoDb;
 
 namespace Kumara.EventSource.Tests.Repositories;
 
-public class MongoDbEventRepositoryTests : EventRepositoryTestsBase, IDisposable
+public class MongoDbEventRepositoryTests : EventRepositoryTestsBase, IAsyncLifetime
 {
     private static readonly MongoDbContainer SMongoDbContainer;
     private static readonly string s_connectionString;
     private static readonly string s_databaseName;
 
     private MongoDbContext? _dbContext;
-    private readonly IEventRepository? _eventRepository;
+    private IEventRepository? _eventRepository;
 
     static MongoDbEventRepositoryTests()
     {
@@ -32,7 +32,7 @@ public class MongoDbEventRepositoryTests : EventRepositoryTestsBase, IDisposable
         s_databaseName = "event_test_db";
     }
 
-    public MongoDbEventRepositoryTests()
+    public async ValueTask InitializeAsync()
     {
         string testDatabaseName = $"{s_databaseName}_{GuidUtility.CreateGuid():N}";
 
@@ -45,7 +45,7 @@ public class MongoDbEventRepositoryTests : EventRepositoryTestsBase, IDisposable
 
         _dbContext = new MongoDbContext(dbContextOptions);
 
-        _dbContext.Database.EnsureCreatedAsync().GetAwaiter().GetResult();
+        await _dbContext.Database.EnsureCreatedAsync();
 
         _eventRepository = new EventRepositoryMongo(_dbContext);
     }
@@ -53,12 +53,12 @@ public class MongoDbEventRepositoryTests : EventRepositoryTestsBase, IDisposable
     protected override IEventRepository EventRepository =>
         _eventRepository ?? throw new InvalidOperationException("EventRepository not initialized");
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         if (_dbContext != null)
         {
-            _dbContext.Database.EnsureDeletedAsync().GetAwaiter().GetResult();
-            _dbContext.DisposeAsync().GetAwaiter().GetResult();
+            await _dbContext.Database.EnsureDeletedAsync();
+            await _dbContext.DisposeAsync();
             _dbContext = null;
         }
     }
