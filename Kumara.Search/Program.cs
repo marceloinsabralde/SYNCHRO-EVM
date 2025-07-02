@@ -14,10 +14,6 @@ builder.Configuration.AddEnvironmentVariables(
     prefix: $"{builder.Environment.EnvironmentName.ToUpper()}_"
 );
 
-builder.Services.AddOpenApi(options =>
-{
-    options.UseKumaraCommon();
-});
 builder
     .Services.AddControllers()
     .AddJsonOptions(options =>
@@ -25,6 +21,11 @@ builder
         options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
         options.UseKumaraCommon();
     });
+
+builder.Services.AddOpenApi(options =>
+{
+    options.UseKumaraCommon();
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
