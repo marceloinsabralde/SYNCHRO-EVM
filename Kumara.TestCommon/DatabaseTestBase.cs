@@ -22,7 +22,7 @@ public abstract class DatabaseTestBase<T> : IAsyncLifetime
     > _connectionStringPools = new();
     private string? _connectionString;
 
-    private AppServicesHelper.AppFactory? _factory;
+    protected AppServicesHelper.AppFactory? _factory;
     protected HttpClient _client = null!;
     protected T _dbContext = null!;
     protected LinkGenerator _linkGenerator = null!;
@@ -126,7 +126,7 @@ public abstract class DatabaseTestBase<T> : IAsyncLifetime
         }
     }
 
-    protected async Task ResetDatabase()
+    protected virtual async Task ResetDatabase()
     {
         if (_respawner is not null && _connection is not null)
             await _respawner.ResetAsync(_connection);

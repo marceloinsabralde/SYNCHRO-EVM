@@ -55,5 +55,6 @@ services:
     environment:
       <<: *elasticsearch_environment
       ELASTIC_PASSWORD: "${TEST_ELASTIC_PASSWORD?}"
+      action.destructive_requires_name: "false"
     ports:
       - 127.0.0.1:9201:9200
