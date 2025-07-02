@@ -2,6 +2,7 @@
 
 using Elastic.Clients.Elasticsearch;
 using Kumara.Common.Database;
+using Kumara.Common.Extensions;
 using Kumara.Search.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,13 +12,20 @@ builder.Configuration.AddEnvironmentVariables(
     prefix: $"{builder.Environment.EnvironmentName.ToUpper()}_"
 );
 
-builder.Services.AddOpenApi();
-builder.Services.AddControllers();
+builder.Services.AddOpenApi(options =>
+{
+    options.UseKumaraCommon();
+});
+builder
+    .Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.UseKumaraCommon();
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.UseAllOfToExtendReferenceSchemas();
-    options.EnableAnnotations();
+    options.UseKumaraCommon();
 });
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
@@ -30,7 +38,7 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
             npgsqlOptions.UseNodaTime();
         }
     );
-    options.UseSnakeCaseNamingConvention();
+    options.UseKumaraCommon();
 });
 
 builder.Services.AddSingleton(serviceProvider =>
