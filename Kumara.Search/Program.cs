@@ -21,12 +21,17 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
+{
     opt.UseNpgsql(
-            builder.Configuration.GetConnectionString("KumaraSearchDB"),
-            o => o.SetPostgresVersion(16, 4).UseNodaTime()
-        )
-        .UseSnakeCaseNamingConvention()
-);
+        builder.Configuration.GetConnectionString("KumaraSearchDB"),
+        o =>
+        {
+            o.SetPostgresVersion(16, 4);
+            o.UseNodaTime();
+        }
+    );
+    opt.UseSnakeCaseNamingConvention();
+});
 
 builder.Services.AddSingleton(sp =>
 {
