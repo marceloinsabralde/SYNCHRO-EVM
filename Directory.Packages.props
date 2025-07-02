@@ -1,6 +1,7 @@
 <!-- Copyright (c) Bentley Systems, Incorporated. All rights reserved. -->
 <Project>
   <ItemGroup>
+    <PackageVersion Include="AspNetCore.HealthChecks.Elasticsearch" Version="8.0.1" />
     <PackageVersion Include="Azure.Core" Version="1.46.2" />
     <PackageVersion Include="Azure.Identity" Version="1.14.0" />
     <PackageVersion Include="Bogus" Version="35.6.3" />
