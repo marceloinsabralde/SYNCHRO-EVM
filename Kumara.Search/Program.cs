@@ -80,5 +80,3 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 }
 
 app.Run();
-
-public partial class Program { }
