@@ -23,7 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Kumara.TestCommon\Kumara.TestCommon.csproj" />
     <ProjectReference Include="..\Kumara.Core\Kumara.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Kumara.TestCommon\Tests\**\*.cs" />
   </ItemGroup>
 
 </Project>
