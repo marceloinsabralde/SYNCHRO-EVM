@@ -5,6 +5,8 @@ using Kumara.Common.Database;
 using Kumara.Common.Extensions;
 using Kumara.Search.Database;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,7 @@ builder
     .Services.AddControllers()
     .AddJsonOptions(options =>
     {
+        options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
         options.UseKumaraCommon();
     });
 builder.Services.AddEndpointsApiExplorer();
