@@ -20,20 +20,20 @@ builder.Services.AddSwaggerGen(options =>
     options.EnableAnnotations();
 });
 
-builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
+builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
-    opt.UseNpgsql(
+    options.UseNpgsql(
         builder.Configuration.GetConnectionString("KumaraSearchDB"),
-        o =>
+        npgsqlOptions =>
         {
-            o.SetPostgresVersion(16, 4);
-            o.UseNodaTime();
+            npgsqlOptions.SetPostgresVersion(16, 4);
+            npgsqlOptions.UseNodaTime();
         }
     );
-    opt.UseSnakeCaseNamingConvention();
+    options.UseSnakeCaseNamingConvention();
 });
 
-builder.Services.AddSingleton(sp =>
+builder.Services.AddSingleton(serviceProvider =>
 {
     var elasticsearchUrl =
         builder.Configuration.GetConnectionString("KumaraSearchES")
