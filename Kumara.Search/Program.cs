@@ -14,24 +14,6 @@ builder.Configuration.AddEnvironmentVariables(
     prefix: $"{builder.Environment.EnvironmentName.ToUpper()}_"
 );
 
-builder
-    .Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
-        options.UseKumaraCommon();
-    });
-
-builder.Services.AddOpenApi(options =>
-{
-    options.UseKumaraCommon();
-});
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.UseKumaraCommon();
-});
-
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(
@@ -55,6 +37,24 @@ builder.Services.AddSingleton(serviceProvider =>
     var kumaraSearchUrl = new Uri(elasticsearchUrl);
     var settings = new ElasticsearchClientSettings(kumaraSearchUrl);
     return new ElasticsearchClient(settings);
+});
+
+builder
+    .Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+        options.UseKumaraCommon();
+    });
+
+builder.Services.AddOpenApi(options =>
+{
+    options.UseKumaraCommon();
+});
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.UseKumaraCommon();
 });
 
 var app = builder.Build();
