@@ -25,7 +25,7 @@ ConnectionStrings__KumaraCoreDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Databas
 
 TEST_KUMARA_CORE_DB_USERNAME="kumara-core-test"
 TEST_KUMARA_CORE_DB_PASSWORD="{{exec(command='script/make-secret TEST_KUMARA_CORE_DB_PASSWORD', cache_key='TEST_KUMARA_CORE_DB_PASSWORD', cache_duration='1h')}}"
-TEST_ConnectionStrings__KumaraCoreDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.TEST_KUMARA_CORE_DB_USERNAME}};Username={{env.TEST_KUMARA_CORE_DB_USERNAME}};Password={{env.TEST_KUMARA_CORE_DB_PASSWORD}}"
+TEST_ConnectionStrings__KumaraCoreDB_TEMPLATE="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.TEST_KUMARA_CORE_DB_USERNAME}}_{1..5};Username={{env.TEST_KUMARA_CORE_DB_USERNAME}};Password={{env.TEST_KUMARA_CORE_DB_PASSWORD}}"
 
 KUMARA_SEARCH_DB_USERNAME="kumara-search"
 KUMARA_SEARCH_DB_PASSWORD="{{exec(command='script/make-secret KUMARA_SEARCH_DB_PASSWORD', cache_key='KUMARA_SEARCH_DB_PASSWORD', cache_duration='1h')}}"
