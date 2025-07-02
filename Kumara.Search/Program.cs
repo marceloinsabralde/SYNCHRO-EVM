@@ -31,13 +31,12 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
     }
 });
 
+var elasticsearchUrl =
+    builder.Configuration.GetConnectionString("KumaraSearchES")
+    ?? throw new InvalidOperationException("Connection string 'KumaraSearchES' is not configured.");
+
 builder.Services.AddSingleton(serviceProvider =>
 {
-    var elasticsearchUrl =
-        builder.Configuration.GetConnectionString("KumaraSearchES")
-        ?? throw new InvalidOperationException(
-            "Connection string 'KumaraSearchES' is not configured."
-        );
     var kumaraSearchUrl = new Uri(elasticsearchUrl);
     var settings = new ElasticsearchClientSettings(kumaraSearchUrl);
     return new ElasticsearchClient(settings);
