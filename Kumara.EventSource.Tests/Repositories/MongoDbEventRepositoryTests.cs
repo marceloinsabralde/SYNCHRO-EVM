@@ -6,41 +6,24 @@ using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Repositories;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
-using Testcontainers.MongoDb;
 
 namespace Kumara.EventSource.Tests.Repositories;
 
 public class MongoDbEventRepositoryTests : EventRepositoryTestsBase, IAsyncLifetime
 {
-    private static readonly MongoDbContainer SMongoDbContainer;
-    private static readonly string s_connectionString;
-    private static readonly string s_databaseName;
-
     private MongoDbContext? _dbContext;
     private IEventRepository? _eventRepository;
 
-    static MongoDbEventRepositoryTests()
-    {
-        SMongoDbContainer = new MongoDbBuilder()
-            .WithImage(Environment.GetEnvironmentVariable("MONGO_IMAGE"))
-            .WithCleanUp(true)
-            .Build();
-
-        SMongoDbContainer.StartAsync().GetAwaiter().GetResult();
-
-        s_connectionString = SMongoDbContainer.GetConnectionString();
-        s_databaseName = "event_test_db";
-    }
-
     public async ValueTask InitializeAsync()
     {
-        string testDatabaseName = $"{s_databaseName}_{GuidUtility.CreateGuid():N}";
+        var dbFixture = await DatabaseTestFixture.GetInstanceAsync();
+        var mongoUrl = new MongoUrl(dbFixture.GenerateMongoConnectionString());
 
-        MongoClient mongoClient = new(s_connectionString);
+        MongoClient mongoClient = new(mongoUrl);
 
         DbContextOptions<MongoDbContext> dbContextOptions =
             new DbContextOptionsBuilder<MongoDbContext>()
-                .UseMongoDB(mongoClient, testDatabaseName)
+                .UseMongoDB(mongoClient, mongoUrl.DatabaseName)
                 .Options;
 
         _dbContext = new MongoDbContext(dbContextOptions);
