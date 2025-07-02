@@ -36,9 +36,9 @@ services:
     healthcheck:
       test: /health.sh
 
-  elasticsearch:
+  elasticsearch: &elasticsearch
     image: elasticsearch:9.0.2
-    environment:
+    environment: &elasticsearch_environment
       discovery.type: single-node
       ES_JAVA_OPTS: -Xms512m -Xmx512m
       xpack.security.enabled: "true"
@@ -54,3 +54,10 @@ services:
       timeout: 30s
       retries: 10
       start_period: 60s
+  elasticsearch_test:
+    <<: *elasticsearch
+    environment:
+      <<: *elasticsearch_environment
+      ELASTIC_PASSWORD: "${TEST_ELASTIC_PASSWORD?}"
+    ports:
+      - 127.0.0.1:9201:9200

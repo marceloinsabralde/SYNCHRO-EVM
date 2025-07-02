@@ -45,3 +45,6 @@ ConnectionStrings__KumaraEventSourceDB="mongodb://{{env.KUMARA_EVENTS_DB_USERNAM
 
 ELASTIC_PASSWORD="{{exec(command='script/make-secret ELASTIC_PASSWORD', cache_key='ELASTIC_PASSWORD', cache_duration='1h')}}"
 ConnectionStrings__KumaraSearchES = "http://elastic:{{env.ELASTIC_PASSWORD}}@localhost:9200"
+
+TEST_ELASTIC_PASSWORD="{{exec(command='script/make-secret TEST_ELASTIC_PASSWORD', cache_key='TEST_ELASTIC_PASSWORD', cache_duration='1h')}}"
+TEST_ConnectionStrings__KumaraSearchES = "http://elastic:{{env.TEST_ELASTIC_PASSWORD}}@localhost:9201"
