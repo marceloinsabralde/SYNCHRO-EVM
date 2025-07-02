@@ -25,6 +25,10 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
         }
     );
     options.UseKumaraCommon();
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableSensitiveDataLogging();
+    }
 });
 
 builder.Services.AddSingleton(serviceProvider =>
