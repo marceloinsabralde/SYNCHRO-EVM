@@ -36,7 +36,7 @@ public class IntegrationTestAppFactory : WebApplicationFactory<Program>, IAsyncL
             var testConfig = new Dictionary<string, string?>
             {
                 {
-                    "ConnectionStrings:Elasticsearch",
+                    "ConnectionStrings:KumaraSearchES",
                     $"http://{TestUsername}:{TestPassword}@{ElasticsearchContainer.Hostname}:{ElasticsearchContainer.GetMappedPublicPort(9200)}"
                 },
             };
