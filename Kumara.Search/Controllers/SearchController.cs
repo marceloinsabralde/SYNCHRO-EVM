@@ -10,8 +10,6 @@ namespace Kumara.Search.Controllers;
 [Route("api/v1/[controller]")]
 public class SearchController(ElasticsearchClient elasticsearchClient) : ControllerBase
 {
-    private readonly ElasticsearchClient _elasticsearchClient = elasticsearchClient;
-
     [HttpGet]
     [EndpointName("ListSearch")]
     public async Task<ActionResult<ListResponse<object>>> Search(
@@ -24,7 +22,7 @@ public class SearchController(ElasticsearchClient elasticsearchClient) : Control
 
         await EnsureIndexAsync(index);
 
-        var response = await _elasticsearchClient.SearchAsync<object>(
+        var response = await elasticsearchClient.SearchAsync<object>(
             s => s.Indices(index).Query(qs => qs.QueryString(qsq => qsq.Query(searchQuery))),
             cancellationToken
         );
@@ -41,11 +39,11 @@ public class SearchController(ElasticsearchClient elasticsearchClient) : Control
 
     private async Task EnsureIndexAsync(string index)
     {
-        var checkIndex = await _elasticsearchClient.Indices.ExistsAsync(index);
+        var checkIndex = await elasticsearchClient.Indices.ExistsAsync(index);
 
         if (!checkIndex.Exists)
         {
-            var createResponse = await _elasticsearchClient.Indices.CreateAsync(index);
+            var createResponse = await elasticsearchClient.Indices.CreateAsync(index);
             if (!createResponse.IsValidResponse)
                 throw new Exception(
                     createResponse.ElasticsearchServerError?.ToString() ?? "Failed to create index"
