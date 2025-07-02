@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Respawn;
+using Respawn.Graph;
 
 namespace Kumara.TestCommon;
 
@@ -93,16 +94,36 @@ public abstract class DatabaseTestBase<T> : IAsyncLifetime
             _ => throw new ArgumentException("Unknown database adapter"),
         };
 
+        // Ignore Migration history table otherwise we attempt to migrate
+        // each test run and the tables already exist.
+        Table[] tablesToIgnore = ["__EFMigrationsHistory"];
+
+        // but don't error if we have not got any other tables yet
+        var existingTables = GetTableNames().Select(name => (Table)name).ToHashSet();
+        if (existingTables.SetEquals(tablesToIgnore))
+            tablesToIgnore = [];
+
         _respawner = await Respawner.CreateAsync(
             _connection,
-            new RespawnerOptions
-            {
-                DbAdapter = dbAdapter,
-                // Ignore Migration history table otherwise we attempt to migrate
-                // each test run and the tables already exist.
-                TablesToIgnore = ["__EFMigrationsHistory"],
-            }
+            new RespawnerOptions() { DbAdapter = dbAdapter, TablesToIgnore = tablesToIgnore }
         );
+    }
+
+    protected IEnumerable<string> GetTableNames()
+    {
+        using var command = _connection!.CreateCommand();
+        command.CommandText =
+            @"
+            SELECT table_name
+            FROM information_schema.tables
+            WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
+            ";
+
+        using var result = command.ExecuteReader();
+        while (result.Read())
+        {
+            yield return result.GetString(0);
+        }
     }
 
     protected async Task ResetDatabase()
