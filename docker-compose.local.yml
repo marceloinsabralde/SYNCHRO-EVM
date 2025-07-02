@@ -40,7 +40,7 @@ services:
     image: elasticsearch:9.0.2
     environment: &elasticsearch_environment
       discovery.type: single-node
-      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      ES_JAVA_OPTS: -Xms64m -Xmx512m
       xpack.security.enabled: "true"
       ELASTIC_PASSWORD: "${ELASTIC_PASSWORD?}"
     volumes:
