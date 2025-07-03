@@ -12,6 +12,11 @@ public class ContinuationToken : IParsable<ContinuationToken>
 
     public Dictionary<string, string> QueryParameters { get; set; } = new();
 
+    public override string ToString()
+    {
+        return ToBase64String();
+    }
+
     public string ToBase64String()
     {
         string jsonString = JsonSerializer.Serialize(this, JsonSerializerOptions.Default);
