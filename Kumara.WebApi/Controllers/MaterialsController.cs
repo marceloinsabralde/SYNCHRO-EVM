@@ -16,7 +16,7 @@ public class MaterialsController(ApplicationDbContext dbContext) : ControllerBas
     [EndpointName("ListMaterials")]
     public ActionResult<ListResponse<MaterialResponse>> Index([Required] Guid iTwinId)
     {
-        var materials = dbContext.Materials.Where(materials => materials.ITwinId == iTwinId);
+        var materials = dbContext.Materials.Where(material => material.ITwinId == iTwinId);
         if (!materials.Any())
             return NotFound();
 
