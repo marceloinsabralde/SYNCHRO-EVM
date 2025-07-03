@@ -65,12 +65,16 @@ public class SettingsRepositoryTests : IDisposable
         Guid iTwinId2 = Guid.CreateVersion7();
         Guid iTwinId3 = Guid.CreateVersion7();
         Guid iTwinId4 = Guid.CreateVersion7();
+        Guid iTwinId5 = Guid.CreateVersion7();
         pathProvider.GetPathFromRootAsync(iTwinId1).Returns([iTwinId1]);
         pathProvider.GetPathFromRootAsync(iTwinId2).Returns([iTwinId1, iTwinId2]);
         pathProvider.GetPathFromRootAsync(iTwinId3).Returns([iTwinId1, iTwinId2, iTwinId3]);
         pathProvider
             .GetPathFromRootAsync(iTwinId4)
             .Returns([iTwinId1, iTwinId2, iTwinId3, iTwinId4]);
+        pathProvider
+            .GetPathFromRootAsync(iTwinId5)
+            .Returns([iTwinId1, iTwinId2, iTwinId3, iTwinId4, iTwinId5]);
 
         dbContext.Settings.Add(
             new()
@@ -88,6 +92,14 @@ public class SettingsRepositoryTests : IDisposable
                 Value = false,
             }
         );
+        dbContext.Settings.Add(
+            new()
+            {
+                ITwinId = iTwinId4,
+                Key = TestKey.TestDefaultBoolean,
+                Value = false,
+            }
+        );
         dbContext.SaveChanges();
 
         TestSettings settings;
@@ -102,7 +114,10 @@ public class SettingsRepositoryTests : IDisposable
         settings.ShouldBe(new() { TestBoolean = false, TestDefaultBoolean = true });
 
         settings = await settingsRepository.FindAsync(iTwinId4);
-        settings.ShouldBe(new() { TestBoolean = false, TestDefaultBoolean = true });
+        settings.ShouldBe(new() { TestBoolean = false, TestDefaultBoolean = false });
+
+        settings = await settingsRepository.FindAsync(iTwinId5);
+        settings.ShouldBe(new() { TestBoolean = false, TestDefaultBoolean = false });
     }
 
     [Fact]
