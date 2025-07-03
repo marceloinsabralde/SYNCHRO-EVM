@@ -13,7 +13,7 @@ namespace Kumara.WebApi.Controllers;
 [Route("api/v1/settings")]
 public class SettingsController(
     ApplicationDbContext dbContext,
-    SettingsRepository settingsRepository
+    SettingsRepository<Settings, SettingKey> settingsRepository
 ) : ControllerBase
 {
     [EndpointName("GetSettings")]

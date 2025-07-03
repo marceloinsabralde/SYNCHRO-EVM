@@ -8,9 +8,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kumara.WebApi.Repositories;
 
-public class SettingsRepository(ApplicationDbContext dbContext, IITwinPathProvider pathProvider)
+public class SettingsRepository<TRecord, TKey>(
+    ISettingsDbContext<TKey> dbContext,
+    IITwinPathProvider pathProvider
+)
+    where TRecord : class
+    where TKey : Enum
 {
-    public async Task<Settings> FindAsync(Guid iTwinId)
+    public async Task<TRecord> FindAsync(Guid iTwinId)
     {
         var iTwinPathIds = (await pathProvider.GetPathFromRootAsync(iTwinId)).ToList();
 
@@ -19,7 +24,7 @@ public class SettingsRepository(ApplicationDbContext dbContext, IITwinPathProvid
             .OrderBy(setting => iTwinPathIds.IndexOf(setting.ITwinId))
             .ToListAsync();
 
-        var result = Activator.CreateInstance<Settings>();
+        var result = Activator.CreateInstance<TRecord>();
 
         foreach (var setting in pathSettings)
         {

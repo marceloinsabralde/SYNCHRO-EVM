@@ -11,7 +11,7 @@ namespace Kumara.WebApi.Tests.Repositories;
 public class SettingsRepositoryTests : DatabaseTestBase
 {
     private IITwinPathProvider pathProvider = null!;
-    private SettingsRepository settingsRepository = null!;
+    private SettingsRepository<Settings, SettingKey> settingsRepository = null!;
 
     public override async ValueTask InitializeAsync()
     {

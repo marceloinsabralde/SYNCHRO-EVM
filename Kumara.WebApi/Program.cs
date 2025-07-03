@@ -5,6 +5,7 @@ using Kumara.Common.Extensions;
 using Kumara.Common.Providers;
 using Kumara.WebApi.Database;
 using Kumara.WebApi.Repositories;
+using Kumara.WebApi.Types;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
@@ -44,8 +45,11 @@ builder.Services.AddTransient<
     Kumara.WebApi.Providers.FakeITwinProvider
 >();
 
+builder.Services.AddScoped<ISettingsDbContext<SettingKey>>(provider =>
+    provider.GetRequiredService<ApplicationDbContext>()
+);
 builder.Services.AddTransient<IITwinPathProvider, ITwinPathProvider>();
-builder.Services.AddTransient<SettingsRepository>();
+builder.Services.AddTransient<SettingsRepository<Settings, SettingKey>>();
 
 builder
     .Services.AddControllers()

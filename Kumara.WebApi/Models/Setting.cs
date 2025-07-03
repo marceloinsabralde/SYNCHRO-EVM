@@ -11,14 +11,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Kumara.WebApi.Models;
 
 [Index(nameof(ITwinId), nameof(Key), IsUnique = true)]
-public class Setting : ApplicationEntity, IValidatableObject
+public class Setting<TKey> : ApplicationEntity, IValidatableObject
+    where TKey : Enum
 {
     private string _value = "null";
 
     public Guid Id { get; set; }
     public required Guid ITwinId { get; set; }
 
-    public required SettingKey Key { get; set; }
+    public required TKey Key { get; set; }
 
     [Column(TypeName = "jsonb")]
     public required object Value
