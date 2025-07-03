@@ -1,24 +1,33 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.Common.Extensions;
 using Kumara.Common.Providers;
+using Kumara.TestCommon.Converters;
 using Kumara.TestCommon.Helpers;
+using Kumara.WebApi.Database;
 using Kumara.WebApi.Models;
 using Kumara.WebApi.Repositories;
 using Kumara.WebApi.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kumara.WebApi.Tests.Repositories;
 
-public class SettingsRepositoryTests : DatabaseTestBase
+public class SettingsRepositoryTests : IDisposable
 {
-    private IITwinPathProvider pathProvider = null!;
-    private SettingsRepository<Settings, SettingKey> settingsRepository = null!;
+    private readonly TestDbContext dbContext = new();
+    private readonly IITwinPathProvider pathProvider;
+    private readonly SettingsRepository<TestSettings, TestKey> settingsRepository;
 
-    public override async ValueTask InitializeAsync()
+    public SettingsRepositoryTests()
     {
-        await base.InitializeAsync();
-
+        dbContext = new TestDbContext();
         pathProvider = Substitute.For<IITwinPathProvider>();
-        settingsRepository = new(_dbContext, pathProvider);
+        settingsRepository = new(dbContext, pathProvider);
+    }
+
+    public void Dispose()
+    {
+        dbContext.Dispose();
     }
 
     [Fact]
@@ -29,23 +38,23 @@ public class SettingsRepositoryTests : DatabaseTestBase
         pathProvider.GetPathFromRootAsync(iTwinId1).Returns([iTwinId1]);
         pathProvider.GetPathFromRootAsync(iTwinId2).Returns([iTwinId2]);
 
-        _dbContext.Settings.Add(
+        dbContext.Settings.Add(
             new()
             {
                 ITwinId = iTwinId1,
-                Key = SettingKey.ActualsHaveTime,
+                Key = TestKey.TestBoolean,
                 Value = true,
             }
         );
-        _dbContext.SaveChanges();
+        dbContext.SaveChanges();
 
-        Settings settings;
+        TestSettings settings;
 
         settings = await settingsRepository.FindAsync(iTwinId1);
-        settings.ShouldBe(new() { ActualsHaveTime = true });
+        settings.ShouldBe(new() { TestBoolean = true });
 
         settings = await settingsRepository.FindAsync(iTwinId2);
-        settings.ShouldBe(new() { ActualsHaveTime = false });
+        settings.ShouldBe(new() { TestBoolean = false });
     }
 
     [Fact]
@@ -62,36 +71,65 @@ public class SettingsRepositoryTests : DatabaseTestBase
             .GetPathFromRootAsync(iTwinId4)
             .Returns([iTwinId1, iTwinId2, iTwinId3, iTwinId4]);
 
-        _dbContext.Settings.Add(
+        dbContext.Settings.Add(
             new()
             {
                 ITwinId = iTwinId1,
-                Key = SettingKey.ActualsHaveTime,
+                Key = TestKey.TestBoolean,
                 Value = true,
             }
         );
-        _dbContext.Settings.Add(
+        dbContext.Settings.Add(
             new()
             {
                 ITwinId = iTwinId3,
-                Key = SettingKey.ActualsHaveTime,
+                Key = TestKey.TestBoolean,
                 Value = false,
             }
         );
-        _dbContext.SaveChanges();
+        dbContext.SaveChanges();
 
-        Settings settings;
+        TestSettings settings;
 
         settings = await settingsRepository.FindAsync(iTwinId1);
-        settings.ShouldBe(new() { ActualsHaveTime = true });
+        settings.ShouldBe(new() { TestBoolean = true });
 
         settings = await settingsRepository.FindAsync(iTwinId2);
-        settings.ShouldBe(new() { ActualsHaveTime = true });
+        settings.ShouldBe(new() { TestBoolean = true });
 
         settings = await settingsRepository.FindAsync(iTwinId3);
-        settings.ShouldBe(new() { ActualsHaveTime = false });
+        settings.ShouldBe(new() { TestBoolean = false });
 
         settings = await settingsRepository.FindAsync(iTwinId4);
-        settings.ShouldBe(new() { ActualsHaveTime = false });
+        settings.ShouldBe(new() { TestBoolean = false });
+    }
+
+    record TestSettings
+    {
+        public required bool TestBoolean { get; set; }
+    }
+
+    enum TestKey
+    {
+        TestBoolean,
+    }
+
+    class TestDbContext() : DbContext(Options), ISettingsDbContext<TestKey>
+    {
+        public DbSet<Setting<TestKey>> Settings { get; set; }
+
+        public static DbContextOptions Options =>
+            new DbContextOptionsBuilder<TestDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .UseKumaraCommon()
+                .Options;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .Entity<Setting<TestKey>>()
+                .Property(e => e.Value)
+                .HasConversion(new ObjectJsonStringValueConverter());
+        }
     }
 }
