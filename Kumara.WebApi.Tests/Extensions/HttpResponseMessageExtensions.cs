@@ -117,18 +117,22 @@ public static class HttpResponseMessageExtensions
         );
     }
 
-    public static Task<T?> ShouldBeApiResponse<T>(
+    public static async Task<T> ShouldBeApiResponse<T>(
         this HttpResponseMessage response,
         HttpStatusCode statusCode = HttpStatusCode.OK
     )
+        where T : class
     {
         response.StatusCode.ShouldBe(statusCode);
         response.Content.Headers.ContentType.ShouldNotBeNull();
         response.Content.Headers.ContentType.MediaType.ShouldBe("application/json");
 
-        return response.Content.ReadFromJsonAsync<T>(
+        var apiResponse = await response.Content.ReadFromJsonAsync<T>(
             AppServicesHelper.JsonSerializerOptions,
             TestContext.Current.CancellationToken
         );
+        apiResponse.ShouldNotBeNull();
+
+        return apiResponse;
     }
 }
