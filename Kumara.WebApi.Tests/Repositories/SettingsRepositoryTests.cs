@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.ComponentModel;
 using Kumara.Common.Extensions;
 using Kumara.Common.Providers;
 using Kumara.TestCommon.Converters;
@@ -51,10 +52,10 @@ public class SettingsRepositoryTests : IDisposable
         TestSettings settings;
 
         settings = await settingsRepository.FindAsync(iTwinId1);
-        settings.ShouldBe(new() { TestBoolean = true });
+        settings.ShouldBe(new() { TestBoolean = true, TestDefaultBoolean = true });
 
         settings = await settingsRepository.FindAsync(iTwinId2);
-        settings.ShouldBe(new() { TestBoolean = false });
+        settings.ShouldBe(new() { TestBoolean = false, TestDefaultBoolean = true });
     }
 
     [Fact]
@@ -92,26 +93,37 @@ public class SettingsRepositoryTests : IDisposable
         TestSettings settings;
 
         settings = await settingsRepository.FindAsync(iTwinId1);
-        settings.ShouldBe(new() { TestBoolean = true });
+        settings.ShouldBe(new() { TestBoolean = true, TestDefaultBoolean = true });
 
         settings = await settingsRepository.FindAsync(iTwinId2);
-        settings.ShouldBe(new() { TestBoolean = true });
+        settings.ShouldBe(new() { TestBoolean = true, TestDefaultBoolean = true });
 
         settings = await settingsRepository.FindAsync(iTwinId3);
-        settings.ShouldBe(new() { TestBoolean = false });
+        settings.ShouldBe(new() { TestBoolean = false, TestDefaultBoolean = true });
 
         settings = await settingsRepository.FindAsync(iTwinId4);
-        settings.ShouldBe(new() { TestBoolean = false });
+        settings.ShouldBe(new() { TestBoolean = false, TestDefaultBoolean = true });
+    }
+
+    [Fact]
+    public void CanGetDefaultSettings()
+    {
+        var settings = settingsRepository.GetDefaults();
+        settings.ShouldBe(new() { TestBoolean = false, TestDefaultBoolean = true });
     }
 
     record TestSettings
     {
         public required bool TestBoolean { get; set; }
+
+        [DefaultValue(true)]
+        public required bool TestDefaultBoolean { get; set; }
     }
 
     enum TestKey
     {
         TestBoolean,
+        TestDefaultBoolean,
     }
 
     class TestDbContext() : DbContext(Options), ISettingsDbContext<TestKey>

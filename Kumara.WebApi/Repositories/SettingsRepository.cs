@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.ComponentModel;
 using System.Reflection;
 using Kumara.Common.Providers;
 using Kumara.WebApi.Database;
@@ -24,12 +25,28 @@ public class SettingsRepository<TRecord, TKey>(
             .OrderBy(setting => iTwinPathIds.IndexOf(setting.ITwinId))
             .ToListAsync();
 
-        var result = Activator.CreateInstance<TRecord>();
+        var result = GetDefaults();
 
         foreach (var setting in pathSettings)
         {
             PropertyInfo property = result.GetType().GetProperty(setting.Key.ToString())!;
             property.SetValue(result, setting.Value);
+        }
+
+        return result;
+    }
+
+    public TRecord GetDefaults()
+    {
+        var result = Activator.CreateInstance<TRecord>();
+
+        foreach (PropertyInfo property in result.GetType().GetProperties())
+        {
+            foreach (var attr in property.GetCustomAttributes<DefaultValueAttribute>())
+            {
+                object defaultValue = attr.Value!;
+                property.SetValue(result, defaultValue);
+            }
         }
 
         return result;
