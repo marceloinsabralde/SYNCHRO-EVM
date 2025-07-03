@@ -2,7 +2,9 @@
 
 using Kumara.Common.Database;
 using Kumara.Common.Extensions;
+using Kumara.Common.Providers;
 using Kumara.WebApi.Database;
+using Kumara.WebApi.Repositories;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
@@ -41,6 +43,9 @@ builder.Services.AddTransient<
     Bentley.ConnectCoreLibs.Providers.Abstractions.Interfaces.IITwinProvider,
     Kumara.WebApi.Providers.FakeITwinProvider
 >();
+
+builder.Services.AddTransient<IITwinPathProvider, ITwinPathProvider>();
+builder.Services.AddTransient<SettingsRepository>();
 
 builder
     .Services.AddControllers()
