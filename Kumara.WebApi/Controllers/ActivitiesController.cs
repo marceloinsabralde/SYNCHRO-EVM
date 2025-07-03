@@ -21,7 +21,9 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
         Guid? controlAccountId
     )
     {
-        var activities = dbContext.Activities.Where(act => act.ITwinId == iTwinId);
+        var activities = dbContext
+            .Activities.OrderBy(act => act.Id)
+            .Where(act => act.ITwinId == iTwinId);
 
         if (controlAccountId is not null)
             activities = activities.Where(act => act.ControlAccountId == controlAccountId);

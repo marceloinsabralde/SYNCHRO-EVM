@@ -20,9 +20,9 @@ public class MaterialActivityAllocationsController(ApplicationDbContext dbContex
         Guid? materialId
     )
     {
-        var allocations = dbContext.MaterialActivityAllocations.Where(allocation =>
-            allocation.ITwinId == iTwinId
-        );
+        var allocations = dbContext
+            .MaterialActivityAllocations.OrderBy(allocation => allocation.Id)
+            .Where(allocation => allocation.ITwinId == iTwinId);
 
         if (activityId is not null)
             allocations = allocations.Where(allocation => allocation.ActivityId == activityId);

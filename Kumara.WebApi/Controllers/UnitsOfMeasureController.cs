@@ -16,7 +16,9 @@ public class UnitsOfMeasureController(ApplicationDbContext dbContext) : Controll
     [EndpointName("ListUnitsOfMeasure")]
     public ActionResult<ListResponse<UnitOfMeasureResponse>> Index([Required] Guid iTwinId)
     {
-        var unitsOfMeasure = dbContext.UnitsOfMeasure.Where(uom => uom.ITwinId == iTwinId);
+        var unitsOfMeasure = dbContext
+            .UnitsOfMeasure.OrderBy(uom => uom.Id)
+            .Where(uom => uom.ITwinId == iTwinId);
 
         if (!unitsOfMeasure.Any())
         {
