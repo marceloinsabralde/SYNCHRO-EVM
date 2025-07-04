@@ -63,7 +63,14 @@ public class Setting<TRecord, TKey> : ApplicationEntity, IValidatableObject
         }
 
         var property = typeof(TRecord).GetProperty(Key.ToString());
-        if (property is not null)
+        if (property is null)
+        {
+            yield return new ValidationResult(
+                $"Could not find {Key} in {typeof(TRecord)}",
+                new[] { nameof(Key) }
+            );
+        }
+        else
         {
             var record = Activator.CreateInstance<TRecord>();
             try

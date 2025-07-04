@@ -79,6 +79,25 @@ public class SettingTests
     }
 
     [Fact]
+    public void FailsValidationSavingInvalidKey()
+    {
+        dbContext.Settings.Add(
+            new()
+            {
+                ITwinId = Guid.CreateVersion7(),
+                Key = TestKey.TestInvalid,
+                Value = false,
+            }
+        );
+
+        var ex = Should.Throw<ValidationException>(() =>
+        {
+            dbContext.SaveChanges();
+        });
+        ex.Message.ShouldBe($"Could not find {TestKey.TestInvalid} in {typeof(TestSettings)}");
+    }
+
+    [Fact]
     public void ErrorsReadingUnsupportedValueType()
     {
         dbContext.Settings.Add(
@@ -142,6 +161,7 @@ public class SettingTests
         TestDecimal,
         TestString,
         TestInteger,
+        TestInvalid,
     }
 
     class TestDbContext() : DbContext(Options), ISettingsDbContext<TestSettings, TestKey>
