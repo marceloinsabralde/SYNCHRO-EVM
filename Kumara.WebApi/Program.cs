@@ -45,7 +45,7 @@ builder.Services.AddTransient<
     Kumara.WebApi.Providers.FakeITwinProvider
 >();
 
-builder.Services.AddScoped<ISettingsDbContext<SettingKey>>(provider =>
+builder.Services.AddScoped<ISettingsDbContext<Settings, SettingKey>>(provider =>
     provider.GetRequiredService<ApplicationDbContext>()
 );
 builder.Services.AddTransient<IITwinPathProvider, ITwinPathProvider>();

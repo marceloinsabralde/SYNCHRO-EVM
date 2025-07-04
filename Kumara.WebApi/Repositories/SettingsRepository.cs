@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Kumara.WebApi.Repositories;
 
 public class SettingsRepository<TRecord, TKey>(
-    ISettingsDbContext<TKey> dbContext,
+    ISettingsDbContext<TRecord, TKey> dbContext,
     IITwinPathProvider pathProvider
 )
     where TRecord : class

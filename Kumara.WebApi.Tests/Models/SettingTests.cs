@@ -85,6 +85,13 @@ public class SettingTests
         { TestKey.TestString, typeof(string), "test" },
     };
 
+    record TestSettings
+    {
+        public required bool TestBoolean { get; set; }
+        public required decimal TestDecimal { get; set; }
+        public required string TestString { get; set; }
+    }
+
     public enum TestKey
     {
         TestBoolean,
@@ -92,9 +99,9 @@ public class SettingTests
         TestString,
     }
 
-    class TestDbContext() : DbContext(Options), ISettingsDbContext<TestKey>
+    class TestDbContext() : DbContext(Options), ISettingsDbContext<TestSettings, TestKey>
     {
-        public DbSet<Setting<TestKey>> Settings { get; set; }
+        public DbSet<Setting<TestSettings, TestKey>> Settings { get; set; }
 
         public static DbContextOptions Options =>
             new DbContextOptionsBuilder<TestDbContext>()
@@ -105,7 +112,7 @@ public class SettingTests
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .Entity<Setting<TestKey>>()
+                .Entity<Setting<TestSettings, TestKey>>()
                 .Property(e => e.Value)
                 .HasConversion(new ObjectJsonStringValueConverter());
         }

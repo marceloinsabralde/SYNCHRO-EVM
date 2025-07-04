@@ -141,9 +141,9 @@ public class SettingsRepositoryTests : IDisposable
         TestDefaultBoolean,
     }
 
-    class TestDbContext() : DbContext(Options), ISettingsDbContext<TestKey>
+    class TestDbContext() : DbContext(Options), ISettingsDbContext<TestSettings, TestKey>
     {
-        public DbSet<Setting<TestKey>> Settings { get; set; }
+        public DbSet<Setting<TestSettings, TestKey>> Settings { get; set; }
 
         public static DbContextOptions Options =>
             new DbContextOptionsBuilder<TestDbContext>()
@@ -154,7 +154,7 @@ public class SettingsRepositoryTests : IDisposable
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .Entity<Setting<TestKey>>()
+                .Entity<Setting<TestSettings, TestKey>>()
                 .Property(e => e.Value)
                 .HasConversion(new ObjectJsonStringValueConverter());
         }

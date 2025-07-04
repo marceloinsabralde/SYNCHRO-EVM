@@ -9,7 +9,7 @@ namespace Kumara.WebApi.Database;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : DbContext(options),
-        ISettingsDbContext<SettingKey>
+        ISettingsDbContext<Settings, SettingKey>
 {
     public DbSet<Company> Companies { get; set; }
     public DbSet<ControlAccount> ControlAccounts { get; set; }
@@ -19,6 +19,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ProgressEntry> ProgressEntries { get; set; }
     public DbSet<MaterialActivityAllocation> MaterialActivityAllocations { get; set; }
     public DbSet<ProgressSummary> ProgressSummaries { get; set; }
-    public DbSet<Setting<SettingKey>> Settings { get; set; }
+    public DbSet<Setting<Settings, SettingKey>> Settings { get; set; }
     public DbSet<FakeITwin> FakeITwins { get; set; }
 }

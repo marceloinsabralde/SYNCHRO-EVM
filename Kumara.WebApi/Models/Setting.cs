@@ -11,7 +11,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Kumara.WebApi.Models;
 
 [Index(nameof(ITwinId), nameof(Key), IsUnique = true)]
-public class Setting<TKey> : ApplicationEntity, IValidatableObject
+public class Setting<TRecord, TKey> : ApplicationEntity, IValidatableObject
+    where TRecord : class
     where TKey : Enum
 {
     private string _value = "null";
