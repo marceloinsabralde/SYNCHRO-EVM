@@ -17,8 +17,7 @@ public class SettingTests
     readonly TestDbContext dbContext = new();
 
     [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
+    [MemberData(nameof(RoundTripData))]
     public void CanRoundTripSupportedValueTypes(object testValue)
     {
         dbContext.Settings.Add(
@@ -75,6 +74,12 @@ public class SettingTests
         });
         ex.Message.ShouldBe("Array types are not supported");
     }
+
+    public static TheoryData<object> RoundTripData = new()
+    {
+        { true },
+        { false },
+    };
 
     public enum TestKey
     {
