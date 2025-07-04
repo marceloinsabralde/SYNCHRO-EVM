@@ -43,7 +43,7 @@ public class SettingTests
             {
                 ITwinId = Guid.CreateVersion7(),
                 Key = TestKey.TestBoolean,
-                Value = 42,
+                Value = new int[] { },
             }
         );
 
@@ -51,7 +51,7 @@ public class SettingTests
         {
             dbContext.SaveChanges();
         });
-        ex.Message.ShouldBe("Number types are not supported");
+        ex.Message.ShouldBe("Array types are not supported");
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class SettingTests
             {
                 ITwinId = Guid.CreateVersion7(),
                 Key = TestKey.TestBoolean,
-                Value = 42,
+                Value = new int[] { },
             }
         );
 
@@ -73,7 +73,7 @@ public class SettingTests
         {
             var _ = setting.Value;
         });
-        ex.Message.ShouldBe("Number types are not supported");
+        ex.Message.ShouldBe("Array types are not supported");
     }
 
     public enum TestKey
