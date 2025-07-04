@@ -18,7 +18,7 @@ public class SettingTests
 
     [Theory]
     [MemberData(nameof(RoundTripData))]
-    public void CanRoundTripSupportedValueTypes(TestKey key, object testValue)
+    public void CanRoundTripSupportedValueTypes(TestKey key, Type expectedType, object testValue)
     {
         dbContext.Settings.Add(
             new()
@@ -32,6 +32,7 @@ public class SettingTests
 
         var setting = dbContext.Settings.First();
         setting.Value.ShouldBe(testValue);
+        setting.Value.GetType().ShouldBe(expectedType);
     }
 
     [Fact]
@@ -75,13 +76,13 @@ public class SettingTests
         ex.Message.ShouldBe("Array types are not supported");
     }
 
-    public static TheoryData<TestKey, object> RoundTripData = new()
+    public static TheoryData<TestKey, Type, object> RoundTripData = new()
     {
-        { TestKey.TestBoolean, true },
-        { TestKey.TestBoolean, false },
-        { TestKey.TestDecimal, 42 },
-        { TestKey.TestDecimal, 12345678901234567890m },
-        { TestKey.TestString, "test" },
+        { TestKey.TestBoolean, typeof(bool), true },
+        { TestKey.TestBoolean, typeof(bool), false },
+        { TestKey.TestDecimal, typeof(decimal), 42 },
+        { TestKey.TestDecimal, typeof(decimal), 12345678901234567890m },
+        { TestKey.TestString, typeof(string), "test" },
     };
 
     public enum TestKey
