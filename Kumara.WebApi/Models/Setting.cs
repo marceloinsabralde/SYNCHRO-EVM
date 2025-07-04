@@ -32,6 +32,8 @@ public class Setting<TKey> : ApplicationEntity, IValidatableObject
             {
                 JsonValueKind.True => true,
                 JsonValueKind.False => false,
+                JsonValueKind.Number => element.GetDecimal(),
+                JsonValueKind.String => element.GetString()!,
                 _ => throw new InvalidOperationException(
                     $"{element.ValueKind} types are not supported"
                 ),
