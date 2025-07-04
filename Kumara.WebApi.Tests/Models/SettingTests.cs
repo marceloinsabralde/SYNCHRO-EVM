@@ -35,6 +35,30 @@ public class SettingTests
         setting.Value.GetType().ShouldBe(expectedType);
     }
 
+    [Theory]
+    [MemberData(nameof(IncorrectValueTypeData))]
+    public void FailsValidationSavingIncorrectValueType(
+        TestKey key,
+        Type expectedType,
+        object testValue
+    )
+    {
+        dbContext.Settings.Add(
+            new()
+            {
+                ITwinId = Guid.CreateVersion7(),
+                Key = key,
+                Value = testValue,
+            }
+        );
+
+        var ex = Should.Throw<ValidationException>(() =>
+        {
+            dbContext.SaveChanges();
+        });
+        ex.Message.ShouldBe($"{key} values must be convertable to {expectedType}");
+    }
+
     [Fact]
     public void FailsValidationSavingUnsupportedValueType()
     {
@@ -85,11 +109,31 @@ public class SettingTests
         { TestKey.TestString, typeof(string), "test" },
     };
 
+    public static TheoryData<TestKey, Type, object> IncorrectValueTypeData = new()
+    {
+        { TestKey.TestBoolean, typeof(bool), 42 },
+        { TestKey.TestBoolean, typeof(bool), 12345678901234567890m },
+        { TestKey.TestBoolean, typeof(bool), "test" },
+        { TestKey.TestDecimal, typeof(decimal), true },
+        { TestKey.TestDecimal, typeof(decimal), "test" },
+        { TestKey.TestString, typeof(string), false },
+        { TestKey.TestString, typeof(string), 42 },
+        { TestKey.TestString, typeof(string), 12345678901234567890m },
+        { TestKey.TestInteger, typeof(int), false },
+        { TestKey.TestInteger, typeof(int), 42 },
+        { TestKey.TestInteger, typeof(int), 12345678901234567890m },
+        { TestKey.TestInteger, typeof(int), "test" },
+    };
+
     record TestSettings
     {
+        // valid
         public required bool TestBoolean { get; set; }
         public required decimal TestDecimal { get; set; }
         public required string TestString { get; set; }
+
+        // unsupported types
+        public required int TestInteger { get; set; }
     }
 
     public enum TestKey
@@ -97,6 +141,7 @@ public class SettingTests
         TestBoolean,
         TestDecimal,
         TestString,
+        TestInteger,
     }
 
     class TestDbContext() : DbContext(Options), ISettingsDbContext<TestSettings, TestKey>

@@ -47,13 +47,36 @@ public class Setting<TRecord, TKey> : ApplicationEntity, IValidatableObject
     {
         ValidationResult? result = null;
 
+        object? theValue = null;
         try
         {
-            var _ = Value;
+            theValue = Value;
         }
         catch (InvalidOperationException ex)
         {
             result = new ValidationResult(ex.Message, new[] { nameof(Value) });
+        }
+        if (result is not null)
+        {
+            yield return result;
+            result = null;
+        }
+
+        var property = typeof(TRecord).GetProperty(Key.ToString());
+        if (property is not null)
+        {
+            var record = Activator.CreateInstance<TRecord>();
+            try
+            {
+                property.SetValue(record, theValue);
+            }
+            catch (ArgumentException)
+            {
+                result = new ValidationResult(
+                    $"{Key} values must be convertable to {property.PropertyType}",
+                    new[] { nameof(Value) }
+                );
+            }
         }
         if (result is not null)
         {
