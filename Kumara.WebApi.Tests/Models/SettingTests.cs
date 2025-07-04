@@ -2,48 +2,54 @@
 
 using System.ComponentModel.DataAnnotations;
 using Kumara.Common.Database;
+using Kumara.Common.Extensions;
+using Kumara.TestCommon.Converters;
 using Kumara.TestCommon.Extensions;
+using Kumara.WebApi.Database;
 using Kumara.WebApi.Models;
 using Kumara.WebApi.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kumara.WebApi.Tests.Models;
 
-public class SettingTests : DatabaseTestBase
+public class SettingTests
 {
+    readonly TestDbContext dbContext = new();
+
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
     public void CanRoundTripSupportedValueTypes(object testValue)
     {
-        _dbContext.Settings.Add(
+        dbContext.Settings.Add(
             new()
             {
                 ITwinId = Guid.CreateVersion7(),
-                Key = SettingKey.ActualsHaveTime,
+                Key = TestKey.TestBoolean,
                 Value = testValue,
             }
         );
-        _dbContext.SaveChanges();
+        dbContext.SaveChanges();
 
-        var setting = _dbContext.Settings.First();
+        var setting = dbContext.Settings.First();
         setting.Value.ShouldBe(testValue);
     }
 
     [Fact]
     public void FailsValidationSavingUnsupportedValueType()
     {
-        _dbContext.Settings.Add(
+        dbContext.Settings.Add(
             new()
             {
                 ITwinId = Guid.CreateVersion7(),
-                Key = SettingKey.ActualsHaveTime,
+                Key = TestKey.TestBoolean,
                 Value = 42,
             }
         );
 
         var ex = Should.Throw<ValidationException>(() =>
         {
-            _dbContext.SaveChanges();
+            dbContext.SaveChanges();
         });
         ex.Message.ShouldBe("Number types are not supported");
     }
@@ -51,22 +57,46 @@ public class SettingTests : DatabaseTestBase
     [Fact]
     public void ErrorsReadingUnsupportedValueType()
     {
-        _dbContext.Settings.Add(
+        dbContext.Settings.Add(
             new()
             {
                 ITwinId = Guid.CreateVersion7(),
-                Key = SettingKey.ActualsHaveTime,
+                Key = TestKey.TestBoolean,
                 Value = 42,
             }
         );
 
-        _dbContext.SaveChangesWithoutValidation();
-        var setting = _dbContext.Settings.First();
+        dbContext.SaveChangesWithoutValidation();
+        var setting = dbContext.Settings.First();
 
         var ex = Should.Throw<InvalidOperationException>(() =>
         {
             var _ = setting.Value;
         });
         ex.Message.ShouldBe("Number types are not supported");
+    }
+
+    public enum TestKey
+    {
+        TestBoolean,
+    }
+
+    class TestDbContext() : DbContext(Options), ISettingsDbContext<TestKey>
+    {
+        public DbSet<Setting<TestKey>> Settings { get; set; }
+
+        public static DbContextOptions Options =>
+            new DbContextOptionsBuilder<TestDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .UseKumaraCommon()
+                .Options;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .Entity<Setting<TestKey>>()
+                .Property(e => e.Value)
+                .HasConversion(new ObjectJsonStringValueConverter());
+        }
     }
 }
