@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Respawn;
+using Respawn.Graph;
 
 namespace Kumara.TestCommon;
 
@@ -21,7 +22,7 @@ public abstract class DatabaseTestBase<T> : IAsyncLifetime
     > _connectionStringPools = new();
     private string? _connectionString;
 
-    private AppServicesHelper.AppFactory? _factory;
+    protected AppServicesHelper.AppFactory? _factory;
     protected HttpClient _client = null!;
     protected T _dbContext = null!;
     protected LinkGenerator _linkGenerator = null!;
@@ -93,19 +94,39 @@ public abstract class DatabaseTestBase<T> : IAsyncLifetime
             _ => throw new ArgumentException("Unknown database adapter"),
         };
 
+        // Ignore Migration history table otherwise we attempt to migrate
+        // each test run and the tables already exist.
+        Table[] tablesToIgnore = ["__EFMigrationsHistory"];
+
+        // but don't error if we have not got any other tables yet
+        var existingTables = GetTableNames().Select(name => (Table)name).ToHashSet();
+        if (existingTables.SetEquals(tablesToIgnore))
+            tablesToIgnore = [];
+
         _respawner = await Respawner.CreateAsync(
             _connection,
-            new RespawnerOptions
-            {
-                DbAdapter = dbAdapter,
-                // Ignore Migration history table otherwise we attempt to migrate
-                // each test run and the tables already exist.
-                TablesToIgnore = ["__EFMigrationsHistory"],
-            }
+            new RespawnerOptions() { DbAdapter = dbAdapter, TablesToIgnore = tablesToIgnore }
         );
     }
 
-    protected async Task ResetDatabase()
+    protected IEnumerable<string> GetTableNames()
+    {
+        using var command = _connection!.CreateCommand();
+        command.CommandText =
+            @"
+            SELECT table_name
+            FROM information_schema.tables
+            WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
+            ";
+
+        using var result = command.ExecuteReader();
+        while (result.Read())
+        {
+            yield return result.GetString(0);
+        }
+    }
+
+    protected virtual async Task ResetDatabase()
     {
         if (_respawner is not null && _connection is not null)
             await _respawner.ResetAsync(_connection);

@@ -1,6 +1,7 @@
 <!-- Copyright (c) Bentley Systems, Incorporated. All rights reserved. -->
 <Project>
   <ItemGroup>
+    <PackageVersion Include="AspNetCore.HealthChecks.Elasticsearch" Version="8.0.1" />
     <PackageVersion Include="Azure.Core" Version="1.46.2" />
     <PackageVersion Include="Azure.Identity" Version="1.14.0" />
     <PackageVersion Include="Bogus" Version="35.6.3" />
@@ -57,8 +58,8 @@
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="Testcontainers" Version="4.5.0" />
-    <PackageVersion Include="Testcontainers.MongoDb" Version="4.5.0" />
     <PackageVersion Include="Testcontainers.Elasticsearch" Version="4.6.0" />
+    <PackageVersion Include="Testcontainers.MongoDb" Version="4.5.0" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.1" />
     <PackageVersion Include="xunit.v3" Version="3.0.0-pre.15" />

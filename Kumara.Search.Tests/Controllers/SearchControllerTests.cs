@@ -4,11 +4,8 @@ using System.Net;
 
 namespace Kumara.Search.Tests.Controllers;
 
-[Collection("IntegrationTests")]
-public class SearchControllerTests(IntegrationTestAppFactory factory)
+public class SearchControllerTests : DatabaseTestBase
 {
-    private readonly HttpClient _client = factory.CreateClient();
-
     [Fact]
     public async Task Search_ReturnsSuccess()
     {

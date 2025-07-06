@@ -2,8 +2,11 @@
 
 using Elastic.Clients.Elasticsearch;
 using Kumara.Common.Database;
+using Kumara.Common.Extensions;
 using Kumara.Search.Database;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,50 +14,74 @@ builder.Configuration.AddEnvironmentVariables(
     prefix: $"{builder.Environment.EnvironmentName.ToUpper()}_"
 );
 
-builder.Services.AddOpenApi();
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
+builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
-    options.UseAllOfToExtendReferenceSchemas();
-    options.EnableAnnotations();
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("KumaraSearchDB"),
+        npgsqlOptions =>
+        {
+            npgsqlOptions.SetPostgresVersion(16, 4);
+            npgsqlOptions.UseNodaTime();
+        }
+    );
+    options.UseKumaraCommon();
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableSensitiveDataLogging();
+    }
 });
 
-builder.Services.AddDbContextPool<ApplicationDbContext>(opt =>
-    opt.UseNpgsql(
-            builder.Configuration.GetConnectionString("KumaraSearchDB"),
-            o => o.SetPostgresVersion(16, 4).UseNodaTime()
-        )
-        .UseSnakeCaseNamingConvention()
-);
+var elasticsearchUrl =
+    builder.Configuration.GetConnectionString("KumaraSearchES")
+    ?? throw new InvalidOperationException("Connection string 'KumaraSearchES' is not configured.");
 
-builder.Services.AddSingleton(sp =>
+builder.Services.AddSingleton(serviceProvider =>
 {
-    var elasticsearchUrl =
-        builder.Configuration.GetConnectionString("Elasticsearch")
-        ?? throw new InvalidOperationException(
-            "Connection string 'Elasticsearch' is not configured."
-        );
     var kumaraSearchUrl = new Uri(elasticsearchUrl);
     var settings = new ElasticsearchClientSettings(kumaraSearchUrl);
     return new ElasticsearchClient(settings);
 });
 
-var app = builder.Build();
+builder
+    .Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+        options.UseKumaraCommon();
+    });
 
-if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
+builder.Services.AddOpenApi(options =>
 {
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.UseKumaraCommon();
+});
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.UseKumaraCommon();
+});
+
+builder
+    .Services.AddHealthChecks()
+    .AddDbContextCheck<ApplicationDbContext>()
+    .AddElasticsearch(elasticsearchUrl);
+
+var app = builder.Build();
 
 app.UseHttpsRedirection();
 
 await app.MigrateDbAsync<ApplicationDbContext>();
 
 app.MapControllers();
+app.MapHealthChecks("/healthz");
+
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
+{
+    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.EnableDeepLinking();
+    });
+}
 
 app.Run();
-
-public partial class Program { }

@@ -94,7 +94,7 @@ jobs:
         displayName: Start containers
         inputs:
           script: |
-            script/dcl up --detach --wait postgresql elasticsearch
+            script/dcl up --detach --wait postgresql elasticsearch_test
 
       - task: DotNetCoreCLI@2
         displayName: Run tests
