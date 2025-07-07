@@ -35,7 +35,7 @@ public sealed class ITwinIdIndexConventionTests(ITwinIdIndexConventionTests.Test
 
     public sealed class TestDbContext() : DbContext(Options)
     {
-        public DbSet<TestEntity> TestEntity { get; set; }
+        public DbSet<TestEntity> Entities { get; set; }
 
         public static readonly DbContextOptions Options =
             new DbContextOptionsBuilder<TestDbContext>()

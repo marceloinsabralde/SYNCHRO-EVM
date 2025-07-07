@@ -46,7 +46,7 @@ jobs:
     cancelTimeoutInMinutes: 5
     steps:
       - task: UseDotNet@2
-        displayName: 'Use .NET sdk'
+        displayName: 'Use .NET SDK'
         inputs:
           packageType: sdk
           version: $(DotNetVersion)
@@ -83,6 +83,11 @@ jobs:
         inputs:
           packageType: sdk
           version: $(DotNetVersion)
+
+      - task: NuGetAuthenticate@1
+        displayName: 'NuGet Authenticate'
+        inputs:
+          forceReinstallCredentialProvider: true
 
       - task: CmdLine@2
         displayName: Set environment
@@ -124,6 +129,11 @@ jobs:
           packageType: sdk
           version: $(DotNetVersion)
 
+      - task: NuGetAuthenticate@1
+        displayName: 'NuGet Authenticate'
+        inputs:
+          forceReinstallCredentialProvider: true
+
       - task: DotNetCoreCLI@2
         displayName: Install dotnet tools
         inputs:
@@ -162,6 +172,11 @@ jobs:
         inputs:
           packageType: sdk
           version: $(DotNetVersion)
+
+      - task: NuGetAuthenticate@1
+        displayName: 'NuGet Authenticate'
+        inputs:
+          forceReinstallCredentialProvider: true
 
       - task: DownloadBuildArtifacts@0
         displayName: Download built artifacts

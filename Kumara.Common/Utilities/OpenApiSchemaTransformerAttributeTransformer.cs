@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.Reflection;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 
@@ -29,11 +30,9 @@ public class OpenApiSchemaTransformerAttributeTransformer : IOpenApiSchemaTransf
         Type contextType = context.JsonTypeInfo.Type;
         contextType = Nullable.GetUnderlyingType(contextType) ?? contextType;
 
-        var attributes = (OpenApiSchemaTransformerAttribute[])
-            contextType.GetCustomAttributes(
-                typeof(OpenApiSchemaTransformerAttribute),
-                inherit: true
-            );
+        var attributes = contextType.GetCustomAttributes<OpenApiSchemaTransformerAttribute>(
+            inherit: true
+        );
 
         foreach (var attribute in attributes)
         {

@@ -77,7 +77,6 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
         var createdResponse = await response.ShouldBeApiResponse<CreatedResponse<ProgressEntry>>(
             statusCode: HttpStatusCode.Accepted
         );
-        createdResponse.ShouldNotBeNull();
         createdResponse.Item.Id.ShouldNotBe(Guid.Empty);
     }
 

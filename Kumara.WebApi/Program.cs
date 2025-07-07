@@ -2,7 +2,10 @@
 
 using Kumara.Common.Database;
 using Kumara.Common.Extensions;
+using Kumara.Common.Providers;
 using Kumara.WebApi.Database;
+using Kumara.WebApi.Repositories;
+using Kumara.WebApi.Types;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
@@ -35,6 +38,18 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
         options.EnableSensitiveDataLogging();
     }
 });
+
+// temporary until we talk to the real iTwin APIs
+builder.Services.AddTransient<
+    Bentley.ConnectCoreLibs.Providers.Abstractions.Interfaces.IITwinProvider,
+    Kumara.WebApi.Providers.FakeITwinProvider
+>();
+
+builder.Services.AddScoped<ISettingsDbContext<Settings, SettingKey>>(provider =>
+    provider.GetRequiredService<ApplicationDbContext>()
+);
+builder.Services.AddTransient<IITwinPathProvider, ITwinPathProvider>();
+builder.Services.AddTransient<SettingsRepository<Settings, SettingKey>>();
 
 builder
     .Services.AddControllers()

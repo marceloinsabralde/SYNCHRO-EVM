@@ -41,7 +41,7 @@ public sealed class ControllerConventionTests
         if (returnType == typeof(IActionResult))
         {
             methodInfo
-                .GetCustomAttributes(typeof(ProducesResponseTypeAttribute))
+                .GetCustomAttributes<ProducesResponseTypeAttribute>()
                 .ShouldNotBeEmpty(
                     $"{methodName} should return an ActionResult<> or be annotated with [ProducesResponseType]"
                 );
@@ -96,8 +96,10 @@ public sealed class ControllerConventionTests
             .Select(methodInfo =>
             {
                 var methodName = $"{methodInfo.DeclaringType!.Name}.{methodInfo.Name}";
-                var row = new TheoryDataRow<string, MethodInfo>(methodName, methodInfo);
-                row.Label = methodName;
-                return row;
+
+                return new TheoryDataRow<string, MethodInfo>(methodName, methodInfo)
+                {
+                    Label = methodName,
+                };
             });
 }

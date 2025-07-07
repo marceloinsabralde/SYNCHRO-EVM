@@ -193,6 +193,127 @@ namespace Kumara.WebApi.Migrations
                     b.ToTable("control_accounts", (string)null);
                 });
 
+            modelBuilder.Entity("Kumara.WebApi.Models.FakeITwin", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid?>("AccountOwnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("account_owner_id");
+
+                    b.Property<int?>("AccountOwnerType")
+                        .HasColumnType("integer")
+                        .HasColumnName("account_owner_type");
+
+                    b.Property<bool?>("AllowExternalUsers")
+                        .HasColumnType("boolean")
+                        .HasColumnName("allow_external_users");
+
+                    b.Property<int?>("AuthMode")
+                        .HasColumnType("integer")
+                        .HasColumnName("auth_mode");
+
+                    b.Property<string>("BillingCountry")
+                        .HasColumnType("text")
+                        .HasColumnName("billing_country");
+
+                    b.Property<string>("Class")
+                        .HasColumnType("text")
+                        .HasColumnName("class");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("CreatedDateTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date_time");
+
+                    b.Property<Guid?>("DataCenterId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("data_center_id");
+
+                    b.Property<string>("DataCenterLocation")
+                        .HasColumnType("text")
+                        .HasColumnName("data_center_location");
+
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("text")
+                        .HasColumnName("display_name");
+
+                    b.Property<string>("GeographicLocation")
+                        .HasColumnType("text")
+                        .HasColumnName("geographic_location");
+
+                    b.Property<string>("IanaTimeZone")
+                        .HasColumnType("text")
+                        .HasColumnName("iana_time_zone");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("text")
+                        .HasColumnName("image");
+
+                    b.Property<bool?>("IsTemplate")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_template");
+
+                    b.Property<Guid?>("LastModifiedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("last_modified_by");
+
+                    b.Property<DateTime?>("LastModifiedDateTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified_date_time");
+
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("double precision")
+                        .HasColumnName("latitude");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("double precision")
+                        .HasColumnName("longitude");
+
+                    b.Property<string>("Number")
+                        .HasColumnType("text")
+                        .HasColumnName("number");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("parent_id");
+
+                    b.Property<string>("SolutionType")
+                        .HasColumnType("text")
+                        .HasColumnName("solution_type");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text")
+                        .HasColumnName("status");
+
+                    b.Property<string>("SubClass")
+                        .HasColumnType("text")
+                        .HasColumnName("sub_class");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("text")
+                        .HasColumnName("time_zone");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text")
+                        .HasColumnName("type");
+
+                    b.Property<Guid?>("iTwinAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("itwin_account_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_fake_itwins");
+
+                    b.ToTable("fake_itwins", (string)null);
+                });
+
             modelBuilder.Entity("Kumara.WebApi.Models.Material", b =>
                 {
                     b.Property<Guid>("Id")
@@ -382,6 +503,45 @@ namespace Kumara.WebApi.Migrations
                     b.ToTable((string)null);
 
                     b.ToView("progress_summaries", (string)null);
+                });
+
+            modelBuilder.Entity("Kumara.WebApi.Models.Setting", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Instant>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("ITwinId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("itwin_id");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("key");
+
+                    b.Property<Instant>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<object>("Value")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("value");
+
+                    b.HasKey("Id")
+                        .HasName("pk_settings");
+
+                    b.HasIndex("ITwinId", "Key")
+                        .IsUnique()
+                        .HasDatabaseName("ix_settings_itwin_id_key");
+
+                    b.ToTable("settings", (string)null);
                 });
 
             modelBuilder.Entity("Kumara.WebApi.Models.UnitOfMeasure", b =>

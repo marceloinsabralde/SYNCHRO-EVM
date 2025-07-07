@@ -72,7 +72,7 @@ public abstract class DatabaseTestBase<T> : IAsyncLifetime
             }
         );
 
-    public async ValueTask InitializeAsync()
+    public virtual async ValueTask InitializeAsync()
     {
         _connectionString = await ConnectionStringPool.CheckoutAsync();
 
@@ -132,7 +132,7 @@ public abstract class DatabaseTestBase<T> : IAsyncLifetime
             await _respawner.ResetAsync(_connection);
     }
 
-    public async ValueTask DisposeAsync()
+    public virtual async ValueTask DisposeAsync()
     {
         await ResetDatabase();
         if (_connectionString is not null)

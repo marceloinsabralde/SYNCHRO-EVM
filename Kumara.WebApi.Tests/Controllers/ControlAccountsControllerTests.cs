@@ -45,9 +45,8 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
         var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<ControlAccountResponse>
         >();
-        var controlAccounts = apiResponse?.Items.ToList();
+        var controlAccounts = apiResponse.Items.ToList();
 
-        controlAccounts.ShouldNotBeNull();
         controlAccounts.ShouldAllBe(controlAccount => controlAccount.ITwinId == iTwinId);
         controlAccounts.Count().ShouldBe(2);
         controlAccounts.ShouldBeEquivalentTo(
@@ -102,7 +101,7 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
         var apiResponse = await response.ShouldBeApiResponse<
             ShowResponse<ControlAccountResponse>
         >();
-        var controlAccountResponse = apiResponse?.Item;
+        var controlAccountResponse = apiResponse.Item;
         controlAccountResponse.ShouldBeEquivalentTo(
             ControlAccountResponse.FromControlAccount(controlAccount)
         );
