@@ -38,6 +38,9 @@ wwwroot/lib/
 .git/
 .gitignore
 
+# Ignore dockerignore
+.dockerignore
+
 # Ignore other common files
 *.md
 *.txt
