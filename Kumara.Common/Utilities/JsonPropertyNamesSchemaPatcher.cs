@@ -9,7 +9,7 @@ namespace Kumara.Common.Utilities;
 
 public class JsonPropertyNamesSchemaPatcher : SchemaPatcher
 {
-    protected override void Patch(OpenApiSchema schema, Type type)
+    protected static IDictionary<string, string> GetMapping(Type type)
     {
         var mapping =
             type.GetProperty(
@@ -17,10 +17,18 @@ public class JsonPropertyNamesSchemaPatcher : SchemaPatcher
                     BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy
                 )
                 ?.GetValue(null) as IDictionary<string, string>;
+
         if (mapping is null)
         {
             throw new ArgumentException($"{type.Name}.JsonPropertyNames must return a mapping");
         }
+
+        return mapping;
+    }
+
+    protected override void Patch(OpenApiSchema schema, Type type)
+    {
+        var mapping = GetMapping(type);
 
         foreach (var (oldName, newName) in mapping)
         {
