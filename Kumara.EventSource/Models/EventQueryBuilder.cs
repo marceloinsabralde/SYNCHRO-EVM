@@ -78,7 +78,7 @@ public class EventQueryBuilder
         {
             _predicates.Add(e => e.Id > token.Id);
 
-            TokenQueryParameters = token.QueryParameters ?? new Dictionary<string, string>();
+            TokenQueryParameters = token.QueryParameters;
         }
 
         return this;
