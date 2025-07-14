@@ -49,4 +49,28 @@ public class JsonPropertyNamesSchemaPatcher : SchemaPatcher
             }
         }
     }
+
+    public override Task TransformAsync(
+        OpenApiSchema schema,
+        OpenApiSchemaTransformerContext context,
+        CancellationToken cancellationToken
+    )
+    {
+        var mapping = GetMapping(context.JsonTypeInfo.Type);
+
+        foreach (var prop in context.JsonTypeInfo.Properties)
+        {
+            if (mapping.TryGetValue(prop.Name, out var newName))
+            {
+                var nameField = prop.GetType()
+                    .BaseType!.GetField(
+                        "_name",
+                        BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly
+                    )!;
+                nameField.SetValue(prop, newName);
+            }
+        }
+
+        return base.TransformAsync(schema, context, cancellationToken);
+    }
 }
