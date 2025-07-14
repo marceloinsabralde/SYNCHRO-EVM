@@ -51,6 +51,6 @@ public static class UseKumaraCommonExtensions
 
     public static void UseKumaraCommon(this OpenApiOptions options)
     {
-        options.AddSchemaTransformer(new OpenApiSchemaTransformerAttributeTransformer());
+        options.AddSchemaTransformer<OpenApiSchemaTransformerAttributeTransformer>();
     }
 }
