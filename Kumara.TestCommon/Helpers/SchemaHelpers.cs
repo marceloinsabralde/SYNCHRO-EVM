@@ -99,7 +99,12 @@ public class SchemaHelpers
             SchemaHelpers.OpenApiPath
         );
 
-        var schema = document.Components.Schemas[type.Name];
+        var schema = document
+            .Paths["/test"]
+            .Operations[OperationType.Get]
+            .Responses["200"]
+            .Content["application/json"]
+            .Schema;
         var visits = visitor.Visits;
 
         return (schema, visits);
