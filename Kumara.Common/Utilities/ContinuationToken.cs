@@ -3,9 +3,13 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Kumara.Common.Utilities;
 
+[SwaggerSchemaFilter(typeof(ContinuationTokenSchemaPatcher))]
+[OpenApiSchemaTransformer(typeof(ContinuationTokenSchemaPatcher))]
 public class ContinuationToken : IParsable<ContinuationToken>
 {
     public Guid Id { get; set; }
@@ -66,4 +70,16 @@ public class ContinuationToken : IParsable<ContinuationToken>
         [NotNullWhen(true)] string? s,
         [MaybeNullWhen(false)] out ContinuationToken result
     ) => TryParse(s, null, out result);
+}
+
+public class ContinuationTokenSchemaPatcher : SchemaPatcher
+{
+    protected override void Patch(OpenApiSchema schema, Type type)
+    {
+        var nullable = schema.Nullable;
+        Clear(schema);
+        schema.Nullable = nullable;
+
+        schema.Type = "string";
+    }
 }
