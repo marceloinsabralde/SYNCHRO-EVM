@@ -83,3 +83,57 @@ public class ContinuationTokenSchemaPatcher : SchemaPatcher
         schema.Type = "string";
     }
 }
+
+[SwaggerSchemaFilter(typeof(ContinuationTokenSchemaPatcher))]
+[OpenApiSchemaTransformer(typeof(ContinuationTokenSchemaPatcher))]
+public class ContinuationToken<T>(T value) : IParsable<ContinuationToken<T>>
+{
+    public T Value { get; set; } = value;
+
+    public override string ToString()
+    {
+        return ToBase64String();
+    }
+
+    public string ToBase64String()
+    {
+        string jsonString = JsonSerializer.Serialize(Value, JsonSerializerOptions.Default);
+        return Convert.ToBase64String(Encoding.UTF8.GetBytes(jsonString));
+    }
+
+    public static ContinuationToken<T> Parse(string s, IFormatProvider? provider)
+    {
+        byte[] bytes = Convert.FromBase64String(s);
+        string json = Encoding.UTF8.GetString(bytes);
+
+        T? result = JsonSerializer.Deserialize<T>(json, JsonSerializerOptions.Default);
+
+        if (result is null)
+            throw new ArgumentException($"Unable to parse string: {s}");
+
+        return new ContinuationToken<T>(result);
+    }
+
+    public static ContinuationToken<T> Parse(string s) => Parse(s, null);
+
+    public static bool TryParse(
+        [NotNullWhen(true)] string? s,
+        IFormatProvider? provider,
+        [MaybeNullWhen(false)] out ContinuationToken<T> result
+    )
+    {
+        result = null;
+        if (string.IsNullOrEmpty(s))
+            return false;
+
+        try
+        {
+            result = Parse(s, provider);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}

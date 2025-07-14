@@ -59,4 +59,30 @@ public class ContinuationTokenTests
 
     static string ConvertToBase64String(string input) =>
         Convert.ToBase64String(Encoding.Default.GetBytes(input));
+
+    public sealed class TestFilter
+    {
+        public Guid? ContinueFromId { get; set; }
+        public bool? BooleanFilter { get; set; }
+        public string? StringFilter { get; set; }
+    }
+
+    [Fact]
+    public void GenericContinuationTokenTest()
+    {
+        var input = ConvertToBase64String(
+            $$$"""{"ContinueFromId":"{{{TestId}}}","BooleanFilter":true,"StringFilter":"foo"}"""
+        );
+        ContinuationToken<TestFilter> expected = new ContinuationToken<TestFilter>(
+            new()
+            {
+                ContinueFromId = TestId,
+                BooleanFilter = true,
+                StringFilter = "foo",
+            }
+        );
+
+        var result = ContinuationToken<TestFilter>.Parse(input);
+        result.ShouldBeEquivalentTo(expected);
+    }
 }
