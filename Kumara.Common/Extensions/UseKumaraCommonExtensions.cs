@@ -47,10 +47,12 @@ public static class UseKumaraCommonExtensions
     {
         options.UseAllOfToExtendReferenceSchemas();
         options.EnableAnnotations();
+        options.SchemaFilter<NodaTimeSchemaPatcher>();
     }
 
     public static void UseKumaraCommon(this OpenApiOptions options)
     {
         options.AddSchemaTransformer<OpenApiSchemaTransformerAttributeTransformer>();
+        options.AddSchemaTransformer<NodaTimeSchemaPatcher>();
     }
 }
