@@ -13,7 +13,7 @@ public class AppServicesHelperFixture : IDisposable
 {
     public AppServicesHelperFixture()
     {
-        AppServicesHelper.FallbackHost = CreateFallbackHost();
+        AppServicesHelper.FallbackHostFactory = CreateFallbackHost;
     }
 
     public void Dispose() { }

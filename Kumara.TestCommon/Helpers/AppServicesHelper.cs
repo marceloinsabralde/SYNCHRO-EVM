@@ -14,7 +14,7 @@ namespace Kumara.TestCommon.Helpers;
 
 public static class AppServicesHelper
 {
-    public static IHost? FallbackHost { get; set; }
+    public static Func<IHost>? FallbackHostFactory { get; set; }
 
     private static Type? FindProgramEntryPoint()
     {
@@ -81,7 +81,7 @@ public static class AppServicesHelper
         return new AppFactory(appFactory);
     }
 
-    private static readonly Lazy<IServiceProvider> _lazyServiceProvider = new(() =>
+    public static IServiceProvider CreateServiceProvider()
     {
         var entryPoint = FindProgramEntryPoint();
         if (entryPoint is not null)
@@ -91,15 +91,19 @@ public static class AppServicesHelper
             return (IServiceProvider)servicesProperty.GetValue(appFactory)!;
         }
 
-        if (FallbackHost is not null)
+        if (FallbackHostFactory is not null)
         {
-            return FallbackHost.Services;
+            return FallbackHostFactory().Services;
         }
 
         throw new InvalidOperationException(
-            "Cannot find program entry point and no FallbackHost configured."
+            "Cannot find program entry point and no FallbackHostFactory configured."
         );
-    });
+    }
+
+    private static readonly Lazy<IServiceProvider> _lazyServiceProvider = new(
+        CreateServiceProvider
+    );
 
     public static JsonSerializerOptions JsonSerializerOptions
     {
