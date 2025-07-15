@@ -38,8 +38,12 @@ public class SchemaHelpers
 
     public static OpenApiSchema GenerateSwaggerSchema(Type type)
     {
+        var serviceProvider = AppServicesHelper.CreateServiceProvider();
+        var schemaGenerator = serviceProvider.GetRequiredService<ISchemaGenerator>();
+
         var schemaRepository = new SchemaRepository();
-        AppServicesHelper.SwaggerSchemaGenerator.GenerateSchema(type, schemaRepository);
+        schemaGenerator.GenerateSchema(type, schemaRepository);
+
         var schema = schemaRepository.Schemas[type.Name];
 
         return schema;
@@ -47,6 +51,11 @@ public class SchemaHelpers
 
     public static async Task<OpenApiSchema> GenerateOpenApiSchemaAsync(Type type)
     {
+        var serviceProvider = AppServicesHelper.CreateServiceProvider();
+        var openApiOptionsMonitor = serviceProvider.GetRequiredService<
+            IOptionsMonitor<OpenApiOptions>
+        >();
+
         var builder = Host.CreateDefaultBuilder();
         builder.ConfigureWebHost(webBuilder =>
         {
@@ -57,9 +66,7 @@ public class SchemaHelpers
             {
                 services.AddRouting();
                 services.AddOpenApi();
-                services.AddSingleton<IOptionsMonitor<OpenApiOptions>>(
-                    AppServicesHelper.OpenApiOptionsMonitor
-                );
+                services.AddSingleton<IOptionsMonitor<OpenApiOptions>>(openApiOptionsMonitor);
             });
 
             webBuilder.Configure(app =>

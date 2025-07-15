@@ -117,17 +117,4 @@ public static class AppServicesHelper
             return jsonOptions;
         }
     }
-
-    public static ISchemaGenerator SwaggerSchemaGenerator
-    {
-        get { return _lazyServiceProvider.Value.GetRequiredService<ISchemaGenerator>(); }
-    }
-
-    public static IOptionsMonitor<OpenApiOptions> OpenApiOptionsMonitor
-    {
-        get
-        {
-            return _lazyServiceProvider.Value.GetRequiredService<IOptionsMonitor<OpenApiOptions>>();
-        }
-    }
 }
