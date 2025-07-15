@@ -10,12 +10,12 @@ public abstract class SchemaPatcher : ISchemaFilter, IOpenApiSchemaTransformer
 {
     protected abstract void Patch(OpenApiSchema schema, Type type);
 
-    public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+    public virtual void Apply(OpenApiSchema schema, SchemaFilterContext context)
     {
         Patch(schema, context.Type);
     }
 
-    public Task TransformAsync(
+    public virtual Task TransformAsync(
         OpenApiSchema schema,
         OpenApiSchemaTransformerContext context,
         CancellationToken cancellationToken

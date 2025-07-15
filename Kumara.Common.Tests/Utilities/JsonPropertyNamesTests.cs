@@ -61,7 +61,7 @@ public class JsonPropertyNamesTests
     [Fact]
     public void SwaggerSchemaHasCustomPropertyNames()
     {
-        var schema = SchemaHelpers.GenerateSwaggerSchema(typeof(TestEntity));
+        var (schema, _) = SchemaHelpers.GenerateSwaggerSchema(typeof(TestEntity));
 
         schema.Properties.Keys.ShouldBe(
             ["someOtherName", "yetAnotherName", "thirdName"],
@@ -71,14 +71,40 @@ public class JsonPropertyNamesTests
     }
 
     [Fact]
+    public void SwaggerSchemaInvokesPatchersForAllProperties()
+    {
+        var (_, visits) = SchemaHelpers.GenerateSwaggerSchema(typeof(TestEntity));
+
+        visits
+            .Select(visit => visit.Type)
+            .ShouldBe(
+                [typeof(TestEntity), typeof(string), typeof(string), typeof(string)],
+                ignoreOrder: true
+            );
+    }
+
+    [Fact]
     public async Task OpenApiSchemaHasCustomPropertyNames()
     {
-        var schema = await SchemaHelpers.GenerateOpenApiSchemaAsync(typeof(TestEntity));
+        var (schema, _) = await SchemaHelpers.GenerateOpenApiSchemaAsync(typeof(TestEntity));
 
         schema.Properties.Keys.ShouldBe(
             ["someOtherName", "yetAnotherName", "thirdName"],
             ignoreOrder: true
         );
         schema.Required.ShouldBe(["someOtherName", "thirdName"], ignoreOrder: true);
+    }
+
+    [Fact]
+    public async Task OpenApiSchemaInvokesPatchersForAllProperties()
+    {
+        var (_, visits) = await SchemaHelpers.GenerateOpenApiSchemaAsync(typeof(TestEntity));
+
+        visits
+            .Select(visit => visit.Type)
+            .ShouldBe(
+                [typeof(TestEntity), typeof(string), typeof(string), typeof(string)],
+                ignoreOrder: true
+            );
     }
 }

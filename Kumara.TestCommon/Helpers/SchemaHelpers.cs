@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.TestCommon.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.OpenApi;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Extensions;
@@ -35,29 +37,42 @@ public class SchemaHelpers
         return document;
     }
 
-    public static OpenApiSchema GenerateSwaggerSchema(Type type)
+    public static (OpenApiSchema, IList<SchemaPatcherVisit>) GenerateSwaggerSchema(Type type)
     {
-        var schemaRepository = new SchemaRepository();
-        AppServicesHelper.SwaggerSchemaGenerator.GenerateSchema(type, schemaRepository);
-        var schema = schemaRepository.Schemas[type.Name];
+        var serviceProvider = AppServicesHelper.CreateServiceProvider();
+        var schemaGenerator = serviceProvider.GetRequiredService<ISchemaGenerator>();
+        var visitor = serviceProvider.GetRequiredService<VisitTrackingSchemaPatcher>();
 
-        return schema;
+        var schemaRepository = new SchemaRepository();
+        schemaGenerator.GenerateSchema(type, schemaRepository);
+
+        var schema = schemaRepository.Schemas[type.Name];
+        var visits = visitor.Visits;
+
+        return (schema, visits);
     }
 
-    public static async Task<OpenApiSchema> GenerateOpenApiSchemaAsync(Type type)
+    public static async Task<(OpenApiSchema, IList<SchemaPatcherVisit>)> GenerateOpenApiSchemaAsync(
+        Type type
+    )
     {
+        var serviceProvider = AppServicesHelper.CreateServiceProvider();
+        var openApiOptionsMonitor = serviceProvider.GetRequiredService<
+            IOptionsMonitor<OpenApiOptions>
+        >();
+        var visitor = serviceProvider.GetRequiredService<VisitTrackingSchemaPatcher>();
+
         var builder = Host.CreateDefaultBuilder();
         builder.ConfigureWebHost(webBuilder =>
         {
             webBuilder.UseTestServer();
+            webBuilder.ConfigureLogging(logging => logging.ClearProviders());
 
             webBuilder.ConfigureServices(services =>
             {
                 services.AddRouting();
                 services.AddOpenApi();
-                services.AddSingleton<IOptionsMonitor<OpenApiOptions>>(
-                    AppServicesHelper.OpenApiOptionsMonitor
-                );
+                services.AddSingleton<IOptionsMonitor<OpenApiOptions>>(openApiOptionsMonitor);
             });
 
             webBuilder.Configure(app =>
@@ -83,9 +98,16 @@ public class SchemaHelpers
             client,
             SchemaHelpers.OpenApiPath
         );
-        var schema = document.Components.Schemas[type.Name];
 
-        return schema;
+        var schema = document
+            .Paths["/test"]
+            .Operations[OperationType.Get]
+            .Responses["200"]
+            .Content["application/json"]
+            .Schema;
+        var visits = visitor.Visits;
+
+        return (schema, visits);
     }
 
     public static OpenApiSchema ShallowClone(OpenApiSchema schema)

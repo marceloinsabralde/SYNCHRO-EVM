@@ -2,6 +2,7 @@
 
 using Kumara.Common.Extensions;
 using Kumara.TestCommon.Helpers;
+using Kumara.TestCommon.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -13,7 +14,7 @@ public class AppServicesHelperFixture : IDisposable
 {
     public AppServicesHelperFixture()
     {
-        AppServicesHelper.FallbackHost = CreateFallbackHost();
+        AppServicesHelper.FallbackHostFactory = CreateFallbackHost;
     }
 
     public void Dispose() { }
@@ -25,6 +26,9 @@ public class AppServicesHelperFixture : IDisposable
         {
             webBuilder.ConfigureServices(services =>
             {
+                var visitTracker = new VisitTrackingSchemaPatcher();
+                services.AddSingleton<VisitTrackingSchemaPatcher>(visitTracker);
+
                 services
                     .AddControllers()
                     .AddJsonOptions(options =>
@@ -34,10 +38,12 @@ public class AppServicesHelperFixture : IDisposable
                 services.AddSwaggerGen(options =>
                 {
                     options.UseKumaraCommon();
+                    options.AddSchemaFilterInstance(visitTracker); // must be last!
                 });
                 services.AddOpenApi(options =>
                 {
                     options.UseKumaraCommon();
+                    options.AddSchemaTransformer(visitTracker); // must be last!
                 });
             });
         });

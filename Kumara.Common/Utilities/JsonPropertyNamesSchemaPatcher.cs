@@ -9,7 +9,7 @@ namespace Kumara.Common.Utilities;
 
 public class JsonPropertyNamesSchemaPatcher : SchemaPatcher
 {
-    protected override void Patch(OpenApiSchema schema, Type type)
+    protected static IDictionary<string, string> GetMapping(Type type)
     {
         var mapping =
             type.GetProperty(
@@ -17,10 +17,18 @@ public class JsonPropertyNamesSchemaPatcher : SchemaPatcher
                     BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy
                 )
                 ?.GetValue(null) as IDictionary<string, string>;
+
         if (mapping is null)
         {
             throw new ArgumentException($"{type.Name}.JsonPropertyNames must return a mapping");
         }
+
+        return mapping;
+    }
+
+    protected override void Patch(OpenApiSchema schema, Type type)
+    {
+        var mapping = GetMapping(type);
 
         foreach (var (oldName, newName) in mapping)
         {
@@ -40,5 +48,29 @@ public class JsonPropertyNamesSchemaPatcher : SchemaPatcher
                 schema.Required.Add(newName);
             }
         }
+    }
+
+    public override Task TransformAsync(
+        OpenApiSchema schema,
+        OpenApiSchemaTransformerContext context,
+        CancellationToken cancellationToken
+    )
+    {
+        var mapping = GetMapping(context.JsonTypeInfo.Type);
+
+        foreach (var prop in context.JsonTypeInfo.Properties)
+        {
+            if (mapping.TryGetValue(prop.Name, out var newName))
+            {
+                var nameField = prop.GetType()
+                    .BaseType!.GetField(
+                        "_name",
+                        BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly
+                    )!;
+                nameField.SetValue(prop, newName);
+            }
+        }
+
+        return base.TransformAsync(schema, context, cancellationToken);
     }
 }
