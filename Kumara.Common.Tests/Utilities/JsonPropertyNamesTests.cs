@@ -61,7 +61,7 @@ public class JsonPropertyNamesTests
     [Fact]
     public void SwaggerSchemaHasCustomPropertyNames()
     {
-        var schema = SchemaHelpers.GenerateSwaggerSchema(typeof(TestEntity));
+        var (schema, _) = SchemaHelpers.GenerateSwaggerSchema(typeof(TestEntity));
 
         schema.Properties.Keys.ShouldBe(
             ["someOtherName", "yetAnotherName", "thirdName"],
@@ -73,7 +73,7 @@ public class JsonPropertyNamesTests
     [Fact]
     public async Task OpenApiSchemaHasCustomPropertyNames()
     {
-        var schema = await SchemaHelpers.GenerateOpenApiSchemaAsync(typeof(TestEntity));
+        var (schema, _) = await SchemaHelpers.GenerateOpenApiSchemaAsync(typeof(TestEntity));
 
         schema.Properties.Keys.ShouldBe(
             ["someOtherName", "yetAnotherName", "thirdName"],
