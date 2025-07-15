@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.OpenApi;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Extensions;
@@ -50,6 +51,7 @@ public class SchemaHelpers
         builder.ConfigureWebHost(webBuilder =>
         {
             webBuilder.UseTestServer();
+            webBuilder.ConfigureLogging(logging => logging.ClearProviders());
 
             webBuilder.ConfigureServices(services =>
             {
