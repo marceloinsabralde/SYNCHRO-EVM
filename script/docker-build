@@ -1,0 +1,11 @@
+#!/bin/bash
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+set -euo pipefail
+
+FEED_ACCESS_TOKEN="$(az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 | jq -r .accessToken)"
+export FEED_ACCESS_TOKEN
+
+docker build \
+  --secret id=FEED_ACCESS_TOKEN \
+  --load --tag synchro-evm \
+  .
