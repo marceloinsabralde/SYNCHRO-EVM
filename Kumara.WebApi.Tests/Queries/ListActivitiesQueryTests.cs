@@ -66,4 +66,78 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
         );
         queryResult.Items.ShouldBeEquivalentTo(Activities.GetRange(0, 5));
     }
+
+    [Fact]
+    public async Task ContinueFromId_Test()
+    {
+        await Setup();
+        var continueFromId = Activities.ElementAt(4).Id;
+
+        var queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
+            .ApplyFilter(new ListActivitiesQuery.QueryFilter() { ContinueFromId = continueFromId })
+            .ExecuteQuery();
+
+        queryResult.Items.ShouldAllBe(activity => activity.ITwinId == ITwinId);
+        queryResult.Items.ShouldBeEquivalentTo(Activities.GetRange(5, 5));
+    }
+
+    [Fact]
+    public async Task ContinueFromIdWithControlAccountFilter_Test()
+    {
+        var newControlAccount = Factories.ControlAccount(iTwinId: ITwinId);
+        foreach (var (index, activity) in Activities.Index())
+        {
+            if (index % 2 == 0)
+                activity.ControlAccount = newControlAccount;
+        }
+        var continueFromId = Activities.ElementAt(4).Id;
+
+        await Setup();
+
+        var queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
+            .ApplyFilter(
+                new ListActivitiesQuery.QueryFilter()
+                {
+                    ContinueFromId = continueFromId,
+                    ControlAccountId = newControlAccount.Id,
+                }
+            )
+            .ExecuteQuery();
+
+        var expectedActivities = new List<Activity>
+        {
+            Activities.ElementAt(6),
+            Activities.ElementAt(8),
+        };
+        queryResult.Items.ShouldAllBe(activity => activity.ITwinId == ITwinId);
+        queryResult.Items.ShouldAllBe(activity => activity.ControlAccount == newControlAccount);
+        queryResult.Items.ShouldBeEquivalentTo(expectedActivities);
+    }
+
+    [Fact]
+    public async Task Limit_Test()
+    {
+        await Setup();
+
+        var queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
+            .ApplyFilter(new ListActivitiesQuery.QueryFilter())
+            .WithLimit(5)
+            .ExecuteQuery();
+
+        queryResult.Items.Count.ShouldBe(5);
+        queryResult.HasMore.ShouldBeTrue();
+        queryResult.Items.ShouldAllBe(activity => activity.ITwinId == ITwinId);
+        queryResult.Items.ShouldBeEquivalentTo(Activities.GetRange(0, 5));
+
+        queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
+            .ApplyFilter(
+                new ListActivitiesQuery.QueryFilter() { ContinueFromId = queryResult.LastReadId }
+            )
+            .WithLimit(5)
+            .ExecuteQuery();
+
+        queryResult.HasMore.ShouldBeFalse();
+        queryResult.Items.ShouldAllBe(activity => activity.ITwinId == ITwinId);
+        queryResult.Items.ShouldBeEquivalentTo(Activities.GetRange(5, 5));
+    }
 }

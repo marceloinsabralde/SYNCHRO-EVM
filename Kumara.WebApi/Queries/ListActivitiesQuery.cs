@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.Common.Database;
 using Kumara.WebApi.Database;
 using Kumara.WebApi.Models;
 
@@ -8,6 +9,7 @@ namespace Kumara.WebApi.Queries;
 public class ListActivitiesQuery
 {
     private IQueryable<Activity> _query;
+    private int _limit = 50;
 
     public ListActivitiesQuery(ApplicationDbContext dbContext, Guid iTwinId)
     {
@@ -18,26 +20,43 @@ public class ListActivitiesQuery
 
     public ListActivitiesQuery ApplyFilter(QueryFilter filter)
     {
+        if (filter.ContinueFromId is not null)
+            _query = _query.Where(activity => activity.Id > filter.ContinueFromId);
+
         if (filter.ControlAccountId is not null)
             _query = _query.Where(act => act.ControlAccountId == filter.ControlAccountId);
 
         return this;
     }
 
+    public ListActivitiesQuery WithLimit(int limit)
+    {
+        _limit = limit;
+        return this;
+    }
+
     public QueryResult<Activity> ExecuteQuery()
     {
-        var items = _query.ToList();
+        var items = _query.Take(_limit + 1).ToList();
 
-        return new QueryResult<Activity>() { Items = items };
+        bool hasMore = items.Count > _limit;
+        if (hasMore)
+            items.RemoveAt(items.Count - 1);
+
+        return new QueryResult<Activity>() { Items = items, HasMore = hasMore };
     }
 
     public record QueryResult<T>
+        where T : IPageableEntity
     {
         public required List<T> Items;
+        public bool HasMore;
+        public Guid LastReadId => Items.Last().Id;
     }
 
     public record QueryFilter
     {
+        public Guid? ContinueFromId { get; set; }
         public Guid? ControlAccountId { get; set; }
     }
 }
