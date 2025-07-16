@@ -6,6 +6,7 @@ using Kumara.WebApi.Controllers.Requests;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
 using Kumara.WebApi.Enums;
+using Kumara.WebApi.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kumara.WebApi.Controllers;
@@ -21,12 +22,10 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
         Guid? controlAccountId
     )
     {
-        var activities = dbContext
-            .Activities.OrderBy(act => act.Id)
-            .Where(act => act.ITwinId == iTwinId);
+        ListActivitiesQuery query = new(dbContext, iTwinId);
+        ListActivitiesQuery.QueryFilter filter = new() { ControlAccountId = controlAccountId };
 
-        if (controlAccountId is not null)
-            activities = activities.Where(act => act.ControlAccountId == controlAccountId);
+        var activities = query.ApplyFilter(filter).ExecuteQuery().Items;
 
         if (!activities.Any())
             return NotFound();
