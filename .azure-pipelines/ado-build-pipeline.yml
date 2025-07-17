@@ -240,22 +240,11 @@ jobs:
           custom: format
           arguments: analyzers --verify-no-changes --verbosity diagnostic
 
-  - job: Scans
-    displayName: Mend & Veracode Scans
+  - job: MendScan
+    displayName: MendScan
     dependsOn: Build
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     steps:
-      - task: UseDotNet@2
-        displayName: Use .NET SDK
-        inputs:
-          packageType: sdk
-          version: $(DotNetVersion)
-
-      - task: NuGetAuthenticate@1
-        displayName: 'NuGet Authenticate'
-        inputs:
-          forceReinstallCredentialProvider: true
-
       - task: DownloadBuildArtifacts@0
         displayName: Download built artifacts
         inputs:
@@ -268,6 +257,21 @@ jobs:
           MendPathToScan: $(Build.ArtifactStagingDirectory)
           MendConfigPath: $(Build.SourcesDirectory)/.azure-pipelines/mend/SPNG_config.json
           MendSimulateDelete: true
+
+  - job: Veracode
+    displayName: Veracode
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    steps:
+      - task: UseDotNet@2
+        displayName: Use .NET SDK
+        inputs:
+          packageType: sdk
+          version: $(DotNetVersion)
+
+      - task: NuGetAuthenticate@1
+        displayName: 'NuGet Authenticate'
+        inputs:
+          forceReinstallCredentialProvider: true
 
       - task: DotNetCoreCLI@2
         displayName: Publish for Veracode
