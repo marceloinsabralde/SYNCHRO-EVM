@@ -2,6 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using Kumara.Common.Controllers.Responses;
+using Kumara.Common.Extensions;
 using Kumara.WebApi.Controllers.Requests;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
@@ -31,9 +32,10 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
             return NotFound();
 
         return Ok(
-            new ListResponse<ActivityResponse>
+            new PaginatedListResponse<ActivityResponse>()
             {
-                Items = activities.Select(act => ActivityResponse.FromActivity(act)),
+                Items = activities.Select(ActivityResponse.FromActivity),
+                Links = new() { Self = new(Request.GetUrl()) },
             }
         );
     }
