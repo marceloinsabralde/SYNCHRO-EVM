@@ -27,6 +27,8 @@ variables:
     value: $(ProductName) - WebApi ($(ShortCode) - $(GPR_ProductID))
   - name: DotNetVersion
     value: 9.x
+  - name: DockerCachePath
+    value: $(Pipeline.Workspace)/.docker-cache
   - name: DockerArtifactName
     value: docker
   - name: DockerImage.RepositoryName
@@ -50,10 +52,20 @@ jobs:
     timeoutInMinutes: 30
     cancelTimeoutInMinutes: 5
     steps:
+      - task: Cache@2
+        inputs:
+          key: docker | "$(Agent.OS)" | ./Dockerfile | ./Directory.Packages.props
+          restoreKeys: |
+            docker | "$(Agent.OS)" | ./Dockerfile
+            docker | "$(Agent.OS)"
+          path: $(DockerCachePath)
+
       - script: |
           set -euo pipefail
           docker buildx create --use default
           docker buildx build \
+            --cache-from=type=local,src="$(DockerCachePath)" \
+            --cache-to=type=local,dest="$(DockerCachePath)",mode=max \
             --secret id=FEED_ACCESS_TOKEN \
             --build-arg Version="$(Build.BuildNumber)" \
             --load --tag "$(DockerImage.RepositoryName):$(DockerImage.Tag)" \
