@@ -39,7 +39,6 @@ public static class JsonSchemaGenerator
 
             // Create absolute path for schema files
             string schemaPath = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
                 "Models",
                 "Events",
                 "Schemas",

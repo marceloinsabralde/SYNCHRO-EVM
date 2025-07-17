@@ -5,8 +5,8 @@
   "description": "Schema for the data payload of a Control Account Updated V1. Use `control.account.updated.v1` as the `type` attribute.",
   "additionalProperties": false,
   "required": [
-    "Id",
-    "Name"
+    "id",
+    "name"
   ],
   "properties": {
     "id": {

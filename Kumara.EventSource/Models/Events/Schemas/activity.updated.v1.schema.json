@@ -5,9 +5,9 @@
   "description": "Schema for the data payload of a Activity Updated V1. Use `activity.updated.v1` as the `type` attribute.",
   "additionalProperties": false,
   "required": [
-    "Id",
-    "Name",
-    "ReferenceCode"
+    "id",
+    "name",
+    "referenceCode"
   ],
   "properties": {
     "id": {

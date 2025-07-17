@@ -5,9 +5,9 @@
   "description": "Schema for the data payload of a Activity Created V1. Use `activity.created.v1` as the `type` attribute.",
   "additionalProperties": false,
   "required": [
-    "Id",
-    "Name",
-    "ReferenceCode"
+    "id",
+    "name",
+    "referenceCode"
   ],
   "properties": {
     "id": {
