@@ -5,7 +5,7 @@
   "description": "Schema for the data payload of a Control Account Deleted V1. Use `control.account.deleted.v1` as the `type` attribute.",
   "additionalProperties": false,
   "required": [
-    "Id"
+    "id"
   ],
   "properties": {
     "id": {

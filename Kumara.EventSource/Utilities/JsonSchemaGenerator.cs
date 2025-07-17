@@ -39,7 +39,6 @@ public static class JsonSchemaGenerator
 
             // Create absolute path for schema files
             string schemaPath = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
                 "Models",
                 "Events",
                 "Schemas",
@@ -67,7 +66,16 @@ public static class JsonSchemaGenerator
                 Directory.CreateDirectory(directory);
             }
 
-            File.WriteAllText(schemaPath, JsonConvert.SerializeObject(schema, serializerSettings));
+            var existingJson = File.Exists(schemaPath) ? File.ReadAllText(schemaPath) : null;
+            var newJson = JsonConvert.SerializeObject(schema, serializerSettings);
+
+            if (existingJson != newJson)
+            {
+                File.WriteAllText(
+                    schemaPath,
+                    JsonConvert.SerializeObject(schema, serializerSettings)
+                );
+            }
         }
     }
 }

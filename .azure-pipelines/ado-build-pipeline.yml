@@ -27,6 +27,18 @@ variables:
     value: $(ProductName) - WebApi ($(ShortCode) - $(GPR_ProductID))
   - name: DotNetVersion
     value: 9.x
+  - name: DockerCachePath
+    value: $(Pipeline.Workspace)/.docker-cache
+  - name: DockerArtifactName
+    value: docker
+  - name: DockerImage.RegistryConnection
+    value: Bentley CONNECT ACR
+  - name: DockerImage.RegistryHostname
+    value: bentleyconnectprodacr01.azurecr.io
+  - name: DockerImage.RepositoryName
+    value: synchro-evm
+  - name: DockerImage.Tag
+    value: $(Build.BuildNumber)
 
 resources:
   repositories:
@@ -39,39 +51,71 @@ pool:
   vmImage: ubuntu-latest
 
 jobs:
-  - job: Build
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
-    displayName: Build solution
+  - job: DockerBuild
+    displayName: Docker Build
     timeoutInMinutes: 30
     cancelTimeoutInMinutes: 5
     steps:
-      - task: UseDotNet@2
-        displayName: 'Use .NET SDK'
+      - task: Cache@2
         inputs:
-          packageType: sdk
-          version: $(DotNetVersion)
+          key: docker | "$(Agent.OS)" | ./Dockerfile | ./Directory.Packages.props
+          restoreKeys: |
+            docker | "$(Agent.OS)" | ./Dockerfile
+            docker | "$(Agent.OS)"
+          path: $(DockerCachePath)
 
-      - task: NuGetAuthenticate@1
-        displayName: 'NuGet Authenticate'
-        inputs:
-          forceReinstallCredentialProvider: true
+      - script: |
+          set -euo pipefail
+          docker buildx create --use default
+          docker buildx build \
+            --cache-from=type=local,src="$(DockerCachePath)" \
+            --cache-to=type=local,dest="$(DockerCachePath)",mode=max \
+            --secret id=FEED_ACCESS_TOKEN \
+            --build-arg Version="$(Build.BuildNumber)" \
+            --load --tag "$(DockerImage.RegistryHostname)/$(DockerImage.RepositoryName):$(DockerImage.Tag)" \
+            .
+        displayName: Build image
+        env:
+          DOCKER_BUILDKIT: '1'
+          BUILDKIT_PROGRESS: 'plain'
+          FEED_ACCESS_TOKEN: $(System.AccessToken)
 
-      - task: DotNetCoreCLI@2
-        displayName: Build solution
-        inputs:
-          command: build
-          projects: '**/*.sln'
-          arguments: '-c Release'
+      - script: docker image save "$(DockerImage.RegistryHostname)/$(DockerImage.RepositoryName):$(DockerImage.Tag)" -o image.tar
+        displayName: Save image
 
-      - task: CopyFiles@2
-        inputs:
-          targetFolder: $(Build.ArtifactStagingDirectory)
+      - publish: image.tar
+        displayName: Publish artifact
+        artifact: $(DockerArtifactName)
 
-      - task: PublishBuildArtifacts@1
-        displayName: Publish built artifacts
+  - job: DockerPush
+    displayName: Docker Push
+    timeoutInMinutes: 30
+    cancelTimeoutInMinutes: 5
+    dependsOn:
+      - DockerBuild
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    steps:
+      - download: current
+        displayName: Download artifact
+        artifact: $(DockerArtifactName)
+
+      - script: docker image load --input '$(Pipeline.Workspace)/$(DockerArtifactName)/image.tar'
+        displayName: Load image
+
+      - task: Docker@2
+        displayName: Login to registry
         inputs:
-          artifactName: built_artifacts
-          pathToPublish: $(Build.ArtifactStagingDirectory)
+          containerRegistry: $(DockerImage.RegistryConnection)
+          command: login
+
+      - task: Docker@2
+        displayName: Push image
+        inputs:
+          command: push
+          containerRegistry: $(DockerImage.RegistryConnection)
+          repository: $(DockerImage.RepositoryName)
+          tags: |
+            $(DockerImage.Tag)
 
   - job: Run_Tests
     displayName: Run Tests
@@ -162,9 +206,30 @@ jobs:
           custom: format
           arguments: analyzers --verify-no-changes --verbosity diagnostic
 
-  - job: Scans
-    displayName: Mend & Veracode Scans
-    dependsOn: Build
+  - job: MendScan
+    displayName: MendScan
+    dependsOn:
+      - DockerBuild
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    variables:
+      - name: WS_DOCKER_SCANTARFILES
+        value: true
+      - name: WS_DOCKER_SCANIMAGES
+        value: true
+    steps:
+      - download: current
+        displayName: Download artifact
+        artifact: $(DockerArtifactName)
+
+      - template: MendScan.yml@MendScan
+        parameters:
+          MendProductName: $(ProductName) ($(ShortCode) - $(GPR_ProductID))
+          MendPathToScan: $(Pipeline.Workspace)/$(DockerArtifactName)
+          MendConfigPath: $(Build.SourcesDirectory)/.azure-pipelines/mend/SPNG_config.json
+          MendSimulateDelete: false
+
+  - job: Veracode
+    displayName: Veracode
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     steps:
       - task: UseDotNet@2
@@ -177,19 +242,6 @@ jobs:
         displayName: 'NuGet Authenticate'
         inputs:
           forceReinstallCredentialProvider: true
-
-      - task: DownloadBuildArtifacts@0
-        displayName: Download built artifacts
-        inputs:
-          artifactName: built_artifacts
-          downloadPath: $(Build.ArtifactStagingDirectory)
-
-      - template: MendScan.yml@MendScan
-        parameters:
-          MendProductName: $(ProductName) ($(ShortCode) - $(GPR_ProductID))
-          MendPathToScan: $(Build.ArtifactStagingDirectory)
-          MendConfigPath: $(Build.SourcesDirectory)/.azure-pipelines/mend/SPNG_config.json
-          MendSimulateDelete: true
 
       - task: DotNetCoreCLI@2
         displayName: Publish for Veracode

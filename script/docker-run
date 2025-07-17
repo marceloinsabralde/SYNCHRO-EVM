@@ -1,0 +1,23 @@
+#!/bin/bash
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+set -euo pipefail
+
+if [[ $# -ne 1 ]]; then
+  echo "usage: $0 <project-name>" >&2
+  exit 1
+fi
+project="$1"
+
+env_file="$(mktemp "${TMPDIR:-/tmp}/synchro-evm-docker.env.XXXXXX")"
+trap '{ rm "$env_file"; }' EXIT
+
+mise env -D | sed -E 's/localhost|127\.0\.0\.1/host.docker.internal/g' > "$env_file"
+
+docker run \
+  --rm -it \
+  --env-file "$env_file" \
+  --env ASPNETCORE_ENVIRONMENT=Development \
+  --publish 127.0.0.1:8080:8080 \
+  --workdir "/app/$project" \
+  synchro-evm \
+  "$project.dll"
