@@ -27,6 +27,12 @@ variables:
     value: $(ProductName) - WebApi ($(ShortCode) - $(GPR_ProductID))
   - name: DotNetVersion
     value: 9.x
+  - name: DockerArtifactName
+    value: docker
+  - name: DockerImage.RepositoryName
+    value: synchro-evm
+  - name: DockerImage.Tag
+    value: $(Build.BuildNumber)
 
 resources:
   repositories:
@@ -39,6 +45,32 @@ pool:
   vmImage: ubuntu-latest
 
 jobs:
+  - job: DockerBuild
+    displayName: Docker Build
+    timeoutInMinutes: 30
+    cancelTimeoutInMinutes: 5
+    steps:
+      - script: |
+          set -euo pipefail
+          docker buildx create --use default
+          docker buildx build \
+            --secret id=FEED_ACCESS_TOKEN \
+            --build-arg Version="$(Build.BuildNumber)" \
+            --load --tag "$(DockerImage.RepositoryName):$(DockerImage.Tag)" \
+            .
+        displayName: Build image
+        env:
+          DOCKER_BUILDKIT: '1'
+          BUILDKIT_PROGRESS: 'plain'
+          FEED_ACCESS_TOKEN: $(System.AccessToken)
+
+      - script: docker image save "$(DockerImage.RepositoryName):$(DockerImage.Tag)" -o image.tar
+        displayName: Save image
+
+      - publish: image.tar
+        displayName: Publish artifact
+        artifact: $(DockerArtifactName)
+
   - job: Build
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     displayName: Build solution
