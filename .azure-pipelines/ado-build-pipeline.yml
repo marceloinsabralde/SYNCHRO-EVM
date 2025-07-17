@@ -31,6 +31,10 @@ variables:
     value: $(Pipeline.Workspace)/.docker-cache
   - name: DockerArtifactName
     value: docker
+  - name: DockerImage.RegistryConnection
+    value: Bentley CONNECT ACR
+  - name: DockerImage.RegistryHostname
+    value: bentleyconnectprodacr01.azurecr.io
   - name: DockerImage.RepositoryName
     value: synchro-evm
   - name: DockerImage.Tag
@@ -68,7 +72,7 @@ jobs:
             --cache-to=type=local,dest="$(DockerCachePath)",mode=max \
             --secret id=FEED_ACCESS_TOKEN \
             --build-arg Version="$(Build.BuildNumber)" \
-            --load --tag "$(DockerImage.RepositoryName):$(DockerImage.Tag)" \
+            --load --tag "$(DockerImage.RegistryHostname)/$(DockerImage.RepositoryName):$(DockerImage.Tag)" \
             .
         displayName: Build image
         env:
@@ -76,12 +80,42 @@ jobs:
           BUILDKIT_PROGRESS: 'plain'
           FEED_ACCESS_TOKEN: $(System.AccessToken)
 
-      - script: docker image save "$(DockerImage.RepositoryName):$(DockerImage.Tag)" -o image.tar
+      - script: docker image save "$(DockerImage.RegistryHostname)/$(DockerImage.RepositoryName):$(DockerImage.Tag)" -o image.tar
         displayName: Save image
 
       - publish: image.tar
         displayName: Publish artifact
         artifact: $(DockerArtifactName)
+
+  - job: DockerPush
+    displayName: Docker Push
+    timeoutInMinutes: 30
+    cancelTimeoutInMinutes: 5
+    dependsOn:
+      - DockerBuild
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    steps:
+      - download: current
+        displayName: Download artifact
+        artifact: $(DockerArtifactName)
+
+      - script: docker image load --input '$(Pipeline.Workspace)/$(DockerArtifactName)/image.tar'
+        displayName: Load image
+
+      - task: Docker@2
+        displayName: Login to registry
+        inputs:
+          containerRegistry: $(DockerImage.RegistryConnection)
+          command: login
+
+      - task: Docker@2
+        displayName: Push image
+        inputs:
+          command: push
+          containerRegistry: $(DockerImage.RegistryConnection)
+          repository: $(DockerImage.RepositoryName)
+          tags: |
+            $(DockerImage.Tag)
 
   - job: Build
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
