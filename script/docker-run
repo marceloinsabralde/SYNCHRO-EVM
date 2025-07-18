@@ -13,6 +13,18 @@ trap '{ rm "$env_file"; }' EXIT
 
 mise env -D | sed -E 's/localhost|127\.0\.0\.1/host.docker.internal/g' > "$env_file"
 
+shopt -s nullglob
+devcerts=()
+for devcert in ~/.aspnet/dev-certs/https/aspnetcore-localhost-*.pfx; do
+  devcerts+=("$devcert")
+done
+shopt -u nullglob
+
+if [ ${#devcerts[@]} -ne 1 ]; then
+  echo 'Could not find development certificate for ASP.Net.' >&2
+  exit 1
+fi
+
 urls=$(jq -r '.profiles | to_entries[0].value.applicationUrl' "$project/Properties/launchSettings.json" | sed 's/localhost/+/g')
 
 publish_args=()
@@ -24,10 +36,12 @@ done
 
 docker run \
   --rm -it \
+  --volume "${devcerts[0]}":/mnt/devcert.pfx:ro \
   --env-file "$env_file" \
   --env ASPNETCORE_ENVIRONMENT=Development \
   --env ASPNETCORE_HTTP_PORTS= \
   --env ASPNETCORE_URLS="$urls" \
+  --env ASPNETCORE_Kestrel__Certificates__Default__Path=/mnt/devcert.pfx \
   "${publish_args[@]}" \
   --workdir "/app/$project" \
   synchro-evm \
