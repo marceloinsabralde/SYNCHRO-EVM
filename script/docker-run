@@ -13,11 +13,22 @@ trap '{ rm "$env_file"; }' EXIT
 
 mise env -D | sed -E 's/localhost|127\.0\.0\.1/host.docker.internal/g' > "$env_file"
 
+urls=$(jq -r '.profiles | to_entries[0].value.applicationUrl' "$project/Properties/launchSettings.json" | sed 's/localhost/+/g')
+
+publish_args=()
+IFS=';' read -ra endpoints <<< "$urls"
+for endpoint in "${endpoints[@]}"; do
+  port=$(echo "$endpoint" | grep -Eo '[0-9]+$')
+  publish_args+=(--publish "127.0.0.1:$port:$port")
+done
+
 docker run \
   --rm -it \
   --env-file "$env_file" \
   --env ASPNETCORE_ENVIRONMENT=Development \
-  --publish 127.0.0.1:8080:8080 \
+  --env ASPNETCORE_HTTP_PORTS= \
+  --env ASPNETCORE_URLS="$urls" \
+  "${publish_args[@]}" \
   --workdir "/app/$project" \
   synchro-evm \
   "$project.dll"
