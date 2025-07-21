@@ -3,12 +3,14 @@
 using System.ComponentModel.DataAnnotations;
 using Kumara.Common.Controllers.Responses;
 using Kumara.Common.Extensions;
+using Kumara.Common.Utilities;
 using Kumara.WebApi.Controllers.Requests;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
 using Kumara.WebApi.Enums;
 using Kumara.WebApi.Queries;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Kumara.WebApi.Controllers;
 
@@ -18,24 +20,47 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
 {
     [HttpGet]
     [EndpointName("ListActivities")]
-    public ActionResult<ListResponse<ActivityResponse>> Index(
+    public ActionResult<PaginatedListResponse<ActivityResponse>> Index(
         [Required] Guid iTwinId,
-        Guid? controlAccountId
+        Guid? controlAccountId,
+        [FromQuery(Name = "$continuationToken")]
+            ContinuationToken<ListActivitiesQuery.QueryFilter>? continuationToken,
+        int limit = 50
     )
     {
         ListActivitiesQuery query = new(dbContext, iTwinId);
-        ListActivitiesQuery.QueryFilter filter = new() { ControlAccountId = controlAccountId };
+        ListActivitiesQuery.QueryFilter filter;
 
-        var activities = query.ApplyFilter(filter).ExecuteQuery().Items;
+        if (continuationToken is not null)
+            filter = continuationToken.Value;
+        else
+            filter = new() { ControlAccountId = controlAccountId };
+
+        var result = query.ApplyFilter(filter).WithLimit(limit).ExecuteQuery();
+        var activities = result.Items;
 
         if (!activities.Any())
             return NotFound();
+
+        PaginationLink? nextPage = null;
+        if (result.HasMore)
+        {
+            filter.ContinueFromId = result.LastReadId;
+            continuationToken = new(filter);
+            nextPage = new(
+                QueryHelpers.AddQueryString(
+                    Request.GetUrl(),
+                    "$continuationToken",
+                    continuationToken.ToBase64String()
+                )
+            );
+        }
 
         return Ok(
             new PaginatedListResponse<ActivityResponse>()
             {
                 Items = activities.Select(ActivityResponse.FromActivity),
-                Links = new() { Self = new(Request.GetUrl()) },
+                Links = new() { Self = new(Request.GetUrl()), Next = nextPage },
             }
         );
     }

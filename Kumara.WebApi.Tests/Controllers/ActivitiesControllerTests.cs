@@ -124,6 +124,58 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
     }
 
     [Fact]
+    public async ValueTask Index_PaginationTest()
+    {
+        var iTwinId = Guid.CreateVersion7();
+
+        var activities = Enumerable
+            .Range(0, 10)
+            .Select(index =>
+            {
+                var timestamp = DateTimeOffset.UtcNow.AddDays(-index);
+                return Factories.Activity(id: Guid.CreateVersion7(timestamp), iTwinId: iTwinId);
+            })
+            .OrderBy(activity => activity.Id)
+            .ToList();
+
+        await _dbContext.Activities.AddRangeAsync(
+            activities,
+            TestContext.Current.CancellationToken
+        );
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var requestPath = GetPathByName("ListActivities", new { iTwinId, limit = 5 });
+        var response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        var apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<ActivityResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
+        var activitiesFromResponse = apiResponse.Items.ToList();
+
+        activitiesFromResponse.ShouldNotBeNull();
+        activitiesFromResponse.ShouldAllBe(activity => activity.ITwinId == iTwinId);
+        var expectedActivities = activities
+            .GetRange(0, 5)
+            .Select(ActivityResponse.FromActivity)
+            .ToList();
+        activitiesFromResponse.ShouldBeEquivalentTo(expectedActivities);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<PaginatedListResponse<ActivityResponse>>();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        activitiesFromResponse = apiResponse.Items.ToList();
+
+        activitiesFromResponse.ShouldNotBeNull();
+        activitiesFromResponse.ShouldAllBe(activity => activity.ITwinId == iTwinId);
+        expectedActivities = activities
+            .GetRange(5, 5)
+            .Select(ActivityResponse.FromActivity)
+            .ToList();
+        activitiesFromResponse.ShouldBeEquivalentTo(expectedActivities);
+    }
+
+    [Fact]
     public async Task Index_WhenITwinIdMissing_BadRequest()
     {
         var response = await _client.GetAsync(

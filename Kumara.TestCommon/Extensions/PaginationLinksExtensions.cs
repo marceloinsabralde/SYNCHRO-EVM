@@ -8,14 +8,21 @@ public static class PaginationLinksExtensions
 {
     public const string BASE_URL = "http://localhost";
 
-    public static void ShouldHaveLinks(this PaginationLinks links, string self, string? next = null)
+    public static void ShouldHaveLinks(
+        this PaginationLinks links,
+        string self,
+        bool shouldHaveNext = false
+    )
     {
-        links.Self.Href.ShouldBe(BASE_URL.Concat(self));
+        if (self.Contains(BASE_URL))
+            links.Self.Href.ShouldBe(self);
+        else
+            links.Self.Href.ShouldBe(BASE_URL.Concat(self));
 
-        if (next is not null)
+        if (shouldHaveNext)
         {
             links.Next.ShouldNotBeNull();
-            links.Next.Href.ShouldBe(BASE_URL.Concat(next));
+            links.Next.Href.ShouldContain("$continuationToken");
         }
         else
         {
