@@ -35,7 +35,7 @@ public class ListControlAccountsQueryTests : DatabaseTestBase
         await Setup();
 
         var queryResult = new ListControlAccountsQuery(dbContext: _dbContext, iTwinId: ITwinId)
-            .ApplyFilter(new ListControlAccountsQuery.QueryFilter())
+            .ApplyFilter(new ListControlAccountsQueryFilter())
             .ExecuteQuery();
 
         queryResult.Items.ShouldAllBe(controlAccount => controlAccount.ITwinId == ITwinId);
@@ -49,9 +49,7 @@ public class ListControlAccountsQueryTests : DatabaseTestBase
         var continueFromId = ControlAccounts.ElementAt(4).Id;
 
         var queryResult = new ListControlAccountsQuery(dbContext: _dbContext, iTwinId: ITwinId)
-            .ApplyFilter(
-                new ListControlAccountsQuery.QueryFilter() { ContinueFromId = continueFromId }
-            )
+            .ApplyFilter(new ListControlAccountsQueryFilter() { ContinueFromId = continueFromId })
             .ExecuteQuery();
 
         queryResult.Items.ShouldAllBe(controlAccount => controlAccount.ITwinId == ITwinId);
@@ -64,7 +62,7 @@ public class ListControlAccountsQueryTests : DatabaseTestBase
         await Setup();
 
         var queryResult = new ListControlAccountsQuery(dbContext: _dbContext, iTwinId: ITwinId)
-            .ApplyFilter(new ListControlAccountsQuery.QueryFilter())
+            .ApplyFilter(new ListControlAccountsQueryFilter())
             .WithLimit(5)
             .ExecuteQuery();
 
@@ -75,10 +73,7 @@ public class ListControlAccountsQueryTests : DatabaseTestBase
 
         queryResult = new ListControlAccountsQuery(dbContext: _dbContext, iTwinId: ITwinId)
             .ApplyFilter(
-                new ListControlAccountsQuery.QueryFilter()
-                {
-                    ContinueFromId = queryResult.LastReadId,
-                }
+                new ListControlAccountsQueryFilter() { ContinueFromId = queryResult.LastReadId }
             )
             .WithLimit(5)
             .ExecuteQuery();

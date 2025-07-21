@@ -20,12 +20,12 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
     public ActionResult<ListResponse<ControlAccountResponse>> Index(
         [Required] Guid iTwinId,
         [FromQuery(Name = "$continuationToken")]
-            ContinuationToken<ListControlAccountsQuery.QueryFilter>? continuationToken,
+            ContinuationToken<ListControlAccountsQueryFilter>? continuationToken,
         int limit = 50
     )
     {
         ListControlAccountsQuery query = new(dbContext, iTwinId);
-        ListControlAccountsQuery.QueryFilter filter;
+        ListControlAccountsQueryFilter filter;
 
         if (continuationToken is not null)
             filter = continuationToken.Value;

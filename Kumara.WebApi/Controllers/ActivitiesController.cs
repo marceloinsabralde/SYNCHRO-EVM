@@ -24,12 +24,12 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
         [Required] Guid iTwinId,
         Guid? controlAccountId,
         [FromQuery(Name = "$continuationToken")]
-            ContinuationToken<ListActivitiesQuery.QueryFilter>? continuationToken,
+            ContinuationToken<ListActivitiesQueryFilter>? continuationToken,
         int limit = 50
     )
     {
         ListActivitiesQuery query = new(dbContext, iTwinId);
-        ListActivitiesQuery.QueryFilter filter;
+        ListActivitiesQueryFilter filter;
 
         if (continuationToken is not null)
             filter = continuationToken.Value;

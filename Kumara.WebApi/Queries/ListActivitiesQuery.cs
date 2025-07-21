@@ -7,7 +7,7 @@ using Kumara.WebApi.Models;
 namespace Kumara.WebApi.Queries;
 
 public class ListActivitiesQuery
-    : IPageableQuery<ListActivitiesQuery, ListActivitiesQuery.QueryFilter, Activity>
+    : IPageableQuery<ListActivitiesQuery, ListActivitiesQueryFilter, Activity>
 {
     private IQueryable<Activity> _query;
     private int _limit = 50;
@@ -19,7 +19,7 @@ public class ListActivitiesQuery
             .OrderBy(activity => activity.Id);
     }
 
-    public ListActivitiesQuery ApplyFilter(QueryFilter filter)
+    public ListActivitiesQuery ApplyFilter(ListActivitiesQueryFilter filter)
     {
         if (filter.ContinueFromId is not null)
             _query = _query.Where(activity => activity.Id > filter.ContinueFromId);
@@ -46,10 +46,10 @@ public class ListActivitiesQuery
 
         return new QueryResult<Activity>() { Items = items, HasMore = hasMore };
     }
+}
 
-    public record QueryFilter : IPageableQueryFilter
-    {
-        public Guid? ContinueFromId { get; set; }
-        public Guid? ControlAccountId { get; set; }
-    }
+public record ListActivitiesQueryFilter : IPageableQueryFilter
+{
+    public Guid? ContinueFromId { get; set; }
+    public Guid? ControlAccountId { get; set; }
 }

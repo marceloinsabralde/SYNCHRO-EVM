@@ -39,7 +39,7 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
         await Setup();
 
         var queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
-            .ApplyFilter(new ListActivitiesQuery.QueryFilter())
+            .ApplyFilter(new ListActivitiesQueryFilter())
             .ExecuteQuery();
 
         queryResult.Items.ShouldAllBe(activity => activity.ITwinId == ITwinId);
@@ -56,7 +56,7 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
 
         var queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
             .ApplyFilter(
-                new ListActivitiesQuery.QueryFilter() { ControlAccountId = newControlAccount.Id }
+                new ListActivitiesQueryFilter() { ControlAccountId = newControlAccount.Id }
             )
             .ExecuteQuery();
 
@@ -74,7 +74,7 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
         var continueFromId = Activities.ElementAt(4).Id;
 
         var queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
-            .ApplyFilter(new ListActivitiesQuery.QueryFilter() { ContinueFromId = continueFromId })
+            .ApplyFilter(new ListActivitiesQueryFilter() { ContinueFromId = continueFromId })
             .ExecuteQuery();
 
         queryResult.Items.ShouldAllBe(activity => activity.ITwinId == ITwinId);
@@ -96,7 +96,7 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
 
         var queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
             .ApplyFilter(
-                new ListActivitiesQuery.QueryFilter()
+                new ListActivitiesQueryFilter()
                 {
                     ContinueFromId = continueFromId,
                     ControlAccountId = newControlAccount.Id,
@@ -120,7 +120,7 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
         await Setup();
 
         var queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
-            .ApplyFilter(new ListActivitiesQuery.QueryFilter())
+            .ApplyFilter(new ListActivitiesQueryFilter())
             .WithLimit(5)
             .ExecuteQuery();
 
@@ -131,7 +131,7 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
 
         queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
             .ApplyFilter(
-                new ListActivitiesQuery.QueryFilter() { ContinueFromId = queryResult.LastReadId }
+                new ListActivitiesQueryFilter() { ContinueFromId = queryResult.LastReadId }
             )
             .WithLimit(5)
             .ExecuteQuery();
