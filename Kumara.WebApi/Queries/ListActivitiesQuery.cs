@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Kumara.Common.Database;
+using Kumara.Common.Queries;
 using Kumara.WebApi.Database;
 using Kumara.WebApi.Models;
 
@@ -46,15 +47,15 @@ public class ListActivitiesQuery
         return new QueryResult<Activity>() { Items = items, HasMore = hasMore };
     }
 
-    public record QueryResult<T>
+    public record QueryResult<T> : IPageableQueryResult
         where T : IPageableEntity
     {
         public required List<T> Items;
-        public bool HasMore;
+        public bool HasMore { get; init; }
         public Guid LastReadId => Items.Last().Id;
     }
 
-    public record QueryFilter
+    public record QueryFilter : IPageableQueryFilter
     {
         public Guid? ContinueFromId { get; set; }
         public Guid? ControlAccountId { get; set; }

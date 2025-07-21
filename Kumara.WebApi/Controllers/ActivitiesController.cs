@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
+using Kumara.Common.Controllers.Extensions;
 using Kumara.Common.Controllers.Responses;
 using Kumara.Common.Extensions;
 using Kumara.Common.Utilities;
@@ -10,7 +11,6 @@ using Kumara.WebApi.Database;
 using Kumara.WebApi.Enums;
 using Kumara.WebApi.Queries;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace Kumara.WebApi.Controllers;
 
@@ -42,26 +42,12 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
         if (!activities.Any())
             return NotFound();
 
-        PaginationLink? nextPage = null;
-        if (result.HasMore)
-        {
-            filter.ContinueFromId = result.LastReadId;
-            continuationToken = new(filter);
-            nextPage = new(
-                QueryHelpers.AddQueryString(
-                    Request.GetUrl(),
-                    "$continuationToken",
-                    continuationToken.ToBase64String()
-                )
-            );
-        }
-
         return Ok(
-            new PaginatedListResponse<ActivityResponse>()
-            {
-                Items = activities.Select(ActivityResponse.FromActivity),
-                Links = new() { Self = new(Request.GetUrl()), Next = nextPage },
-            }
+            this.BuildPaginatedResponse(
+                activities.Select(ActivityResponse.FromActivity),
+                result,
+                filter
+            )
         );
     }
 
