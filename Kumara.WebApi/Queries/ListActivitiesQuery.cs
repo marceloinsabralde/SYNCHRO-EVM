@@ -1,6 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.Common.Database;
 using Kumara.Common.Queries;
 using Kumara.WebApi.Database;
 using Kumara.WebApi.Models;
@@ -8,6 +7,7 @@ using Kumara.WebApi.Models;
 namespace Kumara.WebApi.Queries;
 
 public class ListActivitiesQuery
+    : IPageableQuery<ListActivitiesQuery, ListActivitiesQuery.QueryFilter, Activity>
 {
     private IQueryable<Activity> _query;
     private int _limit = 50;
@@ -45,14 +45,6 @@ public class ListActivitiesQuery
             items.RemoveAt(items.Count - 1);
 
         return new QueryResult<Activity>() { Items = items, HasMore = hasMore };
-    }
-
-    public record QueryResult<T> : IPageableQueryResult
-        where T : IPageableEntity
-    {
-        public required List<T> Items;
-        public bool HasMore { get; init; }
-        public Guid LastReadId => Items.Last().Id;
     }
 
     public record QueryFilter : IPageableQueryFilter
