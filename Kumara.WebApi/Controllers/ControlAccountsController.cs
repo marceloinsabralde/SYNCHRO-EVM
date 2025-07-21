@@ -1,9 +1,12 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
+using Kumara.Common.Controllers.Extensions;
 using Kumara.Common.Controllers.Responses;
+using Kumara.Common.Utilities;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
+using Kumara.WebApi.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kumara.WebApi.Controllers;
@@ -14,11 +17,23 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
 {
     [HttpGet]
     [EndpointName("ListControlAccounts")]
-    public ActionResult<ListResponse<ControlAccountResponse>> Index([Required] Guid iTwinId)
+    public ActionResult<ListResponse<ControlAccountResponse>> Index(
+        [Required] Guid iTwinId,
+        [FromQuery(Name = "$continuationToken")]
+            ContinuationToken<ListControlAccountsQuery.QueryFilter>? continuationToken,
+        int limit = 50
+    )
     {
-        var controlAccounts = dbContext
-            .ControlAccounts.OrderBy(ca => ca.Id)
-            .Where(ca => ca.ITwinId == iTwinId);
+        ListControlAccountsQuery query = new(dbContext, iTwinId);
+        ListControlAccountsQuery.QueryFilter filter;
+
+        if (continuationToken is not null)
+            filter = continuationToken.Value;
+        else
+            filter = new();
+
+        var result = query.ApplyFilter(filter).WithLimit(limit).ExecuteQuery();
+        var controlAccounts = result.Items;
 
         if (!controlAccounts.Any())
         {
@@ -26,10 +41,11 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
         }
 
         return Ok(
-            new ListResponse<ControlAccountResponse>
-            {
-                Items = controlAccounts.Select(ca => ControlAccountResponse.FromControlAccount(ca)),
-            }
+            this.BuildPaginatedResponse(
+                controlAccounts.Select(ControlAccountResponse.FromControlAccount),
+                result,
+                filter
+            )
         );
     }
 
