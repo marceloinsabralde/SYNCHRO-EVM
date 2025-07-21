@@ -1,10 +1,11 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations.Schema;
+using Kumara.Common.Database;
 
 namespace Kumara.WebApi.Models;
 
-public class ControlAccount : ApplicationEntity
+public class ControlAccount : ApplicationEntity, IPageableEntity
 {
     public Guid Id { get; set; }
 
