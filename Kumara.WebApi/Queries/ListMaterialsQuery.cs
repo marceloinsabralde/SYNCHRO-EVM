@@ -3,7 +3,6 @@
 using Kumara.Common.Queries;
 using Kumara.WebApi.Database;
 using Kumara.WebApi.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Kumara.WebApi.Queries;
 
@@ -16,7 +15,6 @@ public class ListMaterialsQuery
     public ListMaterialsQuery(IQueryable<Material> query, Guid iTwinId)
     {
         _query = query
-            .AsNoTracking()
             .Where(material => material.ITwinId == iTwinId)
             .OrderBy(material => material.Id);
     }

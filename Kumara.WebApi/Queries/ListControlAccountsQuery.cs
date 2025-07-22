@@ -3,7 +3,6 @@
 using Kumara.Common.Queries;
 using Kumara.WebApi.Database;
 using Kumara.WebApi.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Kumara.WebApi.Queries;
 
@@ -16,7 +15,6 @@ public class ListControlAccountsQuery
     public ListControlAccountsQuery(IQueryable<ControlAccount> query, Guid iTwinId)
     {
         _query = query
-            .AsNoTracking()
             .Where(controlAccount => controlAccount.ITwinId == iTwinId)
             .OrderBy(controlAccount => controlAccount.Id);
     }
