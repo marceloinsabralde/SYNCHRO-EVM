@@ -12,10 +12,10 @@ public class ListActivitiesQuery
     private IQueryable<Activity> _query;
     private int _limit = 50;
 
-    public ListActivitiesQuery(ApplicationDbContext dbContext, Guid iTwinId)
+    public ListActivitiesQuery(IQueryable<Activity> query, Guid iTwinId)
     {
-        _query = dbContext
-            .Activities.Where(activity => activity.ITwinId == iTwinId)
+        _query = query
+            .Where(activity => activity.ITwinId == iTwinId)
             .OrderBy(activity => activity.Id);
     }
 

@@ -34,7 +34,10 @@ public class ListMaterialsQueryTests : DatabaseTestBase
     {
         await Setup();
 
-        var queryResult = new ListMaterialsQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        var queryResult = new ListMaterialsQuery(
+            query: _dbContext.Materials.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(new ListMaterialsQueryFilter())
             .ExecuteQuery();
 
@@ -48,7 +51,10 @@ public class ListMaterialsQueryTests : DatabaseTestBase
         await Setup();
         var continueFromId = Materials.ElementAt(4).Id;
 
-        var queryResult = new ListMaterialsQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        var queryResult = new ListMaterialsQuery(
+            query: _dbContext.Materials.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(new() { ContinueFromId = continueFromId })
             .ExecuteQuery();
 
@@ -61,7 +67,10 @@ public class ListMaterialsQueryTests : DatabaseTestBase
     {
         await Setup();
 
-        var queryResult = new ListMaterialsQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        var queryResult = new ListMaterialsQuery(
+            query: _dbContext.Materials.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(new())
             .WithLimit(5)
             .ExecuteQuery();
@@ -71,7 +80,10 @@ public class ListMaterialsQueryTests : DatabaseTestBase
         queryResult.Items.ShouldAllBe(material => material.ITwinId == ITwinId);
         queryResult.Items.ShouldBeEquivalentTo(Materials.GetRange(0, 5));
 
-        queryResult = new ListMaterialsQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        queryResult = new ListMaterialsQuery(
+            query: _dbContext.Materials.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(new() { ContinueFromId = queryResult.LastReadId })
             .WithLimit(5)
             .ExecuteQuery();

@@ -12,10 +12,10 @@ public class ListControlAccountsQuery
     private IQueryable<ControlAccount> _query;
     private int _limit = 50;
 
-    public ListControlAccountsQuery(ApplicationDbContext dbContext, Guid iTwinId)
+    public ListControlAccountsQuery(IQueryable<ControlAccount> query, Guid iTwinId)
     {
-        _query = dbContext
-            .ControlAccounts.Where(controlAccount => controlAccount.ITwinId == iTwinId)
+        _query = query
+            .Where(controlAccount => controlAccount.ITwinId == iTwinId)
             .OrderBy(controlAccount => controlAccount.Id);
     }
 

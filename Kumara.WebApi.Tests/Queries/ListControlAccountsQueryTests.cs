@@ -34,7 +34,10 @@ public class ListControlAccountsQueryTests : DatabaseTestBase
     {
         await Setup();
 
-        var queryResult = new ListControlAccountsQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        var queryResult = new ListControlAccountsQuery(
+            query: _dbContext.ControlAccounts.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(new ListControlAccountsQueryFilter())
             .ExecuteQuery();
 
@@ -48,7 +51,10 @@ public class ListControlAccountsQueryTests : DatabaseTestBase
         await Setup();
         var continueFromId = ControlAccounts.ElementAt(4).Id;
 
-        var queryResult = new ListControlAccountsQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        var queryResult = new ListControlAccountsQuery(
+            query: _dbContext.ControlAccounts.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(new ListControlAccountsQueryFilter() { ContinueFromId = continueFromId })
             .ExecuteQuery();
 
@@ -61,7 +67,10 @@ public class ListControlAccountsQueryTests : DatabaseTestBase
     {
         await Setup();
 
-        var queryResult = new ListControlAccountsQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        var queryResult = new ListControlAccountsQuery(
+            query: _dbContext.ControlAccounts.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(new ListControlAccountsQueryFilter())
             .WithLimit(5)
             .ExecuteQuery();
@@ -71,7 +80,10 @@ public class ListControlAccountsQueryTests : DatabaseTestBase
         queryResult.Items.ShouldAllBe(controlAccount => controlAccount.ITwinId == ITwinId);
         queryResult.Items.ShouldBeEquivalentTo(ControlAccounts.GetRange(0, 5));
 
-        queryResult = new ListControlAccountsQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        queryResult = new ListControlAccountsQuery(
+            query: _dbContext.ControlAccounts.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(
                 new ListControlAccountsQueryFilter() { ContinueFromId = queryResult.LastReadId }
             )

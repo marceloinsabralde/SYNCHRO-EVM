@@ -28,7 +28,7 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
         int limit = 50
     )
     {
-        ListActivitiesQuery query = new(dbContext, iTwinId);
+        ListActivitiesQuery query = new(dbContext.Activities.AsQueryable(), iTwinId);
         ListActivitiesQueryFilter filter;
 
         if (continuationToken is not null)

@@ -24,7 +24,7 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
         int limit = 50
     )
     {
-        ListControlAccountsQuery query = new(dbContext, iTwinId);
+        ListControlAccountsQuery query = new(dbContext.ControlAccounts.AsQueryable(), iTwinId);
         ListControlAccountsQueryFilter filter;
 
         if (continuationToken is not null)

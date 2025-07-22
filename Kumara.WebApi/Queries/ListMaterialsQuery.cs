@@ -12,10 +12,10 @@ public class ListMaterialsQuery
     private IQueryable<Material> _query;
     private int _limit = 50;
 
-    public ListMaterialsQuery(ApplicationDbContext dbContext, Guid iTwinId)
+    public ListMaterialsQuery(IQueryable<Material> query, Guid iTwinId)
     {
-        _query = dbContext
-            .Materials.Where(material => material.ITwinId == iTwinId)
+        _query = query
+            .Where(material => material.ITwinId == iTwinId)
             .OrderBy(material => material.Id);
     }
 

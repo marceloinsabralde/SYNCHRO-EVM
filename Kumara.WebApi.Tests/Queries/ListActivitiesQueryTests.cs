@@ -38,7 +38,10 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
     {
         await Setup();
 
-        var queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        var queryResult = new ListActivitiesQuery(
+            query: _dbContext.Activities.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(new ListActivitiesQueryFilter())
             .ExecuteQuery();
 
@@ -54,7 +57,10 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
 
         await Setup();
 
-        var queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        var queryResult = new ListActivitiesQuery(
+            query: _dbContext.Activities.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(
                 new ListActivitiesQueryFilter() { ControlAccountId = newControlAccount.Id }
             )
@@ -73,7 +79,10 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
         await Setup();
         var continueFromId = Activities.ElementAt(4).Id;
 
-        var queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        var queryResult = new ListActivitiesQuery(
+            query: _dbContext.Activities.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(new ListActivitiesQueryFilter() { ContinueFromId = continueFromId })
             .ExecuteQuery();
 
@@ -94,7 +103,10 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
 
         await Setup();
 
-        var queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        var queryResult = new ListActivitiesQuery(
+            query: _dbContext.Activities.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(
                 new ListActivitiesQueryFilter()
                 {
@@ -119,7 +131,10 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
     {
         await Setup();
 
-        var queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        var queryResult = new ListActivitiesQuery(
+            query: _dbContext.Activities.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(new ListActivitiesQueryFilter())
             .WithLimit(5)
             .ExecuteQuery();
@@ -129,7 +144,10 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
         queryResult.Items.ShouldAllBe(activity => activity.ITwinId == ITwinId);
         queryResult.Items.ShouldBeEquivalentTo(Activities.GetRange(0, 5));
 
-        queryResult = new ListActivitiesQuery(dbContext: _dbContext, iTwinId: ITwinId)
+        queryResult = new ListActivitiesQuery(
+            query: _dbContext.Activities.AsQueryable(),
+            iTwinId: ITwinId
+        )
             .ApplyFilter(
                 new ListActivitiesQueryFilter() { ContinueFromId = queryResult.LastReadId }
             )

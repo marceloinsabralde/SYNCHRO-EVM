@@ -24,7 +24,7 @@ public class MaterialsController(ApplicationDbContext dbContext) : ControllerBas
         int limit = 50
     )
     {
-        ListMaterialsQuery query = new(dbContext, iTwinId);
+        ListMaterialsQuery query = new(dbContext.Materials.AsQueryable(), iTwinId);
         ListMaterialsQueryFilter filter;
 
         if (continuationToken is not null)
