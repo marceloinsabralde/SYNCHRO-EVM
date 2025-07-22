@@ -1,9 +1,12 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
+using Kumara.Common.Controllers.Extensions;
 using Kumara.Common.Controllers.Responses;
+using Kumara.Common.Utilities;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
+using Kumara.WebApi.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kumara.WebApi.Controllers;
@@ -17,29 +20,37 @@ public class MaterialActivityAllocationsController(ApplicationDbContext dbContex
     public ActionResult<ListResponse<MaterialActivityAllocationResponse>> Index(
         [Required] Guid iTwinId,
         Guid? activityId,
-        Guid? materialId
+        Guid? materialId,
+        [FromQuery(Name = "$continuationToken")]
+            ContinuationToken<ListMaterialActivityAllocationsQueryFilter>? continuationToken,
+        int limit = 50
     )
     {
-        var allocations = dbContext
-            .MaterialActivityAllocations.OrderBy(allocation => allocation.Id)
-            .Where(allocation => allocation.ITwinId == iTwinId);
+        ListMaterialActivityAllocationsQuery query = new(
+            dbContext.MaterialActivityAllocations.AsQueryable(),
+            iTwinId
+        );
+        ListMaterialActivityAllocationsQueryFilter filter;
 
-        if (activityId is not null)
-            allocations = allocations.Where(allocation => allocation.ActivityId == activityId);
+        if (continuationToken is not null)
+            filter = continuationToken.Value;
+        else
+            filter = new() { ActivityId = activityId, MaterialId = materialId };
 
-        if (materialId is not null)
-            allocations = allocations.Where(allocation => allocation.MaterialId == materialId);
+        var result = query.ApplyFilter(filter).WithLimit(limit).ExecuteQuery();
+        var allocations = result.Items;
 
         if (!allocations.Any())
             return NotFound();
 
         return Ok(
-            new ListResponse<MaterialActivityAllocationResponse>
-            {
-                Items = allocations.Select(allocation =>
-                    MaterialActivityAllocationResponse.FromMaterialActivityAllocation(allocation)
+            this.BuildPaginatedResponse(
+                allocations.Select(
+                    MaterialActivityAllocationResponse.FromMaterialActivityAllocation
                 ),
-            }
+                result,
+                filter
+            )
         );
     }
 }
