@@ -3,6 +3,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using Kumara.Common.Controllers.Responses;
+using Kumara.TestCommon.Extensions;
 using Kumara.WebApi.Controllers.Responses;
 
 namespace Kumara.WebApi.Tests.Controllers;
@@ -53,6 +54,55 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
                 MaterialResponse.FromMaterial(material2),
             }
         );
+    }
+
+    [Fact]
+    public async ValueTask Index_PaginationTest()
+    {
+        var iTwinId = Guid.CreateVersion7();
+
+        var materials = Enumerable
+            .Range(0, 10)
+            .Select(index =>
+            {
+                var timestamp = DateTimeOffset.UtcNow.AddDays(-index);
+                return Factories.Material(id: Guid.CreateVersion7(timestamp), iTwinId: iTwinId);
+            })
+            .OrderBy(material => material.Id)
+            .ToList();
+
+        await _dbContext.Materials.AddRangeAsync(materials, TestContext.Current.CancellationToken);
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var requestPath = GetPathByName("ListMaterials", new { iTwinId, limit = 5 });
+        var response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        var apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<MaterialResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
+        var materialsFromResponse = apiResponse.Items.ToList();
+
+        materialsFromResponse.ShouldNotBeNull();
+        materialsFromResponse.ShouldAllBe(activity => activity.ITwinId == iTwinId);
+        var expectedControlAccounts = materials
+            .GetRange(0, 5)
+            .Select(MaterialResponse.FromMaterial)
+            .ToList();
+        materialsFromResponse.ShouldBeEquivalentTo(expectedControlAccounts);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<PaginatedListResponse<MaterialResponse>>();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        materialsFromResponse = apiResponse.Items.ToList();
+
+        materialsFromResponse.ShouldNotBeNull();
+        materialsFromResponse.ShouldAllBe(material => material.ITwinId == iTwinId);
+        expectedControlAccounts = materials
+            .GetRange(5, 5)
+            .Select(MaterialResponse.FromMaterial)
+            .ToList();
+        materialsFromResponse.ShouldBeEquivalentTo(expectedControlAccounts);
     }
 
     [Fact]
