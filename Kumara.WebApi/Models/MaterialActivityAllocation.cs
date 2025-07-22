@@ -1,10 +1,11 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations.Schema;
+using Kumara.Common.Database;
 
 namespace Kumara.WebApi.Models;
 
-public class MaterialActivityAllocation : ApplicationEntity
+public class MaterialActivityAllocation : ApplicationEntity, IPageableEntity
 {
     public Guid Id { get; set; }
 
