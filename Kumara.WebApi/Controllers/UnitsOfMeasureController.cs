@@ -21,7 +21,7 @@ public class UnitsOfMeasureController(ApplicationDbContext dbContext) : Controll
         [Required] Guid iTwinId,
         [FromQuery(Name = "$continuationToken")]
             ContinuationToken<ListUnitsOfMeasureQueryFilter>? continuationToken,
-        int limit = 50
+        [FromQuery(Name = "$top")] int limit = 50
     )
     {
         ListUnitsOfMeasureQuery query = new ListUnitsOfMeasureQuery(

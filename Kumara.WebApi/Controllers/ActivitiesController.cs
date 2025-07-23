@@ -25,7 +25,7 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
         Guid? controlAccountId,
         [FromQuery(Name = "$continuationToken")]
             ContinuationToken<ListActivitiesQueryFilter>? continuationToken,
-        int limit = 50
+        [FromQuery(Name = "$top")] int limit = 50
     )
     {
         ListActivitiesQuery query = new(dbContext.Activities.AsQueryable(), iTwinId);

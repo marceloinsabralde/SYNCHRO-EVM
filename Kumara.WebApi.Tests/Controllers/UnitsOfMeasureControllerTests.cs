@@ -80,7 +80,7 @@ public sealed class UnitsOfMeasureControllerTests : DatabaseTestBase
         );
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var requestPath = GetPathByName("ListUnitsOfMeasure", new { iTwinId, limit = 5 });
+        var requestPath = GetPathByName("ListUnitsOfMeasure", new { iTwinId, _top = 5 });
         var response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
         var apiResponse = await response.ShouldBeApiResponse<
             PaginatedListResponse<UnitOfMeasureResponse>

@@ -23,7 +23,7 @@ public class MaterialActivityAllocationsController(ApplicationDbContext dbContex
         Guid? materialId,
         [FromQuery(Name = "$continuationToken")]
             ContinuationToken<ListMaterialActivityAllocationsQueryFilter>? continuationToken,
-        int limit = 50
+        [FromQuery(Name = "$top")] int limit = 50
     )
     {
         ListMaterialActivityAllocationsQuery query = new(

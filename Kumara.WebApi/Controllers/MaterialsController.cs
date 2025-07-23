@@ -21,7 +21,7 @@ public class MaterialsController(ApplicationDbContext dbContext) : ControllerBas
         [Required] Guid iTwinId,
         [FromQuery(Name = "$continuationToken")]
             ContinuationToken<ListMaterialsQueryFilter>? continuationToken,
-        int limit = 50
+        [FromQuery(Name = "$top")] int limit = 50
     )
     {
         ListMaterialsQuery query = new(dbContext.Materials.AsQueryable(), iTwinId);

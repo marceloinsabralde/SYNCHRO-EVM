@@ -74,7 +74,7 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
         await _dbContext.Materials.AddRangeAsync(materials, TestContext.Current.CancellationToken);
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var requestPath = GetPathByName("ListMaterials", new { iTwinId, limit = 5 });
+        var requestPath = GetPathByName("ListMaterials", new { iTwinId, _top = 5 });
         var response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
         var apiResponse = await response.ShouldBeApiResponse<
             PaginatedListResponse<MaterialResponse>

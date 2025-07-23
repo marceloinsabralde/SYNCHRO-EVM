@@ -21,7 +21,7 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
         [Required] Guid iTwinId,
         [FromQuery(Name = "$continuationToken")]
             ContinuationToken<ListControlAccountsQueryFilter>? continuationToken,
-        int limit = 50
+        [FromQuery(Name = "$top")] int limit = 50
     )
     {
         ListControlAccountsQuery query = new(dbContext.ControlAccounts.AsQueryable(), iTwinId);

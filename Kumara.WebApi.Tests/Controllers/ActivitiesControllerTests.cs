@@ -144,7 +144,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         );
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var requestPath = GetPathByName("ListActivities", new { iTwinId, limit = 5 });
+        var requestPath = GetPathByName("ListActivities", new { iTwinId, _top = 5 });
         var response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
         var apiResponse = await response.ShouldBeApiResponse<
             PaginatedListResponse<ActivityResponse>

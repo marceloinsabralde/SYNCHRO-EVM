@@ -204,7 +204,7 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
 
         var requestPath = GetPathByName(
             "ListMaterialActivityAllocations",
-            new { iTwinId, limit = 5 }
+            new { iTwinId, _top = 5 }
         );
         var response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
         var apiResponse = await response.ShouldBeApiResponse<
