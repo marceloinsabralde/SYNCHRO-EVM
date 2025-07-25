@@ -6,7 +6,7 @@ obj/
 packages/
 
 # Ignore dotnet solution files
-*.sln
+*.slnx
 
 # Ignore auto-generated files
 */Migrations/*
