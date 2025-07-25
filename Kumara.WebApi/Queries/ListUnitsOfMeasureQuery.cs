@@ -12,7 +12,7 @@ public class ListUnitsOfMeasureQuery
     public ListUnitsOfMeasureQuery(IQueryable<UnitOfMeasure> query, Guid iTwinId)
         : base(query)
     {
-        _query = _query.AsNoTracking().Where(uom => uom.ITwinId == iTwinId).OrderBy(uom => uom.Id);
+        _query = _query.Where(uom => uom.ITwinId == iTwinId).OrderBy(uom => uom.Id);
     }
 
     public override ListUnitsOfMeasureQuery ApplyFilter(ListUnitsOfMeasureQueryFilter filter)
