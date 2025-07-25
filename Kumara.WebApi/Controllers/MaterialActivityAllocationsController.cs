@@ -17,7 +17,7 @@ public class MaterialActivityAllocationsController(ApplicationDbContext dbContex
 {
     [HttpGet]
     [EndpointName("ListMaterialActivityAllocations")]
-    public ActionResult<ListResponse<MaterialActivityAllocationResponse>> Index(
+    public ActionResult<PaginatedListResponse<MaterialActivityAllocationResponse>> Index(
         [Required] Guid iTwinId,
         Guid? activityId,
         Guid? materialId,

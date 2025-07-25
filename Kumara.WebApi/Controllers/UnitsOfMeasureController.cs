@@ -17,7 +17,7 @@ public class UnitsOfMeasureController(ApplicationDbContext dbContext) : Controll
 {
     [HttpGet]
     [EndpointName("ListUnitsOfMeasure")]
-    public ActionResult<ListResponse<UnitOfMeasureResponse>> Index(
+    public ActionResult<PaginatedListResponse<UnitOfMeasureResponse>> Index(
         [Required] Guid iTwinId,
         [FromQuery(Name = "$continuationToken")]
             ContinuationToken<ListUnitsOfMeasureQueryFilter>? continuationToken,

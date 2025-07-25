@@ -17,7 +17,7 @@ public class MaterialsController(ApplicationDbContext dbContext) : ControllerBas
 {
     [HttpGet]
     [EndpointName("ListMaterials")]
-    public ActionResult<ListResponse<MaterialResponse>> Index(
+    public ActionResult<PaginatedListResponse<MaterialResponse>> Index(
         [Required] Guid iTwinId,
         [FromQuery(Name = "$continuationToken")]
             ContinuationToken<ListMaterialsQueryFilter>? continuationToken,

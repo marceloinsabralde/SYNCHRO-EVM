@@ -17,7 +17,7 @@ public class ControlAccountsController(ApplicationDbContext dbContext) : Control
 {
     [HttpGet]
     [EndpointName("ListControlAccounts")]
-    public ActionResult<ListResponse<ControlAccountResponse>> Index(
+    public ActionResult<PaginatedListResponse<ControlAccountResponse>> Index(
         [Required] Guid iTwinId,
         [FromQuery(Name = "$continuationToken")]
             ContinuationToken<ListControlAccountsQueryFilter>? continuationToken,
