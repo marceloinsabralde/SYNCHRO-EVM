@@ -13,6 +13,7 @@ namespace Kumara.WebApi.Controllers;
 
 [Route("api/v1/control-accounts")]
 [ApiController]
+[Produces("application/json")]
 public class ControlAccountsController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]

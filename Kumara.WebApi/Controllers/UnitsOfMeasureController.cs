@@ -13,6 +13,7 @@ namespace Kumara.WebApi.Controllers;
 
 [Route("api/v1/units-of-measure")]
 [ApiController]
+[Produces("application/json")]
 public class UnitsOfMeasureController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]

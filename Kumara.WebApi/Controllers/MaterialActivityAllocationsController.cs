@@ -13,6 +13,7 @@ namespace Kumara.WebApi.Controllers;
 
 [Route("api/v1/material-activity-allocations")]
 [ApiController]
+[Produces("application/json")]
 public class MaterialActivityAllocationsController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]

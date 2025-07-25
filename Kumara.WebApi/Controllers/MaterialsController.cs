@@ -13,6 +13,7 @@ namespace Kumara.WebApi.Controllers;
 
 [Route("api/v1/materials")]
 [ApiController]
+[Produces("application/json")]
 public class MaterialsController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]

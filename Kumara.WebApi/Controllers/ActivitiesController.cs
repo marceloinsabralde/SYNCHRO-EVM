@@ -16,6 +16,7 @@ namespace Kumara.WebApi.Controllers;
 
 [Route("api/v1/activities")]
 [ApiController]
+[Produces("application/json")]
 public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]

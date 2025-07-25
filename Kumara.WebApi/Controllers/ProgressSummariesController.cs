@@ -11,6 +11,7 @@ namespace Kumara.WebApi.Controllers;
 
 [Route("api/v1/progress-summaries")]
 [ApiController]
+[Produces("application/json")]
 public class ProgressSummariesController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
