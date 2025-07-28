@@ -184,7 +184,7 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
         var iTwinId = Guid.CreateVersion7();
 
         var allocations = Enumerable
-            .Range(0, 10)
+            .Range(0, 15)
             .Select(index =>
             {
                 var timestamp = DateTimeOffset.UtcNow.AddDays(-index);
@@ -226,13 +226,29 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
         apiResponse = await response.ShouldBeApiResponse<
             PaginatedListResponse<MaterialActivityAllocationResponse>
         >();
-        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
         allocationsFromResponse = apiResponse.Items.ToList();
 
         allocationsFromResponse.ShouldNotBeNull();
         allocationsFromResponse.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
         expectedAllocations = allocations
             .GetRange(5, 5)
+            .Select(MaterialActivityAllocationResponse.FromMaterialActivityAllocation)
+            .ToList();
+        allocationsFromResponse.ShouldBeEquivalentTo(expectedAllocations);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<MaterialActivityAllocationResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        allocationsFromResponse = apiResponse.Items.ToList();
+
+        allocationsFromResponse.ShouldNotBeNull();
+        allocationsFromResponse.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
+        expectedAllocations = allocations
+            .GetRange(10, 5)
             .Select(MaterialActivityAllocationResponse.FromMaterialActivityAllocation)
             .ToList();
         allocationsFromResponse.ShouldBeEquivalentTo(expectedAllocations);

@@ -129,7 +129,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         var iTwinId = Guid.CreateVersion7();
 
         var activities = Enumerable
-            .Range(0, 10)
+            .Range(0, 15)
             .Select(index =>
             {
                 var timestamp = DateTimeOffset.UtcNow.AddDays(-index);
@@ -163,13 +163,27 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         requestPath = apiResponse.Links.Next!.Href;
         response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
         apiResponse = await response.ShouldBeApiResponse<PaginatedListResponse<ActivityResponse>>();
-        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
         activitiesFromResponse = apiResponse.Items.ToList();
 
         activitiesFromResponse.ShouldNotBeNull();
         activitiesFromResponse.ShouldAllBe(activity => activity.ITwinId == iTwinId);
         expectedActivities = activities
             .GetRange(5, 5)
+            .Select(ActivityResponse.FromActivity)
+            .ToList();
+        activitiesFromResponse.ShouldBeEquivalentTo(expectedActivities);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<PaginatedListResponse<ActivityResponse>>();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        activitiesFromResponse = apiResponse.Items.ToList();
+
+        activitiesFromResponse.ShouldNotBeNull();
+        activitiesFromResponse.ShouldAllBe(activity => activity.ITwinId == iTwinId);
+        expectedActivities = activities
+            .GetRange(10, 5)
             .Select(ActivityResponse.FromActivity)
             .ToList();
         activitiesFromResponse.ShouldBeEquivalentTo(expectedActivities);

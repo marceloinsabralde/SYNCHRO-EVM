@@ -20,18 +20,21 @@ public static class PaginationExtensions
         where TResponse : notnull
         where TQueryFilter : IPageableQueryFilter
     {
-        var currentUrl = controller.Request.GetUrl();
         PaginationLink? nextPage = null;
 
         if (result.HasMore)
         {
             filter.ContinueFromId = result.LastReadId;
             var continuationToken = new ContinuationToken<TQueryFilter>(filter);
+
+            // Build new query params based on existing ones to ensure we don't drop any required params (e.g iTwinId)
+            var queryParams = QueryHelpers.ParseQuery(controller.Request.QueryString.Value);
+            queryParams["$continuationToken"] = continuationToken.ToBase64String();
+
             nextPage = new(
                 QueryHelpers.AddQueryString(
-                    currentUrl, // If exclude the existing query params, we drop iTwinId which is required
-                    "$continuationToken",
-                    continuationToken.ToBase64String()
+                    controller.Request.GetUrl(withQueryString: false),
+                    queryParams
                 )
             );
         }
@@ -39,7 +42,7 @@ public static class PaginationExtensions
         return new PaginatedListResponse<TResponse>()
         {
             Items = items,
-            Links = new() { Self = new(currentUrl), Next = nextPage },
+            Links = new() { Self = new(controller.Request.GetUrl()), Next = nextPage },
         };
     }
 }

@@ -62,7 +62,7 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
         var iTwinId = Guid.CreateVersion7();
 
         var materials = Enumerable
-            .Range(0, 10)
+            .Range(0, 15)
             .Select(index =>
             {
                 var timestamp = DateTimeOffset.UtcNow.AddDays(-index);
@@ -93,13 +93,27 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
         requestPath = apiResponse.Links.Next!.Href;
         response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
         apiResponse = await response.ShouldBeApiResponse<PaginatedListResponse<MaterialResponse>>();
-        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
         materialsFromResponse = apiResponse.Items.ToList();
 
         materialsFromResponse.ShouldNotBeNull();
         materialsFromResponse.ShouldAllBe(material => material.ITwinId == iTwinId);
         expectedControlAccounts = materials
             .GetRange(5, 5)
+            .Select(MaterialResponse.FromMaterial)
+            .ToList();
+        materialsFromResponse.ShouldBeEquivalentTo(expectedControlAccounts);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<PaginatedListResponse<MaterialResponse>>();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        materialsFromResponse = apiResponse.Items.ToList();
+
+        materialsFromResponse.ShouldNotBeNull();
+        materialsFromResponse.ShouldAllBe(material => material.ITwinId == iTwinId);
+        expectedControlAccounts = materials
+            .GetRange(10, 5)
             .Select(MaterialResponse.FromMaterial)
             .ToList();
         materialsFromResponse.ShouldBeEquivalentTo(expectedControlAccounts);

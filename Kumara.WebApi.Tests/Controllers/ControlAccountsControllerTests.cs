@@ -65,7 +65,7 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
         var iTwinId = Guid.CreateVersion7();
 
         var controlAccounts = Enumerable
-            .Range(0, 10)
+            .Range(0, 15)
             .Select(index =>
             {
                 var timestamp = DateTimeOffset.UtcNow.AddDays(-index);
@@ -106,7 +106,7 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
         apiResponse = await response.ShouldBeApiResponse<
             PaginatedListResponse<ControlAccountResponse>
         >();
-        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
         controlAccountsFromResponse = apiResponse.Items.ToList();
 
         controlAccountsFromResponse.ShouldNotBeNull();
@@ -115,6 +115,24 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
         );
         expectedControlAccounts = controlAccounts
             .GetRange(5, 5)
+            .Select(ControlAccountResponse.FromControlAccount)
+            .ToList();
+        controlAccountsFromResponse.ShouldBeEquivalentTo(expectedControlAccounts);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<ControlAccountResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        controlAccountsFromResponse = apiResponse.Items.ToList();
+
+        controlAccountsFromResponse.ShouldNotBeNull();
+        controlAccountsFromResponse.ShouldAllBe(controlAccount =>
+            controlAccount.ITwinId == iTwinId
+        );
+        expectedControlAccounts = controlAccounts
+            .GetRange(10, 5)
             .Select(ControlAccountResponse.FromControlAccount)
             .ToList();
         controlAccountsFromResponse.ShouldBeEquivalentTo(expectedControlAccounts);

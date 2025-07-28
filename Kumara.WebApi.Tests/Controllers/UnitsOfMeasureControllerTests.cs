@@ -62,7 +62,7 @@ public sealed class UnitsOfMeasureControllerTests : DatabaseTestBase
         var iTwinId = Guid.CreateVersion7();
 
         var unitsOfMeasure = Enumerable
-            .Range(0, 10)
+            .Range(0, 15)
             .Select(index =>
             {
                 var timestamp = DateTimeOffset.UtcNow.AddDays(-index);
@@ -101,13 +101,29 @@ public sealed class UnitsOfMeasureControllerTests : DatabaseTestBase
         apiResponse = await response.ShouldBeApiResponse<
             PaginatedListResponse<UnitOfMeasureResponse>
         >();
-        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
         uomsFromResponse = apiResponse.Items.ToList();
 
         uomsFromResponse.ShouldNotBeNull();
         uomsFromResponse.ShouldAllBe(uom => uom.ITwinId == iTwinId);
         expectedUoms = unitsOfMeasure
             .GetRange(5, 5)
+            .Select(UnitOfMeasureResponse.FromUnitOfMeasure)
+            .ToList();
+        uomsFromResponse.ShouldBeEquivalentTo(expectedUoms);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<UnitOfMeasureResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        uomsFromResponse = apiResponse.Items.ToList();
+
+        uomsFromResponse.ShouldNotBeNull();
+        uomsFromResponse.ShouldAllBe(uom => uom.ITwinId == iTwinId);
+        expectedUoms = unitsOfMeasure
+            .GetRange(10, 5)
             .Select(UnitOfMeasureResponse.FromUnitOfMeasure)
             .ToList();
         uomsFromResponse.ShouldBeEquivalentTo(expectedUoms);
