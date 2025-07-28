@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Kumara.Common.Extensions;
 
@@ -11,7 +12,7 @@ public static class HttpRequestExtensions
         string url = $"{request.Scheme}://{request.Host}{request.Path}";
 
         if (withQueryString)
-            url = $"{url}{request.QueryString}";
+            url = QueryHelpers.AddQueryString(url, request.Query);
 
         return url;
     }
