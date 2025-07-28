@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.Text.RegularExpressions;
 using Kumara.Common.Controllers.Responses;
 
 namespace Kumara.TestCommon.Extensions;
@@ -22,7 +23,7 @@ public static class PaginationLinksExtensions
         if (shouldHaveNext)
         {
             links.Next.ShouldNotBeNull();
-            links.Next.Href.ShouldContain("$continuationToken");
+            Regex.Count(links.Next.Href, @"\$continuationToken").ShouldBe(1);
         }
         else
         {
