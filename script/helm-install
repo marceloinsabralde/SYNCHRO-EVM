@@ -1,0 +1,52 @@
+#!/bin/bash
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+set -euo pipefail
+
+if [[ $# -ne 1 ]]; then
+  echo "usage: $0 <project-name>" >&2
+  exit 1
+fi
+project="$1"
+
+chart="helm"
+part_of="$(echo "$project" | cut -d '.' -f1 | tr '[:upper:]' '[:lower:]')"
+component="$(echo "$project" | cut -d '.' -f2 | sed 's/\([a-z0-9]\)\([A-Z]\)/\1-\2/g' | tr '[:upper:]' '[:lower:]')"
+release="${part_of}-${component}"
+
+values_base_file="$(mktemp "${TMPDIR:-/tmp}/synchro-evm-values.base.yaml.XXXXXX")"
+values_secrets_file="$(mktemp "${TMPDIR:-/tmp}/synchro-evm-values.secrets.json.XXXXXX")"
+trap '{ rm "$values_base_file" "$values_secrets_file"; }' EXIT
+
+cat > "$values_base_file" <<YAML
+project:
+  name: $project
+image:
+  name: synchro-evm
+  tag: latest
+  pullPolicy: Never
+env:
+  ASPNETCORE_ENVIRONMENT: Development
+ingress:
+  enabled: true
+  host: $release.localhost
+YAML
+
+bcsm_values_path="helm/values.bcsm.$component.yaml"
+secrets_pattern="$(yq '.env // {} | keys [], .envSecret // {} | keys[]' "$bcsm_values_path" | sed -e 's/^/^/' -e 's/$/$/' | paste -sd'|' -)"
+mise env --json |
+  jq \
+    --arg pattern "$secrets_pattern" \
+    '
+      to_entries |
+        map(select(.key | test($pattern))) |
+        from_entries |
+        {envSecret: .}
+    ' |
+  sed -E 's/localhost|127\.0\.0\.1/host.containers.internal/g' \
+  > "$values_secrets_file"
+
+helm upgrade --install \
+  "$release" "$chart" \
+  --values "$values_base_file" \
+  --values "$values_secrets_file" \
+  --wait --debug
