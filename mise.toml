@@ -75,27 +75,27 @@ CITUS_PGPORT="5435"
 
 KUMARA_WEB_API_DB_USERNAME="kumara-web-api"
 KUMARA_WEB_API_DB_PASSWORD="{{exec(command='script/make-secret KUMARA_WEB_API_DB_PASSWORD', cache_key='KUMARA_WEB_API_DB_PASSWORD', cache_duration='1h')}}"
-ConnectionStrings__KumaraWebApiDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.KUMARA_WEB_API_DB_USERNAME}};Username={{env.KUMARA_WEB_API_DB_USERNAME}};Password={{env.KUMARA_WEB_API_DB_PASSWORD}}"
+ConnectionStrings__KumaraWebApiDB="Server={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.KUMARA_WEB_API_DB_USERNAME}};Username={{env.KUMARA_WEB_API_DB_USERNAME}};Password={{env.KUMARA_WEB_API_DB_PASSWORD}}"
 
 TEST_KUMARA_WEB_API_DB_USERNAME="kumara-web-api-test"
 TEST_KUMARA_WEB_API_DB_PASSWORD="{{exec(command='script/make-secret TEST_KUMARA_WEB_API_DB_PASSWORD', cache_key='TEST_KUMARA_WEB_API_DB_PASSWORD', cache_duration='1h')}}"
-TEST_ConnectionStrings__KumaraWebApiDB_TEMPLATE="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.TEST_KUMARA_WEB_API_DB_USERNAME}}_{1..5};Username={{env.TEST_KUMARA_WEB_API_DB_USERNAME}};Password={{env.TEST_KUMARA_WEB_API_DB_PASSWORD}}"
+TEST_ConnectionStrings__KumaraWebApiDB_TEMPLATE="Server={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.TEST_KUMARA_WEB_API_DB_USERNAME}}_{1..5};Username={{env.TEST_KUMARA_WEB_API_DB_USERNAME}};Password={{env.TEST_KUMARA_WEB_API_DB_PASSWORD}}"
 
 KUMARA_CORE_DB_USERNAME="kumara-core"
 KUMARA_CORE_DB_PASSWORD="{{exec(command='script/make-secret KUMARA_CORE_DB_PASSWORD', cache_key='KUMARA_CORE_DB_PASSWORD', cache_duration='1h')}}"
-ConnectionStrings__KumaraCoreDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.KUMARA_CORE_DB_USERNAME}};Username={{env.KUMARA_CORE_DB_USERNAME}};Password={{env.KUMARA_CORE_DB_PASSWORD}}"
+ConnectionStrings__KumaraCoreDB="Server={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.KUMARA_CORE_DB_USERNAME}};Username={{env.KUMARA_CORE_DB_USERNAME}};Password={{env.KUMARA_CORE_DB_PASSWORD}}"
 
 TEST_KUMARA_CORE_DB_USERNAME="kumara-core-test"
 TEST_KUMARA_CORE_DB_PASSWORD="{{exec(command='script/make-secret TEST_KUMARA_CORE_DB_PASSWORD', cache_key='TEST_KUMARA_CORE_DB_PASSWORD', cache_duration='1h')}}"
-TEST_ConnectionStrings__KumaraCoreDB_TEMPLATE="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.TEST_KUMARA_CORE_DB_USERNAME}}_{1..5};Username={{env.TEST_KUMARA_CORE_DB_USERNAME}};Password={{env.TEST_KUMARA_CORE_DB_PASSWORD}}"
+TEST_ConnectionStrings__KumaraCoreDB_TEMPLATE="Server={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.TEST_KUMARA_CORE_DB_USERNAME}}_{1..5};Username={{env.TEST_KUMARA_CORE_DB_USERNAME}};Password={{env.TEST_KUMARA_CORE_DB_PASSWORD}}"
 
 KUMARA_SEARCH_DB_USERNAME="kumara-search"
 KUMARA_SEARCH_DB_PASSWORD="{{exec(command='script/make-secret KUMARA_SEARCH_DB_PASSWORD', cache_key='KUMARA_SEARCH_DB_PASSWORD', cache_duration='1h')}}"
-ConnectionStrings__KumaraSearchDB="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.KUMARA_SEARCH_DB_USERNAME}};Username={{env.KUMARA_SEARCH_DB_USERNAME}};Password={{env.KUMARA_SEARCH_DB_PASSWORD}}"
+ConnectionStrings__KumaraSearchDB="Server={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.KUMARA_SEARCH_DB_USERNAME}};Username={{env.KUMARA_SEARCH_DB_USERNAME}};Password={{env.KUMARA_SEARCH_DB_PASSWORD}}"
 
 TEST_KUMARA_SEARCH_DB_USERNAME="kumara-search-test"
 TEST_KUMARA_SEARCH_DB_PASSWORD="{{exec(command='script/make-secret TEST_KUMARA_SEARCH_DB_PASSWORD', cache_key='TEST_KUMARA_SEARCH_DB_PASSWORD', cache_duration='1h')}}"
-TEST_ConnectionStrings__KumaraSearchDB_TEMPLATE="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.TEST_KUMARA_SEARCH_DB_USERNAME}};Username={{env.TEST_KUMARA_SEARCH_DB_USERNAME}};Password={{env.TEST_KUMARA_SEARCH_DB_PASSWORD}}"
+TEST_ConnectionStrings__KumaraSearchDB_TEMPLATE="Server={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.TEST_KUMARA_SEARCH_DB_USERNAME}};Username={{env.TEST_KUMARA_SEARCH_DB_USERNAME}};Password={{env.TEST_KUMARA_SEARCH_DB_PASSWORD}}"
 
 ELASTIC_PASSWORD="{{exec(command='script/make-secret ELASTIC_PASSWORD', cache_key='ELASTIC_PASSWORD', cache_duration='1h')}}"
 ConnectionStrings__KumaraSearchES = "http://elastic:{{env.ELASTIC_PASSWORD}}@localhost:9200"
@@ -110,11 +110,11 @@ IMS_BACKGROUND_CLIENT_SECRET_PERCENT_ENCODED = "{{env.IMS_BACKGROUND_CLIENT_SECR
 
 KUMARA_EVENT_SOURCE_DB_USERNAME="kumara-event-source"
 KUMARA_EVENT_SOURCE_DB_PASSWORD="{{exec(command='script/make-secret KUMARA_EVENT_SOURCE_DB_PASSWORD', cache_key='KUMARA_EVENT_SOURCE_DB_PASSWORD', cache_duration='1h')}}"
-ConnectionStrings__KumaraEventSourceDB="Host={{env.PGHOST}};Port={{env.CITUS_PGPORT}};Database={{env.KUMARA_EVENT_SOURCE_DB_USERNAME}};Username={{env.KUMARA_EVENT_SOURCE_DB_USERNAME}};Password={{env.KUMARA_EVENT_SOURCE_DB_PASSWORD}}"
+ConnectionStrings__KumaraEventSourceDB="Server={{env.PGHOST}};Port={{env.CITUS_PGPORT}};Database={{env.KUMARA_EVENT_SOURCE_DB_USERNAME}};Username={{env.KUMARA_EVENT_SOURCE_DB_USERNAME}};Password={{env.KUMARA_EVENT_SOURCE_DB_PASSWORD}}"
 
 TEST_KUMARA_EVENT_SOURCE_DB_USERNAME="kumara-event-source-test"
 TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD="{{exec(command='script/make-secret TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD', cache_key='TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD', cache_duration='1h')}}"
-TEST_ConnectionStrings__KumaraEventSourceDB_TEMPLATE="Host={{env.PGHOST}};Port={{env.CITUS_PGPORT}};Database={{env.TEST_KUMARA_EVENT_SOURCE_DB_USERNAME}}_{1..5};Username={{env.TEST_KUMARA_EVENT_SOURCE_DB_USERNAME}};Password={{env.TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD}}"
+TEST_ConnectionStrings__KumaraEventSourceDB_TEMPLATE="Server={{env.PGHOST}};Port={{env.CITUS_PGPORT}};Database={{env.TEST_KUMARA_EVENT_SOURCE_DB_USERNAME}}_{1..5};Username={{env.TEST_KUMARA_EVENT_SOURCE_DB_USERNAME}};Password={{env.TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD}}"
 
 SERVICE_SWAGGER_SCORECARD_PASSWORD="{{exec(command='script/make-secret SERVICE_SWAGGER_SCORECARD_PASSWORD', cache_key='SERVICE_SWAGGER_SCORECARD_PASSWORD', cache_duration='1h')}}"
 SwaggerLoginMiddleware__SwaggerScorecardSecret="{{env.SERVICE_SWAGGER_SCORECARD_PASSWORD}}"
