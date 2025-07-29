@@ -11,7 +11,9 @@ project="$1"
 env_file="$(mktemp "${TMPDIR:-/tmp}/synchro-evm-docker.env.XXXXXX")"
 trap '{ rm "$env_file"; }' EXIT
 
-mise env -D | sed -E 's/localhost|127\.0\.0\.1/host.docker.internal/g' > "$env_file"
+mise env -D |
+  sed -E 's/localhost|127\.0\.0\.1/host.docker.internal/g' \
+  > "$env_file"
 
 shopt -s nullglob
 devcerts=()
