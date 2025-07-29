@@ -17,6 +17,7 @@ packages/
 *.json
 *.yml
 *.yaml
+*.tpl
 mise.toml
 */mise.toml
 
