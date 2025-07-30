@@ -117,6 +117,14 @@ jobs:
           tags: |
             $(DockerImage.Tag)
 
+  - job: HelmPublish
+    displayName: Publish Helm charts
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    steps:
+      - publish: helm
+        displayName: Publish artifact
+        artifact: helm
+
   - job: Run_Tests
     displayName: Run Tests
     timeoutInMinutes: 30
