@@ -138,8 +138,10 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
             .OrderBy(activity => activity.Id)
             .ToList();
 
+        var otherITwinActivity = Factories.Activity();
+
         await _dbContext.Activities.AddRangeAsync(
-            activities,
+            activities.Concat([otherITwinActivity]),
             TestContext.Current.CancellationToken
         );
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);

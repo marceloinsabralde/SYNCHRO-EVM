@@ -71,7 +71,12 @@ public sealed class MaterialsControllerTests : DatabaseTestBase
             .OrderBy(material => material.Id)
             .ToList();
 
-        await _dbContext.Materials.AddRangeAsync(materials, TestContext.Current.CancellationToken);
+        var otherITwinMaterial = Factories.Material();
+
+        await _dbContext.Materials.AddRangeAsync(
+            materials.Concat([otherITwinMaterial]),
+            TestContext.Current.CancellationToken
+        );
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var requestPath = GetPathByName("ListMaterials", new { iTwinId, _top = 5 });

@@ -196,8 +196,10 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
             .OrderBy(allocation => allocation.Id)
             .ToList();
 
+        var otherITwinAllocation = Factories.MaterialActivityAllocation();
+
         await _dbContext.MaterialActivityAllocations.AddRangeAsync(
-            allocations,
+            allocations.Concat([otherITwinAllocation]),
             TestContext.Current.CancellationToken
         );
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);

@@ -74,8 +74,10 @@ public sealed class UnitsOfMeasureControllerTests : DatabaseTestBase
             .OrderBy(uom => uom.Id)
             .ToList();
 
+        var otherITwinUnitOfMeasure = Factories.UnitOfMeasure();
+
         await _dbContext.UnitsOfMeasure.AddRangeAsync(
-            unitsOfMeasure,
+            unitsOfMeasure.Concat([otherITwinUnitOfMeasure]),
             TestContext.Current.CancellationToken
         );
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);

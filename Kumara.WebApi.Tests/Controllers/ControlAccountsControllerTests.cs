@@ -77,8 +77,10 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
             .OrderBy(controlAccount => controlAccount.Id)
             .ToList();
 
+        var otherITwinControlAccount = Factories.ControlAccount();
+
         await _dbContext.ControlAccounts.AddRangeAsync(
-            controlAccounts,
+            controlAccounts.Concat([otherITwinControlAccount]),
             TestContext.Current.CancellationToken
         );
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
