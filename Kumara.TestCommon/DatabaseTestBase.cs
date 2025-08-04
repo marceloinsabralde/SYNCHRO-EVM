@@ -32,7 +32,17 @@ public abstract class DatabaseTestBase<T> : IAsyncLifetime
 
     public string GetPathByName(string endpointName, object? values = null)
     {
-        var path = _linkGenerator.GetPathByName(endpointName, values);
+        var routeValues = new RouteValueDictionary();
+
+        foreach (var prop in values?.GetType().GetProperties() ?? [])
+        {
+            var key = prop.Name;
+            if (key == "_top")
+                key = "$top";
+            routeValues.Add(key, prop.GetValue(values));
+        }
+
+        var path = _linkGenerator.GetPathByName(endpointName, routeValues);
         if (path is null)
         {
             throw new ArgumentException($"Could not find path for {endpointName}");

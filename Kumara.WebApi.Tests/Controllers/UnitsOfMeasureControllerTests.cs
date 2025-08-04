@@ -3,6 +3,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using Kumara.Common.Controllers.Responses;
+using Kumara.TestCommon.Extensions;
 using Kumara.WebApi.Controllers.Responses;
 
 namespace Kumara.WebApi.Tests.Controllers;
@@ -53,6 +54,81 @@ public sealed class UnitsOfMeasureControllerTests : DatabaseTestBase
                 UnitOfMeasureResponse.FromUnitOfMeasure(unitOfMeasure2),
             }
         );
+    }
+
+    [Fact]
+    public async ValueTask Index_PaginationTest()
+    {
+        var iTwinId = Guid.CreateVersion7();
+
+        var unitsOfMeasure = Enumerable
+            .Range(0, 15)
+            .Select(index =>
+            {
+                var timestamp = DateTimeOffset.UtcNow.AddDays(-index);
+                return Factories.UnitOfMeasure(
+                    id: Guid.CreateVersion7(timestamp),
+                    iTwinId: iTwinId
+                );
+            })
+            .OrderBy(uom => uom.Id)
+            .ToList();
+
+        var otherITwinUnitOfMeasure = Factories.UnitOfMeasure();
+
+        await _dbContext.UnitsOfMeasure.AddRangeAsync(
+            unitsOfMeasure.Concat([otherITwinUnitOfMeasure]),
+            TestContext.Current.CancellationToken
+        );
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var requestPath = GetPathByName("ListUnitsOfMeasure", new { iTwinId, _top = 5 });
+        var response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        var apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<UnitOfMeasureResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
+        var uomsFromResponse = apiResponse.Items.ToList();
+
+        uomsFromResponse.ShouldNotBeNull();
+        uomsFromResponse.ShouldAllBe(uom => uom.ITwinId == iTwinId);
+        var expectedUoms = unitsOfMeasure
+            .GetRange(0, 5)
+            .Select(UnitOfMeasureResponse.FromUnitOfMeasure)
+            .ToList();
+        uomsFromResponse.ShouldBeEquivalentTo(expectedUoms);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<UnitOfMeasureResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
+        uomsFromResponse = apiResponse.Items.ToList();
+
+        uomsFromResponse.ShouldNotBeNull();
+        uomsFromResponse.ShouldAllBe(uom => uom.ITwinId == iTwinId);
+        expectedUoms = unitsOfMeasure
+            .GetRange(5, 5)
+            .Select(UnitOfMeasureResponse.FromUnitOfMeasure)
+            .ToList();
+        uomsFromResponse.ShouldBeEquivalentTo(expectedUoms);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<UnitOfMeasureResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        uomsFromResponse = apiResponse.Items.ToList();
+
+        uomsFromResponse.ShouldNotBeNull();
+        uomsFromResponse.ShouldAllBe(uom => uom.ITwinId == iTwinId);
+        expectedUoms = unitsOfMeasure
+            .GetRange(10, 5)
+            .Select(UnitOfMeasureResponse.FromUnitOfMeasure)
+            .ToList();
+        uomsFromResponse.ShouldBeEquivalentTo(expectedUoms);
     }
 
     [Fact]

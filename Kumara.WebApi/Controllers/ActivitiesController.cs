@@ -1,39 +1,54 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
+using Kumara.Common.Controllers.Extensions;
 using Kumara.Common.Controllers.Responses;
+using Kumara.Common.Extensions;
+using Kumara.Common.Utilities;
 using Kumara.WebApi.Controllers.Requests;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
 using Kumara.WebApi.Enums;
+using Kumara.WebApi.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kumara.WebApi.Controllers;
 
 [Route("api/v1/activities")]
 [ApiController]
+[Produces("application/json")]
 public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
     [EndpointName("ListActivities")]
-    public ActionResult<ListResponse<ActivityResponse>> Index(
+    public ActionResult<PaginatedListResponse<ActivityResponse>> Index(
         [Required] Guid iTwinId,
-        Guid? controlAccountId
+        Guid? controlAccountId,
+        [FromQuery(Name = "$continuationToken")]
+            ContinuationToken<ListActivitiesQueryFilter>? continuationToken,
+        [FromQuery(Name = "$top")] int limit = 50
     )
     {
-        var activities = dbContext.Activities.Where(act => act.ITwinId == iTwinId);
+        ListActivitiesQuery query = new(dbContext.Activities.AsQueryable(), iTwinId);
+        ListActivitiesQueryFilter filter;
 
-        if (controlAccountId is not null)
-            activities = activities.Where(act => act.ControlAccountId == controlAccountId);
+        if (continuationToken is not null)
+            filter = continuationToken.Value;
+        else
+            filter = new() { ControlAccountId = controlAccountId };
+
+        var result = query.ApplyFilter(filter).WithLimit(limit).ExecuteQuery();
+        var activities = result.Items;
 
         if (!activities.Any())
             return NotFound();
 
         return Ok(
-            new ListResponse<ActivityResponse>
-            {
-                Items = activities.Select(act => ActivityResponse.FromActivity(act)),
-            }
+            this.BuildPaginatedResponse(
+                activities.Select(ActivityResponse.FromActivity),
+                result,
+                filter
+            )
         );
     }
 

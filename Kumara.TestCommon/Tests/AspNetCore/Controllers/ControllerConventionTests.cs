@@ -64,11 +64,12 @@ public sealed class ControllerConventionTests
             new[]
             {
                 typeof(ListResponse<>),
+                typeof(PaginatedListResponse<>),
                 typeof(ShowResponse<>),
                 typeof(CreatedResponse<>),
                 typeof(UpdatedResponse<>),
             },
-            $"{methodName} should return a ListResponse<>, ShowResponse<>, CreatedResponse<>, or UpdatedResponse<>"
+            $"{methodName} should return a ListResponse<>, PaginatedListResponse<>, ShowResponse<>, CreatedResponse<>, or UpdatedResponse<>"
         );
     }
 

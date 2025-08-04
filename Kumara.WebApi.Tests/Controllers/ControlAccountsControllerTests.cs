@@ -3,6 +3,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using Kumara.Common.Controllers.Responses;
+using Kumara.TestCommon.Extensions;
 using Kumara.WebApi.Controllers.Responses;
 
 namespace Kumara.WebApi.Tests.Controllers;
@@ -56,6 +57,87 @@ public sealed class ControlAccountsControllerTests : DatabaseTestBase
                 ControlAccountResponse.FromControlAccount(controlAccount2),
             }
         );
+    }
+
+    [Fact]
+    public async ValueTask Index_PaginationTest()
+    {
+        var iTwinId = Guid.CreateVersion7();
+
+        var controlAccounts = Enumerable
+            .Range(0, 15)
+            .Select(index =>
+            {
+                var timestamp = DateTimeOffset.UtcNow.AddDays(-index);
+                return Factories.ControlAccount(
+                    id: Guid.CreateVersion7(timestamp),
+                    iTwinId: iTwinId
+                );
+            })
+            .OrderBy(controlAccount => controlAccount.Id)
+            .ToList();
+
+        var otherITwinControlAccount = Factories.ControlAccount();
+
+        await _dbContext.ControlAccounts.AddRangeAsync(
+            controlAccounts.Concat([otherITwinControlAccount]),
+            TestContext.Current.CancellationToken
+        );
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var requestPath = GetPathByName("ListControlAccounts", new { iTwinId, _top = 5 });
+        var response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        var apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<ControlAccountResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
+        var controlAccountsFromResponse = apiResponse.Items.ToList();
+
+        controlAccountsFromResponse.ShouldNotBeNull();
+        controlAccountsFromResponse.ShouldAllBe(controlAccount =>
+            controlAccount.ITwinId == iTwinId
+        );
+        var expectedControlAccounts = controlAccounts
+            .GetRange(0, 5)
+            .Select(ControlAccountResponse.FromControlAccount)
+            .ToList();
+        controlAccountsFromResponse.ShouldBeEquivalentTo(expectedControlAccounts);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<ControlAccountResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
+        controlAccountsFromResponse = apiResponse.Items.ToList();
+
+        controlAccountsFromResponse.ShouldNotBeNull();
+        controlAccountsFromResponse.ShouldAllBe(controlAccount =>
+            controlAccount.ITwinId == iTwinId
+        );
+        expectedControlAccounts = controlAccounts
+            .GetRange(5, 5)
+            .Select(ControlAccountResponse.FromControlAccount)
+            .ToList();
+        controlAccountsFromResponse.ShouldBeEquivalentTo(expectedControlAccounts);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<ControlAccountResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        controlAccountsFromResponse = apiResponse.Items.ToList();
+
+        controlAccountsFromResponse.ShouldNotBeNull();
+        controlAccountsFromResponse.ShouldAllBe(controlAccount =>
+            controlAccount.ITwinId == iTwinId
+        );
+        expectedControlAccounts = controlAccounts
+            .GetRange(10, 5)
+            .Select(ControlAccountResponse.FromControlAccount)
+            .ToList();
+        controlAccountsFromResponse.ShouldBeEquivalentTo(expectedControlAccounts);
     }
 
     [Fact]

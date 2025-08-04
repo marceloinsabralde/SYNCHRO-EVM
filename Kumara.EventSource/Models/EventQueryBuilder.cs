@@ -2,6 +2,7 @@
 
 using System.Linq.Expressions;
 using System.Text.Json;
+using Kumara.Common.Utilities;
 using Kumara.EventSource.Utilities;
 
 namespace Kumara.EventSource.Models;
@@ -72,12 +73,12 @@ public class EventQueryBuilder
 
     public EventQueryBuilder WithContinuationToken(string continuationToken)
     {
-        Pagination.ContinuationToken? token = Pagination.ParseContinuationToken(continuationToken);
+        ContinuationToken? token = ContinuationToken.Parse(continuationToken);
         if (token != null)
         {
             _predicates.Add(e => e.Id > token.Id);
 
-            TokenQueryParameters = token.QueryParameters ?? new Dictionary<string, string>();
+            TokenQueryParameters = token.QueryParameters;
         }
 
         return this;

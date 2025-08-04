@@ -1,22 +1,43 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
+using Kumara.Common.Controllers.Extensions;
 using Kumara.Common.Controllers.Responses;
+using Kumara.Common.Utilities;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
+using Kumara.WebApi.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kumara.WebApi.Controllers;
 
 [Route("api/v1/units-of-measure")]
 [ApiController]
+[Produces("application/json")]
 public class UnitsOfMeasureController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
     [EndpointName("ListUnitsOfMeasure")]
-    public ActionResult<ListResponse<UnitOfMeasureResponse>> Index([Required] Guid iTwinId)
+    public ActionResult<PaginatedListResponse<UnitOfMeasureResponse>> Index(
+        [Required] Guid iTwinId,
+        [FromQuery(Name = "$continuationToken")]
+            ContinuationToken<ListUnitsOfMeasureQueryFilter>? continuationToken,
+        [FromQuery(Name = "$top")] int limit = 50
+    )
     {
-        var unitsOfMeasure = dbContext.UnitsOfMeasure.Where(uom => uom.ITwinId == iTwinId);
+        ListUnitsOfMeasureQuery query = new ListUnitsOfMeasureQuery(
+            dbContext.UnitsOfMeasure.AsQueryable(),
+            iTwinId
+        );
+        ListUnitsOfMeasureQueryFilter filter;
+
+        if (continuationToken is not null)
+            filter = continuationToken.Value;
+        else
+            filter = new();
+
+        var result = query.ApplyFilter(filter).WithLimit(limit).ExecuteQuery();
+        var unitsOfMeasure = result.Items;
 
         if (!unitsOfMeasure.Any())
         {
@@ -24,10 +45,11 @@ public class UnitsOfMeasureController(ApplicationDbContext dbContext) : Controll
         }
 
         return Ok(
-            new ListResponse<UnitOfMeasureResponse>
-            {
-                Items = unitsOfMeasure.Select(uom => UnitOfMeasureResponse.FromUnitOfMeasure(uom)),
-            }
+            this.BuildPaginatedResponse(
+                unitsOfMeasure.Select(UnitOfMeasureResponse.FromUnitOfMeasure),
+                result,
+                filter
+            )
         );
     }
 }

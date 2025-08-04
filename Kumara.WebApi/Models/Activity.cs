@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations.Schema;
+using Kumara.Common.Database;
 using Kumara.WebApi.Enums;
 using Kumara.WebApi.Types;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Kumara.WebApi.Models;
 
 [EntityTypeConfiguration(typeof(Activity.Configuration))]
-public class Activity : ApplicationEntity
+public class Activity : ApplicationEntity, IPageableEntity
 {
     private DateTimeOffset? _actualStart;
     private bool? _actualStartHasTime;

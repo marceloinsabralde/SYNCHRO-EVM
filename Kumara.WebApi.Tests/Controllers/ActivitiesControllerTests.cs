@@ -3,6 +3,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using Kumara.Common.Controllers.Responses;
+using Kumara.TestCommon.Extensions;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Enums;
 using Kumara.WebApi.Types;
@@ -39,11 +40,12 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         );
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var response = await _client.GetAsync(
-            GetPathByName("ListActivities", new { iTwinId }),
-            TestContext.Current.CancellationToken
-        );
-        var apiResponse = await response.ShouldBeApiResponse<ListResponse<ActivityResponse>>();
+        var requestPath = GetPathByName("ListActivities", new { iTwinId });
+        var response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        var apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<ActivityResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath);
         var activities = apiResponse.Items.ToList();
 
         activities.ShouldNotBeNull();
@@ -97,11 +99,15 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         );
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var response = await _client.GetAsync(
-            GetPathByName("ListActivities", new { iTwinId, controlAccountId = controlAccount.Id }),
-            TestContext.Current.CancellationToken
+        var requestPath = GetPathByName(
+            "ListActivities",
+            new { iTwinId, controlAccountId = controlAccount.Id }
         );
-        var apiResponse = await response.ShouldBeApiResponse<ListResponse<ActivityResponse>>();
+        var response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        var apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<ActivityResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath);
         var activities = apiResponse.Items.ToList();
 
         activities.ShouldNotBeNull();
@@ -115,6 +121,74 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
                 ActivityResponse.FromActivity(activity2),
             }
         );
+    }
+
+    [Fact]
+    public async ValueTask Index_PaginationTest()
+    {
+        var iTwinId = Guid.CreateVersion7();
+
+        var activities = Enumerable
+            .Range(0, 15)
+            .Select(index =>
+            {
+                var timestamp = DateTimeOffset.UtcNow.AddDays(-index);
+                return Factories.Activity(id: Guid.CreateVersion7(timestamp), iTwinId: iTwinId);
+            })
+            .OrderBy(activity => activity.Id)
+            .ToList();
+
+        var otherITwinActivity = Factories.Activity();
+
+        await _dbContext.Activities.AddRangeAsync(
+            activities.Concat([otherITwinActivity]),
+            TestContext.Current.CancellationToken
+        );
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var requestPath = GetPathByName("ListActivities", new { iTwinId, _top = 5 });
+        var response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        var apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<ActivityResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
+        var activitiesFromResponse = apiResponse.Items.ToList();
+
+        activitiesFromResponse.ShouldNotBeNull();
+        activitiesFromResponse.ShouldAllBe(activity => activity.ITwinId == iTwinId);
+        var expectedActivities = activities
+            .GetRange(0, 5)
+            .Select(ActivityResponse.FromActivity)
+            .ToList();
+        activitiesFromResponse.ShouldBeEquivalentTo(expectedActivities);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<PaginatedListResponse<ActivityResponse>>();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
+        activitiesFromResponse = apiResponse.Items.ToList();
+
+        activitiesFromResponse.ShouldNotBeNull();
+        activitiesFromResponse.ShouldAllBe(activity => activity.ITwinId == iTwinId);
+        expectedActivities = activities
+            .GetRange(5, 5)
+            .Select(ActivityResponse.FromActivity)
+            .ToList();
+        activitiesFromResponse.ShouldBeEquivalentTo(expectedActivities);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<PaginatedListResponse<ActivityResponse>>();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        activitiesFromResponse = apiResponse.Items.ToList();
+
+        activitiesFromResponse.ShouldNotBeNull();
+        activitiesFromResponse.ShouldAllBe(activity => activity.ITwinId == iTwinId);
+        expectedActivities = activities
+            .GetRange(10, 5)
+            .Select(ActivityResponse.FromActivity)
+            .ToList();
+        activitiesFromResponse.ShouldBeEquivalentTo(expectedActivities);
     }
 
     [Fact]

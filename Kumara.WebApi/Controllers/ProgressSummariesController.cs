@@ -11,6 +11,7 @@ namespace Kumara.WebApi.Controllers;
 
 [Route("api/v1/progress-summaries")]
 [ApiController]
+[Produces("application/json")]
 public class ProgressSummariesController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
@@ -21,7 +22,9 @@ public class ProgressSummariesController(ApplicationDbContext dbContext) : Contr
         Guid? materialId
     )
     {
-        var progressSummaries = dbContext.ProgressSummaries.Where(ps => ps.ITwinId == iTwinId);
+        var progressSummaries = dbContext
+            .ProgressSummaries.OrderBy(ps => ps.ActivityId)
+            .Where(ps => ps.ITwinId == iTwinId);
 
         if (activityId is not null)
         {

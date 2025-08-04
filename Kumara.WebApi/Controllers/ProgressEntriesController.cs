@@ -11,6 +11,7 @@ namespace Kumara.WebApi.Controllers;
 
 [Route("api/v1/progress-entries")]
 [ApiController]
+[Produces("application/json")]
 public class ProgressEntriesController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpPost]

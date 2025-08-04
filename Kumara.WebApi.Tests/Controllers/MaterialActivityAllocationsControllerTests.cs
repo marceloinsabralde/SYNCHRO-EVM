@@ -3,6 +3,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using Kumara.Common.Controllers.Responses;
+using Kumara.TestCommon.Extensions;
 using Kumara.WebApi.Controllers.Responses;
 
 namespace Kumara.WebApi.Tests.Controllers;
@@ -44,7 +45,7 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
         var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<MaterialActivityAllocationResponse>
         >();
-        var allocations = apiResponse.Items;
+        var allocations = apiResponse.Items.ToList();
 
         allocations.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
         allocations.Count().ShouldBe(2);
@@ -103,7 +104,7 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
         var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<MaterialActivityAllocationResponse>
         >();
-        var allocations = apiResponse.Items;
+        var allocations = apiResponse.Items.ToList();
 
         allocations.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
         allocations.ShouldAllBe(allocation => allocation.ActivityId == activity.Id);
@@ -163,7 +164,7 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
         var apiResponse = await response.ShouldBeApiResponse<
             ListResponse<MaterialActivityAllocationResponse>
         >();
-        var allocations = apiResponse.Items;
+        var allocations = apiResponse.Items.ToList();
 
         allocations.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
         allocations.ShouldAllBe(allocation => allocation.MaterialId == material.Id);
@@ -175,6 +176,84 @@ public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBas
                 MaterialActivityAllocationResponse.FromMaterialActivityAllocation(allocation2),
             }
         );
+    }
+
+    [Fact]
+    public async ValueTask Index_PaginationTest()
+    {
+        var iTwinId = Guid.CreateVersion7();
+
+        var allocations = Enumerable
+            .Range(0, 15)
+            .Select(index =>
+            {
+                var timestamp = DateTimeOffset.UtcNow.AddDays(-index);
+                return Factories.MaterialActivityAllocation(
+                    id: Guid.CreateVersion7(timestamp),
+                    iTwinId: iTwinId
+                );
+            })
+            .OrderBy(allocation => allocation.Id)
+            .ToList();
+
+        var otherITwinAllocation = Factories.MaterialActivityAllocation();
+
+        await _dbContext.MaterialActivityAllocations.AddRangeAsync(
+            allocations.Concat([otherITwinAllocation]),
+            TestContext.Current.CancellationToken
+        );
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var requestPath = GetPathByName(
+            "ListMaterialActivityAllocations",
+            new { iTwinId, _top = 5 }
+        );
+        var response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        var apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<MaterialActivityAllocationResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
+        var allocationsFromResponse = apiResponse.Items.ToList();
+
+        allocationsFromResponse.ShouldNotBeNull();
+        allocationsFromResponse.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
+        var expectedAllocations = allocations
+            .GetRange(0, 5)
+            .Select(MaterialActivityAllocationResponse.FromMaterialActivityAllocation)
+            .ToList();
+        allocationsFromResponse.ShouldBeEquivalentTo(expectedAllocations);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<MaterialActivityAllocationResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: true);
+        allocationsFromResponse = apiResponse.Items.ToList();
+
+        allocationsFromResponse.ShouldNotBeNull();
+        allocationsFromResponse.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
+        expectedAllocations = allocations
+            .GetRange(5, 5)
+            .Select(MaterialActivityAllocationResponse.FromMaterialActivityAllocation)
+            .ToList();
+        allocationsFromResponse.ShouldBeEquivalentTo(expectedAllocations);
+
+        requestPath = apiResponse.Links.Next!.Href;
+        response = await _client.GetAsync(requestPath, TestContext.Current.CancellationToken);
+        apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<MaterialActivityAllocationResponse>
+        >();
+        apiResponse.Links.ShouldHaveLinks(self: requestPath, shouldHaveNext: false);
+        allocationsFromResponse = apiResponse.Items.ToList();
+
+        allocationsFromResponse.ShouldNotBeNull();
+        allocationsFromResponse.ShouldAllBe(allocation => allocation.ITwinId == iTwinId);
+        expectedAllocations = allocations
+            .GetRange(10, 5)
+            .Select(MaterialActivityAllocationResponse.FromMaterialActivityAllocation)
+            .ToList();
+        allocationsFromResponse.ShouldBeEquivalentTo(expectedAllocations);
     }
 
     [Fact]

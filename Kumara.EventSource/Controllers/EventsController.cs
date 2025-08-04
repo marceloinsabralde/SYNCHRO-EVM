@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.Text.Json;
+using Kumara.Common.Utilities;
 using Kumara.EventSource.Extensions;
 using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Models;
@@ -104,24 +105,17 @@ public class EventsController : ControllerBase
 
         if (!string.IsNullOrEmpty(continuationToken))
         {
-            Pagination.ContinuationToken? token = Pagination.ParseContinuationToken(
-                continuationToken
-            );
-            if (token != null)
+            if (ContinuationToken.TryParse(continuationToken, out var token))
             {
-                QueryCollection tokenParams = new(
+                QueryCollection paramsFromContinuationToken = new(
                     token.QueryParameters.ToDictionary(
                         kvp => kvp.Key,
                         kvp => new StringValues(kvp.Value)
                     )
                 );
+                paramsFromContinuationToken[ContinuationTokenKey] = continuationToken;
 
-                Dictionary<string, StringValues> paramsWithToken = new(
-                    tokenParams.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
-                );
-                paramsWithToken[ContinuationTokenKey] = continuationToken;
-
-                queryParsingResult = new QueryCollection(paramsWithToken).ToEventQueryBuilder();
+                queryParsingResult = paramsFromContinuationToken.ToEventQueryBuilder();
             }
             else
             {
@@ -204,7 +198,7 @@ public class EventsController : ControllerBase
             }
         }
 
-        string? continuationToken = null;
+        ContinuationToken? continuationToken = null;
         if (paginatedList.Items.Count > 0 && paginatedList.HasMoreItems)
         {
             T? lastItem = paginatedList.Items.LastOrDefault();
@@ -212,13 +206,17 @@ public class EventsController : ControllerBase
             {
                 Guid lastItemId = ((dynamic)lastItem).Id;
 
-                continuationToken = Pagination.CreateContinuationToken(lastItemId, queryParams);
+                continuationToken = new ContinuationToken()
+                {
+                    Id = lastItemId,
+                    QueryParameters = queryParams,
+                };
             }
         }
 
         paginatedList.SetPaginationLinks(
             paginatedList.HasMoreItems,
-            continuationToken,
+            continuationToken?.ToBase64String(),
             baseUrl,
             queryParams
         );
