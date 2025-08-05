@@ -40,8 +40,8 @@ public static class DbSeeder
                     ITwinId = ProjectITwinIds[0],
                     ReferenceCode = "CIV002",
                     Name = "Excavation & Backfill",
-                    PlannedStart = new DateOnly(2025, 3, 23),
-                    ActualStart = new DateOnly(2025, 3, 25),
+                    PlannedStart = new LocalDate(2025, 3, 23),
+                    ActualStart = new LocalDate(2025, 3, 25),
                 },
                 new ControlAccount
                 {

@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations.Schema;
+using NodaTime;
 
 namespace Kumara.WebApi.Models;
 
@@ -21,5 +22,5 @@ public class ProgressEntry : ApplicationEntity
 
     public required decimal QuantityDelta { get; set; }
 
-    public required DateOnly ProgressDate { get; set; }
+    public required LocalDate ProgressDate { get; set; }
 }

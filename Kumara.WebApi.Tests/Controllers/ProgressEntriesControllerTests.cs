@@ -7,6 +7,7 @@ using Kumara.WebApi.Controllers.Requests;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using NodaTime;
 
 namespace Kumara.WebApi.Tests.Controllers;
 
@@ -37,7 +38,7 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
             { "materialId", allocation.Material.Id },
             { "quantityUnitOfMeasureId", allocation.QuantityUnitOfMeasure.Id },
             { "quantityDelta", 5.0m },
-            { "progressDate", new DateOnly(2025, 05, 10) },
+            { "progressDate", new LocalDate(2025, 05, 10) },
         };
     }
 
@@ -61,7 +62,7 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
         );
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var response = await _client.PostAsJsonAsync(
+        var response = await _client.PostAsyncJson(
             GetPathByName("CreateProgressEntry"),
             new ProgressEntryCreateRequest
             {
@@ -70,7 +71,7 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
                 materialId = allocation.Material.Id,
                 quantityUnitOfMeasureId = allocation.QuantityUnitOfMeasure.Id,
                 quantityDelta = 5.0m,
-                progressDate = new DateOnly(2025, 05, 10),
+                progressDate = new LocalDate(2025, 05, 10),
             },
             TestContext.Current.CancellationToken
         );
@@ -90,7 +91,7 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
         var createParams = await BuildCreateParams();
         createParams.Remove(missingField);
 
-        var response = await _client.PostAsJsonAsync(
+        var response = await _client.PostAsyncJson(
             GetPathByName("CreateProgressEntry"),
             createParams,
             TestContext.Current.CancellationToken
@@ -118,7 +119,7 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
         var createParams = await BuildCreateParams();
         createParams[missingEntity] = Guid.CreateVersion7();
 
-        var response = await _client.PostAsJsonAsync(
+        var response = await _client.PostAsyncJson(
             GetPathByName("CreateProgressEntry"),
             createParams,
             TestContext.Current.CancellationToken
@@ -139,7 +140,7 @@ public sealed class ProgressEntriesControllerTests : DatabaseTestBase
         var createParams = await BuildCreateParams();
         createParams["id"] = existingEntry.Id;
 
-        var response = await _client.PostAsJsonAsync(
+        var response = await _client.PostAsyncJson(
             GetPathByName("CreateProgressEntry"),
             createParams,
             TestContext.Current.CancellationToken

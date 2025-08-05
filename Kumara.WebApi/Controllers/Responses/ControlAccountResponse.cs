@@ -19,13 +19,13 @@ public class ControlAccountResponse
 
     public decimal PercentComplete { get; set; }
 
-    public DateOnly? ActualStart { get; set; }
+    public LocalDate? ActualStart { get; set; }
 
-    public DateOnly? ActualFinish { get; set; }
+    public LocalDate? ActualFinish { get; set; }
 
-    public DateOnly? PlannedStart { get; set; }
+    public LocalDate? PlannedStart { get; set; }
 
-    public DateOnly? PlannedFinish { get; set; }
+    public LocalDate? PlannedFinish { get; set; }
 
     public Instant CreatedAt { get; set; }
 

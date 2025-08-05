@@ -66,7 +66,7 @@ public class RecentProgressEntry
 {
     public Guid Id { get; set; }
     public decimal QuantityDelta { get; set; }
-    public DateOnly ProgressDate { get; set; }
+    public LocalDate ProgressDate { get; set; }
     public Instant CreatedAt { get; set; }
     public Instant UpdatedAt { get; set; }
 }
