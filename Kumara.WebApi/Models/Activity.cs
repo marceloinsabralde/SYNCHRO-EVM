@@ -73,8 +73,8 @@ public class Activity : ApplicationEntity, IPageableEntity
         }
     }
 
-    public DateTimeOffset? PlannedStart { get; set; }
-    public DateTimeOffset? PlannedFinish { get; set; }
+    public OffsetDateTime? PlannedStart { get; set; }
+    public OffsetDateTime? PlannedFinish { get; set; }
 
     public class Configuration : IEntityTypeConfiguration<Activity>
     {

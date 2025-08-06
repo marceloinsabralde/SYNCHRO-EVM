@@ -67,15 +67,19 @@ public static class DbSeeder
                     ),
                     ReferenceCode = "CIV001-A1",
                     Name = "Activity 1",
-                    PlannedStart = new DateTimeOffset(
-                        date: new DateOnly(2023, 1, 1),
-                        time: TimeOnly.MinValue,
-                        offset: TimeSpan.Zero
+                    PlannedStart = OffsetDateTime.FromDateTimeOffset(
+                        new DateTimeOffset(
+                            date: new DateOnly(2023, 1, 1),
+                            time: TimeOnly.MinValue,
+                            offset: TimeSpan.Zero
+                        )
                     ),
-                    PlannedFinish = new DateTimeOffset(
-                        date: new DateOnly(2024, 12, 1),
-                        time: TimeOnly.MaxValue,
-                        offset: TimeSpan.Zero
+                    PlannedFinish = OffsetDateTime.FromDateTimeOffset(
+                        new DateTimeOffset(
+                            date: new DateOnly(2024, 12, 1),
+                            time: TimeOnly.MaxValue,
+                            offset: TimeSpan.Zero
+                        )
                     ),
                     ActualStart = new DateWithOptionalTime
                     {
