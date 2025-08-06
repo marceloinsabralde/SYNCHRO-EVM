@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Kumara.WebApi.Types;
+using NodaTime;
 
 namespace Kumara.WebApi.Tests.Models;
 
@@ -12,12 +13,16 @@ public sealed class ActivityTests : DatabaseTestBase
         var refActivity = Factories.Activity();
         refActivity.ActualStart = new DateWithOptionalTime
         {
-            DateTime = DateTimeOffset.Parse("2001-02-03T04:05:06Z"),
+            DateTime = OffsetDateTime.FromDateTimeOffset(
+                DateTimeOffset.Parse("2001-02-03T04:05:06Z")
+            ),
             HasTime = true,
         };
         refActivity.ActualFinish = new DateWithOptionalTime
         {
-            DateTime = DateTimeOffset.Parse("2007-08-09T20:11:12+10"),
+            DateTime = OffsetDateTime.FromDateTimeOffset(
+                DateTimeOffset.Parse("2007-08-09T20:11:12+10")
+            ),
             HasTime = true,
         };
 

@@ -1,9 +1,12 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Kumara.Common.Utilities;
 using Microsoft.OpenApi.Models;
+using NodaTime;
+using NodaTime.Text;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Kumara.WebApi.Types;
@@ -13,7 +16,7 @@ namespace Kumara.WebApi.Types;
 [OpenApiSchemaTransformer(typeof(DateWithOptionalTimeSchemaPatcher))]
 public readonly struct DateWithOptionalTime
 {
-    public required DateTimeOffset DateTime { get; init; }
+    public required OffsetDateTime DateTime { get; init; }
     public required bool HasTime { get; init; }
 
     public override string ToString()
@@ -30,14 +33,31 @@ public class DateWithOptionalTimeConverter : JsonConverter<DateWithOptionalTime>
         JsonSerializerOptions options
     )
     {
-        if (DateOnly.TryParseExact(reader.GetString(), "o", out DateOnly date))
+        var stringValue = reader.GetString();
+        if (string.IsNullOrEmpty(stringValue))
+            throw new JsonException("Date string cannot be null or empty");
+
+        // Try date-only first (YYYY-MM-DD)
+        var dateResult = LocalDatePattern.Iso.Parse(stringValue);
+        if (dateResult.Success)
+        {
             return new DateWithOptionalTime
             {
-                DateTime = date.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc),
+                DateTime = dateResult
+                    .GetValueOrThrow()
+                    .AtStartOfDayInZone(DateTimeZone.Utc)
+                    .ToOffsetDateTime(),
                 HasTime = false,
             };
+        }
 
-        return new DateWithOptionalTime { DateTime = reader.GetDateTimeOffset(), HasTime = true };
+        // Try date-time with offset
+        var parseResult = OffsetDateTimePattern.ExtendedIso.Parse(stringValue);
+        return new DateWithOptionalTime
+        {
+            DateTime = parseResult.GetValueOrThrow(),
+            HasTime = true,
+        };
     }
 
     public override void Write(
@@ -47,9 +67,13 @@ public class DateWithOptionalTimeConverter : JsonConverter<DateWithOptionalTime>
     )
     {
         if (value.HasTime)
-            writer.WriteStringValue(value.DateTime.ToString("O"));
+        {
+            writer.WriteStringValue(OffsetDateTimePattern.ExtendedIso.Format(value.DateTime));
+        }
         else
-            writer.WriteStringValue(DateOnly.FromDateTime(value.DateTime.Date).ToString("O"));
+        {
+            writer.WriteStringValue(LocalDatePattern.Iso.Format(value.DateTime.Date));
+        }
     }
 }
 

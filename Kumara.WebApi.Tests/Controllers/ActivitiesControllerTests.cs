@@ -7,6 +7,7 @@ using Kumara.TestCommon.Extensions;
 using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Enums;
 using Kumara.WebApi.Types;
+using NodaTime;
 
 namespace Kumara.WebApi.Tests.Controllers;
 
@@ -250,10 +251,12 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         var existingActivity = Factories.Activity(
             actualStart: new DateWithOptionalTime
             {
-                DateTime = new DateTimeOffset(
-                    new DateOnly(year: 2025, month: 1, day: 1),
-                    TimeOnly.MinValue,
-                    TimeSpan.Zero
+                DateTime = OffsetDateTime.FromDateTimeOffset(
+                    new DateTimeOffset(
+                        new DateOnly(year: 2025, month: 1, day: 1),
+                        TimeOnly.MinValue,
+                        TimeSpan.Zero
+                    )
                 ),
                 HasTime = false,
             },
@@ -290,10 +293,12 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         activity.ActualStart.ShouldBe(
             new DateWithOptionalTime
             {
-                DateTime = new DateTimeOffset(
-                    new DateOnly(year: 2025, month: 3, day: 18),
-                    new TimeOnly(00, 47, 05, 288),
-                    TimeSpan.Zero
+                DateTime = OffsetDateTime.FromDateTimeOffset(
+                    new DateTimeOffset(
+                        new DateOnly(year: 2025, month: 3, day: 18),
+                        new TimeOnly(00, 47, 05, 288),
+                        TimeSpan.Zero
+                    )
                 ),
                 HasTime = true,
             }
@@ -301,10 +306,12 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         activity.ActualFinish.ShouldBe(
             new DateWithOptionalTime
             {
-                DateTime = new DateTimeOffset(
-                    new DateOnly(year: 2025, month: 3, day: 19),
-                    TimeOnly.MinValue,
-                    TimeSpan.Zero
+                DateTime = OffsetDateTime.FromDateTimeOffset(
+                    new DateTimeOffset(
+                        new DateOnly(year: 2025, month: 3, day: 19),
+                        TimeOnly.MinValue,
+                        TimeSpan.Zero
+                    )
                 ),
                 HasTime = false,
             }
@@ -320,19 +327,23 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         var existingActivity = Factories.Activity(
             actualStart: new DateWithOptionalTime
             {
-                DateTime = new DateTimeOffset(
-                    new DateOnly(year: 2025, month: 1, day: 1),
-                    TimeOnly.MinValue,
-                    TimeSpan.Zero
+                DateTime = OffsetDateTime.FromDateTimeOffset(
+                    new DateTimeOffset(
+                        new DateOnly(year: 2025, month: 1, day: 1),
+                        TimeOnly.MinValue,
+                        TimeSpan.Zero
+                    )
                 ),
                 HasTime = false,
             },
             actualFinish: new DateWithOptionalTime
             {
-                DateTime = new DateTimeOffset(
-                    new DateOnly(year: 2025, month: 2, day: 1),
-                    TimeOnly.MinValue,
-                    TimeSpan.Zero
+                DateTime = OffsetDateTime.FromDateTimeOffset(
+                    new DateTimeOffset(
+                        new DateOnly(year: 2025, month: 2, day: 1),
+                        TimeOnly.MinValue,
+                        TimeSpan.Zero
+                    )
                 ),
                 HasTime = false,
             }
@@ -364,10 +375,12 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         activity.ActualFinish.ShouldBe(
             new DateWithOptionalTime
             {
-                DateTime = new DateTimeOffset(
-                    new DateOnly(year: 2025, month: 3, day: 19),
-                    TimeOnly.MinValue,
-                    TimeSpan.Zero
+                DateTime = OffsetDateTime.FromDateTimeOffset(
+                    new DateTimeOffset(
+                        new DateOnly(year: 2025, month: 3, day: 19),
+                        TimeOnly.MinValue,
+                        TimeSpan.Zero
+                    )
                 ),
                 HasTime = false,
             }
@@ -382,10 +395,12 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         var existingActivity = Factories.Activity(
             actualStart: new DateWithOptionalTime
             {
-                DateTime = new DateTimeOffset(
-                    new DateOnly(year: 2025, month: 1, day: 1),
-                    TimeOnly.MinValue,
-                    TimeSpan.Zero
+                DateTime = OffsetDateTime.FromDateTimeOffset(
+                    new DateTimeOffset(
+                        new DateOnly(year: 2025, month: 1, day: 1),
+                        TimeOnly.MinValue,
+                        TimeSpan.Zero
+                    )
                 ),
                 HasTime = false,
             }
@@ -403,7 +418,7 @@ public sealed class ActivitiesControllerTests : DatabaseTestBase
         );
 
         await response.ShouldBeApiErrorBadRequest(
-            errorsPattern: @"""\$\.actualStart"":\[""The JSON value could not be converted to"
+            errorsPattern: @""".*"":\[""The supplied value is invalid\."
         );
 
         // TODO: Ensure no Event is emitted

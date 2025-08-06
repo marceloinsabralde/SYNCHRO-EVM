@@ -3,6 +3,7 @@
 using Kumara.WebApi.Enums;
 using Kumara.WebApi.Models;
 using Kumara.WebApi.Types;
+using NodaTime;
 
 namespace Kumara.WebApi.Database;
 
@@ -78,19 +79,23 @@ public static class DbSeeder
                     ),
                     ActualStart = new DateWithOptionalTime
                     {
-                        DateTime = new DateTimeOffset(
-                            date: new DateOnly(2023, 1, 1),
-                            time: new TimeOnly(hour: 8, minute: 30),
-                            offset: TimeSpan.Zero
+                        DateTime = OffsetDateTime.FromDateTimeOffset(
+                            new DateTimeOffset(
+                                date: new DateOnly(2023, 1, 1),
+                                time: new TimeOnly(hour: 8, minute: 30),
+                                offset: TimeSpan.Zero
+                            )
                         ),
                         HasTime = true,
                     },
                     ActualFinish = new DateWithOptionalTime
                     {
-                        DateTime = new DateTimeOffset(
-                            date: new DateOnly(2025, 1, 1),
-                            time: new TimeOnly(hour: 14, minute: 23),
-                            offset: TimeSpan.Zero
+                        DateTime = OffsetDateTime.FromDateTimeOffset(
+                            new DateTimeOffset(
+                                date: new DateOnly(2025, 1, 1),
+                                time: new TimeOnly(hour: 14, minute: 23),
+                                offset: TimeSpan.Zero
+                            )
                         ),
                         HasTime = true,
                     },

@@ -6,6 +6,7 @@ using Kumara.WebApi.Enums;
 using Kumara.WebApi.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NodaTime;
 
 namespace Kumara.WebApi.Models;
 
@@ -40,13 +41,13 @@ public class Activity : ApplicationEntity, IPageableEntity
 
             return new DateWithOptionalTime
             {
-                DateTime = _actualStart.Value,
+                DateTime = OffsetDateTime.FromDateTimeOffset(_actualStart.Value),
                 HasTime = _actualStartHasTime.GetValueOrDefault(),
             };
         }
         set
         {
-            _actualStart = value?.DateTime.ToUniversalTime();
+            _actualStart = value?.DateTime.ToInstant().ToDateTimeOffset();
             _actualStartHasTime = value?.HasTime;
         }
     }
@@ -61,13 +62,13 @@ public class Activity : ApplicationEntity, IPageableEntity
 
             return new DateWithOptionalTime
             {
-                DateTime = _actualFinish.Value,
+                DateTime = OffsetDateTime.FromDateTimeOffset(_actualFinish.Value),
                 HasTime = _actualFinishHasTime.GetValueOrDefault(),
             };
         }
         set
         {
-            _actualFinish = value?.DateTime.ToUniversalTime();
+            _actualFinish = value?.DateTime.ToInstant().ToDateTimeOffset();
             _actualFinishHasTime = value?.HasTime;
         }
     }
