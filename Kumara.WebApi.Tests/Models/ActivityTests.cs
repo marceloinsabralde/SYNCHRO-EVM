@@ -27,9 +27,11 @@ public sealed class ActivityTests : DatabaseTestBase
         };
 
         var currentValues = _dbContext.Entry(refActivity).CurrentValues;
-        currentValues["_actualStart"].ShouldBe(DateTimeOffset.Parse("2001-02-03T04:05:06Z"));
+        currentValues["_actualStart"]
+            .ShouldBe(Instant.FromDateTimeOffset(DateTimeOffset.Parse("2001-02-03T04:05:06Z")));
         currentValues["_actualStartHasTime"].ShouldBe(true);
-        currentValues["_actualFinish"].ShouldBe(DateTimeOffset.Parse("2007-08-09T20:11:12+10"));
+        currentValues["_actualFinish"]
+            .ShouldBe(Instant.FromDateTimeOffset(DateTimeOffset.Parse("2007-08-09T20:11:12+10")));
         currentValues["_actualFinishHasTime"].ShouldBe(true);
 
         var newActivity = Factories.Activity();
