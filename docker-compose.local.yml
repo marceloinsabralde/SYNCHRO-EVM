@@ -21,6 +21,23 @@ services:
     healthcheck:
       test: /health.sh
 
+  citus:
+    image: citusdata/citus:postgres_16
+    environment:
+      POSTGRES_USER: "${PGUSER?}"
+      POSTGRES_PASSWORD: "${PGPASSWORD?}"
+      EXTRA_USER_DBS:
+        "${KUMARA_EVENT_SOURCE_DB_USERNAME?}:${KUMARA_EVENT_SOURCE_DB_PASSWORD?}|\
+        ${TEST_KUMARA_EVENT_SOURCE_DB_USERNAME?}:${TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD?}:${TEST_KUMARA_EVENT_SOURCE_DB_USERNAME?}_{1..5}|"
+    volumes:
+      - .docker/postgresql/health.sh:/health.sh:ro
+      - .docker/citus/initdb.d/extra-user-dbs.sh:/docker-entrypoint-initdb.d/extra-user-dbs.sh:ro
+    ports:
+      - 127.0.0.1:${CITUS_PGPORT:?}:5432
+    restart: unless-stopped
+    healthcheck:
+      test: /health.sh
+
   mongodb:
     image: "${MONGO_IMAGE?}"
     environment:
