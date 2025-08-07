@@ -1,0 +1,3 @@
+[env]
+PGDATABASE="kumara-event-source"
+PGPORT="5435"
