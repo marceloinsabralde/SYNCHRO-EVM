@@ -71,7 +71,7 @@ public abstract class DatabaseTestBase : IAsyncLifetime
 
         _factory = AppServicesHelper.CreateWebApplicationFactory(builder =>
         {
-            builder.UseSetting($"ConnectionStrings:KumaraEventSourceDB", connectionString);
+            builder.UseSetting($"ConnectionStrings:KumaraEventSourceMongo", connectionString);
         });
         _client = _factory.CreateClient();
     }
