@@ -3,7 +3,7 @@ project:
 env:
   ASPNETCORE_ENVIRONMENT: #{Process.DHC.ASPNETCORE_ENVIRONMENT}
 envSecret:
-  ConnectionStrings__KumaraWebApiDB: "Server=#{Process.ASQL.ServerName}.postgres.database.azure.com;Database=#{Process.ASQL.DatabaseName};Port=#{Process.ASQL.Port};User Id=#{Process.ASQL.DBAdminName};Password=#{Process.ASQL.DBAdminPassword};Ssl Mode=Require;"
+  ConnectionStrings__KumaraWebApiDB: "Server=#{Process.ASQL.ServerName}.postgres.database.azure.com;Database=#{Process.ASQL.DatabaseName};Port=#{Process.ASQL.Port};User Id=#{Process.ASQL.DBAdminName};Password=#{Process.ASQL.DBAdminPassword};Channel Binding=Require;"
 ingress:
   enabled: true
   host: #{Process.DHC.HostDNS}
