@@ -58,5 +58,8 @@ wwwroot/lib/
 # Ignore schema dump files
 structure.sql
 
+# Ignore files used by tools without comment support
+helm/bcsm.sql
+
 # Ignore git .keep files
 **/.keep

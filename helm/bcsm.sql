@@ -1,4 +1,3 @@
--- Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 DO $$
   DECLARE
     dbname text := current_database();
