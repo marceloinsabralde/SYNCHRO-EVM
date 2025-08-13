@@ -15,5 +15,11 @@ public class NodaTimeSchemaPatcher : SchemaPatcher
             schema.Type = "string";
             schema.Format = "date-time";
         }
+        else if (type == typeof(LocalDate))
+        {
+            Clear(schema);
+            schema.Type = "string";
+            schema.Format = "date";
+        }
     }
 }

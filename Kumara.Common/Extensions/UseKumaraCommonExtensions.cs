@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using NodaTime.Serialization.SystemTextJson;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Kumara.Common.Extensions;
@@ -33,6 +34,9 @@ public static class UseKumaraCommonExtensions
 
     public static void UseKumaraCommon(this JsonOptions options)
     {
+        // Configure NodaTime serialization
+        options.JsonSerializerOptions.ConfigureForNodaTime(NodaTime.DateTimeZoneProviders.Tzdb);
+
         options.JsonSerializerOptions.TypeInfoResolverChain.Insert(
             0,
             new JsonTypeInfoResolverAttributeResolver()

@@ -2,6 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using Kumara.Common.Validations;
+using NodaTime;
 
 namespace Kumara.WebApi.Controllers.Requests;
 
@@ -26,5 +27,5 @@ public class ProgressEntryCreateRequest
     public decimal quantityDelta { get; set; }
 
     [Required]
-    public DateOnly progressDate { get; set; }
+    public LocalDate progressDate { get; set; }
 }

@@ -2,6 +2,7 @@
 
 using Bogus;
 using Kumara.WebApi.Models;
+using NodaTime;
 
 namespace Kumara.WebApi.Tests;
 
@@ -14,7 +15,7 @@ public static partial class Factories
         Material? material = null,
         UnitOfMeasure? quantityUnitOfMeasure = null,
         decimal? quantityDelta = null,
-        DateOnly? progressDate = null
+        LocalDate? progressDate = null
     )
     {
         return new Faker<ProgressEntry>()
@@ -27,7 +28,7 @@ public static partial class Factories
                 (faker, pe) => quantityUnitOfMeasure ?? UnitOfMeasure(iTwinId: pe.ITwinId)
             )
             .RuleFor(pe => pe.QuantityDelta, quantityDelta ?? 1m)
-            .RuleFor(pe => pe.ProgressDate, progressDate ?? DateOnly.FromDateTime(DateTime.Today))
+            .RuleFor(pe => pe.ProgressDate, progressDate ?? LocalDate.FromDateTime(DateTime.Today))
             .Generate();
     }
 
@@ -35,7 +36,7 @@ public static partial class Factories
         MaterialActivityAllocation materialActivityAllocation,
         Guid? id = null,
         decimal? quantityDelta = null,
-        DateOnly? progressDate = null
+        LocalDate? progressDate = null
     )
     {
         return ProgressEntry(

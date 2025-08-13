@@ -2,6 +2,7 @@
 
 using Kumara.WebApi.Models;
 using Kumara.WebApi.Queries;
+using NodaTime;
 
 namespace Kumara.WebApi.Tests.Queries;
 
@@ -16,7 +17,7 @@ public sealed class ListActivitiesQueryTests : DatabaseTestBase
             return Factories.Activity(
                 id: Guid.CreateVersion7(timestamp),
                 iTwinId: ITwinId,
-                plannedStart: timestamp
+                plannedStart: OffsetDateTime.FromDateTimeOffset(timestamp)
             );
         })
         .OrderBy(activity => activity.Id)

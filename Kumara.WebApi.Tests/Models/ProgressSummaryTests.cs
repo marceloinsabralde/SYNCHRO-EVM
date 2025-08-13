@@ -2,6 +2,7 @@
 
 using Kumara.TestCommon.Extensions;
 using Kumara.WebApi.Models;
+using NodaTime;
 
 namespace Kumara.WebApi.Tests.Models;
 
@@ -56,22 +57,22 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
         [
             Factories.ProgressEntry(
                 materialActivityAllocation: materialActivityAllocation,
-                progressDate: new(2025, 04, 08),
+                progressDate: new LocalDate(2025, 04, 08),
                 quantityDelta: 5m
             ),
             Factories.ProgressEntry(
                 materialActivityAllocation: materialActivityAllocation,
-                progressDate: new(2025, 04, 09),
+                progressDate: new LocalDate(2025, 04, 09),
                 quantityDelta: 7m
             ),
             Factories.ProgressEntry(
                 materialActivityAllocation: materialActivityAllocation2,
-                progressDate: new(2025, 04, 08),
+                progressDate: new LocalDate(2025, 04, 08),
                 quantityDelta: 10m
             ),
             Factories.ProgressEntry(
                 materialActivityAllocation: materialActivityAllocation2,
-                progressDate: new(2025, 04, 09),
+                progressDate: new LocalDate(2025, 04, 09),
                 quantityDelta: 20m
             ),
         ];
@@ -79,12 +80,12 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
         [
             Factories.ProgressEntry(
                 materialActivityAllocation: materialActivity2Allocation,
-                progressDate: new(2025, 04, 06),
+                progressDate: new LocalDate(2025, 04, 06),
                 quantityDelta: 8m
             ),
             Factories.ProgressEntry(
                 materialActivityAllocation: materialActivity2Allocation,
-                progressDate: new(2025, 04, 07),
+                progressDate: new LocalDate(2025, 04, 07),
                 quantityDelta: 5m
             ),
         ];
@@ -125,7 +126,7 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
                         {
                             Id = activityProgressEntries[1].Id,
                             QuantityDelta = 7m,
-                            ProgressDate = new(2025, 04, 09),
+                            ProgressDate = new LocalDate(2025, 04, 09),
                             CreatedAt = activityProgressEntries[1].CreatedAt,
                             UpdatedAt = activityProgressEntries[1].UpdatedAt,
                         },
@@ -133,7 +134,7 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
                         {
                             Id = activityProgressEntries[0].Id,
                             QuantityDelta = 5m,
-                            ProgressDate = new(2025, 04, 08),
+                            ProgressDate = new LocalDate(2025, 04, 08),
                             CreatedAt = activityProgressEntries[0].CreatedAt,
                             UpdatedAt = activityProgressEntries[0].UpdatedAt,
                         },
@@ -154,7 +155,7 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
                         {
                             Id = activityProgressEntries[3].Id,
                             QuantityDelta = 20m,
-                            ProgressDate = new(2025, 04, 09),
+                            ProgressDate = new LocalDate(2025, 04, 09),
                             CreatedAt = activityProgressEntries[3].CreatedAt,
                             UpdatedAt = activityProgressEntries[3].UpdatedAt,
                         },
@@ -162,7 +163,7 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
                         {
                             Id = activityProgressEntries[2].Id,
                             QuantityDelta = 10m,
-                            ProgressDate = new(2025, 04, 08),
+                            ProgressDate = new LocalDate(2025, 04, 08),
                             CreatedAt = activityProgressEntries[2].CreatedAt,
                             UpdatedAt = activityProgressEntries[2].UpdatedAt,
                         },
@@ -183,7 +184,7 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
                         {
                             Id = activity2ProgressEntries[1].Id,
                             QuantityDelta = 5m,
-                            ProgressDate = new(2025, 04, 07),
+                            ProgressDate = new LocalDate(2025, 04, 07),
                             CreatedAt = activity2ProgressEntries[1].CreatedAt,
                             UpdatedAt = activity2ProgressEntries[1].UpdatedAt,
                         },
@@ -191,7 +192,7 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
                         {
                             Id = activity2ProgressEntries[0].Id,
                             QuantityDelta = 8m,
-                            ProgressDate = new(2025, 04, 06),
+                            ProgressDate = new LocalDate(2025, 04, 06),
                             CreatedAt = activity2ProgressEntries[0].CreatedAt,
                             UpdatedAt = activity2ProgressEntries[0].UpdatedAt,
                         },
@@ -237,7 +238,7 @@ public sealed class ProgressSummaryTests : DatabaseTestBase
             .Range(0, progressEntryCount)
             .Select(i =>
             {
-                var progressDate = DateOnly.FromDateTime(
+                var progressDate = LocalDate.FromDateTime(
                     DateTime.Today.SubtractDays(progressEntryCount - i)
                 );
                 return Factories.ProgressEntry(

@@ -6,15 +6,16 @@ using Kumara.WebApi.Enums;
 using Kumara.WebApi.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NodaTime;
 
 namespace Kumara.WebApi.Models;
 
 [EntityTypeConfiguration(typeof(Activity.Configuration))]
 public class Activity : ApplicationEntity, IPageableEntity
 {
-    private DateTimeOffset? _actualStart;
+    private Instant? _actualStart;
     private bool? _actualStartHasTime;
-    private DateTimeOffset? _actualFinish;
+    private Instant? _actualFinish;
     private bool? _actualFinishHasTime;
 
     public Guid Id { get; set; }
@@ -40,13 +41,13 @@ public class Activity : ApplicationEntity, IPageableEntity
 
             return new DateWithOptionalTime
             {
-                DateTime = _actualStart.Value,
+                DateTime = _actualStart.Value.WithOffset(Offset.Zero),
                 HasTime = _actualStartHasTime.GetValueOrDefault(),
             };
         }
         set
         {
-            _actualStart = value?.DateTime.ToUniversalTime();
+            _actualStart = value?.DateTime.ToInstant();
             _actualStartHasTime = value?.HasTime;
         }
     }
@@ -61,19 +62,19 @@ public class Activity : ApplicationEntity, IPageableEntity
 
             return new DateWithOptionalTime
             {
-                DateTime = _actualFinish.Value,
+                DateTime = _actualFinish.Value.WithOffset(Offset.Zero),
                 HasTime = _actualFinishHasTime.GetValueOrDefault(),
             };
         }
         set
         {
-            _actualFinish = value?.DateTime.ToUniversalTime();
+            _actualFinish = value?.DateTime.ToInstant();
             _actualFinishHasTime = value?.HasTime;
         }
     }
 
-    public DateTimeOffset? PlannedStart { get; set; }
-    public DateTimeOffset? PlannedFinish { get; set; }
+    public OffsetDateTime? PlannedStart { get; set; }
+    public OffsetDateTime? PlannedFinish { get; set; }
 
     public class Configuration : IEntityTypeConfiguration<Activity>
     {

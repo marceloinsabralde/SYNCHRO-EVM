@@ -4,6 +4,7 @@ using Bogus;
 using Kumara.WebApi.Enums;
 using Kumara.WebApi.Models;
 using Kumara.WebApi.Types;
+using NodaTime;
 
 namespace Kumara.WebApi.Tests;
 
@@ -21,8 +22,8 @@ public static partial class Factories
         ActivityProgressType progressType = ActivityProgressType.Manual,
         DateWithOptionalTime? actualStart = null,
         DateWithOptionalTime? actualFinish = null,
-        DateTimeOffset? plannedStart = null,
-        DateTimeOffset? plannedFinish = null
+        OffsetDateTime? plannedStart = null,
+        OffsetDateTime? plannedFinish = null
     )
     {
         _activityCount++;
