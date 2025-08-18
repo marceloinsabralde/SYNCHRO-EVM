@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kumara.EventSourceToo", "Kumara.EventSourceToo\Kumara.EventSourceToo.csproj", "{0183B9E7-1086-4B74-ADA6-51E323D4E268}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kumara.EventSourceToo.Tests", "Kumara.EventSourceToo.Tests\Kumara.EventSourceToo.Tests.csproj", "{75A02618-23C0-44F8-8D7E-F695C62FB2E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -202,6 +204,18 @@ Global
 		{0183B9E7-1086-4B74-ADA6-51E323D4E268}.Release|x64.Build.0 = Release|Any CPU
 		{0183B9E7-1086-4B74-ADA6-51E323D4E268}.Release|x86.ActiveCfg = Release|Any CPU
 		{0183B9E7-1086-4B74-ADA6-51E323D4E268}.Release|x86.Build.0 = Release|Any CPU
+		{75A02618-23C0-44F8-8D7E-F695C62FB2E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75A02618-23C0-44F8-8D7E-F695C62FB2E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75A02618-23C0-44F8-8D7E-F695C62FB2E1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{75A02618-23C0-44F8-8D7E-F695C62FB2E1}.Debug|x64.Build.0 = Debug|Any CPU
+		{75A02618-23C0-44F8-8D7E-F695C62FB2E1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{75A02618-23C0-44F8-8D7E-F695C62FB2E1}.Debug|x86.Build.0 = Debug|Any CPU
+		{75A02618-23C0-44F8-8D7E-F695C62FB2E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75A02618-23C0-44F8-8D7E-F695C62FB2E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75A02618-23C0-44F8-8D7E-F695C62FB2E1}.Release|x64.ActiveCfg = Release|Any CPU
+		{75A02618-23C0-44F8-8D7E-F695C62FB2E1}.Release|x64.Build.0 = Release|Any CPU
+		{75A02618-23C0-44F8-8D7E-F695C62FB2E1}.Release|x86.ActiveCfg = Release|Any CPU
+		{75A02618-23C0-44F8-8D7E-F695C62FB2E1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
