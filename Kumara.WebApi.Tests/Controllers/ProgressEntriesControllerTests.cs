@@ -1,12 +1,9 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.Net;
-using System.Net.Http.Json;
 using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Requests;
-using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Models;
-using Microsoft.AspNetCore.Mvc;
 using NodaTime;
 
 namespace Kumara.WebApi.Tests.Controllers;

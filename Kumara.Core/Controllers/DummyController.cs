@@ -1,6 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.Common.Controllers.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kumara.Core.Controllers;

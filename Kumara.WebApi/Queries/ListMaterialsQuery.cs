@@ -1,7 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Kumara.Common.Queries;
-using Kumara.WebApi.Database;
 using Kumara.WebApi.Models;
 
 namespace Kumara.WebApi.Queries;

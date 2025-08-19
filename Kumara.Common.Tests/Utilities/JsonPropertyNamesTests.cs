@@ -3,7 +3,6 @@
 using System.Text.Json;
 using Kumara.Common.Utilities;
 using Kumara.TestCommon.Helpers;
-using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Kumara.Common.Tests.Utilities;

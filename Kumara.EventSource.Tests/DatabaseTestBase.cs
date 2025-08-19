@@ -4,7 +4,6 @@ using Kumara.EventSource.Tests;
 using Kumara.TestCommon.Helpers;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using Testcontainers;
 using Testcontainers.MongoDb;
 
 [assembly: AssemblyFixture(typeof(DatabaseTestFixture))]

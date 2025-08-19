@@ -5,7 +5,6 @@ using CaseConverter;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NJsonSchema;
-using NJsonSchema.Generation;
 using NJsonSchema.NewtonsoftJson.Generation;
 
 namespace Kumara.EventSource.Utilities;

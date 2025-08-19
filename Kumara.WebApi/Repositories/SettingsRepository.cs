@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Reflection;
 using Kumara.Common.Providers;
 using Kumara.WebApi.Database;
-using Kumara.WebApi.Types;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kumara.WebApi.Repositories;

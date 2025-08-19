@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using Kumara.EventSource.Models.Events;
 using Kumara.EventSource.Tests.Common;
 using Kumara.EventSource.Tests.Factories;
-using Shouldly;
 
 namespace Kumara.EventSource.Tests.Models;
 

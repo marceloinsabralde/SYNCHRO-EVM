@@ -4,7 +4,6 @@ using System.Text.Json;
 using Kumara.Common.Utilities;
 using Kumara.EventSource.Interfaces;
 using Kumara.EventSource.Models;
-using Kumara.EventSource.Utilities;
 
 namespace Kumara.EventSource.Tests.Repositories;
 

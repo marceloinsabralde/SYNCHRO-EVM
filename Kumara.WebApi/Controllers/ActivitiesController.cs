@@ -3,7 +3,6 @@
 using System.ComponentModel.DataAnnotations;
 using Kumara.Common.Controllers.Extensions;
 using Kumara.Common.Controllers.Responses;
-using Kumara.Common.Extensions;
 using Kumara.Common.Utilities;
 using Kumara.WebApi.Controllers.Requests;
 using Kumara.WebApi.Controllers.Responses;

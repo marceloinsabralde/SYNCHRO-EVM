@@ -3,11 +3,8 @@
 using Kumara.EventSource.DbContext;
 using Kumara.EventSource.Extensions;
 using Kumara.EventSource.Interfaces;
-using Kumara.EventSource.OpenApi;
 using Kumara.EventSource.Repositories;
 using Kumara.EventSource.Utilities;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
 
 JsonSchemaGenerator.GenerateJsonSchemas();
 
