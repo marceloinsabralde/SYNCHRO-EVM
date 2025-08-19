@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Kumara.Common.Controllers.Responses;
+using Kumara.TestCommon.Extensions;
 using Kumara.WebApi.Models;
 
 namespace Kumara.WebApi.Tests.Controllers;

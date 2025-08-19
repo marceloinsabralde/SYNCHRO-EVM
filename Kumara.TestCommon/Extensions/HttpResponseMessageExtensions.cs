@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 using System.Text.Json.Nodes;
 using Kumara.TestCommon.Helpers;
 
-namespace Kumara.WebApi.Tests;
+namespace Kumara.TestCommon.Extensions;
 
 public static class HttpResponseMessageExtensions
 {
