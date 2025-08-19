@@ -1,6 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using System.Text.Json;
 using Kumara.EventSource.Models;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;

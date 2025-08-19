@@ -4,10 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using Kumara.Common.Database;
 using Kumara.Common.Extensions;
 using Kumara.TestCommon.Converters;
-using Kumara.TestCommon.Extensions;
 using Kumara.WebApi.Database;
 using Kumara.WebApi.Models;
-using Kumara.WebApi.Types;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kumara.WebApi.Tests.Models;

@@ -2,7 +2,6 @@
 
 using Kumara.Common.Controllers.Responses;
 using Kumara.WebApi.Controllers.Requests;
-using Kumara.WebApi.Controllers.Responses;
 using Kumara.WebApi.Database;
 using Kumara.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;

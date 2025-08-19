@@ -1,6 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using System.ComponentModel.DataAnnotations.Schema;
 using Kumara.Common.Database;
 using NodaTime;
 

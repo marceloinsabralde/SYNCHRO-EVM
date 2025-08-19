@@ -1,6 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.Common.Database;
 using Kumara.WebApi.Models;
 using Kumara.WebApi.Types;
 using Microsoft.EntityFrameworkCore;

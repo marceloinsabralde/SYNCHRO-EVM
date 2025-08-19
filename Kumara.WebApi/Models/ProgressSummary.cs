@@ -1,6 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using System.ComponentModel.DataAnnotations.Schema;
 using Kumara.Common.Converters;
 using Kumara.Common.Database;
 using Microsoft.EntityFrameworkCore;

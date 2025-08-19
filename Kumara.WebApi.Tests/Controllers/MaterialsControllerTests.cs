@@ -1,7 +1,5 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using System.Net;
-using System.Net.Http.Json;
 using Kumara.Common.Controllers.Responses;
 using Kumara.TestCommon.Extensions;
 using Kumara.WebApi.Controllers.Responses;

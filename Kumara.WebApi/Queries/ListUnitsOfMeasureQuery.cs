@@ -2,7 +2,6 @@
 
 using Kumara.Common.Queries;
 using Kumara.WebApi.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Kumara.WebApi.Queries;
 
