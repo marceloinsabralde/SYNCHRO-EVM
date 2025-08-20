@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
+using CaseConverter;
 using Kumara.Common.Controllers.Extensions;
 using Kumara.Common.Controllers.Responses;
 using Kumara.Common.Utilities;
@@ -87,7 +88,7 @@ public class ActivitiesController(ApplicationDbContext dbContext) : ControllerBa
         {
             if (activity.ProgressType is not ActivityProgressType.Manual)
                 ModelState.AddModelError(
-                    nameof(activityUpdate.PercentComplete),
+                    nameof(activityUpdate.PercentComplete).ToCamelCase(),
                     $"cannot be updated on an Activity with the progressType: {activity.ProgressType}"
                 );
 
