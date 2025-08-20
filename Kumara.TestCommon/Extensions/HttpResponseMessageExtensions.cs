@@ -2,10 +2,11 @@
 
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using Kumara.TestCommon.Helpers;
 
-namespace Kumara.WebApi.Tests;
+namespace Kumara.TestCommon.Extensions;
 
 public static class HttpResponseMessageExtensions
 {
@@ -47,14 +48,10 @@ public static class HttpResponseMessageExtensions
 
         if (errorsDict is not null)
         {
-            foreach ((string errorKey, string[] errorMessages) in errorsDict)
-            {
-                responseJson["errors"]![errorKey]!
-                    .AsArray()
-                    .Select(node => node!.ToString())
-                    .ToArray()
-                    .ShouldBeEquivalentTo(errorMessages);
-            }
+            responseJson.ShouldContainKey("errors");
+            var responseErrorsDict = responseJson["errors"]
+                .Deserialize<Dictionary<string, string[]>>();
+            Assert.Equal(errorsDict, responseErrorsDict);
         }
     }
 
