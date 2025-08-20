@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="BraceExpander" />
+        <PackageReference Include="xunit.v3.assert" />
         <PackageReference Include="xunit.v3.extensibility.core" />
         <PackageReference Include="Shouldly" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
