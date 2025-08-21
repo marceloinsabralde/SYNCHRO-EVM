@@ -55,7 +55,8 @@
     <PackageVersion Include="Microsoft.Identity.Client" Version="4.76.0" />
     <PackageVersion Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.76.0" />
     <PackageVersion Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" />
-    <PackageVersion Include="Microsoft.OpenApi" Version="2.1.0" />
+    <PackageVersion Include="Microsoft.OpenApi" Version="1.6.24" />
+    <PackageVersion Include="Microsoft.OpenApi.Readers" Version="1.6.24" />
     <PackageVersion Include="Microsoft.Testing.Extensions.TrxReport.Abstractions" Version="1.8.2" />
     <PackageVersion Include="Microsoft.Testing.Extensions.VSTestBridge" Version="1.8.2" />
     <PackageVersion Include="Microsoft.Testing.Platform" Version="1.8.2" />
@@ -84,7 +85,6 @@
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.8" />
     <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.14.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageVersion Include="Microsoft.OpenApi.Readers" Version="1.6.24" />
     <PackageVersion Include="Microsoft.Testing.Extensions.TrxReport" Version="1.8.2" />
     <PackageVersion Include="MongoDB.Driver" Version="3.4.3" />
     <PackageVersion Include="MongoDB.EntityFrameworkCore" Version="9.0.0" />
