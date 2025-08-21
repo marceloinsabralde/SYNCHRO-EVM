@@ -15,23 +15,49 @@
     <PackageReference Include="Azure.Core" />
     <PackageReference Include="Azure.Identity" />
     <PackageReference Include="Bogus" />
+    <PackageReference Include="Castle.Core" />
     <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="DiffEngine" />
+    <PackageReference Include="EmptyFiles" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.Identity.Client" />
+    <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" />
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.OpenApi" />
     <PackageReference Include="Microsoft.OpenApi.Readers" />
     <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
+    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport.Abstractions" />
+    <PackageReference Include="Microsoft.Testing.Platform" />
+    <PackageReference Include="Microsoft.Win32.SystemEvents" />
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="NSubstitute.Analyzers.CSharp">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Respawn" />
+    <PackageReference Include="SharpYaml" />
     <PackageReference Include="Shouldly" />
+    <PackageReference Include="System.ClientModel" />
     <PackageReference Include="System.Drawing.Common" />
     <PackageReference Include="System.Formats.Asn1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="System.Memory" />
+    <PackageReference Include="System.Memory.Data" />
+    <PackageReference Include="xunit.analyzers">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.runner.visualstudio">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
