@@ -2,9 +2,11 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Kumara.Common.Attributes;
 
 namespace Kumara.Common.EventTypes;
 
+[EventType("activity.updated.v1")]
 public class ActivityUpdatedV1
 {
     [Required]
