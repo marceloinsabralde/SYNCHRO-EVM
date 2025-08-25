@@ -33,10 +33,20 @@ Kumara.Scenarios << for BDD scenarios
 
 ### Tools
 
+#### Bootstrap
+
+
 ```shell
 mise trust
-dotnet tool restore
-script/dcl up --wait # run services using docker
+mise run setup
+mise run test
+```
+
+#### Dev
+
+```shell
+mise run doctor
+mise run dev:services
 ```
 
 ### JetBrains Rider

@@ -1,6 +1,34 @@
 [tools]
 dotnet = "9"
 
+[tasks."setup:credprovider"]
+outputs = "{{env.HOME}}/.nuget/plugins/netcore/CredentialProvider.Microsoft/"
+run = 'sh -c "$(curl -fsSL https://aka.ms/install-artifacts-credprovider.sh)"'
+[tasks."setup:tool-restore"]
+run = "dotnet tool restore"
+[tasks."setup:nuget-restore"]
+run = "dotnet restore --interactive"
+[tasks."setup:certs"]
+run = """
+dotnet dev-certs https
+dotnet dev-certs https --trust
+"""
+[tasks.setup]
+depends = ["setup:credprovider", "setup:tool-restore", "setup:nuget-restore", "setup:certs"]
+
+[tasks."dev:services"]
+description = "run service dependencies using docker"
+run = "script/dcl up -d --wait"
+
+[tasks.test]
+depends = ["dev:services"]
+run = "dotnet test"
+
+[tasks.doctor]
+description = "check for possible problems"
+depends = ["setup"]
+run = "mise run test"
+
 [tasks.rider-test-env]
 description = "populate Rider Test Runner environment variables"
 run = "dotnet run --project script/MiseRiderTestRunnerEnv Kumara.sln.DotSettings.user"
