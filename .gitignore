@@ -410,3 +410,6 @@ __blobstorage__
 __queuestorage__
 .vs
 /.vs
+
+# Local dev state
+/.local
