@@ -30,6 +30,7 @@ Kumara.Scenarios << for BDD scenarios
   - Tip: `brew install podman podman-desktop docker docker-compose` will get you close.
   - Tip: Check out [`podman-machine-run`](https://github.com/jasoncodes/dotfiles/blob/master/bin/podman-machine-run) (and accompanying [`launchd.plist`](https://github.com/jasoncodes/dotfiles/blob/master/LaunchAgents/podman-machine.plist)) to automate creation and starting of Podman Machine on macOS.
 - [mise](https://mise.jdx.dev) to manage environment variables.
+- [sops + age](https://github.com/getsops/sops?tab=readme-ov-file#encrypting-using-age) to manage secrets.
 
 ### Tools
 
@@ -47,6 +48,7 @@ mise run test
 ```shell
 mise run doctor
 mise run dev:services
+mise run dev:edit-secrets
 ```
 
 ### JetBrains Rider

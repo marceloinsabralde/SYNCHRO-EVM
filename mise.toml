@@ -1,5 +1,12 @@
 [tools]
 dotnet = "9"
+sops = "latest"
+age = "latest"
+
+[settings.sops]
+age_key_file = ".local/sops/age.txt"
+# NOTE: Disable strict mode so we can bootstrap our secrets using mise t setup:secrets
+strict = false
 
 [tasks."setup:credprovider"]
 outputs = "{{env.HOME}}/.nuget/plugins/netcore/CredentialProvider.Microsoft/"
@@ -13,12 +20,18 @@ run = """
 dotnet dev-certs https
 dotnet dev-certs https --trust
 """
+[tasks."setup:secrets"]
+outputs = ".local/sops/age.txt"
+run = "op read 'op://E7 Developers/SYNCHRO EVM - SOPS - Development/age.txt' > .local/sops/age.txt"
 [tasks.setup]
-depends = ["setup:credprovider", "setup:tool-restore", "setup:nuget-restore", "setup:certs"]
+depends = ["setup:credprovider", "setup:tool-restore", "setup:nuget-restore", "setup:certs", "setup:secrets"]
 
 [tasks."dev:services"]
 description = "run service dependencies using docker"
 run = "script/dcl up -d --wait"
+[tasks."dev:edit-secrets"]
+description = "edit the encrypted dev secrets"
+run = "SOPS_AGE_KEY_FILE=.local/sops/age.txt sops edit .env.json"
 
 [tasks.test]
 depends = ["dev:services"]
@@ -34,6 +47,8 @@ description = "populate Rider Test Runner environment variables"
 run = "dotnet run --project script/MiseRiderTestRunnerEnv Kumara.sln.DotSettings.user"
 
 [env]
+_.file = { path = ".env.json", redact = true }
+
 PGHOST="127.0.0.1"
 PGPORT="5434"
 PGUSER="kumara-admin"
