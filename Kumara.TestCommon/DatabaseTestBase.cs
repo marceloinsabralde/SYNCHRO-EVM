@@ -5,6 +5,7 @@ using System.Data.Common;
 using BraceExpander;
 using Kumara.Common.Utilities;
 using Kumara.TestCommon.Helpers;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -89,6 +90,7 @@ public abstract class DatabaseTestBase<T> : IAsyncLifetime
         _factory = AppServicesHelper.CreateWebApplicationFactory(builder =>
         {
             builder.UseSetting($"ConnectionStrings:{ConnectionStringName}", _connectionString);
+            ConfigureWebHostBuilder(builder);
         });
         _client = _factory.CreateClient();
         _dbContext = _factory.GetRequiredService<T>();
@@ -135,6 +137,8 @@ public abstract class DatabaseTestBase<T> : IAsyncLifetime
             yield return result.GetString(0);
         }
     }
+
+    protected virtual void ConfigureWebHostBuilder(IWebHostBuilder builder) { }
 
     protected virtual async Task ResetDatabase()
     {
