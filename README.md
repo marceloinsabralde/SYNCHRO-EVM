@@ -91,7 +91,7 @@ Note: If this is the first time using HTTPS with .NET Core, you may need to run 
 ### Running Kumara.EventSource
 
 From the root directory of the solution run `dotnet run --project Kumara.EventSource`
-Then visit https://localhost:7104/swagger/index.html to view in browser.
+Then visit https://localhost:7289/swagger/index.html to view in browser.
 
 ### Running Kumara.Core
 
@@ -139,7 +139,7 @@ dotnet csharpier --check . # check that all files in the current directory are f
 
 ## Databases
 
-Use `mongosh "${ConnectionStrings__KumaraEventSourceDB?}"` to connect to Event Source's MongoDB database.
+Use `psql kumara-event-source` to connect to Event Source's PostgreSQL database.
 Use `psql kumara-core` to connect to Core's PostgreSQL database.
 Use `psql kumara-web-api` to connect to Web API's PostgreSQL database.
 See `mise.toml` for a list of environment variables if you want to use other database tools.
