@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.ValueGeneration;
 namespace Kumara.EventSourceToo.Models;
 
 [EntityTypeConfiguration(typeof(Event.Configuration))]
-public class Event : ITimestampedEntity
+public class Event : ITimestampedEntity, IPageableEntity
 {
     public Guid Id { get; set; }
 
