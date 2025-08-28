@@ -1,7 +1,11 @@
 # Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-@Kumara_HostAddress = http://localhost:5175
 
-GET {{Kumara_HostAddress}}/weatherforecast/
-Accept: application/json
+@Kumara_BaseURL = https://localhost:7029
+
+# NOTE: See file://./Database/DbSeeder.cs
+@Seed_iTwin1_id = 10000000-0000-0000-0000-000000000000
+
+# List Activities
+GET {{Kumara_BaseURL}}/api/v1/activities?iTwinId={{Seed_iTwin1_id}}
 
 ###
