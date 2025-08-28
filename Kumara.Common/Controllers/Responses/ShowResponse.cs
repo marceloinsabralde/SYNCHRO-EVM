@@ -10,3 +10,9 @@ public class ShowResponse<T> : NamedResponse<T>
     [Required]
     public required T Item { get; set; }
 }
+
+public static class ShowResponse
+{
+    public static ShowResponse<T> For<T>(T obj)
+        where T : notnull => new ShowResponse<T> { Item = obj };
+}
