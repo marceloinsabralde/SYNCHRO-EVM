@@ -21,7 +21,12 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
     options.UseKumaraCommon();
 
     if (builder.Environment.IsDevelopment())
-        options.EnableSensitiveDataLogging();
+    {
+        options
+            .EnableSensitiveDataLogging()
+            .UseSeeding(DbSeeder.SeedData)
+            .UseAsyncSeeding(DbSeeder.SeedDataAsync);
+    }
 });
 
 builder
