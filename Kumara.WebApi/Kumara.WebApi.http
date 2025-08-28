@@ -32,3 +32,10 @@ Authorization: Bearer {{IMS_JWT}}
 Accept: application/json
 
 ###
+# Authorization Ping
+# @prompt userJWT A JWT with the synchro-evm scope and a principal attached (i.e. has a sub claim)
+GET {{Kumara_BaseURL}}/api/v0/authorization/{{Seed_iTwin1_id}}
+Authorization: Bearer {{userJWT}}
+Accept: application/json
+
+###
