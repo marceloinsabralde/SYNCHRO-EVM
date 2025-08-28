@@ -5,6 +5,7 @@
     <ItemGroup>
         <PackageReference Include="Bentley.ConnectCoreLibs.Providers.Abstractions" />
         <PackageReference Include="Humanizer.Core" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" />
         <PackageReference Include="Microsoft.Build.Locator" ExcludeAssets="runtime" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
