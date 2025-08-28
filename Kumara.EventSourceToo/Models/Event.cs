@@ -40,7 +40,6 @@ public class Event : ITimestampedEntity
         {
             builder.HasKey(e => new { e.Id, e.AccountId });
             // Generate a Guid for Id as it's no longer the primary key
-            // TODO: We should add coverage for this in a model test
             builder.Property(e => e.Id).HasValueGenerator<NpgsqlSequentialGuidValueGenerator>();
         }
     }
