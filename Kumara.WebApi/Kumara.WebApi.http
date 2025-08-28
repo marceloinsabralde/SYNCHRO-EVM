@@ -1,11 +1,31 @@
 # Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+@IMS_BaseURL = https://qa-ims.bentley.com
 @Kumara_BaseURL = https://localhost:7029
 
 # NOTE: See file://./Database/DbSeeder.cs
 @Seed_iTwin1_id = 10000000-0000-0000-0000-000000000000
 
+@client_id = {{$processEnv IMS_BACKGROUND_CLIENT_ID}}
+@client_secret = {{$processEnv IMS_BACKGROUND_CLIENT_SECRET}}
+@scope = synchro-evm
+
+# @name IMS_token
+POST {{IMS_BaseURL}}/connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&client_id={{client_id}}
+&client_secret={{client_secret}}
+&scope={{scope}}
+
+###
+
+@IMS_JWT = {{IMS_token.response.body.$.access_token}}
+
 # List Activities
 GET {{Kumara_BaseURL}}/api/v1/activities?iTwinId={{Seed_iTwin1_id}}
+Authorization: Bearer {{IMS_JWT}}
+Accept: application/json
 
 ###
