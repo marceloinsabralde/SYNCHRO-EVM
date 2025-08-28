@@ -38,21 +38,6 @@ services:
     healthcheck:
       test: /health.sh
 
-  mongodb:
-    image: "${MONGO_IMAGE?}"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: "${MONGO_INITDB_ROOT_USERNAME?}"
-      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_INITDB_ROOT_PASSWORD?}"
-      EXTRA_USER_DBS: "${KUMARA_EVENTS_DB_USERNAME?}:${KUMARA_EVENTS_DB_PASSWORD?}"
-    volumes:
-      - .docker/mongo/health.sh:/health.sh:ro
-      - .docker/mongo/initdb.d:/docker-entrypoint-initdb.d:ro
-    ports:
-      - 127.0.0.1:27017:27017
-    restart: unless-stopped
-    healthcheck:
-      test: /health.sh
-
   elasticsearch: &elasticsearch
     image: elasticsearch:9.0.2
     environment: &elasticsearch_environment
