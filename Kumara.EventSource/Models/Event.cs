@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.ValueGeneration;
 namespace Kumara.EventSource.Models;
 
 [EntityTypeConfiguration(typeof(Event.Configuration))]
-public class Event : ITimestampedEntity, IPageableEntity
+public class Event : ITimestampedEntity, IPageableEntity, IDisposable
 {
     public Guid Id { get; set; }
 
@@ -42,5 +42,10 @@ public class Event : ITimestampedEntity, IPageableEntity
             // Generate a Guid for Id as it's no longer the primary key
             builder.Property(e => e.Id).HasValueGenerator<NpgsqlSequentialGuidValueGenerator>();
         }
+    }
+
+    public void Dispose()
+    {
+        Data.Dispose();
     }
 }

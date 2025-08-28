@@ -10,7 +10,7 @@ using NodaTime;
 
 namespace Kumara.EventSource.Controllers.Requests;
 
-public class EventCreateRequest : IValidatableObject
+public class EventCreateRequest : IValidatableObject, IDisposable
 {
     [NotEmpty]
     public Guid? Id { get; set; }
@@ -34,6 +34,11 @@ public class EventCreateRequest : IValidatableObject
     public Guid? TriggeredByUserSubject { get; set; }
 
     public Instant? TriggeredByUserAt { get; set; }
+
+    public void Dispose()
+    {
+        Data.Dispose();
+    }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext) =>
         ValidateData();

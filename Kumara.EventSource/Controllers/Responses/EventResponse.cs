@@ -6,7 +6,7 @@ using NodaTime;
 
 namespace Kumara.EventSource.Controllers.Responses;
 
-public class EventResponse
+public class EventResponse : IDisposable
 {
     public Guid Id { get; set; }
 
@@ -25,6 +25,11 @@ public class EventResponse
     public required JsonDocument Data { get; set; }
 
     public Instant CreatedAt { get; set; }
+
+    public void Dispose()
+    {
+        Data.Dispose();
+    }
 
     public static EventResponse FromEvent(Event @event)
     {
