@@ -64,6 +64,7 @@ _.file = { path = ".env.json", redact = true }
 
 # NOTE provide defaults so we can at least run mise to make the secrets work
 IMS_API_SECRET = "{{ env.IMS_API_SECRET | default(value=\"missing .env.json\") }}"
+IMS_BACKGROUND_CLIENT_SECRET = "{{ env.IMS_BACKGROUND_CLIENT_SECRET | default(value=\"missing .env.json\") }}"
 
 PGHOST="127.0.0.1"
 PGPORT="5434"
@@ -109,3 +110,5 @@ TEST_ELASTIC_PASSWORD="{{exec(command='script/make-secret TEST_ELASTIC_PASSWORD'
 TEST_ConnectionStrings__KumaraSearchES = "http://elastic:{{env.TEST_ELASTIC_PASSWORD}}@localhost:9201"
 
 OpenIdConnect__ApiSecret = "{{env.IMS_API_SECRET}}"
+
+IMS_BACKGROUND_CLIENT_SECRET_PERCENT_ENCODED = "{{env.IMS_BACKGROUND_CLIENT_SECRET | urlencode}}"

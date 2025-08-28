@@ -10,13 +10,16 @@
 @client_secret = {{$processEnv IMS_BACKGROUND_CLIENT_SECRET}}
 @scope = synchro-evm
 
+# TODO: %encoding of variables is in bleeding edge of rest client
+@%client_secret = {{$processEnv IMS_BACKGROUND_CLIENT_SECRET_PERCENT_ENCODED}}
+
 # @name IMS_token
 POST {{IMS_BaseURL}}/connect/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=client_credentials
 &client_id={{client_id}}
-&client_secret={{client_secret}}
+&client_secret={{%client_secret}}
 &scope={{scope}}
 
 ###
