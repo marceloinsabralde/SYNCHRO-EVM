@@ -57,22 +57,26 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
     [EndpointName("CreateEvent")]
     public async Task<IActionResult> Create([FromBody] EventCreateRequest eventCreateRequest)
     {
-        var newEvent = new Event
+        using (eventCreateRequest)
         {
-            ITwinId = eventCreateRequest.ITwinId,
-            AccountId = eventCreateRequest.AccountId,
-            CorrelationId = eventCreateRequest.CorrelationId!,
-            Type = eventCreateRequest.Type,
-            Data = eventCreateRequest.Data,
-            TriggeredByUserSubject = eventCreateRequest.TriggeredByUserSubject,
-            TriggeredByUserAt = eventCreateRequest.TriggeredByUserAt,
-        };
+            using var newEvent = new Event
+            {
+                ITwinId = eventCreateRequest.ITwinId,
+                AccountId = eventCreateRequest.AccountId,
+                CorrelationId = eventCreateRequest.CorrelationId!,
+                Type = eventCreateRequest.Type,
+                Data = eventCreateRequest.Data,
+                TriggeredByUserSubject = eventCreateRequest.TriggeredByUserSubject,
+                TriggeredByUserAt = eventCreateRequest.TriggeredByUserAt,
+            };
 
-        if (eventCreateRequest.Id.HasValue)
-            newEvent.Id = eventCreateRequest.Id.Value;
+            if (eventCreateRequest.Id.HasValue)
+                newEvent.Id = eventCreateRequest.Id.Value;
 
-        await dbContext.Events.AddAsync(newEvent);
-        await dbContext.SaveChangesAsync();
-        return Created();
+            await dbContext.Events.AddAsync(newEvent);
+            await dbContext.SaveChangesAsync();
+
+            return Created();
+        }
     }
 }
