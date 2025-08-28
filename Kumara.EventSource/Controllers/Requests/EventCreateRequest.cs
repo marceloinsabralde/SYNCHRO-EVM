@@ -5,10 +5,10 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Kumara.Common.Utilities;
 using Kumara.Common.Validations;
-using Kumara.EventSourceToo.Validations;
+using Kumara.EventSource.Validations;
 using NodaTime;
 
-namespace Kumara.EventSourceToo.Controllers.Requests;
+namespace Kumara.EventSource.Controllers.Requests;
 
 public class EventCreateRequest : IValidatableObject
 {

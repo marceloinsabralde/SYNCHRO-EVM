@@ -4,9 +4,9 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Kumara.Common.Controllers.Responses;
+using Kumara.EventSource.Controllers.Requests;
+using Kumara.EventSource.Controllers.Responses;
 using Kumara.EventSource.Tests.Factories;
-using Kumara.EventSourceToo.Controllers.Requests;
-using Kumara.EventSourceToo.Controllers.Responses;
 using Kumara.TestCommon.Extensions;
 using Microsoft.EntityFrameworkCore;
 

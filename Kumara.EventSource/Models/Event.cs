@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.ValueGeneration;
 
-namespace Kumara.EventSourceToo.Models;
+namespace Kumara.EventSource.Models;
 
 [EntityTypeConfiguration(typeof(Event.Configuration))]
 public class Event : ITimestampedEntity, IPageableEntity

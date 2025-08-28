@@ -30,7 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kumara.EventSourceToo", "Kumara.EventSourceToo\Kumara.EventSourceToo.csproj", "{0183B9E7-1086-4B74-ADA6-51E323D4E268}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kumara.EventSource", "Kumara.EventSource\Kumara.EventSource.csproj", "{0183B9E7-1086-4B74-ADA6-51E323D4E268}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kumara.EventSource.Tests", "Kumara.EventSource.Tests\Kumara.EventSource.Tests.csproj", "{75A02618-23C0-44F8-8D7E-F695C62FB2E1}"
 EndProject

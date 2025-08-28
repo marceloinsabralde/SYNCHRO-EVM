@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Kumara.EventSourceToo.Migrations
+namespace Kumara.EventSource.Migrations
 {
     /// <inheritdoc />
     public partial class CreateDistributedEvents : Migration

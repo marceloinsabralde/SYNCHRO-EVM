@@ -1,9 +1,9 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Kumara.Common.Queries;
-using Kumara.EventSourceToo.Models;
+using Kumara.EventSource.Models;
 
-namespace Kumara.EventSourceToo.Queries;
+namespace Kumara.EventSource.Queries;
 
 public class ListEventsQuery : PageableQuery<ListEventsQuery, ListEventsQueryFilter, Event>
 {

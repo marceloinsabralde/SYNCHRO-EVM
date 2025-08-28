@@ -1,7 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
-using Kumara.EventSourceToo.Validations;
+using Kumara.EventSource.Validations;
 
 namespace Kumara.EventSource.Tests.Validations;
 

@@ -5,7 +5,7 @@ using System.Text.Json;
 using Bogus;
 using Kumara.Common.Attributes;
 using Kumara.Common.EventTypes;
-using Kumara.EventSourceToo.Models;
+using Kumara.EventSource.Models;
 using NodaTime;
 
 namespace Kumara.EventSource.Tests.Factories;

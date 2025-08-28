@@ -3,15 +3,15 @@
 using Kumara.Common.Controllers.Extensions;
 using Kumara.Common.Controllers.Responses;
 using Kumara.Common.Utilities;
-using Kumara.EventSourceToo.Controllers.Requests;
-using Kumara.EventSourceToo.Controllers.Responses;
-using Kumara.EventSourceToo.Database;
-using Kumara.EventSourceToo.Models;
-using Kumara.EventSourceToo.Queries;
-using Kumara.EventSourceToo.Validations;
+using Kumara.EventSource.Controllers.Requests;
+using Kumara.EventSource.Controllers.Responses;
+using Kumara.EventSource.Database;
+using Kumara.EventSource.Models;
+using Kumara.EventSource.Queries;
+using Kumara.EventSource.Validations;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Kumara.EventSourceToo.Controllers;
+namespace Kumara.EventSource.Controllers;
 
 [Route("api/events")]
 [ApiController]

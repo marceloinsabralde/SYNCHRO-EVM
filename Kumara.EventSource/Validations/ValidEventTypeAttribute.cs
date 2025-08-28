@@ -3,7 +3,7 @@
 using System.ComponentModel.DataAnnotations;
 using Kumara.Common.Utilities;
 
-namespace Kumara.EventSourceToo.Validations;
+namespace Kumara.EventSource.Validations;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
 public class ValidEventTypeAttribute : ValidationAttribute

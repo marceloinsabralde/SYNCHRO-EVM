@@ -1,6 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.EventSourceToo.Database;
+using Kumara.EventSource.Database;
 using Kumara.TestCommon;
 
 namespace Kumara.EventSource.Tests;

@@ -1,10 +1,10 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.Text.Json;
-using Kumara.EventSourceToo.Models;
+using Kumara.EventSource.Models;
 using NodaTime;
 
-namespace Kumara.EventSourceToo.Controllers.Responses;
+namespace Kumara.EventSource.Controllers.Responses;
 
 public class EventResponse
 {

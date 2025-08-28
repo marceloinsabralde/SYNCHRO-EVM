@@ -1,7 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.EventSource.Models;
 using Kumara.EventSource.Tests.Factories;
-using Kumara.EventSourceToo.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kumara.EventSource.Tests.Database;

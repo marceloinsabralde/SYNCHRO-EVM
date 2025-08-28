@@ -2,7 +2,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Kumara.EventSourceToo.Controllers.Requests;
+using Kumara.EventSource.Controllers.Requests;
 using Kumara.TestCommon.Helpers;
 
 namespace Kumara.EventSource.Tests.Controllers.Requests;

@@ -2,7 +2,7 @@
 
 using Kumara.Common.Database;
 using Kumara.Common.Extensions;
-using Kumara.EventSourceToo.Database;
+using Kumara.EventSource.Database;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
