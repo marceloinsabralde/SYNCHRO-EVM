@@ -4,7 +4,7 @@ sops = "latest"
 age = "latest"
 
 [settings.sops]
-age_key_file = ".local/sops/age.txt"
+age_key_file = "{{config_root}}/.local/sops/age.txt"
 # NOTE: Disable strict mode so we can bootstrap our secrets using mise t setup:secrets
 strict = false
 
@@ -21,8 +21,8 @@ dotnet dev-certs https
 dotnet dev-certs https --trust
 """
 [tasks."setup:secrets"]
-outputs = ".local/sops/age.txt"
-run = "op read 'op://E7 Developers/SYNCHRO EVM - SOPS - Development/age.txt' > .local/sops/age.txt"
+outputs = "{{config_root}}/.local/sops/age.txt"
+run = "op read 'op://E7 Developers/SYNCHRO EVM - SOPS - Development/age.txt' > '{{config_root}}/.local/sops/age.txt'"
 [tasks.setup]
 depends = ["setup:credprovider", "setup:tool-restore", "setup:nuget-restore", "setup:certs", "setup:secrets"]
 
@@ -31,7 +31,7 @@ description = "run service dependencies using docker"
 run = "script/dcl up -d --wait"
 [tasks."dev:edit-secrets"]
 description = "edit the encrypted dev secrets"
-run = "SOPS_AGE_KEY_FILE=.local/sops/age.txt sops edit .env.json"
+run = "SOPS_AGE_KEY_FILE={{config_root}}/.local/sops/age.txt sops edit .env.json"
 
 [tasks.test]
 depends = ["dev:services"]
