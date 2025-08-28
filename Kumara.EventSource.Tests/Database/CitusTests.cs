@@ -1,10 +1,10 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.EventSource.Tests.Factories;
 using Kumara.EventSourceToo.Models;
-using Kumara.EventSourceToo.Tests.Factories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kumara.EventSourceToo.Tests.Database;
+namespace Kumara.EventSource.Tests.Database;
 
 public sealed class CitusTests : DatabaseTestBase
 {

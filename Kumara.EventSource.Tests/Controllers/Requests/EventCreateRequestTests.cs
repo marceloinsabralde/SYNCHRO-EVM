@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 using Kumara.EventSourceToo.Controllers.Requests;
 using Kumara.TestCommon.Helpers;
 
-namespace Kumara.EventSourceToo.Tests.Controllers.Requests;
+namespace Kumara.EventSource.Tests.Controllers.Requests;
 
 public class EventCreateRequestTests
 {

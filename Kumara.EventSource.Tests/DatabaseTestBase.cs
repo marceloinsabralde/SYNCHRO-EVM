@@ -3,7 +3,7 @@
 using Kumara.EventSourceToo.Database;
 using Kumara.TestCommon;
 
-namespace Kumara.EventSourceToo.Tests;
+namespace Kumara.EventSource.Tests;
 
 public class DatabaseTestBase : DatabaseTestBase<ApplicationDbContext>
 {

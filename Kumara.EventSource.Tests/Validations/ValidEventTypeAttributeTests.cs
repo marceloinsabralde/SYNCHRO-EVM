@@ -3,7 +3,7 @@
 using System.ComponentModel.DataAnnotations;
 using Kumara.EventSourceToo.Validations;
 
-namespace Kumara.EventSourceToo.Tests.Validations;
+namespace Kumara.EventSource.Tests.Validations;
 
 public sealed class ValidEventTypeAttributeTests
 {

@@ -8,7 +8,7 @@ using Kumara.Common.EventTypes;
 using Kumara.EventSourceToo.Models;
 using NodaTime;
 
-namespace Kumara.EventSourceToo.Tests.Factories;
+namespace Kumara.EventSource.Tests.Factories;
 
 public static class EventFactory
 {

@@ -1,10 +1,10 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Kumara.EventSource.Tests.Factories;
 using Kumara.EventSourceToo.Models;
 using Kumara.EventSourceToo.Queries;
-using Kumara.EventSourceToo.Tests.Factories;
 
-namespace Kumara.EventSourceToo.Tests.Queries;
+namespace Kumara.EventSource.Tests.Queries;
 
 public class ListEventsQueryTests : DatabaseTestBase
 {

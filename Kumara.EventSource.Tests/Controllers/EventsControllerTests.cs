@@ -4,13 +4,13 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Kumara.Common.Controllers.Responses;
+using Kumara.EventSource.Tests.Factories;
 using Kumara.EventSourceToo.Controllers.Requests;
 using Kumara.EventSourceToo.Controllers.Responses;
-using Kumara.EventSourceToo.Tests.Factories;
 using Kumara.TestCommon.Extensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kumara.EventSourceToo.Tests.Controllers;
+namespace Kumara.EventSource.Tests.Controllers;
 
 public class EventsControllerTests : DatabaseTestBase
 {
