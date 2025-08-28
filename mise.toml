@@ -2,6 +2,8 @@
 dotnet = "9"
 sops = "latest"
 age = "latest"
+node = "24"
+"npm:foreman" = "latest"
 
 [settings.sops]
 age_key_file = "{{config_root}}/.local/sops/age.txt"
@@ -36,6 +38,17 @@ run = "SOPS_AGE_KEY_FILE={{config_root}}/.local/sops/age.txt sops edit .env.json
 [tasks.test]
 depends = ["dev:services"]
 run = "dotnet test"
+
+[tasks.build]
+run = "dotnet build"
+[tasks.start]
+description = "run services without reloading"
+depends = ["dev:services", "build"]
+run = "nf start"
+[tasks.dev]
+description = "run services with reloading"
+depends = ["dev:services", "build"]
+run = "nf --procfile Procfile.dev start"
 
 [tasks.doctor]
 description = "check for possible problems"

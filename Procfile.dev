@@ -1,0 +1,4 @@
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+api: dotnet watch --project Kumara.WebApi
+event-source: dotnet watch --project Kumara.EventSource
+core: dotnet watch --project Kumara.Core
