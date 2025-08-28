@@ -18,4 +18,13 @@ public class DatabaseTestBase : DatabaseTestBase<ApplicationDbContext>
         base.ConfigureWebHostBuilder(builder);
         builder.ConfigureTestJwt();
     }
+
+    public override async ValueTask InitializeAsync()
+    {
+        await base.InitializeAsync();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+            "Bearer",
+            StubTokenGenerator.GenerateToken()
+        );
+    }
 }
