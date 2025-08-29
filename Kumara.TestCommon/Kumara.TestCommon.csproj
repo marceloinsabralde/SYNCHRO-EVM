@@ -8,6 +8,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Bentley.ConnectCoreLibs.User" />
+        <PackageReference Include="Bogus" />
         <PackageReference Include="BraceExpander" />
         <PackageReference Include="Microsoft.AspNetCore.TestHost" />
         <PackageReference Include="Microsoft.Data.SqlClient" />
@@ -29,6 +31,7 @@
         <PackageReference Include="Microsoft.OpenApi" />
         <PackageReference Include="SharpYaml" />
         <PackageReference Include="System.Diagnostics.DiagnosticSource" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
         <PackageReference Include="System.Reflection.Metadata" />
         <PackageReference Include="xunit.v3.assert" />
         <PackageReference Include="xunit.v3.extensibility.core" />

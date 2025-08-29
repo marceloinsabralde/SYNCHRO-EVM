@@ -18,9 +18,18 @@ using OpenTelemetry.Trace;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+static void ConfigureServices(IServiceCollection services)
+{
+    services.AddHttpContextAccessor();
+    services.AddScoped<IAuthorizationContext, HttpAuthorizationContext>();
+}
+
 builder.Configuration.AddEnvironmentVariables(
     prefix: $"{builder.Environment.EnvironmentName.ToUpper()}_"
 );
+
+ConfigureServices(builder.Services);
+builder.ConfigureBentleyProtectedApi();
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
@@ -98,8 +107,11 @@ app.UseHttpsRedirection();
 
 await app.MigrateDbAsync<ApplicationDbContext>();
 
-app.MapControllers();
-app.MapHealthChecks("/healthz");
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers().RequireAuthorization();
+app.MapHealthChecks("/healthz").AllowAnonymous();
 
 if (app.Environment.IsDevelopment())
 {
