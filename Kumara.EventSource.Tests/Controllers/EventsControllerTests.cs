@@ -310,10 +310,10 @@ public class EventsControllerTests : DatabaseTestBase
     {
         var event1 = EventFactory.CreateActivityCreatedV1Event();
         var event2 = EventFactory.CreateActivityCreatedV1Event();
-        var otherAccountEvent = EventFactory.CreateActivityDeletedV1Event();
+        var otherTypeEvent = EventFactory.CreateActivityDeletedV1Event();
 
         await _dbContext.Events.AddRangeAsync(
-            [event1, event2, otherAccountEvent],
+            [event1, event2, otherTypeEvent],
             TestContext.Current.CancellationToken
         );
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
