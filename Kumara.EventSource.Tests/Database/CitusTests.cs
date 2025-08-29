@@ -39,11 +39,11 @@ public sealed class CitusTests : DatabaseTestBase
 
     private record CitusShard(int Id);
 
-    private async Task<int> GetShardId(Guid iTwinId, string table = "events")
+    private async Task<int> GetShardId(Guid distributionValue, string table = "events")
     {
         var row = await _dbContext
             .Database.SqlQuery<CitusShard>(
-                $"SELECT get_shard_id_for_distribution_column({table}, {iTwinId}) AS id"
+                $"SELECT get_shard_id_for_distribution_column({table}, {distributionValue}) AS id"
             )
             .FirstAsync(TestContext.Current.CancellationToken);
         return row.Id;
