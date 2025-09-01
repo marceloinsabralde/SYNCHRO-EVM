@@ -1,41 +1,51 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using Kumara.Common.Utilities;
+using Kumara.Common.Database;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NodaTime;
+using Npgsql.EntityFrameworkCore.PostgreSQL.ValueGeneration;
 
 namespace Kumara.EventSource.Models;
 
-public class Event
+[EntityTypeConfiguration(typeof(Event.Configuration))]
+public class Event : ITimestampedEntity, IPageableEntity, IDisposable
 {
-    [Required]
-    public Guid Id { get; set; } = GuidUtility.CreateGuid();
+    public Guid Id { get; set; }
 
-    [Required]
     public required Guid ITwinId { get; set; }
 
-    [Required]
     public required Guid AccountId { get; set; }
 
-    [Required]
-    public required string CorrelationId { get; set; }
+    public string? CorrelationId { get; set; }
 
-    [Required]
-    public Guid IdempotencyId { get; set; } = GuidUtility.CreateGuid();
-
-    [Required]
-    public required string SpecVersion { get; set; }
-
-    [Required]
-    public required Uri Source { get; set; }
-
-    [Required]
     public required string Type { get; set; }
 
-    public DateTimeOffset? Time { get; set; }
+    public Guid? TriggeredByUserSubject { get; set; }
 
-    [Required]
-    [JsonPropertyName("data")]
-    public JsonDocument DataJson { get; set; } = JsonDocument.Parse("{}");
+    public Instant? TriggeredByUserAt { get; set; }
+
+    public required JsonDocument Data { get; set; }
+
+    public Instant CreatedAt { get; set; }
+
+    [NotMapped]
+    public Instant UpdatedAt { get; set; }
+
+    public class Configuration : IEntityTypeConfiguration<Event>
+    {
+        public void Configure(EntityTypeBuilder<Event> builder)
+        {
+            builder.HasKey(e => new { e.Id, e.AccountId });
+            // Generate a Guid for Id as it's no longer the primary key
+            builder.Property(e => e.Id).HasValueGenerator<NpgsqlSequentialGuidValueGenerator>();
+        }
+    }
+
+    public void Dispose()
+    {
+        Data.Dispose();
+    }
 }

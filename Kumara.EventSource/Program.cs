@@ -1,62 +1,60 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
-using Kumara.EventSource.DbContext;
-using Kumara.EventSource.Extensions;
-using Kumara.EventSource.Interfaces;
-using Kumara.EventSource.Repositories;
-using Kumara.EventSource.Utilities;
+using Kumara.Common.Database;
+using Kumara.Common.Extensions;
+using Kumara.EventSource.Database;
+using Microsoft.EntityFrameworkCore;
 
-JsonSchemaGenerator.GenerateJsonSchemas();
+var builder = WebApplication.CreateBuilder(args);
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
+{
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("KumaraEventSourceDB"),
+        npgsqlOptions =>
+        {
+            npgsqlOptions.SetPostgresVersion(16, 9);
+            npgsqlOptions.UseNodaTime();
+        }
+    );
 
-builder.Services.AddEventSourceOpenApi();
+    options.UseKumaraCommon();
 
-builder.Services.AddScoped<IEventRepository, EventRepositoryMongo>();
-builder.Services.AddScoped<IEventValidator, EventValidator>();
-builder.Services.AddSingleton<Dictionary<string, Type>>(
-    EventTypeMapInitializer.InitializeEventTypeMap()
-);
-
-builder.Services.AddMongoDbContext(builder.Configuration);
+    if (builder.Environment.IsDevelopment())
+    {
+        options
+            .EnableSensitiveDataLogging()
+            .UseSeeding(DbSeeder.SeedData)
+            .UseAsyncSeeding(DbSeeder.SeedDataAsync);
+    }
+});
 
 builder
     .Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.PropertyNamingPolicy = KumaraJsonOptions
-            .DefaultOptions
-            .PropertyNamingPolicy;
-        options.JsonSerializerOptions.PropertyNameCaseInsensitive = KumaraJsonOptions
-            .DefaultOptions
-            .PropertyNameCaseInsensitive;
-        options.JsonSerializerOptions.DefaultIgnoreCondition = KumaraJsonOptions
-            .DefaultOptions
-            .DefaultIgnoreCondition;
+        options.UseKumaraCommon();
     });
 
-builder.Services.AddHealthChecks().AddDbContextCheck<MongoDbContext>();
+builder.Services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
+builder.Services.AddOpenApi(options => options.UseKumaraCommon());
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options => options.UseKumaraCommon());
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 
-if (!app.Environment.IsProduction())
+if (app.Environment.IsDevelopment())
 {
+    app.MapOpenApi();
     app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "SYNCHRO EVM EventSource API v1");
-        options.RoutePrefix = "swagger";
-        // Disable resource loading
-        options.InjectStylesheet("");
-        options.EnableDeepLinking();
-    });
+    app.UseSwaggerUI(options => options.EnableDeepLinking());
 }
 
 app.UseHttpsRedirection();
 
+await app.MigrateDbAsync<ApplicationDbContext>();
+
 app.MapControllers();
 app.MapHealthChecks("/healthz");
 
-await app.RunAsync(CancellationToken.None);
-
-public partial class Program { }
+app.Run();

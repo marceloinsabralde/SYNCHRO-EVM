@@ -70,6 +70,7 @@ PGHOST="127.0.0.1"
 PGPORT="5434"
 PGUSER="kumara-admin"
 PGPASSWORD="{{exec(command='script/make-secret pgpassword', cache_key='pgpassword', cache_duration='1h')}}"
+CITUS_PGPORT="5435"
 
 KUMARA_WEB_API_DB_USERNAME="kumara-web-api"
 KUMARA_WEB_API_DB_PASSWORD="{{exec(command='script/make-secret KUMARA_WEB_API_DB_PASSWORD', cache_key='KUMARA_WEB_API_DB_PASSWORD', cache_duration='1h')}}"
@@ -95,14 +96,6 @@ TEST_KUMARA_SEARCH_DB_USERNAME="kumara-search-test"
 TEST_KUMARA_SEARCH_DB_PASSWORD="{{exec(command='script/make-secret TEST_KUMARA_SEARCH_DB_PASSWORD', cache_key='TEST_KUMARA_SEARCH_DB_PASSWORD', cache_duration='1h')}}"
 TEST_ConnectionStrings__KumaraSearchDB_TEMPLATE="Host={{env.PGHOST}};Port={{env.PGPORT}};Database={{env.TEST_KUMARA_SEARCH_DB_USERNAME}};Username={{env.TEST_KUMARA_SEARCH_DB_USERNAME}};Password={{env.TEST_KUMARA_SEARCH_DB_PASSWORD}}"
 
-MONGO_IMAGE="mongo:8"
-MONGO_INITDB_ROOT_USERNAME="kumara-admin"
-MONGO_INITDB_ROOT_PASSWORD="{{exec(command='script/make-secret MONGO_ROOT_PASSWORD', cache_key='MONGO_ROOT_PASSWORD', cache_duration='1h')}}"
-
-KUMARA_EVENTS_DB_USERNAME="kumara-events"
-KUMARA_EVENTS_DB_PASSWORD="{{exec(command='script/make-secret KUMARA_EVENTS_DB_PASSWORD', cache_key='KUMARA_EVENTS_DB_PASSWORD', cache_duration='1h')}}"
-ConnectionStrings__KumaraEventSourceDB="mongodb://{{env.KUMARA_EVENTS_DB_USERNAME}}:{{env.KUMARA_EVENTS_DB_PASSWORD}}@localhost:27017/{{env.KUMARA_EVENTS_DB_USERNAME}}?authSource=admin"
-
 ELASTIC_PASSWORD="{{exec(command='script/make-secret ELASTIC_PASSWORD', cache_key='ELASTIC_PASSWORD', cache_duration='1h')}}"
 ConnectionStrings__KumaraSearchES = "http://elastic:{{env.ELASTIC_PASSWORD}}@localhost:9200"
 
@@ -112,3 +105,11 @@ TEST_ConnectionStrings__KumaraSearchES = "http://elastic:{{env.TEST_ELASTIC_PASS
 OpenIdConnect__ApiSecret = "{{env.IMS_API_SECRET}}"
 
 IMS_BACKGROUND_CLIENT_SECRET_PERCENT_ENCODED = "{{env.IMS_BACKGROUND_CLIENT_SECRET | urlencode}}"
+
+KUMARA_EVENT_SOURCE_DB_USERNAME="kumara-event-source"
+KUMARA_EVENT_SOURCE_DB_PASSWORD="{{exec(command='script/make-secret KUMARA_EVENT_SOURCE_DB_PASSWORD', cache_key='KUMARA_EVENT_SOURCE_DB_PASSWORD', cache_duration='1h')}}"
+ConnectionStrings__KumaraEventSourceDB="Host={{env.PGHOST}};Port={{env.CITUS_PGPORT}};Database={{env.KUMARA_EVENT_SOURCE_DB_USERNAME}};Username={{env.KUMARA_EVENT_SOURCE_DB_USERNAME}};Password={{env.KUMARA_EVENT_SOURCE_DB_PASSWORD}}"
+
+TEST_KUMARA_EVENT_SOURCE_DB_USERNAME="kumara-event-source-test"
+TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD="{{exec(command='script/make-secret TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD', cache_key='TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD', cache_duration='1h')}}"
+TEST_ConnectionStrings__KumaraEventSourceDB_TEMPLATE="Host={{env.PGHOST}};Port={{env.CITUS_PGPORT}};Database={{env.TEST_KUMARA_EVENT_SOURCE_DB_USERNAME}}_{1..5};Username={{env.TEST_KUMARA_EVENT_SOURCE_DB_USERNAME}};Password={{env.TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD}}"
