@@ -10,7 +10,7 @@ using NodaTime;
 
 namespace Kumara.EventSource.Controllers.Requests;
 
-public class EventCreateRequest : IValidatableObject, IDisposable
+public class EventCreateRequest : IValidatableObject
 {
     [NotEmpty]
     public Guid? Id { get; set; }
@@ -29,16 +29,11 @@ public class EventCreateRequest : IValidatableObject, IDisposable
     public required string Type { get; set; }
 
     [Required]
-    public required JsonDocument Data { get; set; }
+    public required string Data { get; set; }
 
     public Guid? TriggeredByUserSubject { get; set; }
 
     public Instant? TriggeredByUserAt { get; set; }
-
-    public void Dispose()
-    {
-        Data.Dispose();
-    }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext) =>
         ValidateData();
@@ -77,7 +72,7 @@ public class EventCreateRequest : IValidatableObject, IDisposable
         if (eventType is null)
             return false;
 
-        eventDataObject = Data.Deserialize(eventType, JsonSerializerOptions);
+        eventDataObject = JsonSerializer.Deserialize(Data, eventType, JsonSerializerOptions);
         return eventDataObject is not null;
     }
 

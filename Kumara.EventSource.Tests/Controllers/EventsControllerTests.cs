@@ -21,7 +21,7 @@ public class EventsControllerTests : DatabaseTestBase
         var accountId = Guid.CreateVersion7();
         var eventId = Guid.CreateVersion7();
         var eventType = "activity.created.v1";
-        var eventData = JsonSerializer.SerializeToDocument(
+        var eventData = JsonSerializer.Serialize(
             new
             {
                 Id = Guid.CreateVersion7(),
@@ -60,7 +60,10 @@ public class EventsControllerTests : DatabaseTestBase
             () => createdEvent.Type.ShouldBe(eventType),
             () =>
                 JsonElement
-                    .DeepEquals(eventData.RootElement, createdEvent.Data.RootElement)
+                    .DeepEquals(
+                        JsonDocument.Parse(eventData).RootElement,
+                        createdEvent.Data.RootElement
+                    )
                     .ShouldBeTrue(),
             () => createdEvent.CorrelationId.ShouldBeNull(),
             () => createdEvent.TriggeredByUserAt.ShouldBeNull(),
@@ -81,7 +84,7 @@ public class EventsControllerTests : DatabaseTestBase
                 ITwinId = iTwinId,
                 AccountId = accountId,
                 Type = "invalid.type.v1",
-                Data = JsonSerializer.SerializeToDocument(new { }, JsonSerializerOptions.Web),
+                Data = JsonSerializer.Serialize(new { }, JsonSerializerOptions.Web),
             },
             TestContext.Current.CancellationToken
         );
@@ -107,7 +110,7 @@ public class EventsControllerTests : DatabaseTestBase
                 ITwinId = iTwinId,
                 AccountId = accountId,
                 Type = "activity.updated.v1",
-                Data = JsonSerializer.SerializeToDocument(new { }, JsonSerializerOptions.Web),
+                Data = JsonSerializer.Serialize(new { }, JsonSerializerOptions.Web),
             },
             TestContext.Current.CancellationToken
         );
@@ -134,7 +137,7 @@ public class EventsControllerTests : DatabaseTestBase
             {
                 ITwinId = iTwinId,
                 Type = "activity.deleted.v1",
-                Data = JsonSerializer.SerializeToDocument(
+                Data = JsonSerializer.Serialize(
                     new { Id = Guid.CreateVersion7() },
                     JsonSerializerOptions.Web
                 ),

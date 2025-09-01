@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.Text.Json;
 using Kumara.Common.Controllers.Extensions;
 using Kumara.Common.Controllers.Responses;
 using Kumara.Common.Utilities;
@@ -57,26 +58,20 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
     [EndpointName("CreateEvent")]
     public async Task<IActionResult> Create([FromBody] EventCreateRequest eventCreateRequest)
     {
-        using (eventCreateRequest)
+        using var newEvent = new Event
         {
-            using var newEvent = new Event
-            {
-                ITwinId = eventCreateRequest.ITwinId,
-                AccountId = eventCreateRequest.AccountId,
-                CorrelationId = eventCreateRequest.CorrelationId,
-                Type = eventCreateRequest.Type,
-                Data = eventCreateRequest.Data,
-                TriggeredByUserSubject = eventCreateRequest.TriggeredByUserSubject,
-                TriggeredByUserAt = eventCreateRequest.TriggeredByUserAt,
-            };
-
-            if (eventCreateRequest.Id.HasValue)
-                newEvent.Id = eventCreateRequest.Id.Value;
-
-            await dbContext.Events.AddAsync(newEvent);
-            await dbContext.SaveChangesAsync();
-
-            return Created();
-        }
+            ITwinId = eventCreateRequest.ITwinId,
+            AccountId = eventCreateRequest.AccountId,
+            CorrelationId = eventCreateRequest.CorrelationId,
+            Type = eventCreateRequest.Type,
+            Data = JsonDocument.Parse(eventCreateRequest.Data),
+            TriggeredByUserSubject = eventCreateRequest.TriggeredByUserSubject,
+            TriggeredByUserAt = eventCreateRequest.TriggeredByUserAt,
+        };
+        if (eventCreateRequest.Id.HasValue)
+            newEvent.Id = eventCreateRequest.Id.Value;
+        await dbContext.Events.AddAsync(newEvent);
+        await dbContext.SaveChangesAsync();
+        return Created();
     }
 }
