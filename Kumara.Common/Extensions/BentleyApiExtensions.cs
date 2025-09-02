@@ -13,10 +13,16 @@ namespace Kumara.Common.Extensions;
 public static class BentleyApiExtensions
 {
     // Configures Authentication as an OAuth Protected Resource with the Bentley IMS authority
+    //
+    // Configures a Buddi Provider for service discovery.
+    //
+    // Configures a TokenExchanger client for access to resources protected via delegated scopes
+    // (e.g. the user authorizes the `itwin-platform` scope, but downstream services require a myriad of scopes, such as `rbac-platform`, the TokenExchanger swaps the token with only the user-facing scope for one authorized to talk to downstream APIs).
     public static WebApplicationBuilder ConfigureBentleyProtectedApi(
         this WebApplicationBuilder builder
     )
     {
+        var buddiOptions = builder.RegisterConfig<BuddiOptions>();
         var openIdConnectOptions = builder.RegisterConfig<OpenIdConnectOptions>();
 
         builder
@@ -33,6 +39,8 @@ public static class BentleyApiExtensions
                 o.MapInboundClaims = false;
                 o.TokenValidationParameters.ValidIssuers = openIdConnectOptions.ValidIssuers;
             });
+
+        builder.Services.AddBuddi(buddiOptions).ConfigureDelegation(openIdConnectOptions);
 
         return builder;
     }
