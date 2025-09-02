@@ -39,3 +39,7 @@ Authorization: Bearer {{userJWT}}
 Accept: application/json
 
 ###
+# Swagger with secret
+GET {{Kumara_BaseURL}}/swagger/v1/swagger.json?swaggerScorecardSecret={{$processEnv SERVICE_SWAGGER_SCORECARD_PASSWORD}}
+
+###
