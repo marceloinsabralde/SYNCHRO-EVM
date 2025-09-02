@@ -32,6 +32,7 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
+        <PackageReference Include="System.Drawing.Common" />
     </ItemGroup>
 
 </Project>
