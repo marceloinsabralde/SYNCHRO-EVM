@@ -58,4 +58,34 @@ public static class BentleyServicesExtensions
 
         return services;
     }
+
+    public static IServiceCollection ConfigureConnectCoreProviders(this IServiceCollection services)
+    {
+        services.AddHttpClient(
+            "Bentley.ConnectCoreLibs.iTwinProviderClient",
+            client =>
+            {
+                client.Timeout = TimeSpan.FromMilliseconds(DefaultWebClientTimeout);
+            }
+        );
+        services.AddITwinProvider();
+
+        services.AddHttpClient(
+            "Bentley.ConnectCoreLibs.RBACiTwinProviderClient",
+            client =>
+            {
+                client.Timeout = TimeSpan.FromMilliseconds(DefaultWebClientTimeout);
+            }
+        );
+
+        services.AddMemoryCache();
+        services.AddDistributedMemoryCache();
+        services.AddRbacITwinProvider(options =>
+        {
+            // NOTE: Setting this will cause RBAC queries to filter to only this GprId
+            options.GprId = "";
+        });
+
+        return services;
+    }
 }
