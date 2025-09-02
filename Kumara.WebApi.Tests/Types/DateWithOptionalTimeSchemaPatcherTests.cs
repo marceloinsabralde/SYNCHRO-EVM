@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Bentley.ConnectCoreLibs.Middleware.Abstractions;
 using Kumara.TestCommon.Helpers;
 using Microsoft.OpenApi.Models;
 
@@ -23,13 +24,19 @@ public class DateWithOptionalTimeSchemaPatcherTests : DatabaseTestBase
         }
     }
 
+    private T? ResolveService<T>()
+        where T : class => _factory?.GetRequiredService<T>();
+
+    private string protectedSwaggerPath(string unprotectedPath) =>
+        $"{unprotectedPath}?swaggerScorecardSecret={ResolveService<SwaggerLoginMiddlewareOptions>()?.SwaggerScorecardSecret}";
+
+    private async Task<OpenApiDocument> GetSchemaDocumentAsync(string path) =>
+        await SchemaHelpers.GetSchemaDocumentAsync(_client, protectedSwaggerPath(path));
+
     [Fact]
     public async Task SwaggerSchemaHasOptionalTimeFormats()
     {
-        var document = await SchemaHelpers.GetSchemaDocumentAsync(
-            _client,
-            SchemaHelpers.SwaggerPath
-        );
+        var document = await GetSchemaDocumentAsync(SchemaHelpers.SwaggerPath);
         var actual = document.Components.Schemas["DateWithOptionalTime"];
 
         SchemaHelpers.Dump(actual).ShouldBe(SchemaHelpers.Dump(ExpectedSchema));
@@ -38,10 +45,7 @@ public class DateWithOptionalTimeSchemaPatcherTests : DatabaseTestBase
     [Fact]
     public async Task SwaggerSchemaHasNullableOptionalTimeProperties()
     {
-        var document = await SchemaHelpers.GetSchemaDocumentAsync(
-            _client,
-            SchemaHelpers.SwaggerPath
-        );
+        var document = await GetSchemaDocumentAsync(SchemaHelpers.SwaggerPath);
         var allProperties = SchemaHelpers.GetAllPropertiesByPath(document).Values;
         var optionalTimeProperties = allProperties.Where(property =>
             property.AllOf.Count == 1
@@ -56,10 +60,7 @@ public class DateWithOptionalTimeSchemaPatcherTests : DatabaseTestBase
     [Fact]
     public async Task OpenApiSchemaHasNullableOptionalTimeProperties()
     {
-        var document = await SchemaHelpers.GetSchemaDocumentAsync(
-            _client,
-            SchemaHelpers.OpenApiPath
-        );
+        var document = await GetSchemaDocumentAsync(SchemaHelpers.OpenApiPath);
         var allProperties = SchemaHelpers.GetAllPropertiesByPath(document).Values;
 
         var expected = SchemaHelpers.ShallowClone(ExpectedSchema);
