@@ -11,6 +11,7 @@ public class HttpAuthorizationContext(IHttpContextAccessor accessor) : IAuthoriz
 
     public string? UserId => User.Claims.First(c => c.Type == "sub")?.Value;
     public string? Email => User.Claims.First(c => c.Type == "email")?.Value;
+    public string? ItwinId => accessor.HttpContext?.GetRouteData()?.Values["itwinId"]?.ToString();
 
     public bool HasRole(string role) => User.Claims.Any(c => c.Type == "role" && c.Value == role);
 }
