@@ -5,6 +5,7 @@
 
 # NOTE: See file://./Database/DbSeeder.cs
 @Seed_iTwin1_id = 10000000-0000-0000-0000-000000000000
+@QA_iTwin_id = 45dcf082-4fb9-4e92-96f0-4fcedd3fb1af
 
 @client_id = {{$processEnv IMS_BACKGROUND_CLIENT_ID}}
 @client_secret = {{$processEnv IMS_BACKGROUND_CLIENT_SECRET}}
@@ -34,7 +35,7 @@ Accept: application/json
 ###
 # Authorization Ping
 # @prompt userJWT A JWT with the synchro-evm scope and a principal attached (i.e. has a sub claim)
-GET {{Kumara_BaseURL}}/api/v0/authorization/{{Seed_iTwin1_id}}
+GET {{Kumara_BaseURL}}/api/v0/authorization/{{QA_iTwin_id}}
 Authorization: Bearer {{userJWT}}
 Accept: application/json
 
