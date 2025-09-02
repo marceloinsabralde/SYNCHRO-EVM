@@ -113,3 +113,6 @@ ConnectionStrings__KumaraEventSourceDB="Host={{env.PGHOST}};Port={{env.CITUS_PGP
 TEST_KUMARA_EVENT_SOURCE_DB_USERNAME="kumara-event-source-test"
 TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD="{{exec(command='script/make-secret TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD', cache_key='TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD', cache_duration='1h')}}"
 TEST_ConnectionStrings__KumaraEventSourceDB_TEMPLATE="Host={{env.PGHOST}};Port={{env.CITUS_PGPORT}};Database={{env.TEST_KUMARA_EVENT_SOURCE_DB_USERNAME}}_{1..5};Username={{env.TEST_KUMARA_EVENT_SOURCE_DB_USERNAME}};Password={{env.TEST_KUMARA_EVENT_SOURCE_DB_PASSWORD}}"
+
+SERVICE_SWAGGER_SCORECARD_PASSWORD="{{exec(command='script/make-secret SERVICE_SWAGGER_SCORECARD_PASSWORD', cache_key='SERVICE_SWAGGER_SCORECARD_PASSWORD', cache_duration='1h')}}"
+SwaggerLoginMiddleware__SwaggerScorecardSecret="{{env.SERVICE_SWAGGER_SCORECARD_PASSWORD}}"
