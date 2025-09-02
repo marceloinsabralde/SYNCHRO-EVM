@@ -3,6 +3,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
+        <PackageReference Include="Bentley.ConnectCoreLibs.Middleware.SwaggerLogin" />
         <PackageReference Include="Bentley.ConnectCoreLibs.Providers.Abstractions" />
         <PackageReference Include="Humanizer.Core" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
