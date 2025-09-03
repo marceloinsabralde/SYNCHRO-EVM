@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel;
+using Bentley.CONNECT.Licensing.SaaS.Client.Entitlement;
 using Bentley.ConnectCoreLibs.Providers.Abstractions.ConnectedContextModels;
 using Kumara.Common.Controllers.Responses;
 using Kumara.Common.Providers;
@@ -23,6 +24,7 @@ public class AuthenticationExampleController(
         bool IsEmployee,
         bool IsConnectServicesAdmin,
         string EntitlementStatus,
+        LicenseStatus iTwinLicenseStatus,
         string iTwinMembershipStatus,
         ITwin itwin,
         string RBACStatus,
@@ -44,6 +46,7 @@ public class AuthenticationExampleController(
                     IsEmployee: authContext.HasRole("BENTLEY_EMPLOYEE"),
                     IsConnectServicesAdmin: authContext.HasRole("Project Manager"),
                     EntitlementStatus: "TODO: Unknown",
+                    iTwinLicenseStatus: await itwinData.GetCurrentEntitlements(),
                     iTwinMembershipStatus: "TODO: Unknown",
                     itwin: await itwinData.GetCurrentItwin(),
                     RBACStatus: "TODO: Unknown",
