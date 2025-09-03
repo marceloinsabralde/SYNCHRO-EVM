@@ -1,6 +1,8 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using Bentley.CONNECT.Licensing.SaaS.Client.WebApiCore;
 using Bentley.ConnectCoreLibs.Providers;
+using Bentley.ConnectCoreLibs.User.Abstractions;
 using Kumara.Common.Options;
 using Kumara.Common.Providers;
 using Microsoft.Extensions.DependencyInjection;
@@ -85,6 +87,29 @@ public static class BentleyServicesExtensions
             // NOTE: Setting this will cause RBAC queries to filter to only this GprId
             options.GprId = "";
         });
+
+        return services;
+    }
+
+    public static IServiceCollection ConfigureEntitlementWorkflow(this IServiceCollection services)
+    {
+        services.AddEntitlementWorkflowWithServiceProvider(
+            (options, provider) =>
+            {
+                var buddi = provider.GetRequiredService<BuddiOptions>();
+                options.BuddiRegionCode = buddi.Region;
+                options.TokenType = AccessTokenType.JWT;
+                options.PolicyCacheTtl = TimeSpan.FromMinutes(30);
+
+                options.TokenFactory = async () =>
+                {
+                    const string entitlementPolicyServiceScope = "entitlement-policy-service-2576";
+                    var exchanger = provider.GetRequiredService<ITokenExchanger>();
+                    var token = await exchanger.ExchangeAsync(entitlementPolicyServiceScope);
+                    return (token, TimeSpan.FromMinutes(5));
+                };
+            }
+        );
 
         return services;
     }
