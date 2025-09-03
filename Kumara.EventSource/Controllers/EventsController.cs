@@ -55,22 +55,25 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
     }
 
     [HttpPost]
-    [EndpointName("CreateEvent")]
-    public async Task<IActionResult> Create([FromBody] EventCreateRequest eventCreateRequest)
+    [EndpointName("CreateEvents")]
+    public async Task<IActionResult> Create([FromBody] EventsCreateRequest eventsCreateRequest)
     {
-        using var newEvent = new Event
-        {
-            ITwinId = eventCreateRequest.ITwinId,
-            AccountId = eventCreateRequest.AccountId,
-            CorrelationId = eventCreateRequest.CorrelationId,
-            Type = eventCreateRequest.Type,
-            Data = JsonDocument.Parse(eventCreateRequest.Data),
-            TriggeredByUserSubject = eventCreateRequest.TriggeredByUserSubject,
-            TriggeredByUserAt = eventCreateRequest.TriggeredByUserAt,
-        };
+        var newEvents = eventsCreateRequest
+            .Events.Select(@event => new Event
+            {
+                ITwinId = @event.ITwinId,
+                AccountId = @event.AccountId,
+                CorrelationId = @event.CorrelationId,
+                Type = @event.Type,
+                Data = JsonDocument.Parse(@event.Data),
+                TriggeredByUserSubject = @event.TriggeredByUserSubject,
+                TriggeredByUserAt = @event.TriggeredByUserAt,
+            })
+            .ToList();
 
-        await dbContext.Events.AddAsync(newEvent);
+        await dbContext.Events.AddRangeAsync(newEvents);
         await dbContext.SaveChangesAsync();
+        newEvents.ForEach(@event => @event.Dispose());
         return Created();
     }
 }

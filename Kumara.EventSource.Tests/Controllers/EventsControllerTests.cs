@@ -32,14 +32,20 @@ public class EventsControllerTests : DatabaseTestBase
         );
 
         var response = await _client.PostAsJsonAsync(
-            GetPathByName("CreateEvent"),
-            new EventCreateRequest
+            GetPathByName("CreateEvents"),
+            new
             {
-                Id = eventId,
-                ITwinId = iTwinId,
-                AccountId = accountId,
-                Type = eventType,
-                Data = eventData,
+                Events = new[]
+                {
+                    new
+                    {
+                        Id = eventId,
+                        ITwinId = iTwinId,
+                        AccountId = accountId,
+                        Type = eventType,
+                        Data = eventData,
+                    },
+                },
             },
             TestContext.Current.CancellationToken
         );
@@ -72,19 +78,63 @@ public class EventsControllerTests : DatabaseTestBase
     }
 
     [Fact]
+    public async Task Create_WithMultipleValidEvents_Created()
+    {
+        var iTwinId = Guid.CreateVersion7();
+        var accountId = Guid.CreateVersion7();
+        var eventType = "activity.created.v1";
+        var eventsToCreate = Enumerable
+            .Range(0, 5)
+            .Select(index => new
+            {
+                ITwinId = iTwinId,
+                AccountId = accountId,
+                Type = eventType,
+                Data = JsonSerializer.Serialize(
+                    new
+                    {
+                        Id = Guid.CreateVersion7(),
+                        Name = $"Test Activity 0{index + 1}",
+                        ReferenceCode = $"ACT00{index}",
+                    },
+                    JsonSerializerOptions.Web
+                ),
+            });
+
+        var response = await _client.PostAsJsonAsync(
+            GetPathByName("CreateEvents"),
+            new { Events = eventsToCreate },
+            TestContext.Current.CancellationToken
+        );
+
+        response.StatusCode.ShouldBe(
+            HttpStatusCode.Created,
+            await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)
+        );
+
+        _dbContext.Events.Count().ShouldBe(5);
+    }
+
+    [Fact]
     public async Task Create_WithInvalidType_BadRequest()
     {
         var iTwinId = Guid.CreateVersion7();
         var accountId = Guid.CreateVersion7();
 
         var response = await _client.PostAsJsonAsync(
-            GetPathByName("CreateEvent"),
-            new EventCreateRequest
+            GetPathByName("CreateEvents"),
+            new
             {
-                ITwinId = iTwinId,
-                AccountId = accountId,
-                Type = "invalid.type.v1",
-                Data = JsonSerializer.Serialize(new { }, JsonSerializerOptions.Web),
+                Events = new[]
+                {
+                    new EventCreateRequest
+                    {
+                        ITwinId = iTwinId,
+                        AccountId = accountId,
+                        Type = "invalid.type.v1",
+                        Data = JsonSerializer.Serialize(new { }, JsonSerializerOptions.Web),
+                    },
+                },
             },
             TestContext.Current.CancellationToken
         );
@@ -92,7 +142,7 @@ public class EventsControllerTests : DatabaseTestBase
         await response.ShouldBeApiErrorBadRequest(
             new Dictionary<string, string[]>()
             {
-                { "Type", ["\"invalid.type.v1\" is not a valid Event Type."] },
+                { "Events[0].Type", ["\"invalid.type.v1\" is not a valid Event Type."] },
             }
         );
     }
@@ -104,13 +154,19 @@ public class EventsControllerTests : DatabaseTestBase
         var accountId = Guid.CreateVersion7();
 
         var response = await _client.PostAsJsonAsync(
-            GetPathByName("CreateEvent"),
-            new EventCreateRequest
+            GetPathByName("CreateEvents"),
+            new
             {
-                ITwinId = iTwinId,
-                AccountId = accountId,
-                Type = "activity.updated.v1",
-                Data = JsonSerializer.Serialize(new { }, JsonSerializerOptions.Web),
+                Events = new[]
+                {
+                    new EventCreateRequest
+                    {
+                        ITwinId = iTwinId,
+                        AccountId = accountId,
+                        Type = "activity.updated.v1",
+                        Data = JsonSerializer.Serialize(new { }, JsonSerializerOptions.Web),
+                    },
+                },
             },
             TestContext.Current.CancellationToken
         );
@@ -119,7 +175,7 @@ public class EventsControllerTests : DatabaseTestBase
             new Dictionary<string, string[]>()
             {
                 {
-                    "Data",
+                    "Events[0].Data",
                     ["The Data field does not conform to the \"activity.updated.v1\" Event Type."]
                 },
             }
@@ -132,21 +188,30 @@ public class EventsControllerTests : DatabaseTestBase
         var iTwinId = Guid.CreateVersion7();
 
         var response = await _client.PostAsJsonAsync(
-            GetPathByName("CreateEvent"),
-            new EventCreateRequest
+            GetPathByName("CreateEvents"),
+            new
             {
-                ITwinId = iTwinId,
-                Type = "activity.deleted.v1",
-                Data = JsonSerializer.Serialize(
-                    new { Id = Guid.CreateVersion7() },
-                    JsonSerializerOptions.Web
-                ),
+                Events = new[]
+                {
+                    new EventCreateRequest
+                    {
+                        ITwinId = iTwinId,
+                        Type = "activity.deleted.v1",
+                        Data = JsonSerializer.Serialize(
+                            new { Id = Guid.CreateVersion7() },
+                            JsonSerializerOptions.Web
+                        ),
+                    },
+                },
             },
             TestContext.Current.CancellationToken
         );
 
         await response.ShouldBeApiErrorBadRequest(
-            new Dictionary<string, string[]>() { { "AccountId", ["AccountId must not be empty."] } }
+            new Dictionary<string, string[]>()
+            {
+                { "Events[0].AccountId", ["AccountId must not be empty."] },
+            }
         );
     }
 
