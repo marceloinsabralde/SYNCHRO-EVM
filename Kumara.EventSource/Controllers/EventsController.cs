@@ -68,8 +68,7 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
             TriggeredByUserSubject = eventCreateRequest.TriggeredByUserSubject,
             TriggeredByUserAt = eventCreateRequest.TriggeredByUserAt,
         };
-        if (eventCreateRequest.Id.HasValue)
-            newEvent.Id = eventCreateRequest.Id.Value;
+
         await dbContext.Events.AddAsync(newEvent);
         await dbContext.SaveChangesAsync();
         return Created();
