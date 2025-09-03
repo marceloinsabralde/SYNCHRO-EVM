@@ -4,6 +4,7 @@
     <PackageVersion Include="AspNetCore.HealthChecks.Elasticsearch" Version="8.0.1" />
     <PackageVersion Include="Azure.Core" Version="1.47.3" />
     <PackageVersion Include="Azure.Identity" Version="1.15.0" />
+    <PackageVersion Include="Bentley.ConnectCoreLibs.Middleware.SwaggerLogin" Version="5.40.0" />
     <PackageVersion Include="Bentley.ConnectCoreLibs.Providers.Abstractions" Version="5.34.0" />
     <PackageVersion Include="Bentley.ConnectCoreLibs.User" Version="5.40.0" />
     <PackageVersion Include="Bogus" Version="35.6.3" />

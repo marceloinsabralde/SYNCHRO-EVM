@@ -29,7 +29,7 @@ builder.Configuration.AddEnvironmentVariables(
 );
 
 ConfigureServices(builder.Services);
-builder.ConfigureBentleyProtectedApi();
+builder.ConfigureBentleyProtectedApi().ConfigureBentleySwaggerAuthentication();
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
@@ -107,8 +107,7 @@ app.UseHttpsRedirection();
 
 await app.MigrateDbAsync<ApplicationDbContext>();
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication().UseAuthorization().UseBentleySwaggerAuthentication();
 
 app.MapControllers().RequireAuthorization();
 app.MapHealthChecks("/healthz").AllowAnonymous();
