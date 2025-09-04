@@ -42,7 +42,7 @@ public class EventCreateRequestTests
             ITwinId = Guid.CreateVersion7(),
             AccountId = Guid.CreateVersion7(),
             Type = type,
-            Data = dataJsonObject.ToJsonString(),
+            Data = JsonDocument.Parse(dataJsonObject.ToJsonString()),
         };
 
     [Fact]

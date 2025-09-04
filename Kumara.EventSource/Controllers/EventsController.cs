@@ -65,7 +65,7 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
                 AccountId = @event.AccountId,
                 CorrelationId = @event.CorrelationId,
                 Type = @event.Type,
-                Data = JsonDocument.Parse(@event.Data),
+                Data = @event.Data,
                 TriggeredByUserSubject = @event.TriggeredByUserSubject,
                 TriggeredByUserAt = @event.TriggeredByUserAt,
             })

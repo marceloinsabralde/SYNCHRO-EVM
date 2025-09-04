@@ -21,7 +21,7 @@ public class EventsControllerTests : DatabaseTestBase
         var accountId = Guid.CreateVersion7();
         var eventId = Guid.CreateVersion7();
         var eventType = "activity.created.v1";
-        var eventData = JsonSerializer.Serialize(
+        var eventData = JsonSerializer.SerializeToDocument(
             new
             {
                 Id = Guid.CreateVersion7(),
@@ -66,10 +66,7 @@ public class EventsControllerTests : DatabaseTestBase
             () => createdEvent.Type.ShouldBe(eventType),
             () =>
                 JsonElement
-                    .DeepEquals(
-                        JsonDocument.Parse(eventData).RootElement,
-                        createdEvent.Data.RootElement
-                    )
+                    .DeepEquals(eventData.RootElement, createdEvent.Data.RootElement)
                     .ShouldBeTrue(),
             () => createdEvent.CorrelationId.ShouldBeNull(),
             () => createdEvent.TriggeredByUserAt.ShouldBeNull(),
@@ -90,7 +87,7 @@ public class EventsControllerTests : DatabaseTestBase
                 ITwinId = iTwinId,
                 AccountId = accountId,
                 Type = eventType,
-                Data = JsonSerializer.Serialize(
+                Data = JsonSerializer.SerializeToDocument(
                     new
                     {
                         Id = Guid.CreateVersion7(),
@@ -132,7 +129,10 @@ public class EventsControllerTests : DatabaseTestBase
                         ITwinId = iTwinId,
                         AccountId = accountId,
                         Type = "invalid.type.v1",
-                        Data = JsonSerializer.Serialize(new { }, JsonSerializerOptions.Web),
+                        Data = JsonSerializer.SerializeToDocument(
+                            new { },
+                            JsonSerializerOptions.Web
+                        ),
                     },
                 },
             },
@@ -164,7 +164,10 @@ public class EventsControllerTests : DatabaseTestBase
                         ITwinId = iTwinId,
                         AccountId = accountId,
                         Type = "activity.updated.v1",
-                        Data = JsonSerializer.Serialize(new { }, JsonSerializerOptions.Web),
+                        Data = JsonSerializer.SerializeToDocument(
+                            new { },
+                            JsonSerializerOptions.Web
+                        ),
                     },
                 },
             },
@@ -197,7 +200,7 @@ public class EventsControllerTests : DatabaseTestBase
                     {
                         ITwinId = iTwinId,
                         Type = "activity.deleted.v1",
-                        Data = JsonSerializer.Serialize(
+                        Data = JsonSerializer.SerializeToDocument(
                             new { Id = Guid.CreateVersion7() },
                             JsonSerializerOptions.Web
                         ),
