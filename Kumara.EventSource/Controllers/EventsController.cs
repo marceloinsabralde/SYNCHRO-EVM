@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.Text.Json;
 using Kumara.Common.Controllers.Extensions;
 using Kumara.Common.Controllers.Responses;
 using Kumara.Common.Utilities;
@@ -54,29 +55,25 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
     }
 
     [HttpPost]
-    [EndpointName("CreateEvent")]
-    public async Task<IActionResult> Create([FromBody] EventCreateRequest eventCreateRequest)
+    [EndpointName("CreateEvents")]
+    public async Task<IActionResult> Create([FromBody] EventsCreateRequest eventsCreateRequest)
     {
-        using (eventCreateRequest)
-        {
-            using var newEvent = new Event
+        var newEvents = eventsCreateRequest
+            .Events.Select(@event => new Event
             {
-                ITwinId = eventCreateRequest.ITwinId,
-                AccountId = eventCreateRequest.AccountId,
-                CorrelationId = eventCreateRequest.CorrelationId,
-                Type = eventCreateRequest.Type,
-                Data = eventCreateRequest.Data,
-                TriggeredByUserSubject = eventCreateRequest.TriggeredByUserSubject,
-                TriggeredByUserAt = eventCreateRequest.TriggeredByUserAt,
-            };
+                ITwinId = @event.ITwinId,
+                AccountId = @event.AccountId,
+                CorrelationId = @event.CorrelationId,
+                Type = @event.Type,
+                Data = @event.Data,
+                TriggeredByUserSubject = @event.TriggeredByUserSubject,
+                TriggeredByUserAt = @event.TriggeredByUserAt,
+            })
+            .ToList();
 
-            if (eventCreateRequest.Id.HasValue)
-                newEvent.Id = eventCreateRequest.Id.Value;
-
-            await dbContext.Events.AddAsync(newEvent);
-            await dbContext.SaveChangesAsync();
-
-            return Created();
-        }
+        await dbContext.Events.AddRangeAsync(newEvents);
+        await dbContext.SaveChangesAsync();
+        newEvents.ForEach(@event => @event.Dispose());
+        return Created();
     }
 }

@@ -13,9 +13,6 @@ namespace Kumara.EventSource.Controllers.Requests;
 public class EventCreateRequest : IValidatableObject, IDisposable
 {
     [NotEmpty]
-    public Guid? Id { get; set; }
-
-    [NotEmpty]
     public Guid ITwinId { get; set; }
 
     [NotEmpty]
