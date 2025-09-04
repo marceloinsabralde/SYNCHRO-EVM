@@ -6,6 +6,8 @@ using Kumara.TestCommon.Extensions;
 using Kumara.TestCommon.Utilities;
 using Kumara.WebApi.Database;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Kumara.WebApi.Tests;
 
@@ -17,6 +19,13 @@ public class DatabaseTestBase : DatabaseTestBase<ApplicationDbContext>
     {
         base.ConfigureWebHostBuilder(builder);
         builder.ConfigureTestJwt();
+        builder.ConfigureTestServices(services =>
+        {
+            services.AddTransient<
+                Bentley.ConnectCoreLibs.Providers.Abstractions.Interfaces.IITwinProvider,
+                Kumara.WebApi.Providers.FakeITwinProvider
+            >();
+        });
     }
 
     public override async ValueTask InitializeAsync()

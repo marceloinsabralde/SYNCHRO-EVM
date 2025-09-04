@@ -5,6 +5,10 @@
     <ItemGroup>
         <PackageReference Include="Bentley.ConnectCoreLibs.Middleware.SwaggerLogin" />
         <PackageReference Include="Bentley.ConnectCoreLibs.Providers.Abstractions" />
+        <PackageReference Include="Bentley.ConnectCoreLibs.Providers.Buddi" />
+        <PackageReference Include="Bentley.ConnectCoreLibs.Providers.ConnectedContext" />
+        <PackageReference Include="Bentley.ConnectCoreLibs.Providers.RBAC" />
+        <PackageReference Include="Bentley.ConnectCoreLibs.User.TokenExchanger" />
         <PackageReference Include="Humanizer.Core" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" />

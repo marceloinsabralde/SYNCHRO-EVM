@@ -18,18 +18,16 @@ using OpenTelemetry.Trace;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-static void ConfigureServices(IServiceCollection services)
-{
-    services.AddHttpContextAccessor();
-    services.AddScoped<IAuthorizationContext, HttpAuthorizationContext>();
-}
-
 builder.Configuration.AddEnvironmentVariables(
     prefix: $"{builder.Environment.EnvironmentName.ToUpper()}_"
 );
 
-ConfigureServices(builder.Services);
 builder.ConfigureBentleyProtectedApi().ConfigureBentleySwaggerAuthentication();
+
+builder
+    .Services.AddHttpContextAccessor()
+    .AddScoped<IAuthorizationContext, HttpAuthorizationContext>()
+    .AddBentleyDataProviders();
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
@@ -47,12 +45,6 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
         options.EnableSensitiveDataLogging();
     }
 });
-
-// temporary until we talk to the real iTwin APIs
-builder.Services.AddTransient<
-    Bentley.ConnectCoreLibs.Providers.Abstractions.Interfaces.IITwinProvider,
-    Kumara.WebApi.Providers.FakeITwinProvider
->();
 
 builder.Services.AddScoped<ISettingsDbContext<Settings, SettingKey>>(provider =>
     provider.GetRequiredService<ApplicationDbContext>()

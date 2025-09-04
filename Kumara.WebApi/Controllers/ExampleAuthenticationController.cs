@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.ComponentModel;
+using Bentley.ConnectCoreLibs.Providers.Abstractions.ConnectedContextModels;
 using Kumara.Common.Controllers.Responses;
 using Kumara.Common.Providers;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,10 @@ namespace Kumara.WebApi.Controllers;
 [Route("api/v0/authorization")]
 [ApiController]
 [Produces("application/json")]
-public class AuthenticationExampleController(IAuthorizationContext authContext) : ControllerBase
+public class AuthenticationExampleController(
+    IAuthorizationContext authContext,
+    ItwinDataProvider itwinData
+) : ControllerBase
 {
     public record AuthenticationExampleResponse(
         string? Subject,
@@ -20,12 +24,14 @@ public class AuthenticationExampleController(IAuthorizationContext authContext) 
         bool IsConnectServicesAdmin,
         string EntitlementStatus,
         string iTwinMembershipStatus,
-        string RBACStatus
+        ITwin itwin,
+        string RBACStatus,
+        IEnumerable<string> rbacPermissions
     );
 
     [HttpGet("{iTwinId}")]
     [EndpointName("GetAuthorizationStatusForiTwin")]
-    public ActionResult<ShowResponse<AuthenticationExampleResponse>> Get(
+    public async Task<ActionResult<ShowResponse<AuthenticationExampleResponse>>> Get(
         [Description("The iTwin project ID.")] Guid iTwinId
     )
     {
@@ -39,7 +45,9 @@ public class AuthenticationExampleController(IAuthorizationContext authContext) 
                     IsConnectServicesAdmin: authContext.HasRole("Project Manager"),
                     EntitlementStatus: "TODO: Unknown",
                     iTwinMembershipStatus: "TODO: Unknown",
-                    RBACStatus: "TODO: Unknown"
+                    itwin: await itwinData.GetCurrentItwin(),
+                    RBACStatus: "TODO: Unknown",
+                    rbacPermissions: await itwinData.GetCurrentRbacPermissions()
                 )
             )
         );

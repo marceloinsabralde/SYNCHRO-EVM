@@ -104,6 +104,7 @@ TEST_ELASTIC_PASSWORD="{{exec(command='script/make-secret TEST_ELASTIC_PASSWORD'
 TEST_ConnectionStrings__KumaraSearchES = "http://elastic:{{env.TEST_ELASTIC_PASSWORD}}@localhost:9201"
 
 OpenIdConnect__ApiSecret = "{{env.IMS_API_SECRET}}"
+OpenIdConnect__DelegationClientSecret = "{{env.IMS_CLIENT_SECRET}}"
 
 IMS_BACKGROUND_CLIENT_SECRET_PERCENT_ENCODED = "{{env.IMS_BACKGROUND_CLIENT_SECRET | urlencode}}"
 
