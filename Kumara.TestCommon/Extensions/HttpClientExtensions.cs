@@ -3,7 +3,7 @@
 using System.Text.Json;
 using Kumara.TestCommon.Helpers;
 
-namespace Kumara.WebApi.Tests;
+namespace Kumara.TestCommon.Extensions;
 
 public static class HttpClientExtensions
 {
