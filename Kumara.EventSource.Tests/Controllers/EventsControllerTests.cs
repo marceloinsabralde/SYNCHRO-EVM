@@ -31,7 +31,7 @@ public class EventsControllerTests : DatabaseTestBase
             JsonSerializerOptions.Web
         );
 
-        var response = await _client.PostAsJsonAsync(
+        var response = await _client.PostAsyncJson(
             GetPathByName("CreateEvents"),
             new
             {
@@ -98,7 +98,7 @@ public class EventsControllerTests : DatabaseTestBase
                 ),
             });
 
-        var response = await _client.PostAsJsonAsync(
+        var response = await _client.PostAsyncJson(
             GetPathByName("CreateEvents"),
             new { Events = eventsToCreate },
             TestContext.Current.CancellationToken
@@ -118,7 +118,7 @@ public class EventsControllerTests : DatabaseTestBase
         var iTwinId = Guid.CreateVersion7();
         var accountId = Guid.CreateVersion7();
 
-        var response = await _client.PostAsJsonAsync(
+        var response = await _client.PostAsyncJson(
             GetPathByName("CreateEvents"),
             new
             {
@@ -153,7 +153,7 @@ public class EventsControllerTests : DatabaseTestBase
         var iTwinId = Guid.CreateVersion7();
         var accountId = Guid.CreateVersion7();
 
-        var response = await _client.PostAsJsonAsync(
+        var response = await _client.PostAsyncJson(
             GetPathByName("CreateEvents"),
             new
             {
@@ -190,7 +190,7 @@ public class EventsControllerTests : DatabaseTestBase
     {
         var iTwinId = Guid.CreateVersion7();
 
-        var response = await _client.PostAsJsonAsync(
+        var response = await _client.PostAsyncJson(
             GetPathByName("CreateEvents"),
             new
             {
