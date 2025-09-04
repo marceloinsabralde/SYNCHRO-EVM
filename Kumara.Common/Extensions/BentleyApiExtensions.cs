@@ -40,7 +40,10 @@ public static class BentleyApiExtensions
                 o.TokenValidationParameters.ValidIssuers = openIdConnectOptions.ValidIssuers;
             });
 
-        builder.Services.AddBuddi(buddiOptions).ConfigureDelegation(openIdConnectOptions);
+        builder
+            .Services.AddBuddi(buddiOptions)
+            .ConfigureDelegation(openIdConnectOptions)
+            .ConfigureEntitlementWorkflow();
 
         return builder;
     }
