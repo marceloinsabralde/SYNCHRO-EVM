@@ -30,7 +30,7 @@ public static class EventFactory
             .RuleFor(e => e.ITwinId, iTwinId ?? Guid.CreateVersion7())
             .RuleFor(e => e.AccountId, accountId ?? Guid.CreateVersion7())
             .RuleFor(e => e.CorrelationId, correlationId)
-            .RuleFor(e => e.Type, eventType)
+            .RuleFor(e => e.EventType, eventType)
             .RuleFor(e => e.TriggeredByUserSubject, triggeredByUserSubject)
             .RuleFor(e => e.TriggeredByUserAt, triggeredByUserAt)
             .RuleFor(e => e.Data, eventData)

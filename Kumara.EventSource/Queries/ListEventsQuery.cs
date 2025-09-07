@@ -25,7 +25,7 @@ public class ListEventsQuery : PageableQuery<ListEventsQuery, ListEventsQueryFil
             _query = _query.Where(@event => @event.AccountId == filter.AccountId);
 
         if (filter.Type is not null)
-            _query = _query.Where(@event => @event.Type == filter.Type);
+            _query = _query.Where(@event => @event.EventType == filter.Type);
 
         return this;
     }

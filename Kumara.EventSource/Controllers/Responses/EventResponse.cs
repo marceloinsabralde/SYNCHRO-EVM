@@ -39,7 +39,7 @@ public class EventResponse : IDisposable
             ITwinId = @event.ITwinId,
             AccountId = @event.AccountId,
             CorrelationId = @event.CorrelationId,
-            Type = @event.Type,
+            Type = @event.EventType,
             TriggeredByUserSubject = @event.TriggeredByUserSubject,
             TriggeredByUserAt = @event.TriggeredByUserAt,
             Data = @event.Data,

@@ -63,7 +63,7 @@ public class EventsControllerTests : DatabaseTestBase
         createdEvent.ShouldSatisfyAllConditions(
             () => createdEvent.Id.ShouldNotBe(Guid.Empty),
             () => createdEvent.ITwinId.ShouldBe(iTwinId),
-            () => createdEvent.Type.ShouldBe(eventType),
+            () => createdEvent.EventType.ShouldBe(eventType),
             () =>
                 JsonElement
                     .DeepEquals(eventData.RootElement, createdEvent.Data.RootElement)
