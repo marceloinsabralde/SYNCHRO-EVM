@@ -41,7 +41,7 @@ public class EventCreateRequestTests
         {
             ITwinId = Guid.CreateVersion7(),
             AccountId = Guid.CreateVersion7(),
-            Type = type,
+            EventType = type,
             Data = JsonDocument.Parse(dataJsonObject.ToJsonString()),
         };
 
@@ -82,7 +82,7 @@ public class EventCreateRequestTests
         );
 
         var results = ModelHelpers.ValidateModel(requestObject);
-        results.ShouldBe([GetDataFieldErrorMessage(requestObject.Type)]);
+        results.ShouldBe([GetDataFieldErrorMessage(requestObject.EventType)]);
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public class EventCreateRequestTests
         );
 
         var results = ModelHelpers.ValidateModel(requestObject);
-        results.ShouldBe([GetDataFieldErrorMessage(requestObject.Type)]);
+        results.ShouldBe([GetDataFieldErrorMessage(requestObject.EventType)]);
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public class EventCreateRequestTests
         );
 
         var results = ModelHelpers.ValidateModel(requestObject);
-        results.ShouldBe([GetDataFieldErrorMessage(requestObject.Type)]);
+        results.ShouldBe([GetDataFieldErrorMessage(requestObject.EventType)]);
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public class EventCreateRequestTests
         );
 
         var results = ModelHelpers.ValidateModel(requestObject);
-        results.ShouldBe([GetDataFieldErrorMessage(requestObject.Type)]);
+        results.ShouldBe([GetDataFieldErrorMessage(requestObject.EventType)]);
     }
 
     [Fact]
@@ -141,7 +141,7 @@ public class EventCreateRequestTests
 
         var results = ModelHelpers.ValidateModel(requestObject);
         var extraErrors = "The Name field is required. The ReferenceCode field is required.";
-        results.ShouldBe([GetDataFieldErrorMessage(requestObject.Type, extraErrors)]);
+        results.ShouldBe([GetDataFieldErrorMessage(requestObject.EventType, extraErrors)]);
     }
 
     [Fact]
@@ -153,6 +153,6 @@ public class EventCreateRequestTests
         );
 
         var results = ModelHelpers.ValidateModel(requestObject);
-        results.ShouldBe([$"\"{requestObject.Type}\" is not a valid Event Type."]);
+        results.ShouldBe([$"\"{requestObject.EventType}\" is not a valid Event Type."]);
     }
 }

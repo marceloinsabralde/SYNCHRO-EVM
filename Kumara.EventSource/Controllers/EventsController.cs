@@ -64,7 +64,7 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
                 ITwinId = @event.ITwinId,
                 AccountId = @event.AccountId,
                 CorrelationId = @event.CorrelationId,
-                EventType = @event.Type,
+                EventType = @event.EventType,
                 Data = @event.Data,
                 TriggeredByUserSubject = @event.TriggeredByUserSubject,
                 TriggeredByUserAt = @event.TriggeredByUserAt,

@@ -42,7 +42,7 @@ public class EventsControllerTests : DatabaseTestBase
                         Id = eventId,
                         ITwinId = iTwinId,
                         AccountId = accountId,
-                        Type = eventType,
+                        EventType = eventType,
                         Data = eventData,
                     },
                 },
@@ -86,7 +86,7 @@ public class EventsControllerTests : DatabaseTestBase
             {
                 ITwinId = iTwinId,
                 AccountId = accountId,
-                Type = eventType,
+                EventType = eventType,
                 Data = JsonSerializer.SerializeToDocument(
                     new
                     {
@@ -128,7 +128,7 @@ public class EventsControllerTests : DatabaseTestBase
                     {
                         ITwinId = iTwinId,
                         AccountId = accountId,
-                        Type = "invalid.type.v1",
+                        EventType = "invalid.type.v1",
                         Data = JsonSerializer.SerializeToDocument(
                             new { },
                             JsonSerializerOptions.Web
@@ -142,7 +142,7 @@ public class EventsControllerTests : DatabaseTestBase
         await response.ShouldBeApiErrorBadRequest(
             new Dictionary<string, string[]>()
             {
-                { "Events[0].Type", ["\"invalid.type.v1\" is not a valid Event Type."] },
+                { "Events[0].EventType", ["\"invalid.type.v1\" is not a valid Event Type."] },
             }
         );
     }
@@ -163,7 +163,7 @@ public class EventsControllerTests : DatabaseTestBase
                     {
                         ITwinId = iTwinId,
                         AccountId = accountId,
-                        Type = "activity.updated.v1",
+                        EventType = "activity.updated.v1",
                         Data = JsonSerializer.SerializeToDocument(
                             new { },
                             JsonSerializerOptions.Web
@@ -199,7 +199,7 @@ public class EventsControllerTests : DatabaseTestBase
                     new EventCreateRequest
                     {
                         ITwinId = iTwinId,
-                        Type = "activity.deleted.v1",
+                        EventType = "activity.deleted.v1",
                         Data = JsonSerializer.SerializeToDocument(
                             new { Id = Guid.CreateVersion7() },
                             JsonSerializerOptions.Web
