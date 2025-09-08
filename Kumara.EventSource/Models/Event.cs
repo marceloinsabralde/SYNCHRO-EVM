@@ -23,6 +23,10 @@ public class Event : ITimestampedEntity, IPageableEntity, IDisposable
 
     public required string EventType { get; set; }
 
+    public required string EntityType { get; set; }
+
+    public required Guid EntityId { get; set; }
+
     public Guid? TriggeredByUserSubject { get; set; }
 
     public Instant? TriggeredByUserAt { get; set; }
@@ -44,6 +48,8 @@ public class Event : ITimestampedEntity, IPageableEntity, IDisposable
 
             builder.HasIndex(e => e.AccountId);
             builder.HasIndex(e => e.EventType);
+            builder.HasIndex("EntityId", "EntityType");
+            builder.HasIndex(e => e.EntityType);
         }
     }
 

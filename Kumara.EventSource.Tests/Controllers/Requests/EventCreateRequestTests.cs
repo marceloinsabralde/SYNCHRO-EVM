@@ -34,14 +34,18 @@ public class EventCreateRequestTests
     }
 
     private static EventCreateRequest GetValidEventCreateRequestObject(
-        string type,
+        string eventType,
+        Guid entityId,
+        string entityType,
         JsonObject dataJsonObject
     ) =>
         new()
         {
             ITwinId = Guid.CreateVersion7(),
             AccountId = Guid.CreateVersion7(),
-            EventType = type,
+            EventType = eventType,
+            EntityId = entityId,
+            EntityType = entityType,
             Data = JsonDocument.Parse(dataJsonObject.ToJsonString()),
         };
 
@@ -49,7 +53,9 @@ public class EventCreateRequestTests
     public void PassesValidation()
     {
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: GetValidActivityCreatedV1JsonObject()
         );
 
@@ -65,7 +71,9 @@ public class EventCreateRequestTests
         dataJsonObject.Add("ReferenceCode", "Different Case");
 
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: dataJsonObject
         );
 
@@ -77,7 +85,9 @@ public class EventCreateRequestTests
     public void DataAndTypeMismatch_FailsValidation()
     {
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: GetValidControlAccountCreatedV1JsonObject()
         );
 
@@ -89,7 +99,9 @@ public class EventCreateRequestTests
     public void DataIsEmptyJson_FailsValidation()
     {
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: new JsonObject()
         );
 
@@ -104,7 +116,9 @@ public class EventCreateRequestTests
         dataJsonObject.Remove("name");
 
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: dataJsonObject
         );
 
@@ -119,7 +133,9 @@ public class EventCreateRequestTests
         dataJsonObject.Add("unknown", "unknown");
 
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: dataJsonObject
         );
 
@@ -135,7 +151,9 @@ public class EventCreateRequestTests
         dataJsonObject["referenceCode"] = "";
 
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: dataJsonObject
         );
 
@@ -148,7 +166,9 @@ public class EventCreateRequestTests
     public void DataWithUnknownType_SkipsValidatingData_FailsValidation()
     {
         var requestObject = GetValidEventCreateRequestObject(
-            type: "unknown.type.v1",
+            eventType: "unknown.type.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "unknown",
             dataJsonObject: GetValidActivityCreatedV1JsonObject()
         );
 

@@ -46,6 +46,8 @@ public static class DbSeeder
             AccountId = AccountITwinIds[0],
             Id = new Guid("E0000000-0000-0000-0000-000000000001"),
             EventType = "controlaccount.created.v1",
+            EntityId = Guid.CreateVersion7(),
+            EntityType = "ControlAccount",
             Data = JsonSerializer.SerializeToDocument(
                 new { Id = Guid.CreateVersion7(), Name = "Test Control Account 1" },
                 JsonSerializerOptions.Web
@@ -57,6 +59,8 @@ public static class DbSeeder
             AccountId = AccountITwinIds[0],
             Id = new Guid("E0000000-0000-0000-0000-000000000002"),
             EventType = "activity.created.v1",
+            EntityId = Guid.CreateVersion7(),
+            EntityType = "Activity",
             Data = JsonSerializer.SerializeToDocument(
                 new
                 {
@@ -73,6 +77,8 @@ public static class DbSeeder
             AccountId = AccountITwinIds[1],
             Id = new Guid("E0000000-0000-0000-0000-000000000003"),
             EventType = "controlaccount.created.v1",
+            EntityId = Guid.CreateVersion7(),
+            EntityType = "ControlAccount",
             Data = JsonSerializer.SerializeToDocument(
                 new { Id = Guid.CreateVersion7(), Name = "Test Control Account 2" },
                 JsonSerializerOptions.Web

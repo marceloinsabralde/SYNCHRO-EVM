@@ -18,6 +18,10 @@ public class EventResponse : IDisposable
 
     public required string EventType { get; set; }
 
+    public required string EntityType { get; set; }
+
+    public required Guid EntityId { get; set; }
+
     public Guid? TriggeredByUserSubject { get; set; }
 
     public Instant? TriggeredByUserAt { get; set; }
@@ -40,6 +44,8 @@ public class EventResponse : IDisposable
             AccountId = @event.AccountId,
             CorrelationId = @event.CorrelationId,
             EventType = @event.EventType,
+            EntityType = @event.EntityType,
+            EntityId = @event.EntityId,
             TriggeredByUserSubject = @event.TriggeredByUserSubject,
             TriggeredByUserAt = @event.TriggeredByUserAt,
             Data = @event.Data,

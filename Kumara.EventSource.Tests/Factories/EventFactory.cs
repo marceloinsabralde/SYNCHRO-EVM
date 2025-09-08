@@ -17,7 +17,9 @@ public static class EventFactory
 
     public static Event CreateEvent(
         string eventType,
+        string entityType,
         JsonDocument eventData,
+        Guid? entityId = null,
         Guid? id = null,
         Guid? iTwinId = null,
         Guid? accountId = null,
@@ -32,6 +34,8 @@ public static class EventFactory
             .RuleFor(e => e.AccountId, accountId ?? Guid.CreateVersion7())
             .RuleFor(e => e.CorrelationId, correlationId)
             .RuleFor(e => e.EventType, eventType)
+            .RuleFor(e => e.EntityType, entityType)
+            .RuleFor(e => e.EntityId, entityId ?? Guid.CreateVersion7())
             .RuleFor(e => e.TriggeredByUserSubject, triggeredByUserSubject)
             .RuleFor(e => e.TriggeredByUserAt, triggeredByUserAt)
             .RuleFor(e => e.Data, eventData)
@@ -73,6 +77,8 @@ public static class EventFactory
 
         return CreateEvent(
             eventType: eventTypeName,
+            entityId: activityCreatedV1Event.Id,
+            entityType: "Activity",
             eventData: eventData,
             id: eventId,
             iTwinId: iTwinId,
@@ -102,6 +108,8 @@ public static class EventFactory
 
         return CreateEvent(
             eventType: eventTypeName,
+            entityId: activityDeletedV1Event.Id,
+            entityType: "Activity",
             eventData: eventData,
             id: eventId,
             iTwinId: iTwinId,
@@ -143,6 +151,8 @@ public static class EventFactory
 
         return CreateEvent(
             eventType: eventTypeName,
+            entityId: controlAccountCreatedV1Event.Id,
+            entityType: "ControlAccount",
             eventData: eventData,
             id: eventId,
             iTwinId: iTwinId,

@@ -25,6 +25,10 @@ public class EventCreateRequest : IValidatableObject, IDisposable
     [ValidEventType]
     public required string EventType { get; set; }
 
+    public required string EntityType { get; set; }
+
+    public required Guid EntityId { get; set; }
+
     [Required]
     public required JsonDocument Data { get; set; }
 
