@@ -40,7 +40,7 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
             {
                 ITwinId = iTwinId,
                 AccountId = accountId,
-                Type = type,
+                EventType = type,
             };
 
         var result = query.ApplyFilter(filter).WithLimit(limit).ExecuteQuery();

@@ -106,13 +106,13 @@ public class ListEventsQueryTests : DatabaseTestBase
     }
 
     [Fact]
-    public async Task Type_Test()
+    public async Task EventType_Test()
     {
         var deletedActivityEvent = EventFactory.CreateActivityDeletedV1Event();
         await Setup(AllEvents.Append(deletedActivityEvent));
 
         var queryResult = new ListEventsQuery(query: _dbContext.Events.AsQueryable())
-            .ApplyFilter(new() { Type = "activity.deleted.v1" })
+            .ApplyFilter(new() { EventType = "activity.deleted.v1" })
             .ExecuteQuery();
 
         queryResult.Items.ShouldBe(new List<Event>() { deletedActivityEvent });
