@@ -377,7 +377,7 @@ public class EventsControllerTests : DatabaseTestBase
     }
 
     [Fact]
-    public async ValueTask Index_WithTypeFilter()
+    public async ValueTask Index_WithEventTypeFilter()
     {
         var event1 = EventFactory.CreateActivityCreatedV1Event();
         var event2 = EventFactory.CreateActivityCreatedV1Event();
@@ -390,7 +390,7 @@ public class EventsControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            GetPathByName("ListEvents", new { type = "activity.created.v1" }),
+            GetPathByName("ListEvents", new { eventType = "activity.created.v1" }),
             TestContext.Current.CancellationToken
         );
         var apiResponse = await response.ShouldBeApiResponse<
@@ -406,14 +406,14 @@ public class EventsControllerTests : DatabaseTestBase
     public async ValueTask Index_WithInvalidTypeFilter_BadRequest()
     {
         var response = await _client.GetAsync(
-            GetPathByName("ListEvents", new { type = "invalid.event.type" }),
+            GetPathByName("ListEvents", new { eventType = "invalid.event.type" }),
             TestContext.Current.CancellationToken
         );
 
         await response.ShouldBeApiErrorBadRequest(
             new Dictionary<string, string[]>
             {
-                { "type", ["\"invalid.event.type\" is not a valid Event Type."] },
+                { "eventType", ["\"invalid.event.type\" is not a valid Event Type."] },
             }
         );
     }
