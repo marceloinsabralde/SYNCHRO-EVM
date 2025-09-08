@@ -398,7 +398,7 @@ public class EventsControllerTests : DatabaseTestBase
         >();
         var eventsFromResponse = apiResponse.Items.ToList();
 
-        eventsFromResponse.ShouldAllBe(e => e.Type == "activity.created.v1");
+        eventsFromResponse.ShouldAllBe(e => e.EventType == "activity.created.v1");
         eventsFromResponse.Select(e => e.Id).ShouldBe([event1.Id, event2.Id]);
     }
 

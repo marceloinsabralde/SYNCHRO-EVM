@@ -16,7 +16,7 @@ public class EventResponse : IDisposable
 
     public string? CorrelationId { get; set; }
 
-    public required string Type { get; set; }
+    public required string EventType { get; set; }
 
     public Guid? TriggeredByUserSubject { get; set; }
 
@@ -39,7 +39,7 @@ public class EventResponse : IDisposable
             ITwinId = @event.ITwinId,
             AccountId = @event.AccountId,
             CorrelationId = @event.CorrelationId,
-            Type = @event.EventType,
+            EventType = @event.EventType,
             TriggeredByUserSubject = @event.TriggeredByUserSubject,
             TriggeredByUserAt = @event.TriggeredByUserAt,
             Data = @event.Data,
