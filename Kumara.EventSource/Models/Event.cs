@@ -41,6 +41,9 @@ public class Event : ITimestampedEntity, IPageableEntity, IDisposable
             builder.HasKey(e => new { e.Id, e.AccountId });
             // Generate a Guid for Id as it's no longer the primary key
             builder.Property(e => e.Id).HasValueGenerator<NpgsqlSequentialGuidValueGenerator>();
+
+            builder.HasIndex(e => e.AccountId);
+            builder.HasIndex(e => e.EventType);
         }
     }
 
