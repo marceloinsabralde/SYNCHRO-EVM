@@ -64,7 +64,7 @@ _.file = { path = ".env.json", redact = true }
 
 # NOTE provide defaults so we can at least run mise to make the secrets work
 IMS_API_SECRET = "{{ env.IMS_API_SECRET | default(value=\"missing .env.json\") }}"
-IMS_CLIENT_SECRET = "{{ env.IMS_API_SECRET | default(value=\"missing .env.json\") }}"
+IMS_CLIENT_SECRET = "{{ env.IMS_CLIENT_SECRET | default(value=\"missing .env.json\") }}"
 IMS_BACKGROUND_CLIENT_SECRET = "{{ env.IMS_BACKGROUND_CLIENT_SECRET | default(value=\"missing .env.json\") }}"
 
 PGHOST="127.0.0.1"
