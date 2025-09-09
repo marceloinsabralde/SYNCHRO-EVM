@@ -117,4 +117,17 @@ public class ListEventsQueryTests : DatabaseTestBase
 
         queryResult.Items.ShouldBe(new List<Event>() { deletedActivityEvent });
     }
+
+    [Fact]
+    public async Task EntityType_Test()
+    {
+        var createdControlAccountEvent = EventFactory.CreateControlAccountCreatedV1Event();
+        await Setup(AllEvents.Append(createdControlAccountEvent));
+
+        var queryResult = new ListEventsQuery(query: _dbContext.Events.AsQueryable())
+            .ApplyFilter(new() { EntityType = "ControlAccount" })
+            .ExecuteQuery();
+
+        queryResult.Items.ShouldBe(new List<Event>() { createdControlAccountEvent });
+    }
 }

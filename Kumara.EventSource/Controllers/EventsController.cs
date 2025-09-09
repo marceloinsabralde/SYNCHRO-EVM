@@ -25,6 +25,7 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
         [FromQuery] Guid? iTwinId,
         [FromQuery] Guid? accountId,
         [FromQuery] [ValidEventType] string? eventType,
+        [FromQuery] string? entityType,
         [FromQuery(Name = "$continuationToken")]
             ContinuationToken<ListEventsQueryFilter>? continuationToken,
         [FromQuery(Name = "$top")] int limit = 50
@@ -41,6 +42,7 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
                 ITwinId = iTwinId,
                 AccountId = accountId,
                 EventType = eventType,
+                EntityType = entityType,
             };
 
         var result = query.ApplyFilter(filter).WithLimit(limit).ExecuteQuery();

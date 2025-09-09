@@ -27,6 +27,9 @@ public class ListEventsQuery : PageableQuery<ListEventsQuery, ListEventsQueryFil
         if (filter.EventType is not null)
             _query = _query.Where(@event => @event.EventType == filter.EventType);
 
+        if (filter.EntityType is not null)
+            _query = _query.Where(@event => @event.EntityType == filter.EntityType);
+
         return this;
     }
 }
@@ -40,4 +43,6 @@ public class ListEventsQueryFilter : IPageableQueryFilter
     public Guid? AccountId { get; set; }
 
     public string? EventType { get; set; }
+
+    public string? EntityType { get; set; }
 }

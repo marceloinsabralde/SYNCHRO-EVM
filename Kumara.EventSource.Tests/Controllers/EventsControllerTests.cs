@@ -414,6 +414,32 @@ public class EventsControllerTests : DatabaseTestBase
     }
 
     [Fact]
+    public async ValueTask Index_WithEntityTypeFilter()
+    {
+        var event1 = EventFactory.CreateActivityCreatedV1Event();
+        var event2 = EventFactory.CreateActivityCreatedV1Event();
+        var otherEntityEvent = EventFactory.CreateControlAccountCreatedV1Event();
+
+        await _dbContext.Events.AddRangeAsync(
+            [event1, event2, otherEntityEvent],
+            TestContext.Current.CancellationToken
+        );
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var response = await _client.GetAsync(
+            GetPathByName("ListEvents", new { entityType = "Activity" }),
+            TestContext.Current.CancellationToken
+        );
+        var apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<EventResponse>
+        >();
+        var eventsFromResponse = apiResponse.Items.ToList();
+
+        eventsFromResponse.ShouldAllBe(e => e.EntityType == "Activity");
+        eventsFromResponse.Select(e => e.Id).ShouldBe([event1.Id, event2.Id]);
+    }
+
+    [Fact]
     public async ValueTask Index_WithInvalidTypeFilter_BadRequest()
     {
         var response = await _client.GetAsync(
