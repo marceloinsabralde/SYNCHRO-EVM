@@ -13,6 +13,7 @@ namespace Kumara.EventSource.Tests.Factories;
 public static class EventFactory
 {
     private static int _activityCount = 0;
+    private static int _controlAccountCount = 0;
 
     public static Event CreateEvent(
         string eventType,
@@ -98,6 +99,47 @@ public static class EventFactory
 
         var eventTypeName = GetEventTypeName(activityDeletedV1Event);
         var eventData = JsonSerializer.SerializeToDocument(activityDeletedV1Event);
+
+        return CreateEvent(
+            eventTypeName,
+            eventData,
+            eventId,
+            iTwinId,
+            accountId,
+            correlationId,
+            triggeredByUserSubject,
+            triggeredByUserAt
+        );
+    }
+
+    public static Event CreateControlAccountCreatedV1Event(
+        Guid? controlAccountId = null,
+        string? name = null,
+        DateTimeOffset? plannedStart = null,
+        DateTimeOffset? plannedFinish = null,
+        DateTimeOffset? actualStart = null,
+        DateTimeOffset? actualFinish = null,
+        Guid? eventId = null,
+        Guid? iTwinId = null,
+        Guid? accountId = null,
+        string? correlationId = null,
+        Guid? triggeredByUserSubject = null,
+        Instant? triggeredByUserAt = null
+    )
+    {
+        _controlAccountCount++;
+
+        var controlAccountCreatedV1Event = new Faker<ControlAccountCreatedV1>()
+            .RuleFor(a => a.Id, controlAccountId ?? Guid.CreateVersion7())
+            .RuleFor(a => a.Name, name ?? $"Control Account {_controlAccountCount:D3}")
+            .RuleFor(a => a.ActualStart, actualStart)
+            .RuleFor(a => a.ActualFinish, actualFinish)
+            .RuleFor(a => a.PlannedStart, plannedStart)
+            .RuleFor(a => a.PlannedFinish, plannedFinish)
+            .Generate();
+
+        var eventTypeName = GetEventTypeName(controlAccountCreatedV1Event);
+        var eventData = JsonSerializer.SerializeToDocument(controlAccountCreatedV1Event);
 
         return CreateEvent(
             eventTypeName,
