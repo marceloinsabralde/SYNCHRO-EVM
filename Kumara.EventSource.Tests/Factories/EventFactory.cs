@@ -72,14 +72,14 @@ public static class EventFactory
         var eventData = JsonSerializer.SerializeToDocument(activityCreatedV1Event);
 
         return CreateEvent(
-            eventTypeName,
-            eventData,
-            eventId,
-            iTwinId,
-            accountId,
-            correlationId,
-            triggeredByUserSubject,
-            triggeredByUserAt
+            eventType: eventTypeName,
+            eventData: eventData,
+            id: eventId,
+            iTwinId: iTwinId,
+            accountId: accountId,
+            correlationId: correlationId,
+            triggeredByUserSubject: triggeredByUserSubject,
+            triggeredByUserAt: triggeredByUserAt
         );
     }
 
@@ -101,14 +101,14 @@ public static class EventFactory
         var eventData = JsonSerializer.SerializeToDocument(activityDeletedV1Event);
 
         return CreateEvent(
-            eventTypeName,
-            eventData,
-            eventId,
-            iTwinId,
-            accountId,
-            correlationId,
-            triggeredByUserSubject,
-            triggeredByUserAt
+            eventType: eventTypeName,
+            eventData: eventData,
+            id: eventId,
+            iTwinId: iTwinId,
+            accountId: accountId,
+            correlationId: correlationId,
+            triggeredByUserSubject: triggeredByUserSubject,
+            triggeredByUserAt: triggeredByUserAt
         );
     }
 
@@ -142,14 +142,14 @@ public static class EventFactory
         var eventData = JsonSerializer.SerializeToDocument(controlAccountCreatedV1Event);
 
         return CreateEvent(
-            eventTypeName,
-            eventData,
-            eventId,
-            iTwinId,
-            accountId,
-            correlationId,
-            triggeredByUserSubject,
-            triggeredByUserAt
+            eventType: eventTypeName,
+            eventData: eventData,
+            id: eventId,
+            iTwinId: iTwinId,
+            accountId: accountId,
+            correlationId: correlationId,
+            triggeredByUserSubject: triggeredByUserSubject,
+            triggeredByUserAt: triggeredByUserAt
         );
     }
 
