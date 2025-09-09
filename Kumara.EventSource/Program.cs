@@ -56,7 +56,8 @@ app.UseHttpsRedirection();
 
 await app.MigrateDbAsync<ApplicationDbContext>();
 
-app.MapControllers();
-app.MapHealthChecks("/healthz");
+app.UseAuthentication().UseAuthorization();
+app.MapControllers().RequireAuthorization();
+app.MapHealthChecks("/healthz").AllowAnonymous();
 
 app.Run();
