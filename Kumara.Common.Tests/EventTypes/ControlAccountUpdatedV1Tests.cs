@@ -7,13 +7,11 @@ namespace Kumara.Common.Tests.EventTypes;
 
 public class ControlAccountUpdatedV1Tests
 {
-    private ControlAccountUpdatedV1 GetMinimalValidObject() =>
-        new() { Id = Guid.CreateVersion7(), Name = "Minimal + Valid" };
+    private ControlAccountUpdatedV1 GetMinimalValidObject() => new() { Name = "Minimal + Valid" };
 
     private ControlAccountUpdatedV1 GetFullValidObject() =>
         new()
         {
-            Id = Guid.CreateVersion7(),
             Name = "Full + Valid",
             WbsPath = "1.2.3",
             TaskId = Guid.CreateVersion7(),

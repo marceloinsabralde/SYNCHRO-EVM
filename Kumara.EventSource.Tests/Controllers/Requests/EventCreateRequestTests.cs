@@ -10,15 +10,10 @@ namespace Kumara.EventSource.Tests.Controllers.Requests;
 public class EventCreateRequestTests
 {
     private static JsonObject GetValidActivityCreatedV1JsonObject() =>
-        new()
-        {
-            ["id"] = Guid.CreateVersion7(),
-            ["name"] = "Test Activity",
-            ["referenceCode"] = "ACT001",
-        };
+        new() { ["name"] = "Test Activity", ["referenceCode"] = "ACT001" };
 
     private static JsonObject GetValidControlAccountCreatedV1JsonObject() =>
-        new() { ["id"] = Guid.CreateVersion7(), ["name"] = "Test Control Account" };
+        new() { ["name"] = "Test Control Account" };
 
     private static string GetDataFieldErrorMessage(string eventTypeName, string? extraErrors = null)
     {

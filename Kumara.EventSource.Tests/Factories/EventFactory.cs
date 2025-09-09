@@ -62,7 +62,6 @@ public static class EventFactory
         _activityCount++;
 
         var activityCreatedV1Event = new Faker<ActivityCreatedV1>()
-            .RuleFor(a => a.Id, activityId ?? Guid.CreateVersion7())
             .RuleFor(a => a.ControlAccountId, controlAccountId ?? Guid.CreateVersion7())
             .RuleFor(a => a.ReferenceCode, referenceCode ?? $"ACT{_activityCount:D3}")
             .RuleFor(a => a.Name, name ?? $"Activity {_activityCount:D3}")
@@ -77,7 +76,7 @@ public static class EventFactory
 
         return CreateEvent(
             eventType: eventTypeName,
-            entityId: activityCreatedV1Event.Id,
+            entityId: activityId,
             entityType: "Activity",
             eventData: eventData,
             id: eventId,
@@ -99,16 +98,14 @@ public static class EventFactory
         Instant? triggeredByUserAt = null
     )
     {
-        var activityDeletedV1Event = new Faker<ActivityDeletedV1>()
-            .RuleFor(a => a.Id, id ?? Guid.CreateVersion7())
-            .Generate();
+        var activityDeletedV1Event = new Faker<ActivityDeletedV1>().Generate();
 
         var eventTypeName = GetEventTypeName(activityDeletedV1Event);
         var eventData = JsonSerializer.SerializeToDocument(activityDeletedV1Event);
 
         return CreateEvent(
             eventType: eventTypeName,
-            entityId: activityDeletedV1Event.Id,
+            entityId: id,
             entityType: "Activity",
             eventData: eventData,
             id: eventId,
@@ -138,7 +135,6 @@ public static class EventFactory
         _controlAccountCount++;
 
         var controlAccountCreatedV1Event = new Faker<ControlAccountCreatedV1>()
-            .RuleFor(a => a.Id, controlAccountId ?? Guid.CreateVersion7())
             .RuleFor(a => a.Name, name ?? $"Control Account {_controlAccountCount:D3}")
             .RuleFor(a => a.ActualStart, actualStart)
             .RuleFor(a => a.ActualFinish, actualFinish)
@@ -151,7 +147,7 @@ public static class EventFactory
 
         return CreateEvent(
             eventType: eventTypeName,
-            entityId: controlAccountCreatedV1Event.Id,
+            entityId: controlAccountId,
             entityType: "ControlAccount",
             eventData: eventData,
             id: eventId,

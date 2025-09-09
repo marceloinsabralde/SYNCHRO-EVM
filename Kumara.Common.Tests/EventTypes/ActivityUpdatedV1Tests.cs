@@ -8,17 +8,11 @@ namespace Kumara.Common.Tests.EventTypes;
 public class ActivityUpdatedV1Tests
 {
     private ActivityUpdatedV1 GetMinimalValidObject() =>
-        new()
-        {
-            Id = Guid.CreateVersion7(),
-            Name = "Minimal + Valid",
-            ReferenceCode = "MIN001",
-        };
+        new() { Name = "Minimal + Valid", ReferenceCode = "MIN001" };
 
     private ActivityUpdatedV1 GetFullValidObject() =>
         new()
         {
-            Id = Guid.CreateVersion7(),
             Name = "Full + Valid",
             ReferenceCode = "FUL002",
             ControlAccountId = Guid.CreateVersion7(),

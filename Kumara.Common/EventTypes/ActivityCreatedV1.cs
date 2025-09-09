@@ -9,9 +9,6 @@ namespace Kumara.Common.EventTypes;
 [EventType("activity.created.v1")]
 public class ActivityCreatedV1
 {
-    [Required]
-    public required Guid Id { get; set; }
-
     [Required(AllowEmptyStrings = false)]
     public required string Name { get; set; }
 

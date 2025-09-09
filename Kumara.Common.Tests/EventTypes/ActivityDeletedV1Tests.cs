@@ -7,7 +7,7 @@ namespace Kumara.Common.Tests.EventTypes;
 
 public class ActivityDeletedV1Tests
 {
-    private ActivityDeletedV1 GetValidObject() => new() { Id = Guid.CreateVersion7() };
+    private ActivityDeletedV1 GetValidObject() => new() { };
 
     [Fact]
     public void PassesValidation()

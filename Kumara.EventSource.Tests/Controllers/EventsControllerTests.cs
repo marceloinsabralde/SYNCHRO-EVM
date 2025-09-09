@@ -22,12 +22,7 @@ public class EventsControllerTests : DatabaseTestBase
         var eventId = Guid.CreateVersion7();
         var eventType = "activity.created.v1";
         var eventData = JsonSerializer.SerializeToDocument(
-            new
-            {
-                Id = Guid.CreateVersion7(),
-                Name = "Test Activity",
-                ReferenceCode = "ACT001",
-            },
+            new { Name = "Test Activity", ReferenceCode = "ACT001" },
             JsonSerializerOptions.Web
         );
 
@@ -40,7 +35,6 @@ public class EventsControllerTests : DatabaseTestBase
                     new
                     {
                         Id = eventId,
-                        EntityId = eventData.RootElement.GetProperty("id").GetGuid(),
                         EntityType = "Activity",
                         EntityId = Guid.CreateVersion7(),
                         ITwinId = iTwinId,
@@ -93,12 +87,7 @@ public class EventsControllerTests : DatabaseTestBase
                 EntityType = "Activity",
                 EntityId = Guid.CreateVersion7(),
                 Data = JsonSerializer.SerializeToDocument(
-                    new
-                    {
-                        Id = Guid.CreateVersion7(),
-                        Name = $"Test Activity 0{index + 1}",
-                        ReferenceCode = $"ACT00{index}",
-                    },
+                    new { Name = $"Test Activity 0{index + 1}", ReferenceCode = $"ACT00{index}" },
                     JsonSerializerOptions.Web
                 ),
             });
