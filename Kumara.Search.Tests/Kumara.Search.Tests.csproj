@@ -1,11 +1,9 @@
 ﻿<!-- Copyright (c) Bentley Systems, Incorporated. All rights reserved. -->
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <Using Include="Xunit" />
     <Using Include="Shouldly" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="DiffEngine" />
     <PackageReference Include="EmptyFiles" />
@@ -33,14 +31,11 @@
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="Testcontainers.Elasticsearch" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Kumara.TestCommon\Kumara.TestCommon.csproj" />
     <ProjectReference Include="..\Kumara.Search\Kumara.Search.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="..\Kumara.TestCommon\Tests\**\*.cs" />
   </ItemGroup>
-
 </Project>
