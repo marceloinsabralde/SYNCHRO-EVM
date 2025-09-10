@@ -115,8 +115,8 @@ public class ITwinPathProviderTests
                 )
             );
 
-        var ex = await Should.ThrowAsync<InvalidOperationException>(
-            () => pathProvider.GetPathFromRootAsync(iTwinId)
+        var ex = await Should.ThrowAsync<InvalidOperationException>(() =>
+            pathProvider.GetPathFromRootAsync(iTwinId)
         );
 
         iTwinProvider.ReceivedCalls().Count().ShouldBe(1);
@@ -136,8 +136,8 @@ public class ITwinPathProviderTests
             .GetAsync(iTwinId, RequestOptionsArg)
             .Returns(Task.FromResult(new ITwinResponse()));
 
-        var ex = await Should.ThrowAsync<InvalidOperationException>(
-            () => pathProvider.GetPathFromRootAsync(iTwinId)
+        var ex = await Should.ThrowAsync<InvalidOperationException>(() =>
+            pathProvider.GetPathFromRootAsync(iTwinId)
         );
 
         iTwinProvider.ReceivedCalls().Count().ShouldBe(1);
@@ -155,8 +155,8 @@ public class ITwinPathProviderTests
             .GetAsync(iTwinId, RequestOptionsArg)
             .Returns(Task.FromResult(new ITwinResponse { iTwin = new() }));
 
-        var ex = await Should.ThrowAsync<InvalidOperationException>(
-            () => pathProvider.GetPathFromRootAsync(iTwinId)
+        var ex = await Should.ThrowAsync<InvalidOperationException>(() =>
+            pathProvider.GetPathFromRootAsync(iTwinId)
         );
 
         iTwinProvider.ReceivedCalls().Count().ShouldBe(1);
@@ -179,8 +179,8 @@ public class ITwinPathProviderTests
             .GetAsync(iTwinId2, RequestOptionsArg)
             .Returns(MockResponse(iTwinId2, iTwinId1, accountId));
 
-        var ex = await Should.ThrowAsync<InvalidOperationException>(
-            () => pathProvider.GetPathFromRootAsync(iTwinId1)
+        var ex = await Should.ThrowAsync<InvalidOperationException>(() =>
+            pathProvider.GetPathFromRootAsync(iTwinId1)
         );
 
         iTwinProvider.ReceivedCalls().Count().ShouldBe(2);

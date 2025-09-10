@@ -1,16 +1,13 @@
 <!-- Copyright (c) Bentley Systems, Incorporated. All rights reserved. -->
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
-
   <ItemGroup>
     <Using Include="Xunit" />
     <Using Include="Shouldly" />
     <Using Include="NSubstitute" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Azure.Core" />
     <PackageReference Include="Azure.Identity" />
@@ -64,14 +61,11 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Kumara.TestCommon\Kumara.TestCommon.csproj" />
     <ProjectReference Include="..\Kumara.WebApi\Kumara.WebApi.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="..\Kumara.TestCommon\Tests\**\*.cs" />
   </ItemGroup>
-
 </Project>

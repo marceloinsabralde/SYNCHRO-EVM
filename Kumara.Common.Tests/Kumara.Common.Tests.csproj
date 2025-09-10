@@ -1,59 +1,52 @@
 <!-- Copyright (c) Bentley Systems, Incorporated. All rights reserved. -->
-
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <ItemGroup>
-        <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Using Include="Xunit" />
-        <Using Include="Shouldly" />
-        <Using Include="NSubstitute" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Castle.Core" />
-        <PackageReference Include="DiffEngine" />
-        <PackageReference Include="EmptyFiles" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" />
-        <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
-        <PackageReference Include="Microsoft.Extensions.DependencyModel" />
-        <PackageReference Include="Microsoft.Extensions.Logging" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="Microsoft.Testing.Extensions.TrxReport.Abstractions" />
-        <PackageReference Include="Microsoft.Testing.Platform" />
-        <PackageReference Include="NSubstitute" />
-        <PackageReference Include="NSubstitute.Analyzers.CSharp">
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-          <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" />
-        <PackageReference Include="SQLitePCLRaw.core" />
-        <PackageReference Include="xunit.analyzers">
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-          <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="xunit.v3" />
-        <PackageReference Include="xunit.runner.visualstudio" />
-        <PackageReference Include="coverlet.collector" />
-        <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
-        <PackageReference Include="Shouldly" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
-        <PackageReference Include="NodaTime.Testing" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Kumara.Common\Kumara.Common.csproj" />
-        <ProjectReference Include="..\Kumara.TestCommon\Kumara.TestCommon.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Include="..\Kumara.TestCommon\Tests\**\*.cs" />
-        <Compile Remove="..\Kumara.TestCommon\Tests\AspNetCore\**\*.cs" />
-    </ItemGroup>
-
+  <ItemGroup>
+    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <Using Include="Shouldly" />
+    <Using Include="NSubstitute" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Castle.Core" />
+    <PackageReference Include="DiffEngine" />
+    <PackageReference Include="EmptyFiles" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport.Abstractions" />
+    <PackageReference Include="Microsoft.Testing.Platform" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="NSubstitute.Analyzers.CSharp">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" />
+    <PackageReference Include="SQLitePCLRaw.core" />
+    <PackageReference Include="xunit.analyzers">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="NodaTime.Testing" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kumara.Common\Kumara.Common.csproj" />
+    <ProjectReference Include="..\Kumara.TestCommon\Kumara.TestCommon.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Kumara.TestCommon\Tests\**\*.cs" />
+    <Compile Remove="..\Kumara.TestCommon\Tests\AspNetCore\**\*.cs" />
+  </ItemGroup>
 </Project>

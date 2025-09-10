@@ -13,7 +13,10 @@
     <PackageVersion Include="Bentley.ConnectCoreLibs.Providers.RBAC" Version="5.40.0" />
     <PackageVersion Include="Bentley.ConnectCoreLibs.User" Version="5.40.0" />
     <PackageVersion Include="Bentley.ConnectCoreLibs.User.TokenExchanger" Version="5.40.0" />
-    <PackageVersion Include="Bentley.CONNECT.Licensing.SaaS.Client.WebApiCore" Version="2024.12.4.1" />
+    <PackageVersion
+      Include="Bentley.CONNECT.Licensing.SaaS.Client.WebApiCore"
+      Version="2024.12.4.1"
+    />
     <PackageVersion Include="Bogus" Version="35.6.3" />
     <PackageVersion Include="BraceExpander" Version="1.0.4" />
     <PackageVersion Include="CaseConverter" Version="2.0.1" />
@@ -49,13 +52,22 @@
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="9.0.8" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.8" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.8" />
+    <PackageVersion
+      Include="Microsoft.Extensions.Configuration.EnvironmentVariables"
+      Version="9.0.8"
+    />
     <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.8" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
+    <PackageVersion
+      Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+      Version="9.0.8"
+    />
     <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.8" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="9.0.8" />
+    <PackageVersion
+      Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions"
+      Version="9.0.8"
+    />
     <PackageVersion Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.8" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.8" />
@@ -93,7 +105,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.8" />
+    <PackageVersion
+      Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore"
+      Version="9.0.8"
+    />
     <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.14.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="Microsoft.Testing.Extensions.TrxReport" Version="1.8.2" />
@@ -119,7 +134,10 @@
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.12.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.12.0-beta.2" />
+    <PackageVersion
+      Include="OpenTelemetry.Instrumentation.EntityFrameworkCore"
+      Version="1.12.0-beta.2"
+    />
     <PackageVersion Include="Reqnroll.MsTest" Version="2.4.1" />
     <PackageVersion Include="Respawn" Version="6.2.1" />
     <PackageVersion Include="Scrutor" Version="6.1.0" />
