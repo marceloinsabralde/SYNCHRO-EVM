@@ -11,7 +11,7 @@ using NodaTime;
 
 namespace Kumara.WebApi.Tests.Controllers;
 
-public sealed class ActivitiesControllerTests : DatabaseTestBase
+public sealed class ActivitiesControllerTests : ApplicationTestBase
 {
     [Fact]
     public async Task Index_Success()

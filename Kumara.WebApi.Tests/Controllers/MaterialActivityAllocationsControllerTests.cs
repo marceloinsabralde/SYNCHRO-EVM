@@ -6,7 +6,7 @@ using Kumara.WebApi.Controllers.Responses;
 
 namespace Kumara.WebApi.Tests.Controllers;
 
-public sealed class MaterialActivityAllocationsControllerTests : DatabaseTestBase
+public sealed class MaterialActivityAllocationsControllerTests : ApplicationTestBase
 {
     [Fact]
     public async ValueTask Index_Success()

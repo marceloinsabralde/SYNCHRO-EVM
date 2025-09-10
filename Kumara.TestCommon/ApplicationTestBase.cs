@@ -14,7 +14,7 @@ using Respawn.Graph;
 
 namespace Kumara.TestCommon;
 
-public abstract class DatabaseTestBase<T> : IAsyncLifetime
+public abstract class ApplicationTestBase<T> : IAsyncLifetime
     where T : DbContext
 {
     private static readonly ConcurrentDictionary<

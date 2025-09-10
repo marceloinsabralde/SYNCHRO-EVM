@@ -4,7 +4,7 @@ using Kumara.EventSource.Tests.Factories;
 
 namespace Kumara.EventSource.Tests.Models;
 
-public class EventTests : DatabaseTestBase
+public class EventTests : ApplicationTestBase
 {
     [Fact]
     internal async Task GeneratesIdOnPersistence()

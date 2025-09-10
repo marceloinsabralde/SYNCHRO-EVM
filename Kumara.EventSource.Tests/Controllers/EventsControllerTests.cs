@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kumara.EventSource.Tests.Controllers;
 
-public class EventsControllerTests : DatabaseTestBase
+public class EventsControllerTests : ApplicationTestBase
 {
     [Fact]
     public async Task Create_WithValidEventPayload_Created()

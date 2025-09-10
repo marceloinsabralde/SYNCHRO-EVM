@@ -5,7 +5,7 @@ using Kumara.WebApi.Queries;
 
 namespace Kumara.WebApi.Tests.Queries;
 
-public sealed class ListMaterialActivityAllocationsQueryTests : DatabaseTestBase
+public sealed class ListMaterialActivityAllocationsQueryTests : ApplicationTestBase
 {
     public static Guid ITwinId = Guid.CreateVersion7();
     public static List<MaterialActivityAllocation> Allocations = Enumerable

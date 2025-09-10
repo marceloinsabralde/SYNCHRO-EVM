@@ -4,7 +4,7 @@ using System.Net;
 
 namespace Kumara.Search.Tests.HealthChecks;
 
-public class HealthCheckTests : DatabaseTestBase
+public class HealthCheckTests : ApplicationTestBase
 {
     [Fact]
     public async Task ReturnsHealthyResponse()

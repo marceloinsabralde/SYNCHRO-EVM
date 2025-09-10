@@ -5,7 +5,7 @@ using Kumara.TestCommon;
 
 namespace Kumara.Core.Tests;
 
-public class DatabaseTestBase : DatabaseTestBase<ApplicationDbContext>
+public class ApplicationTestBase : ApplicationTestBase<ApplicationDbContext>
 {
     public override string ConnectionStringName => "KumaraCoreDB";
 }

@@ -6,7 +6,7 @@ using NodaTime;
 
 namespace Kumara.WebApi.Tests.Models;
 
-public sealed class ProgressSummaryTests : DatabaseTestBase
+public sealed class ProgressSummaryTests : ApplicationTestBase
 {
     [Fact]
     public void ContainsSummaryData()

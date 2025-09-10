@@ -6,7 +6,7 @@ using Kumara.WebApi.Models;
 
 namespace Kumara.WebApi.Tests.Controllers;
 
-public sealed class ProgressSummariesControllerTests : DatabaseTestBase
+public sealed class ProgressSummariesControllerTests : ApplicationTestBase
 {
     [Fact]
     public async Task Index_Success()

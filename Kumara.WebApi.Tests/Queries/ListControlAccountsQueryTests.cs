@@ -5,7 +5,7 @@ using Kumara.WebApi.Queries;
 
 namespace Kumara.WebApi.Tests.Queries;
 
-public class ListControlAccountsQueryTests : DatabaseTestBase
+public class ListControlAccountsQueryTests : ApplicationTestBase
 {
     public static Guid ITwinId = Guid.CreateVersion7();
     public static List<ControlAccount> ControlAccounts = Enumerable

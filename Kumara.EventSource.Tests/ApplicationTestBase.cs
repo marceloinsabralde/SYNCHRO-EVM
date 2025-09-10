@@ -1,31 +1,22 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using System.Net.Http.Headers;
+using Kumara.EventSource.Database;
 using Kumara.TestCommon;
 using Kumara.TestCommon.Extensions;
 using Kumara.TestCommon.Utilities;
-using Kumara.WebApi.Database;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Kumara.WebApi.Tests;
+namespace Kumara.EventSource.Tests;
 
-public class DatabaseTestBase : DatabaseTestBase<ApplicationDbContext>
+public class ApplicationTestBase : ApplicationTestBase<ApplicationDbContext>
 {
-    public override string ConnectionStringName => "KumaraWebApiDB";
+    public override string ConnectionStringName => "KumaraEventSourceDB";
 
     protected override void ConfigureWebHostBuilder(IWebHostBuilder builder)
     {
         base.ConfigureWebHostBuilder(builder);
         builder.ConfigureTestJwt();
-        builder.ConfigureTestServices(services =>
-        {
-            services.AddTransient<
-                Bentley.ConnectCoreLibs.Providers.Abstractions.Interfaces.IITwinProvider,
-                Kumara.WebApi.Providers.FakeITwinProvider
-            >();
-        });
     }
 
     public override async ValueTask InitializeAsync()
