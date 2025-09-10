@@ -190,7 +190,7 @@ jobs:
         inputs:
           command: custom
           custom: csharpier
-          arguments: --check .
+          arguments: check .
 
       - task: DotNetCoreCLI@2
         displayName: Check Code Formatting (dotnet format style)
