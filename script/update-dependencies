@@ -2,4 +2,5 @@
 # Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 set -euo pipefail
 
+dotnet tool update --all
 dotnet outdated --upgrade --transitive
