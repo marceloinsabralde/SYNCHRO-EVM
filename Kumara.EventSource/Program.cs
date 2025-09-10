@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.ConfigureBentleyProtectedApi();
+
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(
@@ -54,7 +56,8 @@ app.UseHttpsRedirection();
 
 await app.MigrateDbAsync<ApplicationDbContext>();
 
-app.MapControllers();
-app.MapHealthChecks("/healthz");
+app.UseAuthentication().UseAuthorization();
+app.MapControllers().RequireAuthorization();
+app.MapHealthChecks("/healthz").AllowAnonymous();
 
 app.Run();

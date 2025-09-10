@@ -1,0 +1,56 @@
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+
+@IMS_BaseURL = https://qa-ims.bentley.com
+@Kumara_BaseURL = https://localhost:7289
+
+# NOTE: See file://./Database/DbSeeder.cs
+@Seed_iTwin1_id = B0000000-0000-0000-0000-000000000001
+
+@client_id = {{$processEnv IMS_BACKGROUND_CLIENT_ID}}
+@client_secret = {{$processEnv IMS_BACKGROUND_CLIENT_SECRET}}
+@scope = synchro-evm
+
+# TODO: %encoding of variables is in bleeding edge of rest client
+@%client_secret = {{$processEnv IMS_BACKGROUND_CLIENT_SECRET_PERCENT_ENCODED}}
+
+# @name IMS_token
+POST {{IMS_BaseURL}}/connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&client_id={{client_id}}
+&client_secret={{%client_secret}}
+&scope={{scope}}
+
+###
+
+@IMS_JWT = {{IMS_token.response.body.$.access_token}}
+
+###
+# List Events
+
+GET {{Kumara_BaseURL}}/api/events?iTwinId={{Seed_iTwin1_id}}
+Authorization: Bearer {{IMS_JWT}}
+Content-Type: application/json
+
+###
+# Create Events
+
+POST {{Kumara_BaseURL}}/api/events
+Authorization: Bearer {{IMS_JWT}}
+Content-Type: application/json
+
+{
+    "events": [
+        {
+            "iTwinId": "B0000000-0000-0000-0000-000000000001",
+            "accountId": "A0000000-0000-0000-0000-000000000001",
+            "type": "activity.created.v1",
+            "data": {
+                "id": "10000000-0000-0000-0000-000000000000",
+                "referenceCode": "ACT999",
+                "name": "Test Activity"
+            }
+        }
+    ]
+}
