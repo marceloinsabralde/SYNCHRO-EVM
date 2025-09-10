@@ -4,7 +4,7 @@ using System.Net;
 
 namespace Kumara.Search.Tests.Controllers;
 
-public class SearchControllerTests : DatabaseTestBase
+public class SearchControllerTests : ApplicationTestBase
 {
     [Fact]
     public async Task Search_ReturnsSuccess()

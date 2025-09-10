@@ -6,7 +6,7 @@ using Kumara.WebApi.Providers;
 
 namespace Kumara.WebApi.Tests.Providers;
 
-public class FakeITwinProviderTests : DatabaseTestBase
+public class FakeITwinProviderTests : ApplicationTestBase
 {
     [Fact]
     public async Task ReturnsSuccessWhenFakeITwinExists()

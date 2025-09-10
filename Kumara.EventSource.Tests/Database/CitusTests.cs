@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kumara.EventSource.Tests.Database;
 
-public sealed class CitusTests : DatabaseTestBase
+public sealed class CitusTests : ApplicationTestBase
 {
     [Fact]
     public async Task DistributesEventsAcrossShardsByAccountId()

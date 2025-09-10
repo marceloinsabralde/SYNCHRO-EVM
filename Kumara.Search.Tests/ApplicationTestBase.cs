@@ -7,7 +7,7 @@ using Kumara.TestCommon;
 namespace Kumara.Search.Tests;
 
 [Collection("Non-Parallel Collection")]
-public class DatabaseTestBase : DatabaseTestBase<ApplicationDbContext>
+public class ApplicationTestBase : ApplicationTestBase<ApplicationDbContext>
 {
     public override string ConnectionStringName => "KumaraSearchDB";
 

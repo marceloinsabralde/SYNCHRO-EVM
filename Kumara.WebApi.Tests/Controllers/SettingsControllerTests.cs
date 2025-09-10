@@ -6,7 +6,7 @@ using Kumara.WebApi.Types;
 
 namespace Kumara.WebApi.Tests.Controllers;
 
-public sealed class SettingsControllerTests : DatabaseTestBase
+public sealed class SettingsControllerTests : ApplicationTestBase
 {
     [Fact]
     public async Task GetSettings_ReturnsSettingsForItwinWithSettings()

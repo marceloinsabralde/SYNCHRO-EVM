@@ -6,7 +6,7 @@ using Microsoft.OpenApi.Models;
 
 namespace Kumara.WebApi.Tests.Types;
 
-public class DateWithOptionalTimeSchemaPatcherTests : DatabaseTestBase
+public class DateWithOptionalTimeSchemaPatcherTests : ApplicationTestBase
 {
     protected OpenApiSchema ExpectedSchema
     {

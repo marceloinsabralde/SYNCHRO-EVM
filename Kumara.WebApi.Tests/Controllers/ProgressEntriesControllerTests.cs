@@ -9,7 +9,7 @@ using NodaTime;
 
 namespace Kumara.WebApi.Tests.Controllers;
 
-public sealed class ProgressEntriesControllerTests : DatabaseTestBase
+public sealed class ProgressEntriesControllerTests : ApplicationTestBase
 {
     async Task<Dictionary<string, object>> BuildCreateParams()
     {

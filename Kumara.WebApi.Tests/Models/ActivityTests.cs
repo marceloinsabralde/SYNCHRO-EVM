@@ -5,7 +5,7 @@ using NodaTime;
 
 namespace Kumara.WebApi.Tests.Models;
 
-public sealed class ActivityTests : DatabaseTestBase
+public sealed class ActivityTests : ApplicationTestBase
 {
     [Fact]
     public void RoundTripsActualsIntoBackingFields()

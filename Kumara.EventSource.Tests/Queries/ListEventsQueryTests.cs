@@ -6,7 +6,7 @@ using Kumara.EventSource.Tests.Factories;
 
 namespace Kumara.EventSource.Tests.Queries;
 
-public class ListEventsQueryTests : DatabaseTestBase
+public class ListEventsQueryTests : ApplicationTestBase
 {
     public static Guid ITwinId = Guid.CreateVersion7();
     public static Guid AccountId = Guid.CreateVersion7();

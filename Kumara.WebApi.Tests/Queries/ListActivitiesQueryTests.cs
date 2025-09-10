@@ -6,7 +6,7 @@ using NodaTime;
 
 namespace Kumara.WebApi.Tests.Queries;
 
-public sealed class ListActivitiesQueryTests : DatabaseTestBase
+public sealed class ListActivitiesQueryTests : ApplicationTestBase
 {
     public static Guid ITwinId = Guid.CreateVersion7();
     public static List<Activity> Activities = Enumerable

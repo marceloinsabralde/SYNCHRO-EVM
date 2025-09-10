@@ -5,7 +5,7 @@ using Kumara.WebApi.Queries;
 
 namespace Kumara.WebApi.Tests.Queries;
 
-public class ListMaterialsQueryTests : DatabaseTestBase
+public class ListMaterialsQueryTests : ApplicationTestBase
 {
     public static Guid ITwinId = Guid.CreateVersion7();
     public static List<Material> Materials = Enumerable
