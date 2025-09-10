@@ -4,6 +4,7 @@ using System.Text.Json;
 using Kumara.EventSource.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kumara.EventSource.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250908010447_AddMissingIndexesOnEvent")]
+    partial class AddMissingIndexesOnEvents
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,15 +50,6 @@ namespace Kumara.EventSource.Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("data");
 
-                    b.Property<Guid>("EntityId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("entity_id");
-
-                    b.Property<string>("EntityType")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("entity_type");
-
                     b.Property<string>("EventType")
                         .IsRequired()
                         .HasColumnType("text")
@@ -76,22 +70,14 @@ namespace Kumara.EventSource.Migrations
                     b.HasKey("Id", "AccountId")
                         .HasName("pk_events");
 
-
                     b.HasIndex("AccountId")
                         .HasDatabaseName("ix_events_account_id");
-
-                    b.HasIndex("EntityType")
-                        .HasDatabaseName("ix_events_entity_type");
 
                     b.HasIndex("EventType")
                         .HasDatabaseName("ix_events_event_type");
 
-
                     b.HasIndex("ITwinId")
                         .HasDatabaseName("ix_events_itwin_id");
-
-                    b.HasIndex("EntityId", "EntityType")
-                        .HasDatabaseName("ix_events_entity_id_entity_type");
 
                     b.ToTable("events", (string)null);
                 });

@@ -13,10 +13,13 @@ namespace Kumara.EventSource.Tests.Factories;
 public static class EventFactory
 {
     private static int _activityCount = 0;
+    private static int _controlAccountCount = 0;
 
     public static Event CreateEvent(
         string eventType,
+        string entityType,
         JsonDocument eventData,
+        Guid? entityId = null,
         Guid? id = null,
         Guid? iTwinId = null,
         Guid? accountId = null,
@@ -30,7 +33,9 @@ public static class EventFactory
             .RuleFor(e => e.ITwinId, iTwinId ?? Guid.CreateVersion7())
             .RuleFor(e => e.AccountId, accountId ?? Guid.CreateVersion7())
             .RuleFor(e => e.CorrelationId, correlationId)
-            .RuleFor(e => e.Type, eventType)
+            .RuleFor(e => e.EventType, eventType)
+            .RuleFor(e => e.EntityType, entityType)
+            .RuleFor(e => e.EntityId, entityId ?? Guid.CreateVersion7())
             .RuleFor(e => e.TriggeredByUserSubject, triggeredByUserSubject)
             .RuleFor(e => e.TriggeredByUserAt, triggeredByUserAt)
             .RuleFor(e => e.Data, eventData)
@@ -57,7 +62,6 @@ public static class EventFactory
         _activityCount++;
 
         var activityCreatedV1Event = new Faker<ActivityCreatedV1>()
-            .RuleFor(a => a.Id, activityId ?? Guid.CreateVersion7())
             .RuleFor(a => a.ControlAccountId, controlAccountId ?? Guid.CreateVersion7())
             .RuleFor(a => a.ReferenceCode, referenceCode ?? $"ACT{_activityCount:D3}")
             .RuleFor(a => a.Name, name ?? $"Activity {_activityCount:D3}")
@@ -71,14 +75,16 @@ public static class EventFactory
         var eventData = JsonSerializer.SerializeToDocument(activityCreatedV1Event);
 
         return CreateEvent(
-            eventTypeName,
-            eventData,
-            eventId,
-            iTwinId,
-            accountId,
-            correlationId,
-            triggeredByUserSubject,
-            triggeredByUserAt
+            eventType: eventTypeName,
+            entityId: activityId,
+            entityType: "Activity",
+            eventData: eventData,
+            id: eventId,
+            iTwinId: iTwinId,
+            accountId: accountId,
+            correlationId: correlationId,
+            triggeredByUserSubject: triggeredByUserSubject,
+            triggeredByUserAt: triggeredByUserAt
         );
     }
 
@@ -92,22 +98,64 @@ public static class EventFactory
         Instant? triggeredByUserAt = null
     )
     {
-        var activityDeletedV1Event = new Faker<ActivityDeletedV1>()
-            .RuleFor(a => a.Id, id ?? Guid.CreateVersion7())
-            .Generate();
+        var activityDeletedV1Event = new Faker<ActivityDeletedV1>().Generate();
 
         var eventTypeName = GetEventTypeName(activityDeletedV1Event);
         var eventData = JsonSerializer.SerializeToDocument(activityDeletedV1Event);
 
         return CreateEvent(
-            eventTypeName,
-            eventData,
-            eventId,
-            iTwinId,
-            accountId,
-            correlationId,
-            triggeredByUserSubject,
-            triggeredByUserAt
+            eventType: eventTypeName,
+            entityId: id,
+            entityType: "Activity",
+            eventData: eventData,
+            id: eventId,
+            iTwinId: iTwinId,
+            accountId: accountId,
+            correlationId: correlationId,
+            triggeredByUserSubject: triggeredByUserSubject,
+            triggeredByUserAt: triggeredByUserAt
+        );
+    }
+
+    public static Event CreateControlAccountCreatedV1Event(
+        Guid? controlAccountId = null,
+        string? name = null,
+        DateTimeOffset? plannedStart = null,
+        DateTimeOffset? plannedFinish = null,
+        DateTimeOffset? actualStart = null,
+        DateTimeOffset? actualFinish = null,
+        Guid? eventId = null,
+        Guid? iTwinId = null,
+        Guid? accountId = null,
+        string? correlationId = null,
+        Guid? triggeredByUserSubject = null,
+        Instant? triggeredByUserAt = null
+    )
+    {
+        _controlAccountCount++;
+
+        var controlAccountCreatedV1Event = new Faker<ControlAccountCreatedV1>()
+            .RuleFor(a => a.Name, name ?? $"Control Account {_controlAccountCount:D3}")
+            .RuleFor(a => a.ActualStart, actualStart)
+            .RuleFor(a => a.ActualFinish, actualFinish)
+            .RuleFor(a => a.PlannedStart, plannedStart)
+            .RuleFor(a => a.PlannedFinish, plannedFinish)
+            .Generate();
+
+        var eventTypeName = GetEventTypeName(controlAccountCreatedV1Event);
+        var eventData = JsonSerializer.SerializeToDocument(controlAccountCreatedV1Event);
+
+        return CreateEvent(
+            eventType: eventTypeName,
+            entityId: controlAccountId,
+            entityType: "ControlAccount",
+            eventData: eventData,
+            id: eventId,
+            iTwinId: iTwinId,
+            accountId: accountId,
+            correlationId: correlationId,
+            triggeredByUserSubject: triggeredByUserSubject,
+            triggeredByUserAt: triggeredByUserAt
         );
     }
 

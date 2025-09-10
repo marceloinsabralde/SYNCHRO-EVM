@@ -22,12 +22,7 @@ public class EventsControllerTests : DatabaseTestBase
         var eventId = Guid.CreateVersion7();
         var eventType = "activity.created.v1";
         var eventData = JsonSerializer.SerializeToDocument(
-            new
-            {
-                Id = Guid.CreateVersion7(),
-                Name = "Test Activity",
-                ReferenceCode = "ACT001",
-            },
+            new { Name = "Test Activity", ReferenceCode = "ACT001" },
             JsonSerializerOptions.Web
         );
 
@@ -40,9 +35,11 @@ public class EventsControllerTests : DatabaseTestBase
                     new
                     {
                         Id = eventId,
+                        EntityType = "Activity",
+                        EntityId = Guid.CreateVersion7(),
                         ITwinId = iTwinId,
                         AccountId = accountId,
-                        Type = eventType,
+                        EventType = eventType,
                         Data = eventData,
                     },
                 },
@@ -63,7 +60,7 @@ public class EventsControllerTests : DatabaseTestBase
         createdEvent.ShouldSatisfyAllConditions(
             () => createdEvent.Id.ShouldNotBe(Guid.Empty),
             () => createdEvent.ITwinId.ShouldBe(iTwinId),
-            () => createdEvent.Type.ShouldBe(eventType),
+            () => createdEvent.EventType.ShouldBe(eventType),
             () =>
                 JsonElement
                     .DeepEquals(eventData.RootElement, createdEvent.Data.RootElement)
@@ -86,14 +83,11 @@ public class EventsControllerTests : DatabaseTestBase
             {
                 ITwinId = iTwinId,
                 AccountId = accountId,
-                Type = eventType,
+                EventType = eventType,
+                EntityType = "Activity",
+                EntityId = Guid.CreateVersion7(),
                 Data = JsonSerializer.SerializeToDocument(
-                    new
-                    {
-                        Id = Guid.CreateVersion7(),
-                        Name = $"Test Activity 0{index + 1}",
-                        ReferenceCode = $"ACT00{index}",
-                    },
+                    new { Name = $"Test Activity 0{index + 1}", ReferenceCode = $"ACT00{index}" },
                     JsonSerializerOptions.Web
                 ),
             });
@@ -128,7 +122,9 @@ public class EventsControllerTests : DatabaseTestBase
                     {
                         ITwinId = iTwinId,
                         AccountId = accountId,
-                        Type = "invalid.type.v1",
+                        EventType = "invalid.type.v1",
+                        EntityType = "invalid",
+                        EntityId = Guid.CreateVersion7(),
                         Data = JsonSerializer.SerializeToDocument(
                             new { },
                             JsonSerializerOptions.Web
@@ -142,7 +138,7 @@ public class EventsControllerTests : DatabaseTestBase
         await response.ShouldBeApiErrorBadRequest(
             new Dictionary<string, string[]>()
             {
-                { "Events[0].Type", ["\"invalid.type.v1\" is not a valid Event Type."] },
+                { "Events[0].EventType", ["\"invalid.type.v1\" is not a valid Event Type."] },
             }
         );
     }
@@ -163,7 +159,9 @@ public class EventsControllerTests : DatabaseTestBase
                     {
                         ITwinId = iTwinId,
                         AccountId = accountId,
-                        Type = "activity.updated.v1",
+                        EventType = "activity.updated.v1",
+                        EntityType = "Activity",
+                        EntityId = Guid.CreateVersion7(),
                         Data = JsonSerializer.SerializeToDocument(
                             new { },
                             JsonSerializerOptions.Web
@@ -199,7 +197,9 @@ public class EventsControllerTests : DatabaseTestBase
                     new EventCreateRequest
                     {
                         ITwinId = iTwinId,
-                        Type = "activity.deleted.v1",
+                        EventType = "activity.deleted.v1",
+                        EntityType = "Activity",
+                        EntityId = Guid.CreateVersion7(),
                         Data = JsonSerializer.SerializeToDocument(
                             new { Id = Guid.CreateVersion7() },
                             JsonSerializerOptions.Web
@@ -377,7 +377,7 @@ public class EventsControllerTests : DatabaseTestBase
     }
 
     [Fact]
-    public async ValueTask Index_WithTypeFilter()
+    public async ValueTask Index_WithEventTypeFilter()
     {
         var event1 = EventFactory.CreateActivityCreatedV1Event();
         var event2 = EventFactory.CreateActivityCreatedV1Event();
@@ -390,7 +390,7 @@ public class EventsControllerTests : DatabaseTestBase
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var response = await _client.GetAsync(
-            GetPathByName("ListEvents", new { type = "activity.created.v1" }),
+            GetPathByName("ListEvents", new { eventType = "activity.created.v1" }),
             TestContext.Current.CancellationToken
         );
         var apiResponse = await response.ShouldBeApiResponse<
@@ -398,7 +398,33 @@ public class EventsControllerTests : DatabaseTestBase
         >();
         var eventsFromResponse = apiResponse.Items.ToList();
 
-        eventsFromResponse.ShouldAllBe(e => e.Type == "activity.created.v1");
+        eventsFromResponse.ShouldAllBe(e => e.EventType == "activity.created.v1");
+        eventsFromResponse.Select(e => e.Id).ShouldBe([event1.Id, event2.Id]);
+    }
+
+    [Fact]
+    public async ValueTask Index_WithEntityTypeFilter()
+    {
+        var event1 = EventFactory.CreateActivityCreatedV1Event();
+        var event2 = EventFactory.CreateActivityCreatedV1Event();
+        var otherEntityEvent = EventFactory.CreateControlAccountCreatedV1Event();
+
+        await _dbContext.Events.AddRangeAsync(
+            [event1, event2, otherEntityEvent],
+            TestContext.Current.CancellationToken
+        );
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var response = await _client.GetAsync(
+            GetPathByName("ListEvents", new { entityType = "Activity" }),
+            TestContext.Current.CancellationToken
+        );
+        var apiResponse = await response.ShouldBeApiResponse<
+            PaginatedListResponse<EventResponse>
+        >();
+        var eventsFromResponse = apiResponse.Items.ToList();
+
+        eventsFromResponse.ShouldAllBe(e => e.EntityType == "Activity");
         eventsFromResponse.Select(e => e.Id).ShouldBe([event1.Id, event2.Id]);
     }
 
@@ -406,14 +432,14 @@ public class EventsControllerTests : DatabaseTestBase
     public async ValueTask Index_WithInvalidTypeFilter_BadRequest()
     {
         var response = await _client.GetAsync(
-            GetPathByName("ListEvents", new { type = "invalid.event.type" }),
+            GetPathByName("ListEvents", new { eventType = "invalid.event.type" }),
             TestContext.Current.CancellationToken
         );
 
         await response.ShouldBeApiErrorBadRequest(
             new Dictionary<string, string[]>
             {
-                { "type", ["\"invalid.event.type\" is not a valid Event Type."] },
+                { "eventType", ["\"invalid.event.type\" is not a valid Event Type."] },
             }
         );
     }

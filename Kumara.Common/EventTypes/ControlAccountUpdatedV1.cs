@@ -9,9 +9,6 @@ namespace Kumara.Common.EventTypes;
 [EventType("controlaccount.updated.v1")]
 public class ControlAccountUpdatedV1
 {
-    [Required]
-    public required Guid Id { get; set; }
-
     [Required(AllowEmptyStrings = false)]
     public required string Name { get; set; }
 

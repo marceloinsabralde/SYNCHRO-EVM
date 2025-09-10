@@ -10,15 +10,10 @@ namespace Kumara.EventSource.Tests.Controllers.Requests;
 public class EventCreateRequestTests
 {
     private static JsonObject GetValidActivityCreatedV1JsonObject() =>
-        new()
-        {
-            ["id"] = Guid.CreateVersion7(),
-            ["name"] = "Test Activity",
-            ["referenceCode"] = "ACT001",
-        };
+        new() { ["name"] = "Test Activity", ["referenceCode"] = "ACT001" };
 
     private static JsonObject GetValidControlAccountCreatedV1JsonObject() =>
-        new() { ["id"] = Guid.CreateVersion7(), ["name"] = "Test Control Account" };
+        new() { ["name"] = "Test Control Account" };
 
     private static string GetDataFieldErrorMessage(string eventTypeName, string? extraErrors = null)
     {
@@ -34,14 +29,18 @@ public class EventCreateRequestTests
     }
 
     private static EventCreateRequest GetValidEventCreateRequestObject(
-        string type,
+        string eventType,
+        Guid entityId,
+        string entityType,
         JsonObject dataJsonObject
     ) =>
         new()
         {
             ITwinId = Guid.CreateVersion7(),
             AccountId = Guid.CreateVersion7(),
-            Type = type,
+            EventType = eventType,
+            EntityId = entityId,
+            EntityType = entityType,
             Data = JsonDocument.Parse(dataJsonObject.ToJsonString()),
         };
 
@@ -49,7 +48,9 @@ public class EventCreateRequestTests
     public void PassesValidation()
     {
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: GetValidActivityCreatedV1JsonObject()
         );
 
@@ -65,7 +66,9 @@ public class EventCreateRequestTests
         dataJsonObject.Add("ReferenceCode", "Different Case");
 
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: dataJsonObject
         );
 
@@ -77,24 +80,28 @@ public class EventCreateRequestTests
     public void DataAndTypeMismatch_FailsValidation()
     {
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: GetValidControlAccountCreatedV1JsonObject()
         );
 
         var results = ModelHelpers.ValidateModel(requestObject);
-        results.ShouldBe([GetDataFieldErrorMessage(requestObject.Type)]);
+        results.ShouldBe([GetDataFieldErrorMessage(requestObject.EventType)]);
     }
 
     [Fact]
     public void DataIsEmptyJson_FailsValidation()
     {
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: new JsonObject()
         );
 
         var results = ModelHelpers.ValidateModel(requestObject);
-        results.ShouldBe([GetDataFieldErrorMessage(requestObject.Type)]);
+        results.ShouldBe([GetDataFieldErrorMessage(requestObject.EventType)]);
     }
 
     [Fact]
@@ -104,12 +111,14 @@ public class EventCreateRequestTests
         dataJsonObject.Remove("name");
 
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: dataJsonObject
         );
 
         var results = ModelHelpers.ValidateModel(requestObject);
-        results.ShouldBe([GetDataFieldErrorMessage(requestObject.Type)]);
+        results.ShouldBe([GetDataFieldErrorMessage(requestObject.EventType)]);
     }
 
     [Fact]
@@ -119,12 +128,14 @@ public class EventCreateRequestTests
         dataJsonObject.Add("unknown", "unknown");
 
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: dataJsonObject
         );
 
         var results = ModelHelpers.ValidateModel(requestObject);
-        results.ShouldBe([GetDataFieldErrorMessage(requestObject.Type)]);
+        results.ShouldBe([GetDataFieldErrorMessage(requestObject.EventType)]);
     }
 
     [Fact]
@@ -135,24 +146,28 @@ public class EventCreateRequestTests
         dataJsonObject["referenceCode"] = "";
 
         var requestObject = GetValidEventCreateRequestObject(
-            type: "activity.created.v1",
+            eventType: "activity.created.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "Activity",
             dataJsonObject: dataJsonObject
         );
 
         var results = ModelHelpers.ValidateModel(requestObject);
         var extraErrors = "The Name field is required. The ReferenceCode field is required.";
-        results.ShouldBe([GetDataFieldErrorMessage(requestObject.Type, extraErrors)]);
+        results.ShouldBe([GetDataFieldErrorMessage(requestObject.EventType, extraErrors)]);
     }
 
     [Fact]
     public void DataWithUnknownType_SkipsValidatingData_FailsValidation()
     {
         var requestObject = GetValidEventCreateRequestObject(
-            type: "unknown.type.v1",
+            eventType: "unknown.type.v1",
+            entityId: Guid.CreateVersion7(),
+            entityType: "unknown",
             dataJsonObject: GetValidActivityCreatedV1JsonObject()
         );
 
         var results = ModelHelpers.ValidateModel(requestObject);
-        results.ShouldBe([$"\"{requestObject.Type}\" is not a valid Event Type."]);
+        results.ShouldBe([$"\"{requestObject.EventType}\" is not a valid Event Type."]);
     }
 }

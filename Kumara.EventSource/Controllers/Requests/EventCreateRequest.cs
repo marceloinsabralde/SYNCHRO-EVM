@@ -23,7 +23,11 @@ public class EventCreateRequest : IValidatableObject, IDisposable
 
     [NotEmpty]
     [ValidEventType]
-    public required string Type { get; set; }
+    public required string EventType { get; set; }
+
+    public required string EntityType { get; set; }
+
+    public required Guid EntityId { get; set; }
 
     [Required]
     public required JsonDocument Data { get; set; }
@@ -53,7 +57,7 @@ public class EventCreateRequest : IValidatableObject, IDisposable
         {
             List<string> errorMessageParts =
             [
-                $"The Data field does not conform to the \"{Type}\" Event Type.",
+                $"The Data field does not conform to the \"{EventType}\" Event Type.",
             ];
 
             results.ForEach(result =>
@@ -69,7 +73,7 @@ public class EventCreateRequest : IValidatableObject, IDisposable
     private bool TryDeserializeDataObject(out object? eventDataObject)
     {
         eventDataObject = null;
-        EventTypeRegistry.Instance.TryGetEventType(Type, out Type? eventType);
+        EventTypeRegistry.Instance.TryGetEventType(EventType, out Type? eventType);
 
         if (eventType is null)
             return false;

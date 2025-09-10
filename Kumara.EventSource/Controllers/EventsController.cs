@@ -24,7 +24,8 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
     public ActionResult<PaginatedListResponse<EventResponse>> Index(
         [FromQuery] Guid? iTwinId,
         [FromQuery] Guid? accountId,
-        [FromQuery] [ValidEventType] string? type,
+        [FromQuery] [ValidEventType] string? eventType,
+        [FromQuery] string? entityType,
         [FromQuery(Name = "$continuationToken")]
             ContinuationToken<ListEventsQueryFilter>? continuationToken,
         [FromQuery(Name = "$top")] int limit = 50
@@ -40,7 +41,8 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
             {
                 ITwinId = iTwinId,
                 AccountId = accountId,
-                Type = type,
+                EventType = eventType,
+                EntityType = entityType,
             };
 
         var result = query.ApplyFilter(filter).WithLimit(limit).ExecuteQuery();
@@ -64,7 +66,9 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
                 ITwinId = @event.ITwinId,
                 AccountId = @event.AccountId,
                 CorrelationId = @event.CorrelationId,
-                Type = @event.Type,
+                EventType = @event.EventType,
+                EntityType = @event.EntityType,
+                EntityId = @event.EntityId,
                 Data = @event.Data,
                 TriggeredByUserSubject = @event.TriggeredByUserSubject,
                 TriggeredByUserAt = @event.TriggeredByUserAt,

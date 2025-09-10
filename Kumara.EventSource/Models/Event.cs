@@ -21,7 +21,11 @@ public class Event : ITimestampedEntity, IPageableEntity, IDisposable
 
     public string? CorrelationId { get; set; }
 
-    public required string Type { get; set; }
+    public required string EventType { get; set; }
+
+    public required string EntityType { get; set; }
+
+    public required Guid EntityId { get; set; }
 
     public Guid? TriggeredByUserSubject { get; set; }
 
@@ -41,6 +45,11 @@ public class Event : ITimestampedEntity, IPageableEntity, IDisposable
             builder.HasKey(e => new { e.Id, e.AccountId });
             // Generate a Guid for Id as it's no longer the primary key
             builder.Property(e => e.Id).HasValueGenerator<NpgsqlSequentialGuidValueGenerator>();
+
+            builder.HasIndex(e => e.AccountId);
+            builder.HasIndex(e => e.EventType);
+            builder.HasIndex("EntityId", "EntityType");
+            builder.HasIndex(e => e.EntityType);
         }
     }
 

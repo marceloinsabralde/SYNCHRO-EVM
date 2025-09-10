@@ -9,9 +9,6 @@ namespace Kumara.Common.EventTypes;
 [EventType("controlaccount.deleted.v1")]
 public class ControlAccountDeletedV1
 {
-    [Required]
-    public required Guid Id { get; set; }
-
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string EventTypeVersion => "1.0";
 }
