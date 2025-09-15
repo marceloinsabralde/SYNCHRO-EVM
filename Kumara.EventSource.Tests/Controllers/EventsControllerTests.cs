@@ -6,6 +6,8 @@ using System.Text.Json;
 using Kumara.Common.Controllers.Responses;
 using Kumara.EventSource.Controllers.Requests;
 using Kumara.EventSource.Controllers.Responses;
+using Kumara.EventSource.Models;
+using Kumara.EventSource.Tests.Extensions;
 using Kumara.EventSource.Tests.Factories;
 using Kumara.TestCommon.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -104,6 +106,58 @@ public class EventsControllerTests : ApplicationTestBase
         );
 
         _dbContext.Events.Count().ShouldBe(5);
+    }
+
+    [Fact]
+    public async Task Create_WithMultipleValidEventsUsingIdempotencyKeys_Created()
+    {
+        var clashingKey = Guid.CreateVersion7();
+        var eventWithIdempotencyKey = EventFactory
+            .CreateActivityCreatedV1Event(name: "With Idempotency Key")
+            .ToEventCreateRequest(idempotencyKey: clashingKey);
+
+        var response = await _client.PostAsyncJson(
+            GetPathByName("CreateEvents"),
+            new { Events = new List<EventCreateRequest> { eventWithIdempotencyKey } },
+            TestContext.Current.CancellationToken
+        );
+
+        response.StatusCode.ShouldBe(
+            HttpStatusCode.Created,
+            await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)
+        );
+
+        var eventWithoutIdempotencyKey = EventFactory
+            .CreateActivityCreatedV1Event(name: "No IdempotencyId")
+            .ToEventCreateRequest();
+        var clashingEvent = EventFactory
+            .CreateActivityCreatedV1Event(name: "With Idempotency Key")
+            .ToEventCreateRequest(idempotencyKey: clashingKey);
+
+        response = await _client.PostAsyncJson(
+            GetPathByName("CreateEvents"),
+            new
+            {
+                Events = new List<EventCreateRequest> { eventWithoutIdempotencyKey, clashingEvent },
+            },
+            TestContext.Current.CancellationToken
+        );
+
+        response.StatusCode.ShouldBe(
+            HttpStatusCode.Created,
+            await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)
+        );
+
+        var actualEvents = _dbContext
+            .Events.Select(e => new Tuple<string, Guid>(e.EntityType, e.EntityId))
+            .ToList();
+        var expectedEvents = new List<Tuple<string, Guid>>()
+        {
+            new(eventWithoutIdempotencyKey.EntityType, eventWithoutIdempotencyKey.EntityId),
+            new(eventWithIdempotencyKey.EntityType, eventWithIdempotencyKey.EntityId),
+        };
+
+        actualEvents.ShouldBe(expectedEvents, ignoreOrder: true);
     }
 
     [Fact]

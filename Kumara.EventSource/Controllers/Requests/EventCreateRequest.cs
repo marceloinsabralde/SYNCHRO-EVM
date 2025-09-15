@@ -36,6 +36,8 @@ public class EventCreateRequest : IValidatableObject, IDisposable
 
     public Instant? TriggeredByUserAt { get; set; }
 
+    public Guid? IdempotencyKey { get; set; }
+
     public void Dispose()
     {
         Data.Dispose();
