@@ -3,6 +3,7 @@
 using Kumara.Common.Database;
 using Kumara.Common.Extensions;
 using Kumara.EventSource.Database;
+using Kumara.EventSource.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +39,7 @@ builder
         options.UseKumaraCommon();
     });
 
+builder.Services.AddHostedService<IdempotencyKeyCleanupService>();
 builder.Services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
 builder.Services.AddOpenApi(options => options.UseKumaraCommon());
 builder.Services.AddEndpointsApiExplorer();

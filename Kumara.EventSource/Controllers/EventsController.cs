@@ -60,8 +60,25 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
     [EndpointName("CreateEvents")]
     public async Task<IActionResult> Create([FromBody] EventsCreateRequest eventsCreateRequest)
     {
+        var idempotencyKeys = dbContext.IdempotencyKeys.Select(key => key.Key).ToHashSet();
+        var newIdempotencyKeys = new List<IdempotencyKey>();
+
         var newEvents = eventsCreateRequest
-            .Events.Select(@event => new Event
+            .Events.Where(@event =>
+            {
+                if (@event.IdempotencyKey is null)
+                    return true;
+
+                var isExistingKey = idempotencyKeys.Contains(@event.IdempotencyKey.Value);
+
+                if (isExistingKey)
+                    return false;
+
+                newIdempotencyKeys.Add(new(@event.IdempotencyKey.Value));
+
+                return true;
+            })
+            .Select(@event => new Event
             {
                 ITwinId = @event.ITwinId,
                 AccountId = @event.AccountId,
@@ -75,7 +92,10 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
             })
             .ToList();
 
-        await dbContext.Events.AddRangeAsync(newEvents);
+        await Task.WhenAll(
+            dbContext.Events.AddRangeAsync(newEvents),
+            dbContext.IdempotencyKeys.AddRangeAsync(newIdempotencyKeys)
+        );
         await dbContext.SaveChangesAsync();
         newEvents.ForEach(@event => @event.Dispose());
         return Created();
