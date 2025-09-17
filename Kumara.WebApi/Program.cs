@@ -107,6 +107,9 @@ app.MapHealthChecks("/healthz").AllowAnonymous();
 if (app.Environment.IsDevelopment())
 {
     app.SeedDevelopmentData();
+}
+if (app.Environment.IsDevelopment())
+{
     app.UseHttpLogging();
 }
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
