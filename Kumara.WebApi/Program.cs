@@ -108,7 +108,7 @@ if (app.Environment.IsDevelopment())
 {
     app.SeedDevelopmentData();
 }
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {
     app.UseHttpLogging();
 }

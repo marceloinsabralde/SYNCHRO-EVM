@@ -83,7 +83,7 @@ await app.MigrateDbAsync<ApplicationDbContext>();
 app.MapControllers();
 app.MapHealthChecks("/healthz");
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {
     app.UseHttpLogging();
 }
