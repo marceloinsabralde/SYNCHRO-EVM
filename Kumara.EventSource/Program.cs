@@ -4,6 +4,7 @@ using Kumara.Common.Database;
 using Kumara.Common.Extensions;
 using Kumara.EventSource.Database;
 using Kumara.EventSource.Services;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,8 +49,20 @@ builder.Services.AddOpenApi(options => options.UseKumaraCommon());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => options.UseKumaraCommon());
 
+builder.Services.AddHttpLogging(options =>
+{
+    options.CombineLogs = true;
+    options.LoggingFields = HttpLoggingFields.All;
+    options.RequestBodyLogLimit = 4096;
+    options.ResponseBodyLogLimit = 4096;
+});
+
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpLogging();
+}
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
