@@ -23,7 +23,7 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 
     options.UseKumaraCommon();
 
-    if (builder.Environment.IsDevelopment())
+    if (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Test"))
     {
         options.EnableSensitiveDataLogging();
     }
