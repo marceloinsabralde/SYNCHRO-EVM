@@ -24,7 +24,7 @@ public class IdempotencyKeyCleanupService : BackgroundService
         await dbContext
             .IdempotencyKeys.Where(key =>
                 dbContext.IdempotencyKeys.Max(idempotencyKey => idempotencyKey.Id) - maxKeys
-                < key.Id
+                >= key.Id
             )
             .ExecuteDeleteAsync(cancellationToken: stoppingToken);
     }
