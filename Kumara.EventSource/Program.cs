@@ -25,10 +25,9 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 
     if (builder.Environment.IsDevelopment())
     {
-        options
-            .EnableSensitiveDataLogging()
-            .UseSeeding(DbSeeder.SeedData)
-            .UseAsyncSeeding(DbSeeder.SeedDataAsync);
+        options.EnableSensitiveDataLogging();
+        options.UseSeeding(DbSeeder.SeedData);
+        options.UseAsyncSeeding(DbSeeder.SeedDataAsync);
     }
 });
 
