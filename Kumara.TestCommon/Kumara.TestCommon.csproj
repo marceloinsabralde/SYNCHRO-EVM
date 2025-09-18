@@ -8,6 +8,7 @@
     <PackageReference Include="Bentley.ConnectCoreLibs.User" />
     <PackageReference Include="Bogus" />
     <PackageReference Include="BraceExpander" />
+    <PackageReference Include="Meziantou.Extensions.Logging.Xunit.v3" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="Microsoft.Data.SqlClient" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" />

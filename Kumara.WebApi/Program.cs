@@ -40,7 +40,7 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
         }
     );
     options.UseKumaraCommon();
-    if (builder.Environment.IsDevelopment())
+    if (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Test"))
     {
         options.EnableSensitiveDataLogging();
     }
@@ -107,6 +107,9 @@ app.MapHealthChecks("/healthz").AllowAnonymous();
 if (app.Environment.IsDevelopment())
 {
     app.SeedDevelopmentData();
+}
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
+{
     app.UseHttpLogging();
 }
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))

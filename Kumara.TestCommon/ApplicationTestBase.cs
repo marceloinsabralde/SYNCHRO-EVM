@@ -5,10 +5,12 @@ using System.Data.Common;
 using BraceExpander;
 using Kumara.Common.Utilities;
 using Kumara.TestCommon.Helpers;
+using Meziantou.Extensions.Logging.Xunit.v3;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Respawn;
 using Respawn.Graph;
 
@@ -90,6 +92,14 @@ public abstract class ApplicationTestBase<T> : IAsyncLifetime
         _factory = AppServicesHelper.CreateWebApplicationFactory(builder =>
         {
             builder.UseSetting($"ConnectionStrings:{ConnectionStringName}", _connectionString);
+
+            builder.ConfigureLogging(logging =>
+            {
+                logging.AddProvider(
+                    new XUnitLoggerProvider(TestContext.Current.TestOutputHelper, appendScope: true)
+                );
+            });
+
             ConfigureWebHostBuilder(builder);
         });
         _client = _factory.CreateClient();
