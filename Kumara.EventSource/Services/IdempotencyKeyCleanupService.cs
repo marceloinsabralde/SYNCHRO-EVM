@@ -33,10 +33,7 @@ public class IdempotencyKeyCleanupService : BackgroundService
     {
         using var timer = new PeriodicTimer(_frequency);
 
-        while (
-            !stoppingToken.IsCancellationRequested
-            && await timer.WaitForNextTickAsync(stoppingToken)
-        )
+        while (await timer.WaitForNextTickAsync(stoppingToken))
         {
             using var scope = _serviceProvider.CreateScope();
             await using var dbContext =
