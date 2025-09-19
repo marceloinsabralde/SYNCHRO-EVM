@@ -25,6 +25,7 @@ image:
   tag: latest
   pullPolicy: Never
 env:
+  ASPNETCORE_FORWARDEDHEADERS_ENABLED: true
   ASPNETCORE_ENVIRONMENT: Development
 ingress:
   enabled: true
