@@ -18,3 +18,8 @@ tolerations:
     operator: Equal
     value: evm
     effect: NoSchedule
+ingress:
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    acme.cert-manager.io/http01-edit-in-place: 'true'
