@@ -11,3 +11,10 @@ autoscaling:
   maxReplicas: #{Process.HPA.MaxReplicas}
   targetCPUUtilizationPercentage: #{Process.HPA.AvgCPUUtilization}
   targetMemoryUtilizationPercentage: #{Process.HPA.AvgMemoryUtilization}
+nodeSelector:
+  resource: evm
+tolerations:
+  - key: resource
+    operator: Equal
+    value: evm
+    effect: NoSchedule
