@@ -18,6 +18,13 @@ spec:
         {{- toYaml .Values.nodeSelector | nindent 8 }}
       tolerations:
         {{- toYaml .Values.tolerations | nindent 8 }}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: "kubernetes.io/hostname"
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              {{- include "selectorLabels" . | nindent 14 }}
       imagePullSecrets:
         {{- if .Values.image.pullSecretName }}
         - name: {{ .Values.image.pullSecretName }}
