@@ -74,7 +74,10 @@ public class EventsController(ApplicationDbContext dbContext) : ControllerBase
                 if (isExistingKey)
                     return false;
 
-                newIdempotencyKeys.Add(new(@event.IdempotencyKey.Value));
+                if (newIdempotencyKeys.Any(key => key.Key == @event.IdempotencyKey.Value))
+                    return false;
+
+                newIdempotencyKeys.Add(new IdempotencyKey(@event.IdempotencyKey.Value));
 
                 return true;
             })
