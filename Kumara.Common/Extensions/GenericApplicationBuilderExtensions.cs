@@ -9,11 +9,26 @@ namespace Kumara.Common.Extensions;
 
 static class GenericApplicationBuilderExtensions
 {
+    class SectionMissingException(string? message) : InvalidOperationException(message) { }
+
     // Makes a bound appsettings section available to DI and also for immediate use.
     //
     // Registers the config as concrete <T> as well as `IOptions<T>`, `IOptionsSnapshot<T>` and `IOptionsMonitor<T>`>
     public static T RegisterConfig<T>(this WebApplicationBuilder b)
         where T : class => b.BindValidated<T>(OptionsSection<T>());
+
+    public static T? RegisterOptionalConfig<T>(this WebApplicationBuilder b)
+        where T : class
+    {
+        try
+        {
+            return b.BindValidated<T>(OptionsSection<T>());
+        }
+        catch (SectionMissingException)
+        {
+            return null;
+        }
+    }
 
     private static T BindValidated<T>(this WebApplicationBuilder builder, string p)
         where T : class => builder.Services.BindValidated<T>(builder.Configuration, p);
@@ -28,7 +43,7 @@ static class GenericApplicationBuilderExtensions
         var boundConfig = configuration.GetSection(p);
         var config =
             boundConfig.Get<T>()
-            ?? throw new InvalidOperationException($"{p} section missing from appsettings");
+            ?? throw new SectionMissingException($"{p} section missing from appsettings");
 
         // NOTE: `AddOptions` registers Services for `IOptions<T>`, `IOptionsSnapshot<T>` and `IOptionsMonitor<T>`
         services.AddOptions<T>().Bind(boundConfig).ValidateOnStart();
