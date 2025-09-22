@@ -93,6 +93,8 @@ if (!builder.Environment.IsDevelopment())
     openTelBuilder.WithLogging(logging => logging.AddConsoleExporter());
 }
 
+builder.ConfigureDataProtection();
+
 WebApplication app = builder.Build();
 
 app.UseHttpsRedirection();
