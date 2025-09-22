@@ -1,5 +1,6 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.Globalization;
 using System.Text.Json;
 using Kumara.WebApi.Types;
 using NodaTime;
@@ -8,6 +9,46 @@ namespace Kumara.WebApi.Tests.Types;
 
 public class DateWithOptionalTimeTests
 {
+    [Theory]
+    [MemberData(nameof(TestData))]
+    public void ParseTest(string input, DateWithOptionalTime expected)
+    {
+        DateWithOptionalTime
+            .Parse(input)
+            .ShouldSatisfyAllConditions(
+                actual => actual.HasTime.ShouldBe(expected.HasTime),
+                actual => actual.DateTime.ShouldBe(expected.DateTime)
+            );
+    }
+
+    [Fact]
+    public void TryParse_Valid_Test()
+    {
+        var validInput = "2025-05-07";
+        DateWithOptionalTime expected = new DateWithOptionalTime()
+        {
+            HasTime = false,
+            DateTime = OffsetDateTime.FromDateTimeOffset(
+                new DateTimeOffset(2025, 05, 07, 0, 0, 0, TimeSpan.Zero)
+            ),
+        };
+
+        DateWithOptionalTime
+            .TryParse(validInput, CultureInfo.CurrentCulture, out DateWithOptionalTime result)
+            .ShouldBeTrue();
+        result.ShouldBe(expected);
+    }
+
+    [Fact]
+    public void TryParse_Invalid_Test()
+    {
+        var invalidInput = "invalid";
+
+        DateWithOptionalTime
+            .TryParse(invalidInput, CultureInfo.CurrentCulture, out DateWithOptionalTime result)
+            .ShouldBeFalse();
+    }
+
     [Theory]
     [MemberData(nameof(TestData))]
     public void DeserializeTest(string input, DateWithOptionalTime expected)
