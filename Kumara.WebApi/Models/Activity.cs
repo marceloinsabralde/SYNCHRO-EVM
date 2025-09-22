@@ -17,6 +17,10 @@ public class Activity : ApplicationEntity, IPageableEntity
     private bool? _actualStartHasTime;
     private Instant? _actualFinish;
     private bool? _actualFinishHasTime;
+    private Instant? _plannedStart;
+    private bool? _plannedStartHasTime;
+    private Instant? _plannedFinish;
+    private bool? _plannedFinishHasTime;
 
     public Guid Id { get; set; }
 
@@ -73,8 +77,47 @@ public class Activity : ApplicationEntity, IPageableEntity
         }
     }
 
-    public OffsetDateTime? PlannedStart { get; set; }
-    public OffsetDateTime? PlannedFinish { get; set; }
+    [NotMapped]
+    public DateWithOptionalTime? PlannedStart
+    {
+        get
+        {
+            if (_plannedStart is null)
+                return null;
+
+            return new DateWithOptionalTime()
+            {
+                DateTime = _plannedStart.Value.WithOffset(Offset.Zero),
+                HasTime = _plannedStartHasTime.GetValueOrDefault(),
+            };
+        }
+        set
+        {
+            _plannedStart = value?.DateTime.ToInstant();
+            _plannedStartHasTime = value?.HasTime;
+        }
+    }
+
+    [NotMapped]
+    public DateWithOptionalTime? PlannedFinish
+    {
+        get
+        {
+            if (_plannedFinish is null)
+                return null;
+
+            return new DateWithOptionalTime()
+            {
+                DateTime = _plannedFinish.Value.WithOffset(Offset.Zero),
+                HasTime = _plannedFinishHasTime.GetValueOrDefault(),
+            };
+        }
+        set
+        {
+            _plannedFinish = value?.DateTime.ToInstant();
+            _plannedFinishHasTime = value?.HasTime;
+        }
+    }
 
     public class Configuration : IEntityTypeConfiguration<Activity>
     {
@@ -84,6 +127,10 @@ public class Activity : ApplicationEntity, IPageableEntity
             builder.Property(a => a._actualStartHasTime).HasColumnName("actual_start_has_time");
             builder.Property(a => a._actualFinish).HasColumnName("actual_finish");
             builder.Property(a => a._actualFinishHasTime).HasColumnName("actual_finish_has_time");
+            builder.Property(a => a._plannedStart).HasColumnName("planned_start");
+            builder.Property(a => a._plannedStartHasTime).HasColumnName("planned_start_has_time");
+            builder.Property(a => a._plannedFinish).HasColumnName("planned_finish");
+            builder.Property(a => a._plannedFinishHasTime).HasColumnName("planned_finish_has_time");
             builder
                 .Property(a => a.ProgressType)
                 .HasConversion(v => v.ToString(), v => Enum.Parse<ActivityProgressType>(v));
