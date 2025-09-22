@@ -30,6 +30,11 @@ env:
 ingress:
   enabled: true
   host: $release.localhost
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "8"
+    nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "32k"
 YAML
 
 bcsm_values_path="helm/values.bcsm.$component.yaml"
