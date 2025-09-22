@@ -3,6 +3,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Kumara.Common.Database;
 using Kumara.WebApi.Enums;
+using Kumara.WebApi.Helpers;
 using Kumara.WebApi.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -38,85 +39,65 @@ public class Activity : ApplicationEntity, IPageableEntity
     [NotMapped]
     public DateWithOptionalTime? ActualStart
     {
-        get
-        {
-            if (_actualStart is null)
-                return null;
-
-            return new DateWithOptionalTime
-            {
-                DateTime = _actualStart.Value.WithOffset(Offset.Zero),
-                HasTime = _actualStartHasTime.GetValueOrDefault(),
-            };
-        }
-        set
-        {
-            _actualStart = value?.DateTime.ToInstant();
-            _actualStartHasTime = value?.HasTime;
-        }
+        get =>
+            DateWithOptionalTimeHelper.GetFromBackingFields(
+                ref _actualStart,
+                ref _actualStartHasTime
+            );
+        set =>
+            DateWithOptionalTimeHelper.SetBackingFields(
+                value,
+                ref _actualStart,
+                ref _actualStartHasTime
+            );
     }
 
     [NotMapped]
     public DateWithOptionalTime? ActualFinish
     {
-        get
-        {
-            if (_actualFinish is null)
-                return null;
-
-            return new DateWithOptionalTime
-            {
-                DateTime = _actualFinish.Value.WithOffset(Offset.Zero),
-                HasTime = _actualFinishHasTime.GetValueOrDefault(),
-            };
-        }
-        set
-        {
-            _actualFinish = value?.DateTime.ToInstant();
-            _actualFinishHasTime = value?.HasTime;
-        }
+        get =>
+            DateWithOptionalTimeHelper.GetFromBackingFields(
+                ref _actualFinish,
+                ref _actualFinishHasTime
+            );
+        set =>
+            DateWithOptionalTimeHelper.SetBackingFields(
+                value,
+                ref _actualFinish,
+                ref _actualFinishHasTime
+            );
     }
 
     [NotMapped]
     public DateWithOptionalTime? PlannedStart
     {
-        get
-        {
-            if (_plannedStart is null)
-                return null;
-
-            return new DateWithOptionalTime()
-            {
-                DateTime = _plannedStart.Value.WithOffset(Offset.Zero),
-                HasTime = _plannedStartHasTime.GetValueOrDefault(),
-            };
-        }
-        set
-        {
-            _plannedStart = value?.DateTime.ToInstant();
-            _plannedStartHasTime = value?.HasTime;
-        }
+        get =>
+            DateWithOptionalTimeHelper.GetFromBackingFields(
+                ref _plannedStart,
+                ref _plannedStartHasTime
+            );
+        set =>
+            DateWithOptionalTimeHelper.SetBackingFields(
+                value,
+                ref _plannedStart,
+                ref _plannedStartHasTime
+            );
     }
 
     [NotMapped]
     public DateWithOptionalTime? PlannedFinish
     {
-        get
-        {
-            if (_plannedFinish is null)
-                return null;
-
-            return new DateWithOptionalTime()
-            {
-                DateTime = _plannedFinish.Value.WithOffset(Offset.Zero),
-                HasTime = _plannedFinishHasTime.GetValueOrDefault(),
-            };
-        }
-        set
-        {
-            _plannedFinish = value?.DateTime.ToInstant();
-            _plannedFinishHasTime = value?.HasTime;
-        }
+        get =>
+            DateWithOptionalTimeHelper.GetFromBackingFields(
+                ref _plannedFinish,
+                ref _plannedFinishHasTime
+            );
+        set =>
+            DateWithOptionalTimeHelper.SetBackingFields(
+                value,
+                ref _plannedFinish,
+                ref _plannedFinishHasTime
+            );
     }
 
     public class Configuration : IEntityTypeConfiguration<Activity>
