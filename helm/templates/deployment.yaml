@@ -30,6 +30,12 @@ spec:
         {{- if .Values.image.pullSecretName }}
         - name: {{ .Values.image.pullSecretName }}
         {{- end }}
+      volumes:
+      {{- range .Values.persistentVolumes | default list }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ include "name" $root }}-{{ .name }}
+      {{- end }}
       containers:
         - name: {{ include "name" . }}
           image: "{{- if .Values.image.repository -}}{{ .Values.image.repository }}/{{- end -}}{{ .Values.image.name }}:{{ .Values.image.tag }}"
@@ -54,6 +60,12 @@ spec:
                   name: {{ include "name" $root }}
                   key: {{ $k | quote }}
             {{- end }}
+
+          volumeMounts:
+          {{- range .Values.persistentVolumes }}
+            - name: {{ .name }}
+              mountPath: {{ .path }}
+          {{- end }}
 
           {{- $startupProbe := (get (get .Values "probes" | default dict) "startup" | default dict) -}}
           {{- if (get $startupProbe "enabled" | default true) }}
