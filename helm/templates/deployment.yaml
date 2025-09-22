@@ -1,3 +1,4 @@
+{{- $root := . -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -46,12 +47,11 @@ spec:
               value: {{ $v | quote }}
             {{- end }}
 
-            {{- $secretName := include "name" . -}}
             {{ range $k, $v := (.Values.envSecret | default dict) }}
             - name: {{ $k | quote }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ $secretName }}
+                  name: {{ include "name" $root }}
                   key: {{ $k | quote }}
             {{- end }}
 
