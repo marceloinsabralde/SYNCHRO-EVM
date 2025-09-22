@@ -11,7 +11,12 @@ project="$1"
 env_file="$(mktemp "${TMPDIR:-/tmp}/synchro-evm-docker.env.XXXXXX")"
 trap '{ rm "$env_file"; }' EXIT
 
+component="$(echo "$project" | cut -d '.' -f2 | sed 's/\([a-z0-9]\)\([A-Z]\)/\1-\2/g' | tr '[:upper:]' '[:lower:]')"
+
+bcsm_values_path="helm/values.bcsm.$component.yaml"
+secrets_pattern="$(yq '.env // {} | keys [], .envSecret // {} | keys[]' "$bcsm_values_path" | sed -e 's/^/^/' -e 's/$/=/' | paste -sd'|' -)"
 mise env -D |
+  grep -E "$secrets_pattern" |
   sed -E 's/localhost|127\.0\.0\.1/host.docker.internal/g' \
   > "$env_file"
 
