@@ -5,12 +5,20 @@ set -euo pipefail
 usage() {
   cat <<EOF >&2
 Usage: $0 [options] <project-name>
+
+--dev-cert: wire up ingress with the "localhost" .NET Core dev certificate
 EOF
   exit 1
 }
 
+dev_cert=0
+
 while [ $# -gt 0 ]; do
   case "$1" in
+    --dev-cert)
+      dev_cert=1
+      shift
+      ;;
     --)
       shift
       break
@@ -40,6 +48,7 @@ trap '{ rm -rf "$work_dir"; }' EXIT
 
 values_base_file="$work_dir/synchro-evm-values.base.yaml"
 values_component_file="$work_dir/synchro-evm-values.component.yaml"
+values_extra_file="$work_dir/synchro-evm-values.extra.yaml"
 values_secrets_file="$work_dir/synchro-evm-values.secrets.json"
 
 cat > "$values_base_file" <<YAML
@@ -80,6 +89,19 @@ YAML
     ;;
 esac
 
+touch "$values_extra_file"
+if [[ "$dev_cert" -ne 0 ]]; then
+  if ! kubectl describe secret localhost &> /dev/null; then
+    dotnet dev-certs https --format pem --export-path "$work_dir/localhost.crt" --no-password
+    kubectl create secret tls localhost --cert="$work_dir/localhost.crt" --key="$work_dir/localhost.key"
+  fi
+  cat > "$values_extra_file" <<YAML
+ingress:
+  host: localhost
+  tlsSecretName: localhost
+YAML
+fi
+
 bcsm_values_path="helm/values.bcsm.$component.yaml"
 secrets_pattern="$(yq '.env // {} | keys [], .envSecret // {} | keys[]' "$bcsm_values_path" | sed -e 's/^/^/' -e 's/$/$/' | paste -sd'|' -)"
 mise env --json |
@@ -98,5 +120,21 @@ helm upgrade --install \
   "$release" "$chart" \
   --values "$values_base_file" \
   --values "$values_component_file" \
+  --values "$values_extra_file" \
   --values "$values_secrets_file" \
   --wait --debug
+
+if [[ "$dev_cert" -ne 0 ]]; then
+  https_port=$(
+    jq -r '.profiles | to_entries[0].value.applicationUrl' "$project/Properties/launchSettings.json" |
+      grep -o 'https://[^;]*' |
+      cut -d: -f3
+  )
+
+  cat <<TEXT
+
+Tip: Run the following to forward https://localhost:$https_port/ to ingress:
+
+  socat -dd tcp4-listen:$https_port,bind=localhost,reuseaddr,fork tcp4-connect:localhost:9443
+TEXT
+fi
