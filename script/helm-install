@@ -17,6 +17,7 @@ work_dir="$(mktemp -d)"
 trap '{ rm -rf "$work_dir"; }' EXIT
 
 values_base_file="$work_dir/synchro-evm-values.base.yaml"
+values_component_file="$work_dir/synchro-evm-values.component.yaml"
 values_secrets_file="$work_dir/synchro-evm-values.secrets.json"
 
 cat > "$values_base_file" <<YAML
@@ -39,6 +40,12 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "32k"
 YAML
 
+case "$component" in
+  *)
+    touch "$values_component_file"
+    ;;
+esac
+
 bcsm_values_path="helm/values.bcsm.$component.yaml"
 secrets_pattern="$(yq '.env // {} | keys [], .envSecret // {} | keys[]' "$bcsm_values_path" | sed -e 's/^/^/' -e 's/$/$/' | paste -sd'|' -)"
 mise env --json |
@@ -56,5 +63,6 @@ mise env --json |
 helm upgrade --install \
   "$release" "$chart" \
   --values "$values_base_file" \
+  --values "$values_component_file" \
   --values "$values_secrets_file" \
   --wait --debug
