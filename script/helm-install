@@ -41,6 +41,18 @@ ingress:
 YAML
 
 case "$component" in
+  web-api)
+    cat > "$values_component_file" <<YAML
+env:
+  DataProtection__KeyPath: /data-protection-keys
+persistentVolumes:
+  - name: data-protection-keys
+    path: /data-protection-keys
+    accessMode: ReadWriteOnce
+    storageClassName: standard
+    storage: 1Gi
+YAML
+    ;;
   *)
     touch "$values_component_file"
     ;;

@@ -3,8 +3,15 @@ project:
 env:
   ASPNETCORE_FORWARDEDHEADERS_ENABLED: true
   ASPNETCORE_ENVIRONMENT: #{Process.DHC.ASPNETCORE_ENVIRONMENT}
+  DataProtection__KeyPath: /data-protection-keys
 envSecret:
   ConnectionStrings__KumaraWebApiDB: "Server=#{Process.ASQL.ServerName}.postgres.database.azure.com;Database=#{Process.ASQL.DatabaseName};Port=#{Process.ASQL.Port};User Id=#{Process.ASQL.DeployUser};Password=#{Process.ASQL.DeployUser.Password};Channel Binding=Require;"
+persistentVolumes:
+  - name: data-protection-keys
+    path: /data-protection-keys
+    accessMode: ReadWriteMany
+    storageClassName: azurefile
+    storage: 1Gi
 ingress:
   enabled: true
   host: #{Process.DHC.HostDNS}
