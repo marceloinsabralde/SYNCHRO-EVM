@@ -2,9 +2,31 @@
 # Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 set -euo pipefail
 
-if [[ $# -ne 1 ]]; then
-  echo "usage: $0 <project-name>" >&2
+usage() {
+  cat <<EOF >&2
+Usage: $0 [options] <project-name>
+EOF
   exit 1
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --)
+      shift
+      break
+      ;;
+    -*)
+      echo "$0: invalid option: $1" >&2
+      usage
+      ;;
+    *)
+      break;
+      ;;
+  esac
+done
+
+if [[ $# -ne 1 ]]; then
+  usage
 fi
 project="$1"
 
