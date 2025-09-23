@@ -22,8 +22,8 @@ public static partial class Factories
         ActivityProgressType progressType = ActivityProgressType.Manual,
         DateWithOptionalTime? actualStart = null,
         DateWithOptionalTime? actualFinish = null,
-        OffsetDateTime? plannedStart = null,
-        OffsetDateTime? plannedFinish = null
+        DateWithOptionalTime? plannedStart = null,
+        DateWithOptionalTime? plannedFinish = null
     )
     {
         _activityCount++;

@@ -3,6 +3,7 @@ using System;
 using Kumara.WebApi.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kumara.WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250922015423_PlannedDatesOnActivityHaveOptionalTime")]
+    partial class PlannedDatesOnActivityHaveOptionalTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -146,6 +149,14 @@ namespace Kumara.WebApi.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<LocalDate?>("ActualFinish")
+                        .HasColumnType("date")
+                        .HasColumnName("actual_finish");
+
+                    b.Property<LocalDate?>("ActualStart")
+                        .HasColumnType("date")
+                        .HasColumnName("actual_start");
+
                     b.Property<Instant>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -163,6 +174,14 @@ namespace Kumara.WebApi.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("percent_complete");
 
+                    b.Property<LocalDate?>("PlannedFinish")
+                        .HasColumnType("date")
+                        .HasColumnName("planned_finish");
+
+                    b.Property<LocalDate?>("PlannedStart")
+                        .HasColumnType("date")
+                        .HasColumnName("planned_start");
+
                     b.Property<string>("ReferenceCode")
                         .IsRequired()
                         .HasColumnType("text")
@@ -175,38 +194,6 @@ namespace Kumara.WebApi.Migrations
                     b.Property<Instant>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
-
-                    b.Property<Instant?>("_actualFinish")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("actual_finish");
-
-                    b.Property<bool?>("_actualFinishHasTime")
-                        .HasColumnType("boolean")
-                        .HasColumnName("actual_finish_has_time");
-
-                    b.Property<Instant?>("_actualStart")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("actual_start");
-
-                    b.Property<bool?>("_actualStartHasTime")
-                        .HasColumnType("boolean")
-                        .HasColumnName("actual_start_has_time");
-
-                    b.Property<Instant?>("_plannedFinish")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("planned_finish");
-
-                    b.Property<bool?>("_plannedFinishHasTime")
-                        .HasColumnType("boolean")
-                        .HasColumnName("planned_finish_has_time");
-
-                    b.Property<Instant?>("_plannedStart")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("planned_start");
-
-                    b.Property<bool?>("_plannedStartHasTime")
-                        .HasColumnType("boolean")
-                        .HasColumnName("planned_start_has_time");
 
                     b.HasKey("Id")
                         .HasName("pk_control_accounts");

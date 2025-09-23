@@ -8,7 +8,7 @@ namespace Kumara.WebApi.Tests.Models;
 public sealed class ActivityTests : ApplicationTestBase
 {
     [Fact]
-    public void RoundTripsActualsIntoBackingFields()
+    public void RoundTripsDatesIntoBackingFields()
     {
         var refActivity = Factories.Activity();
         refActivity.ActualStart = new DateWithOptionalTime
@@ -25,6 +25,8 @@ public sealed class ActivityTests : ApplicationTestBase
             ),
             HasTime = true,
         };
+        refActivity.PlannedStart = DateWithOptionalTime.Parse("2001-02-03T04:05:06Z");
+        refActivity.PlannedFinish = DateWithOptionalTime.Parse("2007-08-09T20:11:12+10");
 
         var currentValues = _dbContext.Entry(refActivity).CurrentValues;
         currentValues["_actualStart"]
@@ -33,6 +35,12 @@ public sealed class ActivityTests : ApplicationTestBase
         currentValues["_actualFinish"]
             .ShouldBe(Instant.FromDateTimeOffset(DateTimeOffset.Parse("2007-08-09T20:11:12+10")));
         currentValues["_actualFinishHasTime"].ShouldBe(true);
+        currentValues["_plannedStart"]
+            .ShouldBe(Instant.FromDateTimeOffset(DateTimeOffset.Parse("2001-02-03T04:05:06Z")));
+        currentValues["_plannedStartHasTime"].ShouldBe(true);
+        currentValues["_plannedFinish"]
+            .ShouldBe(Instant.FromDateTimeOffset(DateTimeOffset.Parse("2007-08-09T20:11:12+10")));
+        currentValues["_plannedFinishHasTime"].ShouldBe(true);
 
         var newActivity = Factories.Activity();
         foreach (var prop in currentValues.Properties)
@@ -42,6 +50,8 @@ public sealed class ActivityTests : ApplicationTestBase
 
         newActivity.ActualStart.ShouldBe(refActivity.ActualStart);
         newActivity.ActualFinish.ShouldBe(refActivity.ActualFinish);
+        newActivity.PlannedStart.ShouldBe(refActivity.PlannedStart);
+        newActivity.PlannedFinish.ShouldBe(refActivity.PlannedFinish);
 
         _dbContext.Entry(newActivity).CurrentValues["_actualStartHasTime"] = false;
 
@@ -53,5 +63,7 @@ public sealed class ActivityTests : ApplicationTestBase
 
         newActivity.ActualStart.ShouldBe(newActualStart);
         newActivity.ActualFinish.ShouldBe(refActivity.ActualFinish);
+        newActivity.PlannedStart.ShouldBe(refActivity.PlannedStart);
+        newActivity.PlannedFinish.ShouldBe(refActivity.PlannedFinish);
     }
 }

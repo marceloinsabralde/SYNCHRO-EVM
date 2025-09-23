@@ -17,7 +17,11 @@ public sealed class ListActivitiesQueryTests : ApplicationTestBase
             return Factories.Activity(
                 id: Guid.CreateVersion7(timestamp),
                 iTwinId: ITwinId,
-                plannedStart: OffsetDateTime.FromDateTimeOffset(timestamp)
+                plannedStart: new()
+                {
+                    DateTime = OffsetDateTime.FromDateTimeOffset(timestamp),
+                    HasTime = true,
+                }
             );
         })
         .OrderBy(activity => activity.Id)
