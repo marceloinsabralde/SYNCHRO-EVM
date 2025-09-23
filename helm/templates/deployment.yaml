@@ -53,6 +53,15 @@ spec:
               value: {{ $v | quote }}
             {{- end }}
 
+            {{ range $k, $v := (.Values.envArray | default dict) }}
+            {{- range $arrayIndex, $arrayValue := (splitList ";" $v) }}
+            {{- if ne $arrayValue "" }}
+            - name: {{ print $k "__" $arrayIndex | quote }}
+              value: {{ $arrayValue | quote }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+
             {{ range $k, $v := (.Values.envSecret | default dict) }}
             - name: {{ $k | quote }}
               valueFrom:
