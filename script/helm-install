@@ -13,9 +13,11 @@ part_of="$(echo "$project" | cut -d '.' -f1 | tr '[:upper:]' '[:lower:]')"
 component="$(echo "$project" | cut -d '.' -f2 | sed 's/\([a-z0-9]\)\([A-Z]\)/\1-\2/g' | tr '[:upper:]' '[:lower:]')"
 release="${part_of}-${component}"
 
-values_base_file="$(mktemp "${TMPDIR:-/tmp}/synchro-evm-values.base.yaml.XXXXXX")"
-values_secrets_file="$(mktemp "${TMPDIR:-/tmp}/synchro-evm-values.secrets.json.XXXXXX")"
-trap '{ rm "$values_base_file" "$values_secrets_file"; }' EXIT
+work_dir="$(mktemp -d)"
+trap '{ rm -rf "$work_dir"; }' EXIT
+
+values_base_file="$work_dir/synchro-evm-values.base.yaml"
+values_secrets_file="$work_dir/synchro-evm-values.secrets.json"
 
 cat > "$values_base_file" <<YAML
 project:
