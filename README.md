@@ -32,6 +32,24 @@ Kumara.Scenarios << for BDD scenarios
 - [mise](https://mise.jdx.dev) to manage environment variables.
 - [sops + age](https://github.com/getsops/sops?tab=readme-ov-file#encrypting-using-age) to manage secrets.
 
+#### Windows + WSL + VSCode (optional)
+It works with Windows + WSL 
+- Install [WSL] (https://learn.microsoft.com/en-us/windows/wsl/install)
+After following steps from General section, do the following:
+- Install [Docker-Desktop] (https://www.docker.com/products/docker-desktop/)
+  - Docker Compose is already included
+  - Enable integration with WSL:
+    1. Navigate to Docker Desktop > Resources > WSL Integration 
+    2. Enable 'Enable integration with my default WSL distro' option
+- Install [1Password] (https://developer.1password.com/docs/cli/get-started/)
+  - Authenticate with your credentials:
+    1. use `op account add --address <your-team>.1password.com --email <your-email>` to configure your credentials.
+    2. use `op signin` to cache token. 
+When working with [VSCode]:
+  1. Install the "WSL" Extention (https://code.visualstudio.com/docs/remote/wsl-tutorial) to mirror WSL ENV.
+  2. From WSL project root folder run `code .` to open project in VSCode running on WSL. 
+  3. Use VSCode terminal to run next steps.
+
 ### Tools
 
 #### Bootstrap
