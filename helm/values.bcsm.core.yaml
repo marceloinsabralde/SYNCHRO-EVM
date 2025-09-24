@@ -1,0 +1,4 @@
+project:
+  name: Kumara.Core
+envSecret:
+  ConnectionStrings__KumaraCoreDB: "Server=#{Process.ASQL.ServerName}.postgres.database.azure.com;Database=#{Process.ASQL.DatabaseName};Port=#{Process.ASQL.Port};User Id=#{Process.ASQL.DeployUser};Password=#{Process.ASQL.DeployUser.Password};Channel Binding=Require;"

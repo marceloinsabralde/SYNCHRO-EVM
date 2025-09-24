@@ -1,0 +1,27 @@
+#!/bin/bash
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+set -euo pipefail
+
+work_dir="$(mktemp -d)"
+trap '{ rm -rf "$work_dir"; }' EXIT
+cd "$work_dir"
+
+key="State:/Network/Service/gpd.pan/DNS"
+
+scutil <<EOF > before.txt
+get $key
+d.show
+EOF
+
+scutil <<EOF
+get $key
+d.remove SearchDomains
+set $key
+EOF
+
+scutil <<EOF > after.txt
+get $key
+d.show
+EOF
+
+git diff --no-index before.txt after.txt || true

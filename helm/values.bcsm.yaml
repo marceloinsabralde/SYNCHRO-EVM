@@ -1,0 +1,28 @@
+image:
+  repository: #{Process.ACR.RegistryFullName}
+  name: #{Process.ACR.RepositoryName}
+  tag: #{Build.BuildNumber}
+  pullPolicy: #{Process.DHC.Image.PullPolicy}
+  pullSecretName: #{Process.ACR.RegistrySecretName}
+replicaCount: #{Process.DHC.ReplicaCount}
+autoscaling:
+  enabled: #{Process.HPA.Enabled}
+  minReplicas: #{Process.HPA.MinReplicas}
+  maxReplicas: #{Process.HPA.MaxReplicas}
+  targetCPUUtilizationPercentage: #{Process.HPA.AvgCPUUtilization}
+  targetMemoryUtilizationPercentage: #{Process.HPA.AvgMemoryUtilization}
+nodeSelector:
+  resource: evm
+tolerations:
+  - key: resource
+    operator: Equal
+    value: evm
+    effect: NoSchedule
+ingress:
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    acme.cert-manager.io/http01-edit-in-place: 'true'
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "8"
+    nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "32k"

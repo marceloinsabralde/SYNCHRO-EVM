@@ -1,0 +1,29 @@
+project:
+  name: Kumara.WebApi
+env:
+  ASPNETCORE_FORWARDEDHEADERS_ENABLED: true
+  ASPNETCORE_ENVIRONMENT: #{Process.DHC.ASPNETCORE_ENVIRONMENT}
+  DataProtection__KeyPath: /data-protection-keys
+  OpenIdConnect__ApiName: #{Process.DHC.OpenIdConnect.ApiName}
+  OpenIdConnect__Authority: #{Process.DHC.OpenIdConnect.Authority}
+  OpenIdConnect__GeneralScope: #{Process.DHC.OpenIdConnect.GeneralScope}
+  OpenIdConnect__DelegationClientId: #{Process.DHC.OpenIdConnect.DelegationClientId}
+  SwaggerLoginAuthentication__Authority: #{Process.DHC.SwaggerLoginAuthentication.Authority}
+  SwaggerLoginAuthentication__ClientId: #{Process.DHC.SwaggerLoginAuthentication.ClientId}
+envArray:
+  OpenIdConnect__ValidIssuers: #{Process.DHC.OpenIdConnect.ValidIssuers}
+envSecret:
+  ConnectionStrings__KumaraWebApiDB: "Server=#{Process.ASQL.ServerName}.postgres.database.azure.com;Database=#{Process.ASQL.DatabaseName};Port=#{Process.ASQL.Port};User Id=#{Process.ASQL.DeployUser};Password=#{Process.ASQL.DeployUser.Password};Channel Binding=Require;"
+  OpenIdConnect__ApiSecret: #{Process.DHC.OpenIdConnect.ApiSecret}
+  OpenIdConnect__DelegationClientSecret: #{Process.DHC.OpenIdConnect.DelegationClientSecret}
+  SwaggerLoginMiddleware__SwaggerScorecardSecret: #{Process.DHC.SwaggerLoginMiddleware.SwaggerScorecardSecret}
+persistentVolumes:
+  - name: data-protection-keys
+    path: /data-protection-keys
+    accessMode: ReadWriteMany
+    storageClassName: azurefile
+    storage: 1Gi
+ingress:
+  enabled: true
+  host: #{Process.DHC.HostDNS}
+  tlsSecretName: #{Process.AKS.TLSName}

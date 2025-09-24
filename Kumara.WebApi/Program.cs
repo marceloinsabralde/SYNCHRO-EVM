@@ -93,6 +93,8 @@ if (!builder.Environment.IsDevelopment())
     openTelBuilder.WithLogging(logging => logging.AddConsoleExporter());
 }
 
+builder.ConfigureDataProtection();
+
 WebApplication app = builder.Build();
 
 app.UseHttpsRedirection();
@@ -110,7 +112,10 @@ if (app.Environment.IsDevelopment())
 }
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {
-    app.UseHttpLogging();
+    app.UseWhen(
+        context => !context.Request.Path.StartsWithSegments("/healthz"),
+        builder => builder.UseHttpLogging()
+    );
 }
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {
