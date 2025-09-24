@@ -1,0 +1,108 @@
+{{- $root := . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  {{- include "metadata" . | nindent 2 }}
+spec:
+  {{- if not (and .Values.autoscaling .Values.autoscaling.enabled) }}
+  replicas: {{ default 1 .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "labels" . | nindent 8 }}
+    spec:
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: "kubernetes.io/hostname"
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              {{- include "selectorLabels" . | nindent 14 }}
+      imagePullSecrets:
+        {{- if .Values.image.pullSecretName }}
+        - name: {{ .Values.image.pullSecretName }}
+        {{- end }}
+      volumes:
+      {{- range .Values.persistentVolumes | default list }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ include "name" $root }}-{{ .name }}
+      {{- end }}
+      containers:
+        - name: {{ include "name" . }}
+          image: "{{- if .Values.image.repository -}}{{ .Values.image.repository }}/{{- end -}}{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ default "IfNotPresent" .Values.image.pullPolicy }}
+          workingDir: "/app/{{ .Values.project.name }}"
+          args:
+            - "{{ .Values.project.name }}.dll"
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 8080
+          env:
+            {{ range $k, $v := (.Values.env | default dict) }}
+            - name: {{ $k | quote }}
+              value: {{ $v | quote }}
+            {{- end }}
+
+            {{ range $k, $v := (.Values.envArray | default dict) }}
+            {{- range $arrayIndex, $arrayValue := (splitList ";" $v) }}
+            {{- if ne $arrayValue "" }}
+            - name: {{ print $k "__" $arrayIndex | quote }}
+              value: {{ $arrayValue | quote }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+
+            {{ range $k, $v := (.Values.envSecret | default dict) }}
+            - name: {{ $k | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "name" $root }}
+                  key: {{ $k | quote }}
+            {{- end }}
+
+          volumeMounts:
+          {{- range .Values.persistentVolumes }}
+            - name: {{ .name }}
+              mountPath: {{ .path }}
+          {{- end }}
+
+          {{- $startupProbe := (get (get .Values "probes" | default dict) "startup" | default dict) -}}
+          {{- if (get $startupProbe "enabled" | default true) }}
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: {{ default 5 $startupProbe.period }}
+            failureThreshold: {{ default 12 $startupProbe.count }}
+          {{- end }}
+
+          {{- $livenessProbe := (get (get .Values "probes" | default dict) "liveness" | default dict) -}}
+          {{- if (get $livenessProbe "enabled" | default true) }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: {{ default 10 $livenessProbe.period }}
+            timeoutSeconds: {{ default 10 $livenessProbe.timeout }}
+            failureThreshold: {{ default 3 $livenessProbe.threshold }}
+          {{- end }}
+
+          {{- $readinessProbe := (get (get .Values "probes" | default dict) "readiness" | default dict) -}}
+          {{- if (get $readinessProbe "enabled" | default true) }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: {{ default 6 $readinessProbe.period }}
+            timeoutSeconds: {{ default 5 $readinessProbe.timeout }}
+          {{- end }}

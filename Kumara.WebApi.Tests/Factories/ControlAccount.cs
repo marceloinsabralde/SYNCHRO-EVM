@@ -2,6 +2,7 @@
 
 using Bogus;
 using Kumara.WebApi.Models;
+using Kumara.WebApi.Types;
 using NodaTime;
 
 namespace Kumara.WebApi.Tests;
@@ -16,10 +17,10 @@ public static partial class Factories
         string? referenceCode = null,
         string? name = null,
         decimal percentComplete = default,
-        LocalDate? actualStart = null,
-        LocalDate? actualFinish = null,
-        LocalDate? plannedStart = null,
-        LocalDate? plannedFinish = null
+        DateWithOptionalTime? actualStart = null,
+        DateWithOptionalTime? actualFinish = null,
+        DateWithOptionalTime? plannedStart = null,
+        DateWithOptionalTime? plannedFinish = null
     )
     {
         _controlAccountCount++;

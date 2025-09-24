@@ -1,5 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Kumara.Common.Utilities;
@@ -13,7 +15,7 @@ namespace Kumara.WebApi.Types;
 [JsonConverter(typeof(DateWithOptionalTimeConverter))]
 [SwaggerSchemaFilter(typeof(DateWithOptionalTimeSchemaPatcher))]
 [OpenApiSchemaTransformer(typeof(DateWithOptionalTimeSchemaPatcher))]
-public readonly struct DateWithOptionalTime
+public readonly struct DateWithOptionalTime : IParsable<DateWithOptionalTime>
 {
     public required OffsetDateTime DateTime { get; init; }
     public required bool HasTime { get; init; }
@@ -21,6 +23,53 @@ public readonly struct DateWithOptionalTime
     public override string ToString()
     {
         return JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(this))!;
+    }
+
+    public static DateWithOptionalTime Parse(string str) => Parse(str, CultureInfo.CurrentCulture);
+
+    public static DateWithOptionalTime Parse(string s, IFormatProvider? provider)
+    {
+        // Try date-only first (YYYY-MM-DD)
+        var dateResult = LocalDatePattern.Iso.Parse(s);
+        if (dateResult.Success)
+        {
+            return new DateWithOptionalTime
+            {
+                DateTime = dateResult.Value.AtStartOfDayInZone(DateTimeZone.Utc).ToOffsetDateTime(),
+                HasTime = false,
+            };
+        }
+
+        // Try date-time with offset
+        var parseResult = OffsetDateTimePattern.ExtendedIso.Parse(s);
+        return new DateWithOptionalTime
+        {
+            DateTime = parseResult.GetValueOrThrow(),
+            HasTime = true,
+        };
+    }
+
+    public static bool TryParse(
+        [NotNullWhen(true)] string? s,
+        IFormatProvider? provider,
+        out DateWithOptionalTime result
+    )
+    {
+        result = default;
+
+        try
+        {
+            if (string.IsNullOrEmpty(s))
+                return false;
+
+            result = Parse(s);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
 
@@ -36,27 +85,7 @@ public class DateWithOptionalTimeConverter : JsonConverter<DateWithOptionalTime>
         if (string.IsNullOrEmpty(stringValue))
             throw new JsonException("Date string cannot be null or empty");
 
-        // Try date-only first (YYYY-MM-DD)
-        var dateResult = LocalDatePattern.Iso.Parse(stringValue);
-        if (dateResult.Success)
-        {
-            return new DateWithOptionalTime
-            {
-                DateTime = dateResult
-                    .GetValueOrThrow()
-                    .AtStartOfDayInZone(DateTimeZone.Utc)
-                    .ToOffsetDateTime(),
-                HasTime = false,
-            };
-        }
-
-        // Try date-time with offset
-        var parseResult = OffsetDateTimePattern.ExtendedIso.Parse(stringValue);
-        return new DateWithOptionalTime
-        {
-            DateTime = parseResult.GetValueOrThrow(),
-            HasTime = true,
-        };
+        return DateWithOptionalTime.Parse(stringValue);
     }
 
     public override void Write(

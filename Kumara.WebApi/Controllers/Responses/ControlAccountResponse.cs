@@ -1,6 +1,7 @@
 // Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 
 using Kumara.WebApi.Models;
+using Kumara.WebApi.Types;
 using NodaTime;
 
 namespace Kumara.WebApi.Controllers.Responses;
@@ -19,13 +20,13 @@ public class ControlAccountResponse
 
     public decimal PercentComplete { get; set; }
 
-    public LocalDate? ActualStart { get; set; }
+    public DateWithOptionalTime? ActualStart { get; set; }
 
-    public LocalDate? ActualFinish { get; set; }
+    public DateWithOptionalTime? ActualFinish { get; set; }
 
-    public LocalDate? PlannedStart { get; set; }
+    public DateWithOptionalTime? PlannedStart { get; set; }
 
-    public LocalDate? PlannedFinish { get; set; }
+    public DateWithOptionalTime? PlannedFinish { get; set; }
 
     public Instant CreatedAt { get; set; }
 

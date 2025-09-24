@@ -21,8 +21,8 @@ public class ActivityResponse
     public ActivityProgressType ProgressType { get; set; }
     public DateWithOptionalTime? ActualStart { get; set; }
     public DateWithOptionalTime? ActualFinish { get; set; }
-    public OffsetDateTime? PlannedStart { get; set; }
-    public OffsetDateTime? PlannedFinish { get; set; }
+    public DateWithOptionalTime? PlannedStart { get; set; }
+    public DateWithOptionalTime? PlannedFinish { get; set; }
 
     public Instant CreatedAt { get; set; }
 

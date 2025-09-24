@@ -85,7 +85,10 @@ app.MapHealthChecks("/healthz");
 
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {
-    app.UseHttpLogging();
+    app.UseWhen(
+        context => !context.Request.Path.StartsWithSegments("/healthz"),
+        builder => builder.UseHttpLogging()
+    );
 }
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {

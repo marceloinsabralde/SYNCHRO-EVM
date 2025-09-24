@@ -161,6 +161,51 @@ public class EventsControllerTests : ApplicationTestBase
     }
 
     [Fact]
+    public async Task Create_WithMultipleValidEventsUsingIdempotencyKeysInSameBatch_Created()
+    {
+        var clashingKey = Guid.CreateVersion7();
+        var eventWithIdempotencyKey = EventFactory
+            .CreateActivityCreatedV1Event(name: "With Idempotency Key")
+            .ToEventCreateRequest(idempotencyKey: clashingKey);
+        var clashingEvent = EventFactory
+            .CreateActivityCreatedV1Event(name: "With Idempotency Key")
+            .ToEventCreateRequest(idempotencyKey: clashingKey);
+        var eventWithoutIdempotencyKey = EventFactory
+            .CreateActivityCreatedV1Event(name: "No IdempotencyId")
+            .ToEventCreateRequest();
+
+        var response = await _client.PostAsyncJson(
+            GetPathByName("CreateEvents"),
+            new
+            {
+                Events = new List<EventCreateRequest>
+                {
+                    eventWithIdempotencyKey,
+                    eventWithoutIdempotencyKey,
+                    clashingEvent,
+                },
+            },
+            TestContext.Current.CancellationToken
+        );
+
+        response.StatusCode.ShouldBe(
+            HttpStatusCode.Created,
+            await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)
+        );
+
+        var actualEvents = _dbContext
+            .Events.Select(e => new Tuple<string, Guid>(e.EntityType, e.EntityId))
+            .ToList();
+        var expectedEvents = new List<Tuple<string, Guid>>()
+        {
+            new(eventWithoutIdempotencyKey.EntityType, eventWithoutIdempotencyKey.EntityId),
+            new(eventWithIdempotencyKey.EntityType, eventWithIdempotencyKey.EntityId),
+        };
+
+        actualEvents.ShouldBe(expectedEvents, ignoreOrder: true);
+    }
+
+    [Fact]
     public async Task Create_WithInvalidType_BadRequest()
     {
         var iTwinId = Guid.CreateVersion7();

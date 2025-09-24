@@ -1,0 +1,13 @@
+#!/bin/bash
+# Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+set -euo pipefail
+
+kind_clusters=$(kind get clusters)
+
+if [[ "$(echo "$kind_clusters" | wc -l)" -ne 1 ]]; then
+  echo Expected to find one kind cluster. >&2
+  exit 1
+fi
+kind_cluster="$(echo "$kind_clusters" | head -n 1)"
+
+kind load docker-image synchro-evm --name "$kind_cluster"

@@ -40,8 +40,8 @@ public static class DbSeeder
                     ITwinId = ProjectITwinIds[0],
                     ReferenceCode = "CIV002",
                     Name = "Excavation & Backfill",
-                    PlannedStart = new LocalDate(2025, 3, 23),
-                    ActualStart = new LocalDate(2025, 3, 25),
+                    PlannedStart = DateWithOptionalTime.Parse("2025-03-23"),
+                    ActualStart = DateWithOptionalTime.Parse("2025-03-25"),
                 },
                 new ControlAccount
                 {
@@ -67,20 +67,28 @@ public static class DbSeeder
                     ),
                     ReferenceCode = "CIV001-A1",
                     Name = "Activity 1",
-                    PlannedStart = OffsetDateTime.FromDateTimeOffset(
-                        new DateTimeOffset(
-                            date: new DateOnly(2023, 1, 1),
-                            time: TimeOnly.MinValue,
-                            offset: TimeSpan.Zero
-                        )
-                    ),
-                    PlannedFinish = OffsetDateTime.FromDateTimeOffset(
-                        new DateTimeOffset(
-                            date: new DateOnly(2024, 12, 1),
-                            time: TimeOnly.MaxValue,
-                            offset: TimeSpan.Zero
-                        )
-                    ),
+                    PlannedStart = new DateWithOptionalTime()
+                    {
+                        DateTime = OffsetDateTime.FromDateTimeOffset(
+                            new DateTimeOffset(
+                                date: new DateOnly(2023, 1, 1),
+                                time: TimeOnly.MinValue,
+                                offset: TimeSpan.Zero
+                            )
+                        ),
+                        HasTime = false,
+                    },
+                    PlannedFinish = new DateWithOptionalTime()
+                    {
+                        DateTime = OffsetDateTime.FromDateTimeOffset(
+                            new DateTimeOffset(
+                                date: new DateOnly(2024, 12, 1),
+                                time: TimeOnly.MaxValue,
+                                offset: TimeSpan.Zero
+                            )
+                        ),
+                        HasTime = true,
+                    },
                     ActualStart = new DateWithOptionalTime
                     {
                         DateTime = OffsetDateTime.FromDateTimeOffset(

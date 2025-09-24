@@ -1,0 +1,21 @@
+<Solution>
+  <Project Path="Kumara.Scenarios/Kumara.Scenarios.csproj" />
+  <Project Path="Kumara.TestCommon/Kumara.TestCommon.csproj" />
+  <Project Path="Kumara.Common/Kumara.Common.csproj" />
+  <Project Path="Kumara.Common.Tests/Kumara.Common.Tests.csproj" />
+  <Project Path="Kumara.Core/Kumara.Core.csproj" />
+  <Project Path="Kumara.Core.Tests/Kumara.Core.Tests.csproj" />
+  <Project Path="Kumara.EventSource/Kumara.EventSource.csproj" />
+  <Project Path="Kumara.EventSource.Tests/Kumara.EventSource.Tests.csproj" />
+  <Project Path="Kumara.Search/Kumara.Search.csproj" />
+  <Project Path="Kumara.Search.Tests/Kumara.Search.Tests.csproj" />
+  <Project Path="Kumara.WebApi/Kumara.WebApi.csproj" />
+  <Project Path="Kumara.WebApi.Tests/Kumara.WebApi.Tests.csproj" />
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="docker-compose.local.yml" />
+    <File Path="mise.toml" />
+    <File Path="README.md" />
+  </Folder>
+</Solution>

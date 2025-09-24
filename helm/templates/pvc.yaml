@@ -1,0 +1,15 @@
+{{- $root := . -}}
+{{- range (get .Values "persistentVolumes" | default list) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  {{- include "metadata" $root | nindent 2 }}
+  name: {{ include "name" $root }}-{{ .name }}
+spec:
+  accessModes:
+    - {{ .accessMode }}
+  storageClassName: {{ .storageClassName }}
+  resources:
+    requests:
+      storage: {{ .storage }}
+{{- end }}

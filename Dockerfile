@@ -18,21 +18,15 @@ COPY \
 
 RUN <<SH
   perl -Mwarnings=FATAL -i -ne '
-    if (/^Project\(.*\) = .*?, "(.*?)",/) {
+    if (/^\s*<Project\b[^>]*\bPath="([^"]+)"/) {
       $file = $1;
       $file =~ s|\\|/|g;
       if (! -f $file) {
-        $skip = 1;
         next;
       }
     }
-    if ($skip && /^EndProject/) {
-      $skip = 0;
-      next;
-    }
-    next if $skip;
     print;
-  ' -- *.sln
+  ' -- *.slnx
 SH
 
 FROM sdk AS build
@@ -62,7 +56,7 @@ COPY \
   --exclude=/src/*/*.Scenarios.csproj \
   /src/Directory.*.props \
   /src/nuget.config \
-  /src/*.sln \
+  /src/*.slnx \
   /src/*/*.csproj \
   /
 
